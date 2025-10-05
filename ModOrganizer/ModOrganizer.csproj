@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Dalamud.NET.SDK/13.1.0">
+    <PropertyGroup>
+        <Description>Organize penumbra mods dynamically based on customizable rules</Description>
+        <PackageProjectUrl>https://github.com/anya-hichu/ModOrganizer</PackageProjectUrl>
+        <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+        <IsPackable>false</IsPackable>
+        <TargetFramework>net9.0-windows7.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Scriban" Version="6.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Penumbra.Api\Penumbra.Api.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+{
+  "Author": "Anya Hichu",
+  "Name": "ModOrganizer",
+  "Punchline": "Ain't nobody got time for sorting mods",
+  "Description": "Organize penumbra mods dynamically based on customizable rules",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "mod",
+    "organizer",
+    "rule"
+  ]
+}
