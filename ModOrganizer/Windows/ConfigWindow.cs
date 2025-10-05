@@ -69,10 +69,10 @@ public class ConfigWindow : Window, IDisposable
                 Config.Save();
             }
 
-            var filterExpression = rule.FilterExpression;
-            if (ImGui.InputTextMultiline($"Filter expression##rule{hash}filterExpression", ref filterExpression))
+            var matchExpression = rule.MatchExpression;
+            if (ImGui.InputTextMultiline($"Match expression##rule{hash}matchExpression", ref matchExpression))
             {
-                rule.FilterExpression = filterExpression;
+                rule.MatchExpression = matchExpression;
                 Config.Save();
             }
 

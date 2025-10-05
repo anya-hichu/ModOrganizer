@@ -11,7 +11,7 @@ public static class RuleDefaults
         new() {
             Name = "Sets",
             Priority = 5,
-            FilterExpression = "changed_items | object.values | array.each @(do; ret $0?.type.value; end) | array.uniq | array.size > 1",
+            MatchExpression = "changed_items | object.values | array.each @(do; ret $0?.type.value; end) | array.uniq | array.size > 1",
             PathTemplate = "{{ if data.local_tags | array.contains 'nsfw' }}Nsfw/{{ end }}Sets/{{ directory }}"
         },
         Build(FullEquipType.Head),
@@ -30,7 +30,7 @@ public static class RuleDefaults
         {
             Name = type.ToString(),
             Priority = 4,
-            FilterExpression = $"changed_items | object.values | array.each @(do; ret $0?.type?.value; end) | array.uniq == [{(int)type}]",
+            MatchExpression = $"changed_items | object.values | array.each @(do; ret $0?.type?.value; end) | array.uniq == [{(int)type}]",
             PathTemplate = string.Format("{{ if data.local_tags | array.contains 'nsfw' }}Nsfw/{{ end }}{0}/{{ directory }}", type)
         };
     }

@@ -52,18 +52,18 @@ public class RuleEvaluator(IPluginLog pluginLog)
 
     private bool Matches(Rule rule, ModInfo modInfo)
     {
-        if (rule.FilterExpression.IsNullOrWhitespace())
+        if (rule.MatchExpression.IsNullOrWhitespace())
         {
             return false;
         }
 
-        var result = Template.Evaluate(rule.FilterExpression, modInfo, ScribanUtils.RenameMember);
+        var result = Template.Evaluate(rule.MatchExpression, modInfo, ScribanUtils.RenameMember);
         if (result is bool validResult)
         {
             return validResult;
         }
 
-        PluginLog.Error($"Filter expression [{rule.FilterExpression}] did not evaluate to a boolean, ignoring");
+        PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
         return false;
     }
 }
