@@ -49,13 +49,13 @@ public class ModInterop : IDisposable
     private EventSubscriber<string, string> ModMovedSubscriber { get; init; }
 
     private string SortOrderDirectory { get; init; }
-    private FileSystemWatcher SortOrderFsWatcher { get; init; }
+    private FileSystemWatcher SortOrderFileSystemWatcher { get; init; }
 
     private string DataDirectory { get; init; }
-    private FileSystemWatcher DataFsWatcher { get; init; }
+    private FileSystemWatcher DataFileSystemWatcher { get; init; }
     private FileSystemWatcher? DefaultFileSystemWatcher { get; set; }
-    private FileSystemWatcher? GroupsFsWatcher { get; set; }
-    private FileSystemWatcher? MetaFsWatcher { get; set; }
+    private FileSystemWatcher? GroupsFileSystemWatcher { get; set; }
+    private FileSystemWatcher? MetaFileSystemWatcher { get; set; }
 
 
 
@@ -75,18 +75,18 @@ public class ModInterop : IDisposable
         var pluginConfigsDirectory = Path.GetFullPath(Path.Combine(pluginInterface.GetPluginConfigDirectory(), ".."));
 
         SortOrderDirectory = Path.GetFullPath(Path.Combine(pluginConfigsDirectory, PENUMBRA_FOLDER_NAME));
-        SortOrderFsWatcher = new FileSystemWatcher(SortOrderDirectory, SORT_ORDER_FILE_NAME)
+        SortOrderFileSystemWatcher = new FileSystemWatcher(SortOrderDirectory, SORT_ORDER_FILE_NAME)
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
         };
-        AddFileSystemListeners(SortOrderFsWatcher, OnSortOrderFileUpdate);
+        AddFileSystemListeners(SortOrderFileSystemWatcher, OnSortOrderFileUpdate);
 
         DataDirectory = Path.GetFullPath(Path.Combine(pluginConfigsDirectory, PENUMBRA_FOLDER_NAME, DATA_FOLDER_NAME));
-        DataFsWatcher = new FileSystemWatcher(DataDirectory, DATA_FILE_NAME_PATTERN) 
+        DataFileSystemWatcher = new FileSystemWatcher(DataDirectory, DATA_FILE_NAME_PATTERN) 
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
         };
-        AddFileSystemListeners(DataFsWatcher, OnDataFileUpdate);
+        AddFileSystemListeners(DataFileSystemWatcher, OnDataFileUpdate);
 
         ModsDirectoryPath = GetModDirectorySubscriber.Invoke();
         CreateModFileSystemWatchers();
@@ -97,8 +97,8 @@ public class ModInterop : IDisposable
     #region Dispose
     public void Dispose()
     {
-        SortOrderFsWatcher.Dispose();
-        DataFsWatcher.Dispose();
+        SortOrderFileSystemWatcher.Dispose();
+        DataFileSystemWatcher.Dispose();
         DisposeModFileSystemWatchers();
         ModAddedSubscriber.Dispose();
         ModDeletedSubscriber.Dispose();
@@ -110,8 +110,8 @@ public class ModInterop : IDisposable
     {
 
         DefaultFileSystemWatcher?.Dispose();
-        GroupsFsWatcher?.Dispose();
-        MetaFsWatcher?.Dispose();
+        GroupsFileSystemWatcher?.Dispose();
+        MetaFileSystemWatcher?.Dispose();
         PluginLog.Debug("Disposed mod file system watchers");
     }
     #endregion
@@ -158,19 +158,19 @@ public class ModInterop : IDisposable
         };
         AddFileSystemListeners(DefaultFileSystemWatcher, OnModFileUpdate);
 
-        GroupsFsWatcher = new FileSystemWatcher(ModsDirectoryPath, GROUP_FILE_NAME_PATTERN)
+        GroupsFileSystemWatcher = new FileSystemWatcher(ModsDirectoryPath, GROUP_FILE_NAME_PATTERN)
         {
             IncludeSubdirectories = true,
             InternalBufferSize = INTERNAL_BUFFER_SIZE
         };
-        AddFileSystemListeners(GroupsFsWatcher, OnModFileUpdate);
+        AddFileSystemListeners(GroupsFileSystemWatcher, OnModFileUpdate);
 
-        MetaFsWatcher = new FileSystemWatcher(ModsDirectoryPath, META_FILE_NAME)
+        MetaFileSystemWatcher = new FileSystemWatcher(ModsDirectoryPath, META_FILE_NAME)
         {
             IncludeSubdirectories = true,
             InternalBufferSize = INTERNAL_BUFFER_SIZE
         };
-        AddFileSystemListeners(MetaFsWatcher, OnModFileUpdate);
+        AddFileSystemListeners(MetaFileSystemWatcher, OnModFileUpdate);
         PluginLog.Debug("Created mod file system watchers");
     }
 
@@ -184,11 +184,11 @@ public class ModInterop : IDisposable
 
     public void EnableFileSystemWatchers(bool enable)
     {
-        SortOrderFsWatcher.EnableRaisingEvents = enable;
-        DataFsWatcher.EnableRaisingEvents = enable;
+        SortOrderFileSystemWatcher.EnableRaisingEvents = enable;
+        DataFileSystemWatcher.EnableRaisingEvents = enable;
         DefaultFileSystemWatcher!.EnableRaisingEvents = enable;
-        GroupsFsWatcher!.EnableRaisingEvents = enable;
-        MetaFsWatcher!.EnableRaisingEvents = enable;
+        GroupsFileSystemWatcher!.EnableRaisingEvents = enable;
+        MetaFileSystemWatcher!.EnableRaisingEvents = enable;
         PluginLog.Debug($"{(enable ? "Enabled" : "Disabled")} raising file system events");
     }
 
@@ -322,11 +322,8 @@ public class ModInterop : IDisposable
 
     public PenumbraApiEc SetModPath(string modDirectory, string newModPath) {
         var exitCode = SetModPathSubscriber.Invoke(modDirectory, newModPath);
-        if (exitCode == PenumbraApiEc.Success)
-        {
-            // Watchers might not be enabled, invalidate manually
-            InvalidateCaches(modDirectory);
-        }
+        // Watchers might not be enabled, invalidate manually
+        if (exitCode == PenumbraApiEc.Success) InvalidateCaches(modDirectory);
         return exitCode;
     }
     #endregion

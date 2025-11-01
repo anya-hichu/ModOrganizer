@@ -18,10 +18,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
         path = default;
         foreach (var rule in rules.OrderByDescending(r => r.Priority))
         {
-            if (TryEvaluate(rule, modInfo, out path))
-            {
-                return true;
-            }
+            if (TryEvaluate(rule, modInfo, out path)) return true;
         }
         return false;
     }

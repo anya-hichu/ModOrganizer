@@ -22,7 +22,7 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
                 PluginLog.Info($"Moved mod [{modDirectory}] to [{newModDirectory}]");
                 return true;
             }
-            PluginLog.Error($"Failed to move mod [{modDirectory}] to [{newModDirectory}], exit code [{exitCode}]");
+            PluginLog.Error($"Failed to move mod [{modDirectory}] to [{newModDirectory}] ({exitCode})");
         }
         return false;
     }
