@@ -1,4 +1,5 @@
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
@@ -9,6 +10,7 @@ using Scriban.Helpers;
 using Scriban.Parsing;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 
@@ -18,14 +20,11 @@ public class MainWindow : Window, IDisposable
 {
     private ModInterop Interop { get; init; }
 
-    private TemplateContext TemplateContext { get; init; } = new()
-    {
-        MemberRenamer = ScribanUtils.RenameMember
-    };
+    private TemplateContext TemplateContext { get; init; } = new(){ MemberRenamer = ScribanUtils.RenameMember };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private HashSet<string> SelectedModDirectories { get; set; } = [];
-
+    private HashSet<TreeNode<string>>? MaybeModPathNodesCache { get; set; }
 
     private string Expression { get; set; } = string.Empty;
     private object? EvaluationResult { get; set; }
@@ -39,43 +38,99 @@ public class MainWindow : Window, IDisposable
         };
 
         Interop = interop;
+        Interop.OnModPathsChanged += OnModPathsChanged;
     }
 
-    public void Dispose() { }
+    public void Dispose() 
+    {
+        Interop.OnModPathsChanged -= OnModPathsChanged;
+        Interop.EnableRaisingFsEvents(false);
+    }
+
+    public override void OnOpen()
+    {
+        Interop.EnableRaisingFsEvents(true);
+    }
+
+    public override void OnClose()
+    {
+        Interop.EnableRaisingFsEvents(false);
+    }
+
+    private void OnModPathsChanged()
+    {
+        MaybeModPathNodesCache = null;
+    }
+
+    private HashSet<TreeNode<string>> GetModPathNodes()
+    {
+        if (MaybeModPathNodesCache != null) return MaybeModPathNodesCache;
+
+        var modPathNodes = new HashSet<TreeNode<string>>(TreeNodeComparer<string>.INSTANCE);
+        foreach (var (_, path) in Interop.GetModPaths())
+        {
+            var current = modPathNodes;
+            var parts = path.Split('/');
+            for (var take = 1; take <= parts.Length; take++)
+            {
+                var newNode = new TreeNode<string>(string.Join('/', parts.Take(take)));
+                if (current.TryGetValue(newNode, out var existingNode))
+                {
+                    current = existingNode.ChildNodes;
+                }
+                else
+                {
+                    current.Add(newNode);
+                    current = newNode.ChildNodes;
+                }
+            }
+        }
+
+        MaybeModPathNodesCache = modPathNodes;
+        return modPathNodes;
+    }
+
+    private void DrawPathNodes(HashSet<TreeNode<string>> nodes)
+    {
+        // Pad with zeros to improve sorting with numbers
+        foreach (var treeNode in nodes.OrderByDescending(n => n.ChildNodes.Count != 0).ThenBy(n => n.Node))
+        {
+            var hash = treeNode.Node.GetHashCode();
+
+            var name = Path.GetFileName(treeNode.Node);
+            if (treeNode.ChildNodes.Count > 0)
+            {
+                // Folder
+                using var treeNodeItem = ImRaii.TreeNode($"{name}###pathNode{hash}");
+                if (treeNodeItem) DrawPathNodes(treeNode.ChildNodes);
+                continue;
+            }
+
+            // Leaf
+            var modDirectory = treeNode.Node.Split('/').Last();
+            using (ImRaii.TreeNode($"{modDirectory}###pathNode{hash}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | (SelectedModDirectories.Contains(modDirectory) ? ImGuiTreeNodeFlags.Selected : ImGuiTreeNodeFlags.None)))
+            {
+                using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite))
+                {
+                    if (ImGui.IsItemClicked())
+                    {
+                        if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) SelectedModDirectories.Clear();
+
+                        // Toggle
+                        if (!SelectedModDirectories.Remove(modDirectory)) SelectedModDirectories.Add(modDirectory);
+                    }
+                }
+            }
+        }
+    }
 
     public override void Draw()
     {
         using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
         {
-            using (ImRaii.Child("modDirectories", new(ImGui.GetWindowWidth() * 0.2f, ImGui.GetWindowHeight() - ImGui.GetCursorPosY() - 10)))
+            using (ImRaii.Child("modPathNodes", new(ImGui.GetWindowWidth() * 0.2f, ImGui.GetWindowHeight() - (2 * ImGui.GetTextLineHeightWithSpacing()))))
             {
-                // Add filter
-
-                foreach (var modDirectory in Interop.GetCachedModDirectories().Order())
-                {
-                    using (ImRaii.PushColor(ImGuiCol.Button, SelectedModDirectories.Contains(modDirectory) ? new Vector4(0.5f, 0.5f, 0.5f, 0.5f) : new Vector4(0.3f, 0.3f, 0.3f, 0.3f)))
-                    {
-                        if (ImGui.Button($"{modDirectory}##modDirectory{modDirectory.GetHashCode()}", new(ImGui.GetContentRegionAvail().X, ImGui.GetTextLineHeightWithSpacing())))
-                        {
-                            if (ImGui.IsKeyPressed(ImGuiKey.LeftCtrl))
-                            {
-                                if (!SelectedModDirectories.Add(modDirectory))
-                                {
-                                    SelectedModDirectories.Remove(modDirectory);
-                                }
-                            }
-                            else
-                            {
-                                SelectedModDirectories.Clear();
-                                SelectedModDirectories.Add(modDirectory);
-                            }
-                        }
-                        if (ImGui.IsItemHovered())
-                        {
-                            ImGui.SetTooltip(modDirectory);
-                        }
-                    }
-                }
+                DrawPathNodes(GetModPathNodes());
             }
         }
 
@@ -90,7 +145,7 @@ public class MainWindow : Window, IDisposable
         else if (SelectedModDirectories.Count == 1)
         {
             var selectedModDirectory = SelectedModDirectories.First();
-            var modInfo = Interop.GetCachedModInfo(selectedModDirectory);
+            var modInfo = Interop.GetModInfo(selectedModDirectory);
             using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
             {
                 using (ImRaii.Child($"selectedModDirectory", new((ImGui.GetWindowWidth() * 0.8f) - (2 * ImGui.GetTextLineHeight()), ImGui.GetWindowHeight() * 0.7f)))
@@ -139,6 +194,8 @@ public class MainWindow : Window, IDisposable
 
     private void DrawMembers(object target, int maxDepth)
     {
+        // Change to infinite depth and tree node items
+
         var accessor = TemplateContext.GetMemberAccessor(target);
         using (ImRaii.PushIndent())
         {

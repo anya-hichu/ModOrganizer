@@ -14,5 +14,5 @@ public enum FullEquipType : byte
     Ears,
     Neck,
     Wrists,
-    Finger
+    Finger,
 }

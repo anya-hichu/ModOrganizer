@@ -1,4 +1,3 @@
-using Penumbra.Api.Enums;
 using System.Collections.Generic;
 
 namespace ModOrganizer.Mods;

@@ -1,15 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Utils;
 
 public static class JsonUtils
 {
-    public static object? DeserializeToDynamic(string json)
-    {
-        var element = JsonSerializer.Deserialize<JsonElement>(json);
-        return Convert(element);
-    }
+    public static object? DeserializeToDynamic(string json) => Convert(JsonSerializer.Deserialize<JsonElement>(json, options: new() { AllowTrailingCommas = true }));
 
     private static object? Convert(JsonElement element) =>
         element.ValueKind switch
@@ -25,19 +22,6 @@ public static class JsonUtils
             _ => null
         };
 
-    private static Dictionary<string, object?> ConvertObject(JsonElement element)
-    {
-        var dict = new Dictionary<string, object?>();
-        foreach (var prop in element.EnumerateObject())
-            dict[prop.Name] = Convert(prop.Value);
-        return dict;
-    }
-
-    private static List<object?> ConvertArray(JsonElement element)
-    {
-        var list = new List<object?>();
-        foreach (var item in element.EnumerateArray())
-            list.Add(Convert(item));
-        return list;
-    }
+    private static Dictionary<string, object?> ConvertObject(JsonElement element) => element.EnumerateObject().ToDictionary(p => p.Name, p => Convert(p.Value));
+    private static List<object?> ConvertArray(JsonElement element) => [.. element.EnumerateArray().Select(Convert)];
 }

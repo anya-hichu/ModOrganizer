@@ -29,22 +29,16 @@ public class RuleEvaluator(IPluginLog pluginLog)
     private bool TryEvaluate(Rule rule, ModInfo modInfo, out string? path)
     {
         path = default;
-        if (!rule.Enabled || rule.PathTemplate.IsNullOrWhitespace())
-        {
-            return false;
-        }
-
-        if (!Matches(rule, modInfo))
-        {
-            return false;
-        }
+        if (!rule.Enabled || rule.PathTemplate.IsNullOrWhitespace() || !Matches(rule, modInfo)) return false;
 
         var template = Template.Parse(rule.PathTemplate);
-        var result = template.Render(modInfo, ScribanUtils.RenameMember);
-        if (result.IsNullOrWhitespace())
+        if (template.HasErrors)
         {
+            PluginLog.Error($"Failed to parse rule [{rule.Name}] path template: {template.Messages}");
             return false;
         }
+        var result = template.Render(modInfo, ScribanUtils.RenameMember);
+        if (result.IsNullOrWhitespace()) return false;
 
         path = result;
         return true;
@@ -52,16 +46,10 @@ public class RuleEvaluator(IPluginLog pluginLog)
 
     private bool Matches(Rule rule, ModInfo modInfo)
     {
-        if (rule.MatchExpression.IsNullOrWhitespace())
-        {
-            return false;
-        }
+        if (rule.MatchExpression.IsNullOrWhitespace()) return false;
 
         var result = Template.Evaluate(rule.MatchExpression, modInfo, ScribanUtils.RenameMember);
-        if (result is bool validResult)
-        {
-            return validResult;
-        }
+        if (result is bool validResult) return validResult;
 
         PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
         return false;

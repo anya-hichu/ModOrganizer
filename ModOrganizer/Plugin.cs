@@ -13,7 +13,6 @@ public sealed class Plugin : IDalamudPlugin
 {
     public static readonly string NAMESPACE = "ModOrganizer"; 
 
-
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IChatGui ChatGui { get; private set; } = null!;
@@ -34,18 +33,17 @@ public sealed class Plugin : IDalamudPlugin
     private ModProcessor ModProcessor { get; init; }
     private ModAutoProcessor ModAutoProcessor { get; init; }
 
-
     public Plugin()
     {
         Config = PluginInterface.GetPluginConfig() as Config ?? new Config()
         {
-            Rules = RuleDefaults.Get()
+            Rules = RuleBuilder.GetDefaults()
         };
 
         ModInterop = new(PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
         ModProcessor = new(Config, ModInterop, PluginLog, RuleEvaluator);
-        ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor);
+        ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
 
         ConfigWindow = new ConfigWindow(Config);
         MainWindow = new MainWindow(ModInterop);
@@ -73,6 +71,7 @@ public sealed class Plugin : IDalamudPlugin
         CommandManager.RemoveHandler(CommandName);
 
         ModAutoProcessor.Dispose();
+        ModInterop.Dispose();
     }
 
     private void OnCommand(string command, string args)

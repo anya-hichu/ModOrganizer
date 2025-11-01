@@ -10,9 +10,4 @@ public class Rule
     public int Priority { get; set; } = 0;
     public string MatchExpression { get; set; } = string.Empty;
     public string PathTemplate { get; set; } = string.Empty;
-
-    public Rule Clone()
-    {
-        return (Rule)MemberwiseClone();
-    }
 }

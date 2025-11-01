@@ -48,17 +48,17 @@ public class ConfigWindow : Window, IDisposable
         {
             var hash = rule.GetHashCode();
 
-            var name = rule.Name;
-            if (ImGui.InputText($"Name##rule{hash}name", ref name))
-            {
-                rule.Name = name;
-                Config.Save();
-            }
-
             var enabled = rule.Enabled;
             if (ImGui.Checkbox($"Enable##rule{hash}enabled", ref enabled))
             {
                 rule.Enabled = enabled;
+                Config.Save();
+            }
+
+            var name = rule.Name;
+            if (ImGui.InputText($"Name##rule{hash}name", ref name))
+            {
+                rule.Name = name;
                 Config.Save();
             }
 
