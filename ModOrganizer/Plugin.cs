@@ -32,21 +32,23 @@ public sealed class Plugin : IDalamudPlugin
     private RuleEvaluator RuleEvaluator { get; init; }
     private ModProcessor ModProcessor { get; init; }
     private ModAutoProcessor ModAutoProcessor { get; init; }
+    private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
     public Plugin()
     {
         Config = PluginInterface.GetPluginConfig() as Config ?? new Config()
         {
-            Rules = RuleBuilder.GetDefaults()
+            Rules = RuleBuilder.BuildDefaults()
         };
 
         ModInterop = new(PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
         ModProcessor = new(Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
+        ModVirtualFileSystem = new(ModInterop);
 
         ConfigWindow = new ConfigWindow(Config);
-        MainWindow = new MainWindow(ModInterop);
+        MainWindow = new MainWindow(ModInterop, ModVirtualFileSystem);
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
@@ -72,6 +74,7 @@ public sealed class Plugin : IDalamudPlugin
 
         ModAutoProcessor.Dispose();
         ModInterop.Dispose();
+        ModVirtualFileSystem.Dispose();
     }
 
     private void OnCommand(string command, string args)

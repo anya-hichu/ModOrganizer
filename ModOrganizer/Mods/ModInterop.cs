@@ -28,10 +28,9 @@ public class ModInterop : IDisposable
 
     private IPluginLog PluginLog { get; init; }
 
-
     public event Action<string>? OnModAdded;
 
-    public event Action? OnModPathsChanged;
+    public event Action? OnModsChanged;
 
     private string ModsDirectoryPath { get; set; }
 
@@ -54,7 +53,7 @@ public class ModInterop : IDisposable
 
     private string DataDirectory { get; init; }
     private FileSystemWatcher DataFsWatcher { get; init; }
-    private FileSystemWatcher? DefaultFsWatcher { get; set; }
+    private FileSystemWatcher? DefaultFileSystemWatcher { get; set; }
     private FileSystemWatcher? GroupsFsWatcher { get; set; }
     private FileSystemWatcher? MetaFsWatcher { get; set; }
 
@@ -80,17 +79,17 @@ public class ModInterop : IDisposable
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
         };
-        AttachFsListeners(SortOrderFsWatcher, OnSortOrderFileUpdate);
+        AddFileSystemListeners(SortOrderFsWatcher, OnSortOrderFileUpdate);
 
         DataDirectory = Path.GetFullPath(Path.Combine(pluginConfigsDirectory, PENUMBRA_FOLDER_NAME, DATA_FOLDER_NAME));
         DataFsWatcher = new FileSystemWatcher(DataDirectory, DATA_FILE_NAME_PATTERN) 
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
         };
-        AttachFsListeners(DataFsWatcher, OnDataFileUpdate);
+        AddFileSystemListeners(DataFsWatcher, OnDataFileUpdate);
 
         ModsDirectoryPath = GetModDirectorySubscriber.Invoke();
-        CreateModFsWatchers();
+        CreateModFileSystemWatchers();
 
         ModDirectoryChangedSubscriber = ModDirectoryChanged.Subscriber(pluginInterface, OnModDirectoryChanged);
     }
@@ -100,20 +99,20 @@ public class ModInterop : IDisposable
     {
         SortOrderFsWatcher.Dispose();
         DataFsWatcher.Dispose();
-        DisposeModFsWatchers();
+        DisposeModFileSystemWatchers();
         ModAddedSubscriber.Dispose();
         ModDeletedSubscriber.Dispose();
         ModMovedSubscriber.Dispose();
         ModDirectoryChangedSubscriber.Dispose();
     }
 
-    private void DisposeModFsWatchers()
+    private void DisposeModFileSystemWatchers()
     {
 
-        DefaultFsWatcher?.Dispose();
+        DefaultFileSystemWatcher?.Dispose();
         GroupsFsWatcher?.Dispose();
         MetaFsWatcher?.Dispose();
-        PluginLog.Debug("Disposed mod FS watchers");
+        PluginLog.Debug("Disposed mod file system watchers");
     }
     #endregion
 
@@ -129,13 +128,13 @@ public class ModInterop : IDisposable
     private void OnModDeleted(string modDirectory)
     {
         PluginLog.Debug($"Received mod deleted event [{modDirectory}]");
-        InvalidateModInfoCache(modDirectory);
+        InvalidateCaches(modDirectory);
     }
 
     private void OnModMoved(string modDirectory, string newModDirectory)
     {
         PluginLog.Debug($"Received mod moved event [{modDirectory}] to [{newModDirectory}]");
-        InvalidateModInfoCache(modDirectory);
+        InvalidateCaches(modDirectory);
     }
 
     private void OnModDirectoryChanged(string modDirectoryPath, bool valid)
@@ -143,77 +142,77 @@ public class ModInterop : IDisposable
         if (!valid) return;
         PluginLog.Debug($"Mod directory path changed [{modDirectoryPath}]");
         ModsDirectoryPath = modDirectoryPath;
-        DisposeModFsWatchers();
-        CreateModFsWatchers();
+        DisposeModFileSystemWatchers();
+        CreateModFileSystemWatchers();
+        InvalidateCaches();
     }
     #endregion
 
     #region Filesystem
-    public void CreateModFsWatchers()
+    public void CreateModFileSystemWatchers()
     {
-        DefaultFsWatcher = new FileSystemWatcher(ModsDirectoryPath, DEFAULT_FILE_NAME)
+        DefaultFileSystemWatcher = new FileSystemWatcher(ModsDirectoryPath, DEFAULT_FILE_NAME)
         {
             IncludeSubdirectories = true,
             InternalBufferSize = INTERNAL_BUFFER_SIZE
         };
-        AttachFsListeners(DefaultFsWatcher, OnModFileUpdate);
+        AddFileSystemListeners(DefaultFileSystemWatcher, OnModFileUpdate);
 
         GroupsFsWatcher = new FileSystemWatcher(ModsDirectoryPath, GROUP_FILE_NAME_PATTERN)
         {
             IncludeSubdirectories = true,
             InternalBufferSize = INTERNAL_BUFFER_SIZE
         };
-        AttachFsListeners(GroupsFsWatcher, OnModFileUpdate);
+        AddFileSystemListeners(GroupsFsWatcher, OnModFileUpdate);
 
         MetaFsWatcher = new FileSystemWatcher(ModsDirectoryPath, META_FILE_NAME)
         {
             IncludeSubdirectories = true,
             InternalBufferSize = INTERNAL_BUFFER_SIZE
         };
-        AttachFsListeners(MetaFsWatcher, OnModFileUpdate);
-        PluginLog.Debug("Created mod FS watchers");
+        AddFileSystemListeners(MetaFsWatcher, OnModFileUpdate);
+        PluginLog.Debug("Created mod file system watchers");
     }
 
-    private void AttachFsListeners(FileSystemWatcher fsWatcher, FileSystemEventHandler? updateHandler)
+    private void AddFileSystemListeners(FileSystemWatcher fsWatcher, FileSystemEventHandler? updateHandler)
     {
         fsWatcher.Created += updateHandler;
         fsWatcher.Changed += updateHandler;
         fsWatcher.Deleted += updateHandler;
-        fsWatcher.Error += OnFsWatcherError;
+        fsWatcher.Error += OnFileSystemError;
     }
 
-    public void EnableRaisingFsEvents(bool enable)
+    public void EnableFileSystemWatchers(bool enable)
     {
         SortOrderFsWatcher.EnableRaisingEvents = enable;
         DataFsWatcher.EnableRaisingEvents = enable;
-        DefaultFsWatcher!.EnableRaisingEvents = enable;
+        DefaultFileSystemWatcher!.EnableRaisingEvents = enable;
         GroupsFsWatcher!.EnableRaisingEvents = enable;
         MetaFsWatcher!.EnableRaisingEvents = enable;
-        PluginLog.Debug($"{(enable ? "Enabled" : "Disabled")} raising FS events");
+        PluginLog.Debug($"{(enable ? "Enabled" : "Disabled")} raising file system events");
     }
 
     private void OnSortOrderFileUpdate(object sender, FileSystemEventArgs e)
     {
         PluginLog.Debug($"Sort order config [{e.FullPath}] changed ({e.ChangeType}), invalidating caches");
-        InvalidateSortOrderDataCache();
-        InvalidateModInfoCaches();
+        InvalidateCaches();
     }
 
     private void OnDataFileUpdate(object sender, FileSystemEventArgs e)
     {
         var modDirectory = Path.GetFileNameWithoutExtension(e.FullPath);
         PluginLog.Debug($"Data config [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
-        InvalidateModInfoCache(modDirectory);
+        InvalidateCaches(modDirectory);
     }
 
     private void OnModFileUpdate(object sender, FileSystemEventArgs e)
     {
         var modDirectory = Directory.GetParent(e.FullPath)!.Name;
         PluginLog.Debug($"Mod file config [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
-        InvalidateModInfoCache(modDirectory);
+        InvalidateCaches(modDirectory);
     }
 
-    private void OnFsWatcherError(object sender, ErrorEventArgs e)
+    private void OnFileSystemError(object sender, ErrorEventArgs e)
     {
         PluginLog.Debug($"Watcher [{sender.GetHashCode()}] returned error ({e?.GetException().Message}), ignoring");
     }
@@ -248,11 +247,20 @@ public class ModInterop : IDisposable
     #endregion
 
     #region Cache
+    private void InvalidateCaches()
+    {
+        PluginLog.Debug($"Invalidate all caches");
+        InvalidateSortOrderDataCache();
+        InvalidateModInfoCaches();
+        OnModsChanged?.Invoke();
+    }
+
     private void InvalidateCaches(string modDirectory)
     {
         PluginLog.Debug($"Invalidate caches [{modDirectory}]");
         InvalidateSortOrderDataCache();
         InvalidateModInfoCache(modDirectory);
+        OnModsChanged?.Invoke();
     }
 
     private void InvalidateModInfoCaches()
@@ -271,15 +279,16 @@ public class ModInterop : IDisposable
     {
         PluginLog.Debug($"Invalidated sort order data cache [count: {MaybeSortOrderDataCache?.Count}]");
         MaybeSortOrderDataCache = null;
-        OnModPathsChanged?.Invoke();
     }
 
     private Dictionary<string, string> GetSortOrderData()
     {
         if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
+
         var sortOrder = ParseJsonFile(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME));
         MaybeSortOrderDataCache = sortOrder.GetValueOrDefault("Data") is Dictionary<string, object?> data ? data.ToDictionary(e => e.Key, e => e.Value == null ? e.Key : e.Value.ToString()!) : [];
         PluginLog.Debug($"Loaded sort order data cache (count: {MaybeSortOrderDataCache!.Count})");
+
         return MaybeSortOrderDataCache;
     }
 
@@ -290,7 +299,7 @@ public class ModInterop : IDisposable
         var modInfo = new ModInfo()
         {
             Directory = modDirectory,
-            Path = GetSortOrderData().GetValueOrDefault(modDirectory, modDirectory),
+            Path = GetModPath(modDirectory),
             ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
             Data = ParseJsonFile(Path.Combine(DataDirectory, $"{modDirectory}.json")),
 
@@ -305,12 +314,11 @@ public class ModInterop : IDisposable
     #endregion
 
     #region API
-
-    private Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();
+    public Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();
 
     public List<ModInfo> GetModInfos() => [.. GetModList().Keys.Select(GetModInfo)];
 
-    public Dictionary<string, string> GetModPaths() => GetModList().Keys.ToDictionary(e => e, e => GetSortOrderData().GetValueOrDefault(e, e));
+    public string GetModPath(string modDirectory) => GetSortOrderData().GetValueOrDefault(modDirectory, modDirectory);
 
     public PenumbraApiEc SetModPath(string modDirectory, string newModPath) {
         var exitCode = SetModPathSubscriber.Invoke(modDirectory, newModPath);

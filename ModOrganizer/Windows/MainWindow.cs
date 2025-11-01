@@ -10,7 +10,6 @@ using Scriban.Helpers;
 using Scriban.Parsing;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 
@@ -18,18 +17,18 @@ namespace ModOrganizer.Windows;
 
 public class MainWindow : Window, IDisposable
 {
-    private ModInterop Interop { get; init; }
+    private ModInterop ModInterop { get; init; }
+    private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
     private TemplateContext TemplateContext { get; init; } = new(){ MemberRenamer = ScribanUtils.RenameMember };
     private SourceSpan SourceSpan { get; init; } = new();
 
-    private HashSet<string> SelectedModDirectories { get; set; } = [];
-    private HashSet<TreeNode<string>>? MaybeModPathNodesCache { get; set; }
+    private HashSet<string> SelectedModDirectoryPaths { get; set; } = [];
 
     private string Expression { get; set; } = string.Empty;
     private object? EvaluationResult { get; set; }
 
-    public MainWindow(ModInterop interop) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -37,90 +36,42 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        Interop = interop;
-        Interop.OnModPathsChanged += OnModPathsChanged;
+        ModInterop = modInterop;
+        ModVirtualFileSystem = modVirtualFileSystem;
     }
 
-    public void Dispose() 
-    {
-        Interop.OnModPathsChanged -= OnModPathsChanged;
-        Interop.EnableRaisingFsEvents(false);
-    }
+    public void Dispose() => ModInterop.EnableFileSystemWatchers(false);
 
-    public override void OnOpen()
-    {
-        Interop.EnableRaisingFsEvents(true);
-    }
+    public override void OnOpen() => ModInterop.EnableFileSystemWatchers(true);
 
-    public override void OnClose()
-    {
-        Interop.EnableRaisingFsEvents(false);
-    }
+    public override void OnClose() => ModInterop.EnableFileSystemWatchers(false);
 
-    private void OnModPathsChanged()
+    private void DrawVirtualFolder(ModVirtualFolder folder)
     {
-        MaybeModPathNodesCache = null;
-    }
-
-    private HashSet<TreeNode<string>> GetModPathNodes()
-    {
-        if (MaybeModPathNodesCache != null) return MaybeModPathNodesCache;
-
-        var modPathNodes = new HashSet<TreeNode<string>>(TreeNodeComparer<string>.INSTANCE);
-        foreach (var (_, path) in Interop.GetModPaths())
+        foreach (var subfolder in folder.Folders.OrderBy(f => f.Name))
         {
-            var current = modPathNodes;
-            var parts = path.Split('/');
-            for (var take = 1; take <= parts.Length; take++)
-            {
-                var newNode = new TreeNode<string>(string.Join('/', parts.Take(take)));
-                if (current.TryGetValue(newNode, out var existingNode))
-                {
-                    current = existingNode.ChildNodes;
-                }
-                else
-                {
-                    current.Add(newNode);
-                    current = newNode.ChildNodes;
-                }
-            }
+            var hash = subfolder.GetHashCode();
+            using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###folder{hash}");
+            if (treeNode) DrawVirtualFolder(subfolder);
         }
 
-        MaybeModPathNodesCache = modPathNodes;
-        return modPathNodes;
-    }
-
-    private void DrawPathNodes(HashSet<TreeNode<string>> nodes)
-    {
-        // Pad with zeros to improve sorting with numbers
-        foreach (var treeNode in nodes.OrderByDescending(n => n.ChildNodes.Count != 0).ThenBy(n => n.Node))
+        foreach (var file in folder.Files.OrderBy(f => f.Name))
         {
-            var hash = treeNode.Node.GetHashCode();
-
-            var name = Path.GetFileName(treeNode.Node);
-            if (treeNode.ChildNodes.Count > 0)
-            {
-                // Folder
-                using var treeNodeItem = ImRaii.TreeNode($"{name}###pathNode{hash}");
-                if (treeNodeItem) DrawPathNodes(treeNode.ChildNodes);
-                continue;
-            }
-
-            // Leaf
-            var modDirectory = treeNode.Node.Split('/').Last();
-            using (ImRaii.TreeNode($"{modDirectory}###pathNode{hash}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | (SelectedModDirectories.Contains(modDirectory) ? ImGuiTreeNodeFlags.Selected : ImGuiTreeNodeFlags.None)))
+            var hash = file.GetHashCode();
+            using (ImRaii.TreeNode($"{file.Name}###file{hash}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | (SelectedModDirectoryPaths.Contains(file.Directory) ? ImGuiTreeNodeFlags.Selected : ImGuiTreeNodeFlags.None)))
             {
                 using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite))
                 {
                     if (ImGui.IsItemClicked())
                     {
-                        if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) SelectedModDirectories.Clear();
+                        if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) SelectedModDirectoryPaths.Clear();
 
                         // Toggle
-                        if (!SelectedModDirectories.Remove(modDirectory)) SelectedModDirectories.Add(modDirectory);
+                        if (!SelectedModDirectoryPaths.Remove(file.Directory)) SelectedModDirectoryPaths.Add(file.Directory);
                     }
                 }
             }
+
         }
     }
 
@@ -128,24 +79,24 @@ public class MainWindow : Window, IDisposable
     {
         using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
         {
-            using (ImRaii.Child("modPathNodes", new(ImGui.GetWindowWidth() * 0.2f, ImGui.GetWindowHeight() - (2 * ImGui.GetTextLineHeightWithSpacing()))))
+            using (ImRaii.Child("modVirtualFileSystem", new(ImGui.GetWindowWidth() * 0.2f, ImGui.GetWindowHeight() - (2 * ImGui.GetTextLineHeightWithSpacing()))))
             {
-                DrawPathNodes(GetModPathNodes());
+                DrawVirtualFolder(ModVirtualFileSystem.GetRootFolder());
             }
         }
 
 
         ImGui.SameLine();
 
-        if (SelectedModDirectories.Count == 0)
+        if (SelectedModDirectoryPaths.Count == 0)
         {
             ImGui.Text("No mod selected");
             ImGuiComponents.HelpMarker("Click on the left panel to select one and hold <CTRL> for multi-selection");
         }
-        else if (SelectedModDirectories.Count == 1)
+        else if (SelectedModDirectoryPaths.Count == 1)
         {
-            var selectedModDirectory = SelectedModDirectories.First();
-            var modInfo = Interop.GetModInfo(selectedModDirectory);
+            var selectedModDirectory = SelectedModDirectoryPaths.First();
+            var modInfo = ModInterop.GetModInfo(selectedModDirectory);
             using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
             {
                 using (ImRaii.Child($"selectedModDirectory", new((ImGui.GetWindowWidth() * 0.8f) - (2 * ImGui.GetTextLineHeight()), ImGui.GetWindowHeight() * 0.7f)))
