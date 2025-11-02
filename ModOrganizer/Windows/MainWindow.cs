@@ -17,13 +17,16 @@ namespace ModOrganizer.Windows;
 
 public class MainWindow : Window, IDisposable
 {
+    private static readonly Vector4 LIGHT_BLUE = new(0.753f, 0.941f, 1, 1);
+
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
     private TemplateContext TemplateContext { get; init; } = new(){ MemberRenamer = ScribanUtils.RenameMember };
     private SourceSpan SourceSpan { get; init; } = new();
 
-    private HashSet<string> SelectedModDirectoryPaths { get; set; } = [];
+    private string Filter { get; set; } = string.Empty;
+    private HashSet<string> SelectedModDirectories { get; set; } = [];
 
     private string Expression { get; set; } = string.Empty;
     private object? EvaluationResult { get; set; }
@@ -46,32 +49,54 @@ public class MainWindow : Window, IDisposable
 
     public override void OnClose() => ModInterop.EnableFileSystemWatchers(false);
 
-    private void DrawVirtualFolder(ModVirtualFolder folder)
+    private void ToggleFolderSelection(ModVirtualFolder folder)
     {
-        foreach (var subfolder in folder.Folders.OrderBy(f => f.Name))
+        var modDirectories = folder.GetNestedFiles().Select(f => f.Directory);
+        if (SelectedModDirectories.Overlaps(modDirectories))
+        {
+            SelectedModDirectories.ExceptWith(modDirectories);
+        }
+        else
+        {
+            SelectedModDirectories.UnionWith(modDirectories);
+        }
+    }
+
+    private void DrawVirtualFolderTree(ModVirtualFolder folder)
+    {
+        var orderedSubfolders = folder.Folders.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase);
+        foreach (var subfolder in orderedSubfolders)
         {
             var hash = subfolder.GetHashCode();
-            using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###folder{hash}");
-            if (treeNode) DrawVirtualFolder(subfolder);
+            using var _ = ImRaii.PushColor(ImGuiCol.Text, LIGHT_BLUE);
+            using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###modVirtualFolder{hash}");
+            if (ImGui.IsItemClicked() && ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) ToggleFolderSelection(subfolder);
+            if (treeNode) DrawVirtualFolderTree(subfolder);
         }
 
-        foreach (var file in folder.Files.OrderBy(f => f.Name))
+        var orderedFiles = folder.Files.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase).ToArray();
+        for (var i = 0; i < orderedFiles.Length; i++)
         {
+            var file = orderedFiles.ElementAt(i);
+
             var hash = file.GetHashCode();
-            using (ImRaii.TreeNode($"{file.Name}###file{hash}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | (SelectedModDirectoryPaths.Contains(file.Directory) ? ImGuiTreeNodeFlags.Selected : ImGuiTreeNodeFlags.None)))
+            using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite);
+            using var __ = ImRaii.TreeNode($"{file.Name}###modVirtualFile{hash}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | (SelectedModDirectories.Contains(file.Directory) ? ImGuiTreeNodeFlags.Selected : ImGuiTreeNodeFlags.None));
+            
+            if (!ImGui.IsItemClicked()) continue;
+
+            // TODO: fix
+            if (ImGui.IsKeyDown(ImGuiKey.LeftShift) && SelectedModDirectories.Count == 1)
             {
-                using (ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite))
-                {
-                    if (ImGui.IsItemClicked())
-                    {
-                        if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) SelectedModDirectoryPaths.Clear();
+                var j = Array.IndexOf(orderedFiles, SelectedModDirectories.First());
+                if (j != -1) SelectedModDirectories.UnionWith(orderedFiles[i..j].Select(f => f.Directory));
+                continue;
+            } 
 
-                        // Toggle
-                        if (!SelectedModDirectoryPaths.Remove(file.Directory)) SelectedModDirectoryPaths.Add(file.Directory);
-                    }
-                }
-            }
+            if (!ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) SelectedModDirectories.Clear();
 
+            // Toggle
+            if (!SelectedModDirectories.Remove(file.Directory)) SelectedModDirectories.Add(file.Directory);
         }
     }
 
@@ -81,21 +106,35 @@ public class MainWindow : Window, IDisposable
         {
             using (ImRaii.Child("modVirtualFileSystem", new(ImGui.GetWindowWidth() * 0.2f, ImGui.GetWindowHeight() - (2 * ImGui.GetTextLineHeightWithSpacing()))))
             {
-                DrawVirtualFolder(ModVirtualFileSystem.GetRootFolder());
+                var filter = Filter;
+                if (ImGui.InputText("###filter", ref filter))
+                {
+                    Filter = filter;
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("X###clearFilter"))
+                {
+                    Filter = string.Empty;
+                }
+
+                if (ModVirtualFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder)) 
+                {
+                    DrawVirtualFolderTree(filteredFolder);
+                }
             }
         }
 
 
         ImGui.SameLine();
 
-        if (SelectedModDirectoryPaths.Count == 0)
+        if (SelectedModDirectories.Count == 0)
         {
             ImGui.Text("No mod selected");
             ImGuiComponents.HelpMarker("Click on the left panel to select one and hold <CTRL> for multi-selection");
         }
-        else if (SelectedModDirectoryPaths.Count == 1)
+        else if (SelectedModDirectories.Count == 1)
         {
-            var selectedModDirectory = SelectedModDirectoryPaths.First();
+            var selectedModDirectory = SelectedModDirectories.First();
             var modInfo = ModInterop.GetModInfo(selectedModDirectory);
             using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
             {
@@ -145,7 +184,8 @@ public class MainWindow : Window, IDisposable
 
     private void DrawMembers(object target, int maxDepth)
     {
-        // Change to infinite depth and tree node items
+        // Change to infinite depth and tree node items (lazy)
+        // Add support for propery list display
 
         var accessor = TemplateContext.GetMemberAccessor(target);
         using (ImRaii.PushIndent())

@@ -19,7 +19,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IPluginLog PluginLog { get; private set; } = null!;
 
     private const string CommandName = "/modorganizer";
-    private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main, config";
+    private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main and config";
 
     public Config Config { get; init; }
 

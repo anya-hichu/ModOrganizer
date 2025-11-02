@@ -174,12 +174,12 @@ public class ModInterop : IDisposable
         PluginLog.Debug("Created mod file system watchers");
     }
 
-    private void AddFileSystemListeners(FileSystemWatcher fsWatcher, FileSystemEventHandler? updateHandler)
+    private void AddFileSystemListeners(FileSystemWatcher watcher, FileSystemEventHandler? updateHandler)
     {
-        fsWatcher.Created += updateHandler;
-        fsWatcher.Changed += updateHandler;
-        fsWatcher.Deleted += updateHandler;
-        fsWatcher.Error += OnFileSystemError;
+        watcher.Created += updateHandler;
+        watcher.Changed += updateHandler;
+        watcher.Deleted += updateHandler;
+        watcher.Error += OnFileSystemError;
     }
 
     public void EnableFileSystemWatchers(bool enable)
@@ -194,21 +194,21 @@ public class ModInterop : IDisposable
 
     private void OnSortOrderFileUpdate(object sender, FileSystemEventArgs e)
     {
-        PluginLog.Debug($"Sort order config [{e.FullPath}] changed ({e.ChangeType}), invalidating caches");
+        PluginLog.Debug($"Sort order config file [{e.FullPath}] changed ({e.ChangeType}), invalidating caches");
         InvalidateCaches();
     }
 
     private void OnDataFileUpdate(object sender, FileSystemEventArgs e)
     {
         var modDirectory = Path.GetFileNameWithoutExtension(e.FullPath);
-        PluginLog.Debug($"Data config [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
+        PluginLog.Debug($"Data config file [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
         InvalidateCaches(modDirectory);
     }
 
     private void OnModFileUpdate(object sender, FileSystemEventArgs e)
     {
         var modDirectory = Directory.GetParent(e.FullPath)!.Name;
-        PluginLog.Debug($"Mod file config [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
+        PluginLog.Debug($"Mod config file [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
         InvalidateCaches(modDirectory);
     }
 
@@ -221,7 +221,7 @@ public class ModInterop : IDisposable
     {
         if (!Path.Exists(filePath))
         {
-            PluginLog.Debug($"Failed to find json config [{filePath}], returning empty");
+            PluginLog.Debug($"Failed to find json file [{filePath}], returning empty");
             return [];
         }
 
@@ -232,7 +232,7 @@ public class ModInterop : IDisposable
         {
             if (JsonUtils.DeserializeToDynamic(json) is not Dictionary<string, object?> config)
             {
-                PluginLog.Debug($"Failed to parse json config [{filePath}], returning empty");
+                PluginLog.Debug($"Failed to parse json file [{filePath}], returning empty");
                 return [];
             }
 
@@ -240,7 +240,7 @@ public class ModInterop : IDisposable
         }
         catch (JsonException e)
         {
-            PluginLog.Debug($"Failed to parse json config [{filePath}] ({e.Message}), returning empty");
+            PluginLog.Debug($"Failed to parse json file [{filePath}] ({e.Message}), returning empty");
             return [];
         }
     }

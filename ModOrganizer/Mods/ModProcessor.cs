@@ -1,6 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Rules;
 using Penumbra.Api.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Mods;
 
@@ -11,7 +12,7 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
     private IPluginLog PluginLog { get; init; } = pluginLog;
     private RuleEvaluator RuleEvaluator { get; init; } = ruleEvaluator;
 
-    public bool TryProcess(string modDirectory, out string? newModDirectory)
+    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? newModDirectory)
     {
         var modInfo = ModInterop.GetModInfo(modDirectory);
         if (RuleEvaluator.TryEvaluateChain(Config.Rules, modInfo, out newModDirectory) && modDirectory != newModDirectory)

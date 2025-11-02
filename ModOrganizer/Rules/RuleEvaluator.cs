@@ -4,6 +4,7 @@ using ModOrganizer.Mods;
 using ModOrganizer.Utils;
 using Scriban;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 
@@ -13,7 +14,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
 {
     private IPluginLog PluginLog { get; init; } = pluginLog;
 
-    public bool TryEvaluateChain(IEnumerable<Rule> rules, ModInfo modInfo, out string? path)
+    public bool TryEvaluateChain(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = default;
         foreach (var rule in rules.OrderByDescending(r => r.Priority))
@@ -23,7 +24,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
         return false;
     }
 
-    private bool TryEvaluate(Rule rule, ModInfo modInfo, out string? path)
+    private bool TryEvaluate(Rule rule, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = default;
         if (!rule.Enabled || rule.PathTemplate.IsNullOrWhitespace() || !Matches(rule, modInfo)) return false;
