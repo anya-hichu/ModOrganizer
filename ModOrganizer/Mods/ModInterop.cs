@@ -26,6 +26,7 @@ public class ModInterop : IDisposable
     private static readonly string GROUP_FILE_NAME_PATTERN = "group_*.json";
     private static readonly string META_FILE_NAME = "meta.json";
 
+    private ConfigParser ConfigParser { get; init; }
     private IPluginLog PluginLog { get; init; }
 
     public event Action<string>? OnModAdded;
@@ -59,8 +60,9 @@ public class ModInterop : IDisposable
 
 
 
-    public ModInterop(IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
+    public ModInterop(ConfigParser configParser, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
     {
+        ConfigParser = configParser;
         PluginLog = pluginLog;
 
         GetModDirectorySubscriber = new(pluginInterface);
@@ -216,34 +218,6 @@ public class ModInterop : IDisposable
     {
         PluginLog.Debug($"Watcher [{sender.GetHashCode()}] returned error ({e?.GetException().Message}), ignoring");
     }
-
-    private Dictionary<string, object?> ParseJsonFile(string filePath)
-    {
-        if (!Path.Exists(filePath))
-        {
-            PluginLog.Debug($"Failed to find json file [{filePath}], returning empty");
-            return [];
-        }
-
-        using var reader = new StreamReader(filePath);
-        var json = reader.ReadToEnd();
-
-        try
-        {
-            if (JsonUtils.DeserializeToDynamic(json) is not Dictionary<string, object?> config)
-            {
-                PluginLog.Debug($"Failed to parse json file [{filePath}], returning empty");
-                return [];
-            }
-
-            return config;
-        }
-        catch (JsonException e)
-        {
-            PluginLog.Debug($"Failed to parse json file [{filePath}] ({e.Message}), returning empty");
-            return [];
-        }
-    }
     #endregion
 
     #region Cache
@@ -285,7 +259,7 @@ public class ModInterop : IDisposable
     {
         if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
 
-        var sortOrder = ParseJsonFile(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME));
+        var sortOrder = ConfigParser.ParseFile(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME));
         MaybeSortOrderDataCache = sortOrder.GetValueOrDefault("Data") is Dictionary<string, object?> data ? data.ToDictionary(e => e.Key, e => e.Value == null ? e.Key : e.Value.ToString()!) : [];
         PluginLog.Debug($"Loaded sort order data cache (count: {MaybeSortOrderDataCache!.Count})");
 
@@ -301,22 +275,21 @@ public class ModInterop : IDisposable
             Directory = modDirectory,
             Path = GetModPath(modDirectory),
             ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-            Data = ParseJsonFile(Path.Combine(DataDirectory, $"{modDirectory}.json")),
+            Data = ConfigParser.ParseFile(Path.Combine(DataDirectory, $"{modDirectory}.json")),
 
-            Default = ParseJsonFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME)),
-            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(ParseJsonFile)],
-            Meta = ParseJsonFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME)),
+            Default = ConfigParser.ParseFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME)),
+            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(ConfigParser.ParseFile)],
+            Meta = ConfigParser.ParseFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME)),
         };
 
         ModInfoCaches.Add(modDirectory, modInfo);
+
         return modInfo;
     }
     #endregion
 
     #region API
     public Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();
-
-    public List<ModInfo> GetModInfos() => [.. GetModList().Keys.Select(GetModInfo)];
 
     public string GetModPath(string modDirectory) => GetSortOrderData().GetValueOrDefault(modDirectory, modDirectory);
 

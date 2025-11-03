@@ -32,7 +32,7 @@ public class ModVirtualFolder : IEquatable<ModVirtualFolder>
 
         return !filteredFolder.IsEmpty();
     }
-
+    
     public bool IsEmpty() => Files.Count == 0 && Folders.All(f => f.IsEmpty());
 
     public IEnumerable<ModVirtualFile> GetNestedFiles() => Folders.SelectMany(f => f.GetNestedFiles()).Union(Files);

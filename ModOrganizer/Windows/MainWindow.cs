@@ -22,7 +22,7 @@ public class MainWindow : Window, IDisposable
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
-    private TemplateContext TemplateContext { get; init; } = new(){ MemberRenamer = ScribanUtils.RenameMember };
+    private TemplateContext TemplateContext { get; init; } = new(){ MemberRenamer = CustomRenamer.RenameMember };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private string Filter { get; set; } = string.Empty;
@@ -88,8 +88,9 @@ public class MainWindow : Window, IDisposable
             // TODO: fix
             if (ImGui.IsKeyDown(ImGuiKey.LeftShift) && SelectedModDirectories.Count == 1)
             {
-                var j = Array.IndexOf(orderedFiles, SelectedModDirectories.First());
-                if (j != -1) SelectedModDirectories.UnionWith(orderedFiles[i..j].Select(f => f.Directory));
+                var modDirectories = orderedFiles.Select(f => f.Directory).ToArray();
+                var j = Array.IndexOf(modDirectories, SelectedModDirectories.First());
+                if (j != -1) SelectedModDirectories.UnionWith(i > j ? modDirectories[j..(i + 1)] : modDirectories[i..(j + 1)]);
                 continue;
             } 
 
@@ -155,7 +156,7 @@ public class MainWindow : Window, IDisposable
 
                 if (ImGui.Button("Evaluate##evaluate"))
                 {
-                    EvaluationResult = Template.Evaluate(Expression, modInfo, ScribanUtils.RenameMember);
+                    EvaluationResult = Template.Evaluate(Expression, modInfo, CustomRenamer.RenameMember);
                 }
 
                 if (EvaluationResult != null)

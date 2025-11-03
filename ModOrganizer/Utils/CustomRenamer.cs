@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ModOrganizer.Utils;
 
-public static class ScribanUtils
+public static class CustomRenamer
 {
     public static string RenameMember(MemberInfo memberInfo) => StandardMemberRenamer.Rename(memberInfo.Name).Trim('_');
 }

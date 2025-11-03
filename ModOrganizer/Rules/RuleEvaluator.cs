@@ -35,7 +35,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
             PluginLog.Error($"Failed to parse rule [{rule.Name}] path template: {template.Messages}");
             return false;
         }
-        var result = template.Render(modInfo, ScribanUtils.RenameMember);
+        var result = template.Render(modInfo, CustomRenamer.RenameMember);
         if (result.IsNullOrWhitespace()) return false;
 
         path = result;
@@ -46,7 +46,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
     {
         if (rule.MatchExpression.IsNullOrWhitespace()) return false;
 
-        var result = Template.Evaluate(rule.MatchExpression, modInfo, ScribanUtils.RenameMember);
+        var result = Template.Evaluate(rule.MatchExpression, modInfo, CustomRenamer.RenameMember);
         if (result is bool validResult) return validResult;
 
         PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");

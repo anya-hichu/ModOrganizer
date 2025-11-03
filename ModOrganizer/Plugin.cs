@@ -7,6 +7,7 @@ using ModOrganizer.Windows;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 
+
 namespace ModOrganizer;
 
 public sealed class Plugin : IDalamudPlugin
@@ -27,7 +28,6 @@ public sealed class Plugin : IDalamudPlugin
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
 
-
     private ModInterop ModInterop { get; init; }
     private RuleEvaluator RuleEvaluator { get; init; }
     private ModProcessor ModProcessor { get; init; }
@@ -36,12 +36,9 @@ public sealed class Plugin : IDalamudPlugin
 
     public Plugin()
     {
-        Config = PluginInterface.GetPluginConfig() as Config ?? new Config()
-        {
-            Rules = RuleBuilder.BuildDefaults()
-        };
+        Config = PluginInterface.GetPluginConfig() as Config ?? new Config() { Rules = RuleBuilder.BuildDefaults() };
 
-        ModInterop = new(PluginInterface, PluginLog);
+        ModInterop = new(new(PluginLog), PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
         ModProcessor = new(Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
