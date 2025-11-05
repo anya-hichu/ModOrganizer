@@ -1,9 +1,10 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ModOrganizer.Utils;
+using ModOrganizer.Configs;
 using Penumbra.Api.Enums;
 using Penumbra.Api.Helpers;
 using Penumbra.Api.IpcSubscribers;
+using Scriban.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,7 +27,6 @@ public class ModInterop : IDisposable
     private static readonly string GROUP_FILE_NAME_PATTERN = "group_*.json";
     private static readonly string META_FILE_NAME = "meta.json";
 
-    private ConfigParser ConfigParser { get; init; }
     private IPluginLog PluginLog { get; init; }
 
     public event Action<string>? OnModAdded;
@@ -58,11 +58,10 @@ public class ModInterop : IDisposable
     private FileSystemWatcher? GroupsFileSystemWatcher { get; set; }
     private FileSystemWatcher? MetaFileSystemWatcher { get; set; }
 
+    private JsonSerializerOptions JsonSerializerOptions { get; set; } = new() { AllowTrailingCommas = true };
 
-
-    public ModInterop(ConfigParser configParser, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
+    public ModInterop(IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
     {
-        ConfigParser = configParser;
         PluginLog = pluginLog;
 
         GetModDirectorySubscriber = new(pluginInterface);
@@ -258,9 +257,15 @@ public class ModInterop : IDisposable
     private Dictionary<string, string> GetSortOrderData()
     {
         if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
+        var maybeSortOrder = ParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME));
 
-        var sortOrder = ConfigParser.ParseFile(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME));
-        MaybeSortOrderDataCache = sortOrder.GetValueOrDefault("Data") is Dictionary<string, object?> data ? data.ToDictionary(e => e.Key, e => e.Value == null ? e.Key : e.Value.ToString()!) : [];
+        if (maybeSortOrder == null)
+        {
+            PluginLog.Warning("Failed to parse sort order file, returning empty");
+            return [];
+        }
+
+        MaybeSortOrderDataCache = maybeSortOrder.Data;
         PluginLog.Debug($"Loaded sort order data cache (count: {MaybeSortOrderDataCache!.Count})");
 
         return MaybeSortOrderDataCache;
@@ -275,16 +280,28 @@ public class ModInterop : IDisposable
             Directory = modDirectory,
             Path = GetModPath(modDirectory),
             ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-            Data = ConfigParser.ParseFile(Path.Combine(DataDirectory, $"{modDirectory}.json")),
-
-            Default = ConfigParser.ParseFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME)),
-            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(ConfigParser.ParseFile)],
-            Meta = ConfigParser.ParseFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME)),
+            Data = ParseFile<LocalModData>(Path.Combine(DataDirectory, $"{modDirectory}.json")),
+            Default = ParseFile<DefaultMod>(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME)),
+            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(ParseFile<Group>)],
+            Meta = ParseFile<ModMeta>(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME))
         };
 
         ModInfoCaches.Add(modDirectory, modInfo);
 
         return modInfo;
+    }
+
+    private T? ParseFile<T>(string path)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(path), JsonSerializerOptions);
+        }
+        catch (JsonException e)
+        {
+            PluginLog.Warning($"Failed to parse {typeof(T).ScriptPrettyName()} [{path}] ({e})");
+            return default;
+        }
     }
     #endregion
 

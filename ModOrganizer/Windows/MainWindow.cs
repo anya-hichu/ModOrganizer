@@ -3,34 +3,38 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
+using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
-using ModOrganizer.Utils;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows;
 
 public class MainWindow : Window, IDisposable
 {
     private static readonly Vector4 LIGHT_BLUE = new(0.753f, 0.941f, 1, 1);
+    private static readonly Vector4 BLACK = new(0.2f, 0.2f, 0.2f, 0.5f);
 
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
-    private TemplateContext TemplateContext { get; init; } = new(){ MemberRenamer = CustomRenamer.RenameMember };
+    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = ModInfoRenamer.RenameMember };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private string Filter { get; set; } = string.Empty;
     private HashSet<string> SelectedModDirectories { get; set; } = [];
 
     private string Expression { get; set; } = string.Empty;
-    private object? EvaluationResult { get; set; }
-
+    private Dictionary<string, object> EvaluationResults { get; set; } = [];
+    private Task EvaluationTask { get; set; } = Task.CompletedTask;
+    
     public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
@@ -103,12 +107,19 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
+        var fullRegion = ImGui.GetContentRegionAvail();
+        var leftPanelWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNNNNNNN").X;
+        using (var leftPanel = ImRaii.Child("leftPanel", new(leftPanelWidth, fullRegion.Y), false, ImGuiWindowFlags.NoScrollbar))
         {
-            using (ImRaii.Child("modVirtualFileSystem", new(ImGui.GetWindowWidth() * 0.2f, ImGui.GetWindowHeight() - (2 * ImGui.GetTextLineHeightWithSpacing()))))
+            var leftRegion = ImGui.GetContentRegionAvail();
+            var topLeftPanelHeight = ImGui.GetFrameHeightWithSpacing();
+            
+            var filter = Filter;
+            using (var leftTopPanel = ImRaii.Child("topLeftPanel", new(leftRegion.X, topLeftPanelHeight), false, ImGuiWindowFlags.NoScrollbar))
             {
-                var filter = Filter;
-                if (ImGui.InputText("###filter", ref filter))
+                var clearButtonSize = ImGui.CalcTextSize("NNN");
+                ImGui.SetNextItemWidth(leftRegion.X - clearButtonSize.X);
+                if (ImGui.InputTextWithHint("###filter", "Filter...", ref filter))
                 {
                     Filter = filter;
                 }
@@ -117,91 +128,149 @@ public class MainWindow : Window, IDisposable
                 {
                     Filter = string.Empty;
                 }
+            }
 
-                if (ModVirtualFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder)) 
-                {
-                    DrawVirtualFolderTree(filteredFolder);
-                }
+            var leftBottomRegion = ImGui.GetContentRegionAvail();
+            using var leftBottomPanel = ImRaii.Child("bottomLeftPanel", leftBottomRegion);
+            if (ModVirtualFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder))
+            {
+                DrawVirtualFolderTree(filteredFolder);
             }
         }
 
-
         ImGui.SameLine();
+
+        using var rightPanel = ImRaii.Child("rightPanel", new(fullRegion.X - leftPanelWidth, fullRegion.Y));
+
+        var rightRegion = ImGui.GetContentRegionAvail();
+        var topRightHeaderHeight = ImGui.GetFrameHeightWithSpacing() * 2;
+        var bottomRightHeight = ImGui.GetFrameHeightWithSpacing() * 15;
+
+        var topRightPanelHeight = rightRegion.Y - bottomRightHeight - topRightHeaderHeight;
+
+        var topRightPanelSize = new Vector2(rightRegion.X, topRightPanelHeight);
 
         if (SelectedModDirectories.Count == 0)
         {
             ImGui.Text("No mod selected");
-            ImGuiComponents.HelpMarker("Click on the left panel to select one and hold <CTRL> for multi-selection");
+            ImGuiComponents.HelpMarker("Click on the left panel to select one and hold <L-CTRL> or <L-SHIFT> for multi-selection");
         }
-        else if (SelectedModDirectories.Count == 1)
+        else
         {
-            var selectedModDirectory = SelectedModDirectories.First();
-            var modInfo = ModInterop.GetModInfo(selectedModDirectory);
-            using (ImRaii.PushColor(ImGuiCol.ChildBg, new Vector4(0.2f, 0.2f, 0.2f, 0.5f)))
+            var topRightHeaderOpened = ImGui.CollapsingHeader("Inspector##inspectorHeader", ImGuiTreeNodeFlags.DefaultOpen);
+            if (topRightHeaderOpened)
             {
-                using (ImRaii.Child($"selectedModDirectory", new((ImGui.GetWindowWidth() * 0.8f) - (2 * ImGui.GetTextLineHeight()), ImGui.GetWindowHeight() * 0.7f)))
+
+                using (ImRaii.PushColor(ImGuiCol.ChildBg, BLACK))
                 {
-                    DrawMembers(modInfo, 3);
+                    using var topRightPanel = ImRaii.Child("topRightPanel", topRightPanelSize);
+                    using var _ = ImRaii.PushIndent();
+                    foreach (var selectedModDirectory in SelectedModDirectories)
+                    {
+                        using var modInfoNode = ImRaii.TreeNode($"{selectedModDirectory}##modInfo{selectedModDirectory.GetHashCode()}");
+                        if (modInfoNode) DrawObjectTree(ModInterop.GetModInfo(selectedModDirectory));
+                    }
                 }
             }
 
-            ImGui.SetCursorPos(new((ImGui.GetWindowWidth() * 0.2f) + ImGui.GetTextLineHeight(), (ImGui.GetWindowHeight() * 0.7f) + (2 * ImGui.GetTextLineHeightWithSpacing())));
-            using (ImRaii.Child($"actions", new((ImGui.GetWindowWidth() * 0.8f) - (2 * ImGui.GetTextLineHeight()), (ImGui.GetWindowHeight() * 0.3f) - (3 * ImGui.GetTextLineHeight()))))
+            using var bottomRightPanel = ImRaii.Child("bottomRightPanel", new(rightRegion.X, topRightHeaderOpened ? bottomRightHeight : rightRegion.Y - topRightHeaderHeight));
+
+            var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
+            var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
+
+            var expression = Expression;
+            using (ImRaii.PushColor(ImGuiCol.FrameBg, BLACK))
             {
-                var expression = Expression;
-                if (ImGui.InputTextMultiline("Expression##expression", ref expression))
+                if (ImGui.InputTextMultiline("##expressionInput", ref expression, ushort.MaxValue, bottomWidgetSize))
                 {
                     Expression = expression;
                 }
 
-                if (ImGui.Button("Evaluate##evaluate"))
-                {
-                    EvaluationResult = Template.Evaluate(Expression, modInfo, CustomRenamer.RenameMember);
-                }
+            }
+            
+            ImGui.SameLine();
+            if (ImGui.Button("Evaluate##evaluateButton"))
+            {
+                EvaluationTask = EvaluationTask.ContinueWith(_ => EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d => Template.Evaluate(Expression, ModInterop.GetModInfo(d), ModInfoRenamer.RenameMember)));
+            }
 
-                if (EvaluationResult != null)
+            ImGui.SameLine();
+            if (ImGui.Button("Clear##clearButton"))
+            {
+                Expression = string.Empty;
+                EvaluationResults = [];
+            }
+
+            if (EvaluationResults.Count > 0)
+            {
+                using var table = ImRaii.Table("evaluationResultsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
+                ImGui.TableSetupColumn($"Mod directory###directoryName", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupColumn($"Evaluation result###result", ImGuiTableColumnFlags.None, 6);
+                ImGui.TableSetupScrollFreeze(0, 1);
+                ImGui.TableHeadersRow();
+
+                if (table)
                 {
-                    ImGui.Text($"{TemplateContext.ObjectToString(EvaluationResult)} ({EvaluationResult.GetType().ScriptPrettyName()})");
-                    if (ImGui.Button("Clear##clear"))
+                    foreach (var evaluationResult in EvaluationResults.OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
                     {
-                        EvaluationResult = null;
+                        if (ImGui.TableNextColumn())
+                        {
+                            ImGui.Text(evaluationResult.Key);
+                        }
+
+                        if (ImGui.TableNextColumn())
+                        {
+                            ImGui.Text(TemplateContext.ObjectToString(evaluationResult.Value));
+                        }
                     }
                 }
             }
-
-
         }
-        else
-        {
-            // Table
-            ImGui.Text("TODO");
-        }
-        // button to run evaluate all rules (Dry run)
-        // Button evaluate for real
-
-
-
     }
 
-    private void DrawMembers(object target, int maxDepth)
+    private void DrawObjectTree(object value)
     {
-        // Change to infinite depth and tree node items (lazy)
-        // Add support for propery list display
-
-        var accessor = TemplateContext.GetMemberAccessor(target);
-        using (ImRaii.PushIndent())
+        var accessor = TemplateContext.GetMemberAccessor(value);
+        foreach (var member in accessor.GetMembers(TemplateContext, SourceSpan, value))
         {
-            foreach (var member in accessor.GetMembers(TemplateContext, SourceSpan, target))
+            if (!accessor.TryGetValue(TemplateContext, SourceSpan, value, member, out var memberValue)) continue;
+
+            if (memberValue == null)
             {
-                if (accessor.TryGetValue(TemplateContext, SourceSpan, target, member, out var memberValue))
-                {
-                    ImGui.Text($"{member}: {TemplateContext.ObjectToString(memberValue)} ({memberValue.GetType().ScriptPrettyName()})");
-                    if (maxDepth > 0)
-                    {
-                        DrawMembers(memberValue, maxDepth - 1);
-                    }
-                }
+                using var _ = ImRaii.TreeNode($"{member}: null###inspect{value.GetHashCode()}Member{member}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
+                continue;
             }
+            
+            var memberType = memberValue.GetType();
+
+            var isList = typeof(IList).IsAssignableFrom(memberType);
+            var isPrintable = (memberType.IsPrimitive || memberType.IsEnum || typeof(string).IsAssignableFrom(memberType) || typeof(ReadOnlySeString).IsAssignableFrom(memberType) || (memberValue is IList l && l.Count == 0));
+
+            using var treeNode = ImRaii.TreeNode($"{member}: {(isPrintable ? TemplateContext.ObjectToString(memberValue) : "")} ({memberType.ScriptPrettyName()})###inspect{value.GetHashCode()}Member{member}", memberType.IsPrimitive ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
+            if (memberValue == null || !treeNode) continue;
+
+            if (memberValue is IList nestedValues)
+            {
+                for (var i = 0; i < nestedValues.Count; i++)
+                {
+                    var nestedValue = nestedValues[i];
+
+                    if (nestedValue == null)
+                    {
+                        var _ = ImRaii.TreeNode($"[{i}]: null###inspect{value.GetHashCode()}Member{member}{i}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
+                        continue;
+                    }
+                    var nestedValueType = nestedValue.GetType();
+                    using var nestedTreeNode = ImRaii.TreeNode($"[{i}] ({nestedValueType.ScriptPrettyName()})###inspect{value.GetHashCode()}Member{member}{i}");
+
+                    if (nestedTreeNode) DrawObjectTree(nestedValue);
+
+                    i++;
+                }
+                continue;
+            }
+
+            DrawObjectTree(memberValue);
         }
     }
 }

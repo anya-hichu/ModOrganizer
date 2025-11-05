@@ -38,7 +38,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         Config = PluginInterface.GetPluginConfig() as Config ?? new Config() { Rules = RuleBuilder.BuildDefaults() };
 
-        ModInterop = new(new(PluginLog), PluginInterface, PluginLog);
+        ModInterop = new(PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
         ModProcessor = new(Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
