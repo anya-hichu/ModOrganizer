@@ -1,5 +1,7 @@
-
-using ModOrganizer.Configs;
+using ModOrganizer.Json.DefaultMods;
+using ModOrganizer.Json.Groups;
+using ModOrganizer.Json.LocalModData;
+using ModOrganizer.Json.ModMetas;
 using System.Collections.Generic;
 
 namespace ModOrganizer.Mods;

@@ -6,6 +6,7 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Windows;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
+using ModOrganizer.Json;
 
 
 namespace ModOrganizer;

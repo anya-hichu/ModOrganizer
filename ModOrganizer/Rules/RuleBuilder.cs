@@ -6,6 +6,7 @@ namespace ModOrganizer.Rules;
 public static class RuleBuilder
 {
     public static readonly int VERSION = 1;
+
     public static List<Rule> BuildDefaults() => [
         new() {
             Name = "Sets",

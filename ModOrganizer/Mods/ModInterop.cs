@@ -1,15 +1,19 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ModOrganizer.Configs;
+using ModOrganizer.Json;
+using ModOrganizer.Json.DefaultMods;
+using ModOrganizer.Json.Groups;
+using ModOrganizer.Json.Loaders;
+using ModOrganizer.Json.LocalModData;
+using ModOrganizer.Json.ModMetas;
 using Penumbra.Api.Enums;
 using Penumbra.Api.Helpers;
 using Penumbra.Api.IpcSubscribers;
-using Scriban.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
+
 
 namespace ModOrganizer.Mods;
 
@@ -27,7 +31,13 @@ public class ModInterop : IDisposable
     private static readonly string GROUP_FILE_NAME_PATTERN = "group_*.json";
     private static readonly string META_FILE_NAME = "meta.json";
 
+    private DefaultModBuilder DefaultModBuilder { get; init; }
+    private GroupFactory GroupFactory { get; init; }
+    private JsonParser JsonParser { get; init; }
+    private LocalModDataBuilder LocalModDataBuilder { get; init; }
     private IPluginLog PluginLog { get; init; }
+    private ModMetaBuilder ModMetaBuilder { get; init; }
+
 
     public event Action<string>? OnModAdded;
 
@@ -58,10 +68,13 @@ public class ModInterop : IDisposable
     private FileSystemWatcher? GroupsFileSystemWatcher { get; set; }
     private FileSystemWatcher? MetaFileSystemWatcher { get; set; }
 
-    private JsonSerializerOptions JsonSerializerOptions { get; set; } = new() { AllowTrailingCommas = true };
-
     public ModInterop(IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
     {
+        DefaultModBuilder = new(pluginLog);
+        GroupFactory = new(pluginLog);
+        JsonParser = new(pluginLog);
+        LocalModDataBuilder = new(pluginLog);
+        ModMetaBuilder = new(pluginLog);
         PluginLog = pluginLog;
 
         GetModDirectorySubscriber = new(pluginInterface);
@@ -257,15 +270,14 @@ public class ModInterop : IDisposable
     private Dictionary<string, string> GetSortOrderData()
     {
         if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
-        var maybeSortOrder = ParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME));
 
-        if (maybeSortOrder == null)
+        if (!JsonParser.TryParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
         {
             PluginLog.Warning("Failed to parse sort order file, returning empty");
             return [];
         }
 
-        MaybeSortOrderDataCache = maybeSortOrder.Data;
+        MaybeSortOrderDataCache = sortOrder.Data;
         PluginLog.Debug($"Loaded sort order data cache (count: {MaybeSortOrderDataCache!.Count})");
 
         return MaybeSortOrderDataCache;
@@ -280,28 +292,15 @@ public class ModInterop : IDisposable
             Directory = modDirectory,
             Path = GetModPath(modDirectory),
             ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-            Data = ParseFile<LocalModData>(Path.Combine(DataDirectory, $"{modDirectory}.json")),
-            Default = ParseFile<DefaultMod>(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME)),
-            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(ParseFile<Group>)],
-            Meta = ParseFile<ModMeta>(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME))
+            Data = LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData) ? localModData : null,
+            Default = DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod) ? defaultMod : null,
+            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).SelectMany<string, Group>(p => GroupFactory.TryBuildFromFile(p, out var group) ? [group] : [])],
+            Meta = ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta) ? modMeta : null
         };
 
         ModInfoCaches.Add(modDirectory, modInfo);
 
         return modInfo;
-    }
-
-    private T? ParseFile<T>(string path)
-    {
-        try
-        {
-            return JsonSerializer.Deserialize<T>(File.ReadAllText(path), JsonSerializerOptions);
-        }
-        catch (JsonException e)
-        {
-            PluginLog.Warning($"Failed to parse {typeof(T).ScriptPrettyName()} [{path}] ({e})");
-            return default;
-        }
     }
     #endregion
 

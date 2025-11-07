@@ -5,6 +5,7 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
+using ModOrganizer.Scripts;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
@@ -25,7 +26,7 @@ public class MainWindow : Window, IDisposable
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
-    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = ModInfoRenamer.RenameMember };
+    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private string Filter { get; set; } = string.Empty;
@@ -168,6 +169,8 @@ public class MainWindow : Window, IDisposable
                     foreach (var selectedModDirectory in SelectedModDirectories)
                     {
                         using var modInfoNode = ImRaii.TreeNode($"{selectedModDirectory}##modInfo{selectedModDirectory.GetHashCode()}");
+
+                        using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite2);
                         if (modInfoNode) DrawObjectTree(ModInterop.GetModInfo(selectedModDirectory));
                     }
                 }
@@ -191,7 +194,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Evaluate##evaluateButton"))
             {
-                EvaluationTask = EvaluationTask.ContinueWith(_ => EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d => Template.Evaluate(Expression, ModInterop.GetModInfo(d), ModInfoRenamer.RenameMember)));
+                EvaluationTask = EvaluationTask.ContinueWith(_ => EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d => Template.Evaluate(Expression, ModInterop.GetModInfo(d), MemberRenamer.Rename)));
             }
 
             ImGui.SameLine();
@@ -235,42 +238,39 @@ public class MainWindow : Window, IDisposable
         {
             if (!accessor.TryGetValue(TemplateContext, SourceSpan, value, member, out var memberValue)) continue;
 
-            if (memberValue == null)
-            {
-                using var _ = ImRaii.TreeNode($"{member}: null###inspect{value.GetHashCode()}Member{member}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
-                continue;
-            }
-            
-            var memberType = memberValue.GetType();
-
-            var isList = typeof(IList).IsAssignableFrom(memberType);
-            var isPrintable = (memberType.IsPrimitive || memberType.IsEnum || typeof(string).IsAssignableFrom(memberType) || typeof(ReadOnlySeString).IsAssignableFrom(memberType) || (memberValue is IList l && l.Count == 0));
-
-            using var treeNode = ImRaii.TreeNode($"{member}: {(isPrintable ? TemplateContext.ObjectToString(memberValue) : "")} ({memberType.ScriptPrettyName()})###inspect{value.GetHashCode()}Member{member}", memberType.IsPrimitive ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
-            if (memberValue == null || !treeNode) continue;
-
-            if (memberValue is IList nestedValues)
-            {
-                for (var i = 0; i < nestedValues.Count; i++)
-                {
-                    var nestedValue = nestedValues[i];
-
-                    if (nestedValue == null)
-                    {
-                        var _ = ImRaii.TreeNode($"[{i}]: null###inspect{value.GetHashCode()}Member{member}{i}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
-                        continue;
-                    }
-                    var nestedValueType = nestedValue.GetType();
-                    using var nestedTreeNode = ImRaii.TreeNode($"[{i}] ({nestedValueType.ScriptPrettyName()})###inspect{value.GetHashCode()}Member{member}{i}");
-
-                    if (nestedTreeNode) DrawObjectTree(nestedValue);
-
-                    i++;
-                }
-                continue;
-            }
-
-            DrawObjectTree(memberValue);
+            DrawMemberTree(member, memberValue, $"inspect{value.GetHashCode()}");
         }
+    }
+
+    private void DrawMemberTree(string name, object? value, string baseId)
+    {
+        if (value == null)
+        {
+            using var _ = ImRaii.TreeNode($"{name}: null###{baseId}{name}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
+            return;
+        }
+
+        var memberType = value.GetType();
+
+        var isList = typeof(IList).IsAssignableFrom(memberType);
+        var isEmptyList = value is IList l && l.Count == 0;
+        var isEmptyDict = value is IDictionary d && d.Count == 0;
+
+        var isPrintable = (memberType.IsPrimitive || memberType.IsEnum || typeof(string).IsAssignableFrom(memberType) || typeof(ReadOnlySeString).IsAssignableFrom(memberType) || isEmptyList || isEmptyDict);
+        var isLeaf = memberType.IsPrimitive || isEmptyList || isEmptyDict;
+
+        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? TemplateContext.ObjectToString(value) : "")} ({memberType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
+        if (value == null || !treeNode) return;
+
+        if (value is IList nestedValues)
+        {
+            for (var i = 0; i < nestedValues.Count; i++)
+            {
+                DrawMemberTree($"[{i}]", nestedValues[i], baseId);
+            }
+            return;
+        }
+
+        DrawObjectTree(value);
     }
 }
