@@ -6,11 +6,11 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Containers;
 
-public class ContainerBuilder<T>(ManipulationFactory manipulationFactory, IPluginLog pluginLog) : Builder<T>(pluginLog) where T : Container, new()
+public class ContainerBuilder(IPluginLog pluginLog) : Builder<Container>(pluginLog)
 {
-    private ManipulationFactory ManipulationFactory { get; init; } = manipulationFactory;
+    private ManipulationFactory ManipulationFactory { get; init; } = new(pluginLog);
 
-    public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out T? instance)
+    public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Container? instance)
     {
         instance = default;
 
@@ -29,7 +29,7 @@ public class ContainerBuilder<T>(ManipulationFactory manipulationFactory, IPlugi
         var manipulations = jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationProperty) ?
             manipulationProperty.EnumerateArray().SelectMany<JsonElement, ManipulationWrapper>(v => ManipulationFactory.TryBuild(v, out var manipulation) ? [manipulation] : []).ToArray() : [];
 
-        instance = new T()
+        instance = new()
         {
             Files = files,
             FileSwaps = fileSwaps,

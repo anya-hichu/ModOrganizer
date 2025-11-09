@@ -11,9 +11,8 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
 {
     public static readonly string TYPE = "Combining";
 
-    // use composition due to type inference limitation
-    private GroupBuilder<GroupCombining> GroupBuilder { get; init; } = new(pluginLog);
-    private NamedContainerBuilder NamedContainerBuilder { get; init; } = new(new(pluginLog), pluginLog);
+    private GroupBuilder GroupBuilder { get; init; } = new(pluginLog);
+    private NamedContainerBuilder NamedContainerBuilder { get; init; } = new(pluginLog);
     private OptionBuilder OptionBuilder { get; init; } = new(pluginLog);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
@@ -28,7 +27,7 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build [{nameof(GroupCombining)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupCombining)}]");
             return false;
         }
 
@@ -45,10 +44,16 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
         var containers = jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) ?
             containersProperty.EnumerateArray().SelectMany<JsonElement, NamedContainer>(j => NamedContainerBuilder.TryBuild(j, out var namedContainer) ? [namedContainer] : []).ToArray() : [];
 
-        instance = group with
+        instance = new GroupCombining()
         {
+            Name = group.Name,
+            Type = group.Type,
+            Description = group.Description,
+            Image = group.Image,
+            Priority = group.Priority,
+            DefaultSettings = group.DefaultSettings,
             Options = options,
-            Containers = containers,
+            Containers = containers
         };
 
         return true;

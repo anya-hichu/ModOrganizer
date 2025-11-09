@@ -12,7 +12,7 @@ public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(plugi
 
     public JsonParser JsonParser { get; init; } = new(pluginLog);
 
-    private ContainerBuilder<DefaultMod> ContainerBuilder { get; init; } = new(new(pluginLog), pluginLog);
+    private ContainerBuilder ContainerBuilder { get; init; } = new(pluginLog);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out DefaultMod? instance)
     {
@@ -33,13 +33,16 @@ public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(plugi
 
         if (!ContainerBuilder.TryBuild(jsonElement, out var container))
         {
-            PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(DefaultMod)}]");
             return false;
         }
 
-        instance = container with
+        instance = new()
         {
-            Version = version
+            Version = version,
+            Files = container.Files,
+            FileSwaps = container.FileSwaps,
+            Manipulations = container.Manipulations
         };
 
         return true;

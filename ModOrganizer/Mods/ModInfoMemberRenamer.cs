@@ -1,9 +1,9 @@
 using Scriban.Runtime;
 using System.Reflection;
 
-namespace ModOrganizer.Scripts;
+namespace ModOrganizer.Mods;
 
-public static class MemberRenamer
+public static class ModInfoMemberRenamer
 {
     public static string Rename(MemberInfo memberInfo) => Rename(memberInfo.Name);
     public static string Rename(string name) => StandardMemberRenamer.Rename(name).Trim('_');

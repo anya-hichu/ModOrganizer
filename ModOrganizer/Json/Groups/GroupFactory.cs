@@ -12,5 +12,6 @@ public class GroupFactory : Factory<Group>, IFileLoader<Group>
         JsonParser = new(pluginLog);
 
         Builders.Add(GroupCombiningBuilder.TYPE, new GroupCombiningBuilder(pluginLog));
+        Builders.Add(GroupSingleBuilder.TYPE, new GroupSingleBuilder(pluginLog));
     }
 }

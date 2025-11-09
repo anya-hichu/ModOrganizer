@@ -42,7 +42,7 @@ public class LocalModDataBuilder(IPluginLog pluginLog) : Builder<LocalModData>(p
         var localTags = jsonElement.TryGetProperty(nameof(LocalModData.LocalTags), out var localTagsProperty) ? 
             localTagsProperty.EnumerateArray().Select(j => j.GetString()!).ToArray() : [];
 
-        var favorite = jsonElement.TryGetProperty(nameof(LocalModData.Favorite), out var favoriteProperty) ? favoriteProperty.GetBoolean() : false;
+        var favorite = jsonElement.TryGetProperty(nameof(LocalModData.Favorite), out var favoriteProperty) && favoriteProperty.GetBoolean();
 
         var preferredChangedItems = jsonElement.TryGetProperty(nameof(LocalModData.PreferredChangedItems), out var preferredChangedItemsProperty) ? 
             preferredChangedItemsProperty.EnumerateArray().Select(j => j.GetInt32()).ToArray() : [];

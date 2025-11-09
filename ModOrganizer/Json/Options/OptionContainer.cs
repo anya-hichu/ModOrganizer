@@ -1,10 +1,10 @@
 using ModOrganizer.Json.Manipulations;
 using System.Collections.Generic;
 
-namespace ModOrganizer.Json.Containers;
+namespace ModOrganizer.Json.Options;
 
-// https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/container.json
-public record Container
+// Where is multi-inheritance when you need it?
+public record OptionContainer : Option
 {
     public Dictionary<string, string>? Files { get; set; }
     public Dictionary<string, string>? FileSwaps { get; set; }

@@ -7,7 +7,6 @@ public class ManipulationFactory : Factory<ManipulationWrapper>
 {
     public ManipulationFactory(IPluginLog pluginLog) : base(pluginLog)
     {
-        Builders.Add(MetaUnknownBuilder.TYPE, new MetaUnknownBuilder(pluginLog));
         Builders.Add(MetaImcBuilder.TYPE, new MetaImcBuilder(pluginLog));
     }
 }

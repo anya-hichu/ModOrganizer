@@ -1,7 +1,6 @@
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ModOrganizer.Mods;
-using ModOrganizer.Scripts;
 using Scriban;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -35,7 +34,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
             PluginLog.Error($"Failed to parse rule [{rule.Name}] path template: {template.Messages}");
             return false;
         }
-        var result = template.Render(modInfo, MemberRenamer.Rename);
+        var result = template.Render(modInfo, ModInfoMemberRenamer.Rename);
         if (result.IsNullOrWhitespace()) return false;
 
         path = result;
@@ -46,7 +45,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
     {
         if (rule.MatchExpression.IsNullOrWhitespace()) return false;
 
-        var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
+        var result = Template.Evaluate(rule.MatchExpression, modInfo, ModInfoMemberRenamer.Rename);
         if (result is bool validResult) return validResult;
 
         PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");

@@ -5,7 +5,6 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
-using ModOrganizer.Scripts;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
@@ -26,7 +25,7 @@ public class MainWindow : Window, IDisposable
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
 
-    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
+    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = ModInfoMemberRenamer.Rename };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private string Filter { get; set; } = string.Empty;
@@ -194,7 +193,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Evaluate##evaluateButton"))
             {
-                EvaluationTask = EvaluationTask.ContinueWith(_ => EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d => Template.Evaluate(Expression, ModInterop.GetModInfo(d), MemberRenamer.Rename)));
+                EvaluationTask = EvaluationTask.ContinueWith(_ => EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d => Template.Evaluate(Expression, ModInterop.GetModInfo(d), ModInfoMemberRenamer.Rename)));
             }
 
             ImGui.SameLine();

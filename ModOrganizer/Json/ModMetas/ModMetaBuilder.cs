@@ -39,14 +39,14 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
 
         if (!jsonElement.TryGetProperty(nameof(ModMeta.Name), out var nameProperty))
         {
-            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], required attribute {nameof(ModMeta.Name)} is missing");
+            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], required attribute [{nameof(ModMeta.Name)}] is missing");
             return false;
         }
 
         var name = nameProperty.GetString();
         if (name.IsNullOrEmpty())
         {
-            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], required attribute {nameof(ModMeta.Name)} is null or empty");
+            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], required attribute [{nameof(ModMeta.Name)}] is null or empty");
             return false;
         }
 
