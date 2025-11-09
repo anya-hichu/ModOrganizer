@@ -6,6 +6,6 @@ namespace ModOrganizer.Json.Groups;
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/group_combining.json
 public record GroupCombining : Group
 {
-    public Option[] Options { get; set; } = [];
-    public NamedContainer[] Containers { get; set; } = [];
+    public Option[]? Options { get; set; }
+    public NamedContainer[]? Containers { get; set; }
 }
