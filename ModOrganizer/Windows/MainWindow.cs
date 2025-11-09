@@ -74,6 +74,7 @@ public class MainWindow : Window, IDisposable
             var hash = subfolder.GetHashCode();
             using var _ = ImRaii.PushColor(ImGuiCol.Text, LIGHT_BLUE);
             using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###modVirtualFolder{hash}");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(subfolder.Name);
             if (ImGui.IsItemClicked() && ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) ToggleFolderSelection(subfolder);
             if (treeNode) DrawVirtualFolderTree(subfolder);
         }
@@ -86,7 +87,8 @@ public class MainWindow : Window, IDisposable
             var hash = file.GetHashCode();
             using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite);
             using var __ = ImRaii.TreeNode($"{file.Name}###modVirtualFile{hash}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | (SelectedModDirectories.Contains(file.Directory) ? ImGuiTreeNodeFlags.Selected : ImGuiTreeNodeFlags.None));
-            
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(file.Name);
+
             if (!ImGui.IsItemClicked()) continue;
 
             // TODO: fix
@@ -218,11 +220,14 @@ public class MainWindow : Window, IDisposable
                         if (ImGui.TableNextColumn())
                         {
                             ImGui.Text(evaluationResult.Key);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(evaluationResult.Key);
                         }
 
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(TemplateContext.ObjectToString(evaluationResult.Value));
+                            var content = TemplateContext.ObjectToString(evaluationResult.Value);
+                            ImGui.Text(content);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(content);
                         }
                     }
                 }

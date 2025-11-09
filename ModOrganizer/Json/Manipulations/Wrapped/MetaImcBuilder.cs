@@ -1,5 +1,5 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Manipulations.Wrapped.Imcs;
+using ModOrganizer.Json.Imcs;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 

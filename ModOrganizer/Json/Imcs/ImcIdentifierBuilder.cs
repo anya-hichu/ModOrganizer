@@ -3,7 +3,7 @@ using Dalamud.Utility;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Manipulations.Wrapped.Imcs;
+namespace ModOrganizer.Json.Imcs;
 
 public class ImcIdentifierBuilder(IPluginLog pluginLog) : Builder<ImcIdentifier>(pluginLog)
 {

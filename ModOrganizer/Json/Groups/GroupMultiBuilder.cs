@@ -6,9 +6,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Groups;
 
-public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
+public class GroupMultiBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
 {
-    public static readonly string TYPE = "Single";
+    public static readonly string TYPE = "Multi";
 
     private GroupBuilder GroupBuilder { get; init; } = new(pluginLog);
     private OptionContainerBuilder OptionContainerBuilder { get; init; } = new(pluginLog);
@@ -19,26 +19,26 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
 
         if (jsonElement.ValueKind != JsonValueKind.Object)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], expected root object but got [{jsonElement.ValueKind}]");
+            PluginLog.Warning($"Failed to build [{nameof(GroupMulti)}], expected root object but got [{jsonElement.ValueKind}]");
             return false;
         }
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupSingle)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupMulti)}]");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE})");
+            PluginLog.Warning($"Failed to build [{nameof(GroupMulti)}], invalid type [{group.Type}] (expected: {TYPE})");
             return false;
         }
 
         var options = jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) ?
             optionsProperty.EnumerateArray().SelectMany<JsonElement, OptionContainer>(j => OptionContainerBuilder.TryBuild(j, out var optionContainer) ? [optionContainer] : []).ToArray() : [];
 
-        instance = new GroupSingle()
+        instance = new GroupMulti()
         {
             Name = group.Name,
             Type = group.Type,
@@ -46,6 +46,7 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
             Image = group.Image,
             Priority = group.Priority,
             DefaultSettings = group.DefaultSettings,
+
             Options = options
         };
 

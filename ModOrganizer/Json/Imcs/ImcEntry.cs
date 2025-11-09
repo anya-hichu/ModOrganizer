@@ -1,4 +1,4 @@
-namespace ModOrganizer.Json.Manipulations.Wrapped.Imcs;
+namespace ModOrganizer.Json.Imcs;
 
 public class ImcEntry
 {

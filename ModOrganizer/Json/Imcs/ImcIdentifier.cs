@@ -1,4 +1,6 @@
-namespace ModOrganizer.Json.Manipulations.Wrapped.Imcs;
+using ModOrganizer.Json.Manipulations;
+
+namespace ModOrganizer.Json.Imcs;
 
 public record ImcIdentifier : Manipulation
 {

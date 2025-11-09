@@ -52,6 +52,7 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
             Image = group.Image,
             Priority = group.Priority,
             DefaultSettings = group.DefaultSettings,
+
             Options = options,
             Containers = containers
         };

@@ -1,4 +1,4 @@
-using ModOrganizer.Json.Manipulations.Wrapped.Imcs;
+using ModOrganizer.Json.Imcs;
 
 namespace ModOrganizer.Json.Manipulations.Wrapped;
 

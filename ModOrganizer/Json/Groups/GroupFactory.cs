@@ -3,7 +3,7 @@ using ModOrganizer.Json.Loaders;
 
 namespace ModOrganizer.Json.Groups;
 
-public class GroupFactory : Factory<Group>, IFileLoader<Group>
+public class GroupFactory : TypeFactory<Group>, IFileLoader<Group>
 {
     public JsonParser JsonParser { get; init; }
 
@@ -12,6 +12,8 @@ public class GroupFactory : Factory<Group>, IFileLoader<Group>
         JsonParser = new(pluginLog);
 
         Builders.Add(GroupCombiningBuilder.TYPE, new GroupCombiningBuilder(pluginLog));
+        Builders.Add(GroupMultiBuilder.TYPE, new GroupMultiBuilder(pluginLog));
         Builders.Add(GroupSingleBuilder.TYPE, new GroupSingleBuilder(pluginLog));
+        Builders.Add(GroupImcBuilder.TYPE, new GroupImcBuilder(pluginLog));
     }
 }

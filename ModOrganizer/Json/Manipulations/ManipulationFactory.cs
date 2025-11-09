@@ -3,7 +3,7 @@ using ModOrganizer.Json.Manipulations.Wrapped;
 
 namespace ModOrganizer.Json.Manipulations;
 
-public class ManipulationFactory : Factory<ManipulationWrapper>
+public class ManipulationFactory : TypeFactory<ManipulationWrapper>
 {
     public ManipulationFactory(IPluginLog pluginLog) : base(pluginLog)
     {

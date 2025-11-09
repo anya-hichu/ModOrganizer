@@ -73,6 +73,5 @@ public class GroupBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
         };
 
         return true;
-
     }
 }
