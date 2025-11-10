@@ -1,15 +1,14 @@
 using Dalamud.Plugin.Services;
-using Scriban.Helpers;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 
-
 namespace ModOrganizer.Json;
 
 public class JsonParser(IPluginLog pluginLog)
 {
+    // Some mods use tailing commas for some reason
     private static JsonSerializerOptions JsonSerializerOptions { get; set; } = new() { AllowTrailingCommas = true };
 
     private IPluginLog PluginLog { get; set; } = pluginLog;
@@ -25,7 +24,7 @@ public class JsonParser(IPluginLog pluginLog)
         }
         catch (Exception e)
         {
-            PluginLog.Debug($"Failed to parse {typeof(T).ScriptPrettyName()} from json file [{path}] ({e})");
+            PluginLog.Debug($"Failed to parse [{typeof(T).Name}] from json file [{path}] ({e})");
         }
         return false;
     }

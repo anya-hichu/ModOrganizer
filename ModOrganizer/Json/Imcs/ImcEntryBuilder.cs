@@ -10,47 +10,14 @@ public class ImcEntryBuilder(IPluginLog pluginLog) : Builder<ImcEntry>(pluginLog
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
-        if (!jsonElement.TryGetProperty(nameof(ImcEntry.MaterialId), out var materialIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], required attribute [{nameof(ImcEntry.MaterialId)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcEntry.DecalId), out var decalIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], required attribute [{nameof(ImcEntry.DecalId)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcEntry.VfxId), out var vfxIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], required attribute [{nameof(ImcEntry.VfxId)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcEntry.MaterialAnimationId), out var materialAnimationIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], required attribute [{nameof(ImcEntry.MaterialAnimationId)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcEntry.AttributeMask), out var attributeMaskIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], required attribute [{nameof(ImcEntry.AttributeMask)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcEntry.SoundId), out var soundIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcEntry)}], required attribute [{nameof(ImcEntry.SoundId)}] is missing");
-            return false;
-        }
+        if (!AssertHasProperty(jsonElement, nameof(ImcEntry.MaterialId), out var materialIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcEntry.DecalId), out var decalIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcEntry.VfxId), out var vfxIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcEntry.MaterialAnimationId), out var materialAnimationIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcEntry.SoundId), out var soundIdProperty)) return false;
 
         instance = new()
         {

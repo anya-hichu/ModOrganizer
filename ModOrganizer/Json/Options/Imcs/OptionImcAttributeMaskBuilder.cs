@@ -12,10 +12,7 @@ public class OptionImcAttributeMaskBuilder(IPluginLog pluginLog) : Builder<Optio
     {
         instance = default;
 
-        if (!jsonElement.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(OptionImcAttributeMask)}], required attribute [{nameof(OptionImcAttributeMask.AttributeMask)}] is missing");
-        }
+        if (!AssertHasProperty(jsonElement, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {

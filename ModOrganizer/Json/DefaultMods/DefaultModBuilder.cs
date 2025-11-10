@@ -18,16 +18,12 @@ public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(plugi
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
         uint? version = jsonElement.TryGetProperty(nameof(DefaultMod.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] [{version}] (supported version: {SUPPORTED_VERSION})");
+            PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION})");
             return false;
         }
 

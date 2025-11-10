@@ -16,24 +16,9 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
     {
         builder = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder, expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
-        if (!jsonElement.TryGetProperty(TYPE_PROPERTY_NAME, out var typeProperty))
-        {
-            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder, required attribute [{TYPE_PROPERTY_NAME}] is missing");
-            return false;
-        }
-
-        var type = typeProperty.GetString();
-        if (type.IsNullOrEmpty())
-        {
-            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder, required attribute [{TYPE_PROPERTY_NAME}] is null or empty");
-            return false;
-        }
+        if (!AssertStringPropertyPresent(jsonElement, TYPE_PROPERTY_NAME, out var type)) return false;
 
         if (!Builders.TryGetValue(type, out builder))
         {

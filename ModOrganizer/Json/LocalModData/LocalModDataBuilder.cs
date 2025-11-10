@@ -16,23 +16,14 @@ public class LocalModDataBuilder(IPluginLog pluginLog) : Builder<LocalModData>(p
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(LocalModData)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
-        
+        if (!AssertIsObject(jsonElement)) return false;
 
-        if (!jsonElement.TryGetProperty(nameof(LocalModData.FileVersion), out var fileVersionProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(LocalModData)}], required attribute [{nameof(LocalModData.FileVersion)}] is missing");
-            return false;
-        }
+        if (!AssertHasProperty(jsonElement, nameof(LocalModData.FileVersion), out var fileVersionProperty)) return false;
         
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
-            PluginLog.Warning($"Failed to build [{nameof(LocalModData)}], unsupported [{nameof(LocalModData.FileVersion)}] [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION})");
+            PluginLog.Warning($"Failed to build [{nameof(LocalModData)}], unsupported [{nameof(LocalModData.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION})");
             return false;
         }
 

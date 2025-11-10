@@ -12,10 +12,7 @@ public class OptionImcIsDisableSubModBuilder(IPluginLog pluginLog) : Builder<Opt
     {
         instance = default;
 
-        if (!jsonElement.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(OptionImcAttributeMask)}], required attribute [{nameof(OptionImcIsDisableSubMod.IsDisableSubMod)}] is missing");
-        }
+        if (!AssertHasProperty(jsonElement, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {

@@ -19,11 +19,7 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(GroupCombining)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {

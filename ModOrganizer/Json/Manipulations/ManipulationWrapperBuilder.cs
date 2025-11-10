@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Manipulations;
 
-public abstract class ManipulationBuilder<T>(IPluginLog pluginLog, string type) : Builder<ManipulationWrapper>(pluginLog) where T : Manipulation
+public abstract class ManipulationWrapperBuilder<T>(IPluginLog pluginLog, string type) : Builder<ManipulationWrapper>(pluginLog) where T : Manipulation
 {
     private string Type { get; init; } = type;
 
@@ -12,15 +12,13 @@ public abstract class ManipulationBuilder<T>(IPluginLog pluginLog, string type) 
     {
         instance = default;
 
+        if (!AssertIsObject(jsonElement)) return false;
+
+        if (!AssertHasProperty(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+
         if (jsonElement.ValueKind != JsonValueKind.Object)
         {
             PluginLog.Warning($"Failed to build [{nameof(ManipulationWrapper)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ManipulationWrapper.Manipulation), out var manipulationProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ManipulationWrapper)}], required attribute [{nameof(ManipulationWrapper.Manipulation)}] is missing");
             return false;
         }
 
@@ -45,5 +43,5 @@ public abstract class ManipulationBuilder<T>(IPluginLog pluginLog, string type) 
         return true;
     }
 
-    public abstract bool TryBuildWrapped(JsonElement jsonElement, [NotNullWhen(true)] out T? instance);
+    protected abstract bool TryBuildWrapped(JsonElement jsonElement, [NotNullWhen(true)] out T? instance);
 }

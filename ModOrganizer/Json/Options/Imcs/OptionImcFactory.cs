@@ -13,8 +13,8 @@ public class OptionImcFactory(IPluginLog pluginLog) : Factory<OptionImc>(pluginL
     {
         builder = default;
 
-        var hasAttributeMaskProperty = jsonElement.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask);
-        var hasIsDisableSubModProperty = jsonElement.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var isDisableSubModProperty);
+        var hasAttributeMaskProperty = jsonElement.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var _);
+        var hasIsDisableSubModProperty = jsonElement.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var _);
 
         if (hasAttributeMaskProperty && hasIsDisableSubModProperty)
         {

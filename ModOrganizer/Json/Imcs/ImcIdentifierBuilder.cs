@@ -11,68 +11,14 @@ public class ImcIdentifierBuilder(IPluginLog pluginLog) : Builder<ImcIdentifier>
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
-        if (!jsonElement.TryGetProperty(nameof(ImcIdentifier.PrimaryId), out var primaryIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.PrimaryId)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcIdentifier.SecondaryId), out var secondaryIdProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.SecondaryId)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcIdentifier.Variant), out var variantProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.Variant)}] is missing");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcIdentifier.ObjectType), out var objectTypeProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.ObjectType)}] is missing");
-            return false;
-        }
-
-        var objectType = objectTypeProperty.GetString();
-        if (objectType.IsNullOrEmpty())
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.ObjectType)}] is null or empty");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcIdentifier.EquipSlot), out var equipSlotProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.EquipSlot)}] is missing");
-            return false;
-        }
-
-        var equipSlot = equipSlotProperty.GetString();
-        if (equipSlot.IsNullOrEmpty())
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.EquipSlot)}] is null or empty");
-            return false;
-        }
-
-        if (!jsonElement.TryGetProperty(nameof(ImcIdentifier.BodySlot), out var bodySlotProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.BodySlot)}] is missing");
-            return false;
-        }
-
-        var bodySlot = bodySlotProperty.GetString();
-        if (bodySlot.IsNullOrEmpty())
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ImcIdentifier)}], required attribute [{nameof(ImcIdentifier.BodySlot)}] is null or empty");
-            return false;
-        }
+        if (!AssertHasProperty(jsonElement, nameof(ImcIdentifier.PrimaryId), out var primaryIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcIdentifier.SecondaryId), out var secondaryIdProperty)) return false;
+        if (!AssertHasProperty(jsonElement, nameof(ImcIdentifier.Variant), out var variantProperty)) return false;
+        if (!AssertStringPropertyPresent(jsonElement, nameof(ImcIdentifier.ObjectType), out var objectType)) return false;
+        if (!AssertStringPropertyPresent(jsonElement, nameof(ImcIdentifier.EquipSlot), out var equipSlot)) return false;
+        if (!AssertStringPropertyPresent(jsonElement, nameof(ImcIdentifier.BodySlot), out var bodySlot)) return false;
 
         instance = new()
         {

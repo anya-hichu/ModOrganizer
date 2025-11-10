@@ -82,7 +82,7 @@ public class ModInterop : IDisposable
         GetChangedItemsSubscriber = new(pluginInterface);
         SetModPathSubscriber = new(pluginInterface);
 
-        ModAddedSubscriber = ModAdded.Subscriber(pluginInterface, OnModAddedInternal);
+        ModAddedSubscriber = ModAdded.Subscriber(pluginInterface, OnWrappedModAdded);
         ModDeletedSubscriber = ModDeleted.Subscriber(pluginInterface, OnModDeleted);
         ModMovedSubscriber = ModMoved.Subscriber(pluginInterface, OnModMoved);
 
@@ -130,8 +130,8 @@ public class ModInterop : IDisposable
     }
     #endregion
 
-    #region Subscribers
-    private void OnModAddedInternal(string modDirectory)
+    #region Event subscribers
+    private void OnWrappedModAdded(string modDirectory)
     {
         PluginLog.Debug($"Received mod added event [{modDirectory}]");
         // Watchers might not be enabled, invalidate manually
@@ -162,7 +162,7 @@ public class ModInterop : IDisposable
     }
     #endregion
 
-    #region Filesystem
+    #region Filesystem watchers
     public void CreateModFileSystemWatchers()
     {
         DefaultFileSystemWatcher = new FileSystemWatcher(ModsDirectoryPath, DEFAULT_FILE_NAME)
@@ -193,7 +193,7 @@ public class ModInterop : IDisposable
         watcher.Created += updateHandler;
         watcher.Changed += updateHandler;
         watcher.Deleted += updateHandler;
-        watcher.Error += OnFileSystemError;
+        watcher.Error += OnFileSystemWatcherError;
     }
 
     public void EnableFileSystemWatchers(bool enable)
@@ -226,7 +226,7 @@ public class ModInterop : IDisposable
         InvalidateCaches(modDirectory);
     }
 
-    private void OnFileSystemError(object sender, ErrorEventArgs e)
+    private void OnFileSystemWatcherError(object sender, ErrorEventArgs e)
     {
         PluginLog.Debug($"Watcher [{sender.GetHashCode()}] returned error ({e?.GetException().Message}), ignoring");
     }

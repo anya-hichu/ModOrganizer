@@ -17,7 +17,7 @@ public class ModVirtualFile : IEquatable<ModVirtualFile>
     {
         if (filter.IsNullOrWhitespace()) return true;
 
-        var tokens = filter.ToLowerInvariant().Split(TOKEN_SEPARATOR).Where(t => !t.IsNullOrWhitespace());
+        var tokens = filter.ToLowerInvariant().Split(TOKEN_SEPARATOR, StringSplitOptions.RemoveEmptyEntries);
         return tokens.All(t => Name.Contains(t, MATCH_FLAGS) || Directory.Contains(t, MATCH_FLAGS) || Path.Contains(t, MATCH_FLAGS));
     }
 

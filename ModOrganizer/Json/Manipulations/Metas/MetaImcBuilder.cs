@@ -3,25 +3,18 @@ using ModOrganizer.Json.Imcs;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Manipulations.Wrapped;
+namespace ModOrganizer.Json.Manipulations.Metas;
 
-public class MetaImcBuilder(IPluginLog pluginLog) : ManipulationBuilder<MetaImc>(pluginLog, TYPE)
+public class MetaImcBuilder(IPluginLog pluginLog) : Builder<MetaImc>(pluginLog)
 {
-    public static readonly string TYPE = "Imc";
-
     private ImcEntryBuilder ImcEntryBuilder { get; init; } = new(pluginLog);
     private ImcIdentifierBuilder ImcIdentifierBuilder { get; init; } = new(pluginLog);
 
-
-    public override bool TryBuildWrapped(JsonElement jsonElement, [NotNullWhen(true)] out MetaImc? instance)
+    public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out MetaImc? instance)
     {
         instance = default;
 
-        if (!jsonElement.TryGetProperty(nameof(MetaImc.Entry), out var entryProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(MetaImc)}], required attribute [{nameof(MetaImc.Entry)}] is missing");
-            return false;
-        }
+        if (!AssertHasProperty(jsonElement, nameof(MetaImc.Entry), out var entryProperty)) return false;
 
         if (!ImcEntryBuilder.TryBuild(entryProperty, out var entry))
         {
@@ -38,6 +31,7 @@ public class MetaImcBuilder(IPluginLog pluginLog) : ManipulationBuilder<MetaImc>
         instance = new()
         {
             Entry = entry,
+
             PrimaryId = identifier.PrimaryId,
             SecondaryId = identifier.SecondaryId,
             Variant = identifier.Variant,

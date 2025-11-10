@@ -15,11 +15,7 @@ public class OptionContainerBuilder(IPluginLog pluginLog) : Builder<OptionContai
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
         if (!ContainerBuilder.TryBuild(jsonElement, out var container))
         {

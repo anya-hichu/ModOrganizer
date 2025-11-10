@@ -11,24 +11,9 @@ public class OptionBuilder(IPluginLog pluginLog) : Builder<Option>(pluginLog)
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(Option)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
-        if (!jsonElement.TryGetProperty(nameof(Option.Name), out var nameProperty))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(Option)}], required attribute [{nameof(Option.Name)}] is missing");
-            return false;
-        }
-
-        var name = nameProperty.GetString();
-        if (name.IsNullOrEmpty())
-        {
-            PluginLog.Warning($"Failed to build [{nameof(Option)}], required attribute {nameof(Option.Name)} is null or empty");
-            return false;
-        }
+        if (!AssertStringPropertyPresent(jsonElement, nameof(Option.Name), out var name)) return false;
 
         var description = jsonElement.TryGetProperty(nameof(Option.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
         int? priority = jsonElement.TryGetProperty(nameof(Option.Priority), out var priorityProperty) ? priorityProperty.GetInt32() : null;

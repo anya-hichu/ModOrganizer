@@ -8,17 +8,13 @@ namespace ModOrganizer.Json.Containers;
 
 public class ContainerBuilder(IPluginLog pluginLog) : Builder<Container>(pluginLog)
 {
-    private ManipulationFactory ManipulationFactory { get; init; } = new(pluginLog);
+    private ManipulationWrapperFactory ManipulationWrapperFactory { get; init; } = new(pluginLog);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Container? instance)
     {
         instance = default;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(Container)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
+        if (!AssertIsObject(jsonElement)) return false;
 
         var files = jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) ? 
             filesProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!) : null;
@@ -27,7 +23,7 @@ public class ContainerBuilder(IPluginLog pluginLog) : Builder<Container>(pluginL
             fileSwapsProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!) : null;
 
         var manipulations = jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationProperty) ?
-            manipulationProperty.EnumerateArray().SelectMany<JsonElement, ManipulationWrapper>(v => ManipulationFactory.TryBuild(v, out var manipulation) ? [manipulation] : []).ToArray() : [];
+            manipulationProperty.EnumerateArray().SelectMany<JsonElement, ManipulationWrapper>(v => ManipulationWrapperFactory.TryBuild(v, out var manipulation) ? [manipulation] : []).ToArray() : [];
 
         instance = new()
         {
