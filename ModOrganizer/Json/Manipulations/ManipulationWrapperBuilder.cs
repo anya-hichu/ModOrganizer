@@ -18,7 +18,7 @@ public abstract class ManipulationWrapperBuilder<T>(IPluginLog pluginLog, string
 
         if (!TryBuildWrapped(manipulationProperty, out var wrapped))
         {
-            PluginLog.Debug($"Failed to build wrapped [{nameof(T)}] for [{nameof(ManipulationWrapper)}]");
+            PluginLog.Debug($"Failed to build wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]");
             return false;
         }
 
