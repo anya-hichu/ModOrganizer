@@ -16,18 +16,6 @@ public abstract class ManipulationWrapperBuilder<T>(IPluginLog pluginLog, string
 
         if (!AssertHasProperty(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
 
-        if (jsonElement.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ManipulationWrapper)}], expected root object but got [{jsonElement.ValueKind}]");
-            return false;
-        }
-
-        if (manipulationProperty.ValueKind != JsonValueKind.Object)
-        {
-            PluginLog.Warning($"Failed to build [{nameof(ManipulationWrapper)}], expected object for [{nameof(ManipulationWrapper.Manipulation)}] but got [{jsonElement.ValueKind}]");
-            return false;
-        }
-
         if (!TryBuildWrapped(manipulationProperty, out var wrapped))
         {
             PluginLog.Debug($"Failed to build wrapped [{nameof(T)}] for [{nameof(ManipulationWrapper)}]");
