@@ -323,16 +323,14 @@ public class ModInterop : IDisposable
                 Groups = groups,
                 Meta = modMeta
             };
-
-            ModInfoCaches.Add(modDirectory, modInfo);
-            return true;
         } 
         catch (Exception e)
         {
-            PluginLog.Error($"Failed to build [{nameof(ModInfo)}] for [{modDirectory}]:\n{e.Message}");
-            ModInfoCaches.Add(modDirectory, null);
-            return false;
+            PluginLog.Error($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}]:\n{e.Message}");
         }
+
+        ModInfoCaches.Add(modDirectory, modInfo);
+        return modInfo != null;
     }
 
     #endregion
