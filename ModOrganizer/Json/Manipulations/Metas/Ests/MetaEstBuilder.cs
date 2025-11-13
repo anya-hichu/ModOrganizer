@@ -12,7 +12,7 @@ public class MetaEstBuilder(IPluginLog pluginLog) : Builder<MetaEst>(pluginLog)
 
         if (!AssertObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaEst.Entry), out var entryProperty)) return false;
+        if (!AssertU16PropertyValue(jsonElement, nameof(MetaEst.Entry), out var entry)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEst.Gender), out var gender)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEst.Race), out var race)) return false;
         if (!AssertU16PropertyValue(jsonElement, nameof(MetaEst.SetId), out var setIdProperty)) return false;
@@ -20,7 +20,7 @@ public class MetaEstBuilder(IPluginLog pluginLog) : Builder<MetaEst>(pluginLog)
 
         instance = new()
         {
-            Entry = entryProperty.GetUInt16(),
+            Entry = entry,
             Gender = gender,
             Race = race,
             SetId = setIdProperty,

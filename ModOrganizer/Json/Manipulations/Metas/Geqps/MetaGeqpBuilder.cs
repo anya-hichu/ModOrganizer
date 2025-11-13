@@ -12,7 +12,7 @@ public class MetaGeqpBuilder(IPluginLog pluginLog) : Builder<MetaGeqp>(pluginLog
 
         if (!AssertObject(jsonElement)) return false;
 
-        ushort? condition = jsonElement.TryGetProperty(nameof(MetaGeqp.Condition), out var conditionProperty) ? conditionProperty.GetUInt16() : null;
+        AssertU16PropertyValue(jsonElement, nameof(MetaGeqp.Condition), out var condition, false);
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaGeqp.Type), out var type)) return false;
 
         instance = new()

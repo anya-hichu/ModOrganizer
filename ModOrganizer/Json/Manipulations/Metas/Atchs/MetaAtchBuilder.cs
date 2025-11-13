@@ -18,7 +18,7 @@ public class MetaAtchBuilder(IPluginLog pluginLog) : Builder<MetaAtch>(pluginLog
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaAtch.Gender), out var gender)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaAtch.Race), out var race)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaAtch.Type), out var type)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaAtch.Index), out var indexProperty)) return false;
+        if (!AssertU16PropertyValue(jsonElement, nameof(MetaAtch.Index), out var index)) return false;
 
         if (!MetaAtchEntryBuilder.TryBuild(entryProperty, out var entry))
         {
@@ -32,7 +32,7 @@ public class MetaAtchBuilder(IPluginLog pluginLog) : Builder<MetaAtch>(pluginLog
             Gender = gender,
             Race = race,
             Type = type,
-            Index = indexProperty.GetUInt16()
+            Index = index
         };
 
         return true;

@@ -287,9 +287,9 @@ public class ModInterop : IDisposable
 
     public bool TryGetModInfo(string modDirectory, [NotNullWhen(true)] out ModInfo? modInfo)
     {
-        modInfo = default;
+        modInfo = null;
 
-        if (ModInfoCaches.TryGetValue(modDirectory, out modInfo)) return modInfo != null;
+        if (ModInfoCaches.TryGetValue(modDirectory, out var cache)) return cache != null;
 
         try
         {

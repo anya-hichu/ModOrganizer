@@ -15,17 +15,8 @@ public class MetaEqdpBuilder(IPluginLog pluginLog) : Builder<MetaEqdp>(pluginLog
         if (!AssertPropertyPresent(jsonElement, nameof(MetaEqdp.Entry), out var entryProperty)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEqdp.Gender), out var gender)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEqdp.Race), out var race)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaEqdp.SetId), out var setIdProperty)) return false;
+        if (!AssertU16PropertyValue(jsonElement, nameof(MetaEqdp.SetId), out var setId)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEqdp.Slot), out var slot)) return false;
-
-        // normalize as number => add inside Builder as generic
-        if (!(setIdProperty.TryGetUInt16(out var setId) || ushort.TryParse(setIdProperty.GetString(), out setId)))
-        {
-            PluginLog.Warning($"Failed to build [{nameof(MetaEqdp)}], required attribute [{nameof(MetaEqdp.SetId)}] could not be parsed:\n{jsonElement}");
-            return false;
-        }
-
-        // TODO REVIEW https://github.com/search?q=repo%3Axivdev%2FPenumbra%20%23U8&type=code and https://github.com/search?q=repo%3Axivdev%2FPenumbra%20%23U16&type=code
 
         instance = new()
         {

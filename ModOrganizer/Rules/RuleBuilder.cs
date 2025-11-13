@@ -34,7 +34,7 @@ public static class RuleBuilder
     {
         Name = type.ToString(),
         Priority = 1,
-        MatchExpression = $"changed_items | object.values | array.each @(do; ret $0?.type?.value; end) | array.uniq == [{(byte)type}]",
+        MatchExpression = $"changed_items | object.values | array.each @(do; ret $0?.type?.value; end) | array.filter @(do; ret $0 != null; end) | array.uniq == [{(byte)type}]",
         PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}", type, "/{{ meta.name }}")
     };
 

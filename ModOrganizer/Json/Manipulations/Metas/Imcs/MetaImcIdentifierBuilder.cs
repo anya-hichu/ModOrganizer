@@ -13,18 +13,18 @@ public class MetaImcIdentifierBuilder(IPluginLog pluginLog) : Builder<MetaImcIde
 
         if (!AssertObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaImcIdentifier.PrimaryId), out var primaryIdProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaImcIdentifier.SecondaryId), out var secondaryIdProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaImcIdentifier.Variant), out var variantProperty)) return false;
+        if (!AssertU16PropertyValue(jsonElement, nameof(MetaImcIdentifier.PrimaryId), out var primaryId)) return false;
+        if (!AssertU16PropertyValue(jsonElement, nameof(MetaImcIdentifier.SecondaryId), out var secondaryId)) return false;
+        if (!AssertU8PropertyValue(jsonElement, nameof(MetaImcIdentifier.Variant), out var variant)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.ObjectType), out var objectType)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.EquipSlot), out var equipSlot)) return false;
         if (!AssertPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.BodySlot), out var bodySlot)) return false;
 
         instance = new()
         {
-            PrimaryId = primaryIdProperty.GetUInt16(),
-            SecondaryId = secondaryIdProperty.GetUInt16(),
-            Variant = variantProperty.GetByte(),
+            PrimaryId = primaryId,
+            SecondaryId = secondaryId,
+            Variant = variant,
             ObjectType = objectType,
             EquipSlot = equipSlot,
             BodySlot = bodySlot
