@@ -109,6 +109,7 @@ public class ModInterop : IDisposable
     }
 
     #region Dispose
+
     public void Dispose()
     {
         SortOrderFileSystemWatcher.Dispose();
@@ -128,6 +129,7 @@ public class ModInterop : IDisposable
         MetaFileSystemWatcher?.Dispose();
         PluginLog.Debug("Disposed mod file system watchers");
     }
+
     #endregion
 
     #region Listeners
@@ -164,7 +166,8 @@ public class ModInterop : IDisposable
 
     #endregion
 
-    #region Filesystem watchers
+    #region Watchers
+
     public void CreateModFileSystemWatchers()
     {
         DefaultFileSystemWatcher = new FileSystemWatcher(ModsDirectoryPath, DEFAULT_FILE_NAME)
