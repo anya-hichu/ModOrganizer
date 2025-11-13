@@ -287,49 +287,49 @@ public class ModInterop : IDisposable
 
     public bool TryGetModInfo(string modDirectory, [NotNullWhen(true)] out ModInfo? modInfo)
     {
-        modInfo = null;
-
-        if (ModInfoCaches.TryGetValue(modDirectory, out var cache)) return cache != null;
-
-        try
+        if (!ModInfoCaches.TryGetValue(modDirectory, out modInfo))
         {
-            if (!LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData))
+            try
             {
-                PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}], ignoring");
+                if (!LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData))
+                {
+                    PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}], ignoring");
+                }
+
+                if (!DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod))
+                {
+                    PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}], ignoring");
+                }
+
+                if (!ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta))
+                {
+                    PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}], ignoring");
+                }
+
+                var groups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
+                    if (!GroupFactory.TryBuildFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}], ignoring");
+                    return group;
+                }).ToList();
+
+                modInfo = new()
+                {
+                    Directory = modDirectory,
+                    Path = GetModPath(modDirectory),
+                    ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
+                    Data = localModData,
+                    Default = defaultMod,
+                    Groups = groups,
+                    Meta = modMeta
+                };
+            }
+            catch (Exception e)
+            {
+                PluginLog.Error($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}]:\n{e.Message}");
             }
 
-            if (!DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod))
-            {
-                PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}], ignoring");
-            }
-
-            if (!ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta))
-            {
-                PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}], ignoring");
-            }
-
-            var groups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
-                if (!GroupFactory.TryBuildFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}], ignoring");
-                return group;
-            }).ToList();
-
-            modInfo = new()
-            {
-                Directory = modDirectory,
-                Path = GetModPath(modDirectory),
-                ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-                Data = localModData,
-                Default = defaultMod,
-                Groups = groups,
-                Meta = modMeta
-            };
-        } 
-        catch (Exception e)
-        {
-            PluginLog.Error($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}]:\n{e.Message}");
+            ModInfoCaches.Add(modDirectory, modInfo);
         }
 
-        ModInfoCaches.Add(modDirectory, modInfo);
         return modInfo != null;
     }
 
