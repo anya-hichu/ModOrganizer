@@ -17,7 +17,7 @@ public static class IFileLoaderExtensions
 
         if (!loader.TryBuild(jsonElement, out instance))
         {
-            loader.PluginLog.Debug($"failed to build instance [{typeof(T).Name}] from json file [{path}]");
+            loader.PluginLog.Debug($"Failed to build instance [{typeof(T).Name}] from json file [{path}]");
             return false;
         }
 

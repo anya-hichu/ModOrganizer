@@ -293,15 +293,35 @@ public class ModInterop : IDisposable
 
         try
         {
-            modInfo = new ModInfo()
+            if (!LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData))
+            {
+                PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}], ignoring");
+            }
+
+            if (!DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod))
+            {
+                PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}], ignoring");
+            }
+
+            if (!ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta))
+            {
+                PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}], ignoring");
+            }
+
+            var groups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
+                if (!GroupFactory.TryBuildFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}], ignoring");
+                return group;
+            }).ToList();
+
+            modInfo = new()
             {
                 Directory = modDirectory,
                 Path = GetModPath(modDirectory),
                 ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-                Data = LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData) ? localModData : null,
-                Default = DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod) ? defaultMod : null,
-                Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).SelectMany<string, Group>(p => GroupFactory.TryBuildFromFile(p, out var group) ? [group] : [])],
-                Meta = ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta) ? modMeta : null
+                Data = localModData,
+                Default = defaultMod,
+                Groups = groups,
+                Meta = modMeta
             };
 
             ModInfoCaches.Add(modDirectory, modInfo);
