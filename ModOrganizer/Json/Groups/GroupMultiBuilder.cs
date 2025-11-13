@@ -21,7 +21,7 @@ public class GroupMultiBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupMulti)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupMulti)}]:\n{jsonElement}");
             return false;
         }
 

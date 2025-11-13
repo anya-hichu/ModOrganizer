@@ -22,7 +22,7 @@ public class MetaAtchBuilder(IPluginLog pluginLog) : Builder<MetaAtch>(pluginLog
 
         if (!MetaAtchEntryBuilder.TryBuild(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to build [{nameof(MetaAtchEntry)}] for [{nameof(MetaAtch)}]");
+            PluginLog.Debug($"Failed to build [{nameof(MetaAtchEntry)}] for [{nameof(MetaAtch)}]:\n{entryProperty}");
             return false;
         }
 
