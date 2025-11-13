@@ -14,8 +14,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-
 
 namespace ModOrganizer.Mods;
 
@@ -132,7 +130,8 @@ public class ModInterop : IDisposable
     }
     #endregion
 
-    #region Event subscribers
+    #region Listeners
+
     private void OnWrappedModAdded(string modDirectory)
     {
         PluginLog.Debug($"Received mod added event [{modDirectory}]");
@@ -162,6 +161,7 @@ public class ModInterop : IDisposable
         CreateModFileSystemWatchers();
         InvalidateCaches();
     }
+
     #endregion
 
     #region Filesystem watchers
@@ -232,9 +232,11 @@ public class ModInterop : IDisposable
     {
         PluginLog.Debug($"Watcher [{sender.GetHashCode()}] returned error ({e?.GetException().Message}), ignoring");
     }
+
     #endregion
 
     #region Cache
+
     private void InvalidateCaches()
     {
         PluginLog.Debug($"Invalidate all caches");
@@ -273,17 +275,23 @@ public class ModInterop : IDisposable
     {
         if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
 
-        if (!JsonParser.TryParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
+        if (JsonParser.TryParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
         {
-            PluginLog.Warning("Failed to parse sort order file, returning empty");
-            return [];
+            MaybeSortOrderDataCache = sortOrder.Data;
+            PluginLog.Debug($"Loaded [{nameof(SortOrder)}] cache (count: {MaybeSortOrderDataCache.Count})");
         }
-
-        MaybeSortOrderDataCache = sortOrder.Data;
-        PluginLog.Debug($"Loaded sort order data cache (count: {MaybeSortOrderDataCache!.Count})");
+        else
+        {
+            PluginLog.Warning($"Failed to parse [{nameof(SortOrder)}], caching empty");
+            MaybeSortOrderDataCache = []; 
+        }
 
         return MaybeSortOrderDataCache;
     }
+
+    #endregion
+
+    #region API
 
     public bool TryGetModInfo(string modDirectory, [NotNullWhen(true)] out ModInfo? modInfo)
     {
@@ -324,7 +332,7 @@ public class ModInterop : IDisposable
             }
             catch (Exception e)
             {
-                PluginLog.Error($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}]:\n{e.Message}");
+                PluginLog.Warning($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}], caching empty:\n{e.Message}");
             }
 
             ModInfoCaches.Add(modDirectory, modInfo);
@@ -333,9 +341,6 @@ public class ModInterop : IDisposable
         return modInfo != null;
     }
 
-    #endregion
-
-    #region API
     public Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();
 
     public string GetModPath(string modDirectory) => GetSortOrderData().GetValueOrDefault(modDirectory, modDirectory);

@@ -28,7 +28,7 @@ public class ModAutoProcessor : IDisposable
     private void ProcessIfEnabled(string modDirectory)
     {
         if (!Config.AutoProcessEnabled) return;
-        PluginInfo.Debug($"Waiting {Config.AutoProcessDelayMs}ms before processing mod [{modDirectory}]");
+        PluginInfo.Debug($"Waiting [{Config.AutoProcessDelayMs}] ms before processing mod [{modDirectory}]");
 
         Task.Delay((int)Config.AutoProcessDelayMs).ContinueWith(_ =>
         {

@@ -1,6 +1,5 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Containers;
-using ModOrganizer.Json.ModMetas;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
