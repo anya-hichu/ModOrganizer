@@ -16,20 +16,20 @@ public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(plugi
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out DefaultMod? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
         uint? version = jsonElement.TryGetProperty(nameof(DefaultMod.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION})");
+            PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}):\n{jsonElement}");
             return false;
         }
 
         if (!ContainerBuilder.TryBuild(jsonElement, out var container))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(DefaultMod)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(DefaultMod)}]:\n{jsonElement}");
             return false;
         }
 

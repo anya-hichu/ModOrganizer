@@ -11,7 +11,7 @@ public class OptionImcFactory(IPluginLog pluginLog) : Factory<OptionImc>(pluginL
 
     protected override bool TryGetBuilder(JsonElement jsonElement, [NotNullWhen(true)] out Builder<OptionImc>? builder)
     {
-        builder = default;
+        builder = null;
 
         var hasAttributeMaskProperty = jsonElement.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var _);
         var hasIsDisableSubModProperty = jsonElement.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var _);

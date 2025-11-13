@@ -14,8 +14,8 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
 
     public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? newModDirectory)
     {
-        var modInfo = ModInterop.GetModInfo(modDirectory);
-        if (RuleEvaluator.TryEvaluateChain(Config.Rules, modInfo, out newModDirectory) && modDirectory != newModDirectory)
+        newModDirectory = default;
+        if (ModInterop.TryGetModInfo(modDirectory, out var modInfo) && RuleEvaluator.TryEvaluateChain(Config.Rules, modInfo, out newModDirectory) && modDirectory != newModDirectory)
         {
             var exitCode = ModInterop.SetModPath(modDirectory, newModDirectory!);
             if (exitCode == PenumbraApiEc.Success)

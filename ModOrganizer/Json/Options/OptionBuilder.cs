@@ -9,11 +9,11 @@ public class OptionBuilder(IPluginLog pluginLog) : Builder<Option>(pluginLog)
 {
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Option? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
-        if (!AssertStringPropertyPresent(jsonElement, nameof(Option.Name), out var name)) return false;
+        if (!AssertPropertyValuePresent(jsonElement, nameof(Option.Name), out var name)) return false;
 
         var description = jsonElement.TryGetProperty(nameof(Option.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
         int? priority = jsonElement.TryGetProperty(nameof(Option.Priority), out var priorityProperty) ? priorityProperty.GetInt32() : null;

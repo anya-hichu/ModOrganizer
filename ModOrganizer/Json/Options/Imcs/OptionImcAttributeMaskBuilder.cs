@@ -10,13 +10,13 @@ public class OptionImcAttributeMaskBuilder(IPluginLog pluginLog) : Builder<Optio
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out OptionImc? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertHasProperty(jsonElement, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
+        if (!AssertPropertyPresent(jsonElement, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]:\n{jsonElement}");
             return false;
         }
 

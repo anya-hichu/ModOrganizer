@@ -10,15 +10,15 @@ public abstract class ManipulationWrapperBuilder<T>(IPluginLog pluginLog, string
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out ManipulationWrapper? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
-        if (!AssertHasProperty(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+        if (!AssertPropertyPresent(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
 
         if (!TryBuildWrapped(manipulationProperty, out var wrapped))
         {
-            PluginLog.Debug($"Failed to build wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]");
+            PluginLog.Debug($"Failed to build wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]:\n{jsonElement}");
             return false;
         }
 

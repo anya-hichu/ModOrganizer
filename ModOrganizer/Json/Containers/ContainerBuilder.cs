@@ -12,9 +12,9 @@ public class ContainerBuilder(IPluginLog pluginLog) : Builder<Container>(pluginL
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Container? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
         var files = jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) ? 
             filesProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!) : null;

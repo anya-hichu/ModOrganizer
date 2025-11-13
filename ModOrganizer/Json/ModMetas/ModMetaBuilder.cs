@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using Dalamud.Utility;
 using ModOrganizer.Json.Loaders;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -15,20 +14,20 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out ModMeta? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
-        if (!AssertHasProperty(jsonElement, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
+        if (!AssertPropertyPresent(jsonElement, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
 
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
-            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION})");
+            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}):\n{jsonElement}");
             return false;
         }
 
-        if (!AssertStringPropertyPresent(jsonElement, nameof(ModMeta.Name), out var name)) return false;
+        if (!AssertPropertyValuePresent(jsonElement, nameof(ModMeta.Name), out var name)) return false;
 
         var author = jsonElement.TryGetProperty(nameof(ModMeta.Author), out var authorProperty) ? authorProperty.GetString() : null;
         var description = jsonElement.TryGetProperty(nameof(ModMeta.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
@@ -43,7 +42,7 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
         var defaultPreferredItems = jsonElement.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) ? 
             defaultPreferredItemsProperty.EnumerateArray().Select(j => j.GetInt32()).ToArray() : [];
 
-        var requiredFeatures = jsonElement.TryGetProperty(nameof(ModMeta.ModTags), out var requiredFeaturesProperty) ? 
+        var requiredFeatures = jsonElement.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) ? 
             requiredFeaturesProperty.EnumerateArray().Select(j => j.GetString()!).ToArray() : [];
 
         instance = new()

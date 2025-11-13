@@ -5,18 +5,18 @@ namespace ModOrganizer.Json.Groups;
 public record Group
 {
     // unused currently
-    public uint? Version { get; set; }
+    public uint? Version { get; init; }
 
-    public required string Name { get; set; }
-    public string? Description { get; set; }
+    public required string Name { get; init; }
+    public string? Description { get; init; }
 
-    public string? Image { get; set; }
+    public string? Image { get; init; }
 
-    public int? Page { get; set; }
+    public int? Page { get; init; }
 
-    public int? Priority { get; set; }
+    public int? Priority { get; init; }
 
-    public required string Type { get; set; }
+    public required string Type { get; init; }
 
-    public int? DefaultSettings { get; set; }
+    public int? DefaultSettings { get; init; }
 }

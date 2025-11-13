@@ -2,5 +2,5 @@ namespace ModOrganizer.Json.Options.Imcs;
 
 public record OptionImcIsDisableSubMod : OptionImc
 {
-    public required bool IsDisableSubMod { get; set; }
+    public required bool IsDisableSubMod { get; init; }
 }

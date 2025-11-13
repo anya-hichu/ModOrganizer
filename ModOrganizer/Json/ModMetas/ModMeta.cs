@@ -4,15 +4,15 @@ namespace ModOrganizer.Json.ModMetas;
 
 public record ModMeta
 {
-    public required uint FileVersion { get; set; }
-    public required string Name { get; set; }
+    public required uint FileVersion { get; init; }
+    public required string Name { get; init; }
 
-    public string? Author { get; set; }
-    public string? Description { get; set; }
-    public string? Image { get; set; }
-    public string? Version { get; set; }
-    public string? Website { get; set; }
-    public string[]? ModTags { get; set; }
-    public int[]? DefaultPreferredItems { get; set; }
-    public string[]? RequiredFeatures { get; set; }
+    public string? Author { get; init; }
+    public string? Description { get; init; }
+    public string? Image { get; init; }
+    public string? Version { get; init; }
+    public string? Website { get; init; }
+    public string[]? ModTags { get; init; }
+    public int[]? DefaultPreferredItems { get; init; }
+    public string[]? RequiredFeatures { get; init; }
 }

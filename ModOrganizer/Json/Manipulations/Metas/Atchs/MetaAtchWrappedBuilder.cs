@@ -2,9 +2,9 @@ using Dalamud.Plugin.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Manipulations.Metas.Wrapped;
+namespace ModOrganizer.Json.Manipulations.Metas.Atchs;
 
-public class WrappedMetaAtchBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaAtch>(pluginLog, TYPE)
+public class MetaAtchWrappedBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaAtch>(pluginLog, TYPE)
 {
     public static readonly string TYPE = "Atch";
 

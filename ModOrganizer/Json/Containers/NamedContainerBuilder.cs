@@ -10,11 +10,11 @@ public class NamedContainerBuilder(IPluginLog pluginLog) : Builder<NamedContaine
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out NamedContainer? instance)
     {
-        instance = default;
+        instance = null;
 
         if(!ContainerBuilder.TryBuild(jsonElement, out var container))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(NamedContainer)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(NamedContainer)}]:\n{jsonElement}");
             return false;
         }
 

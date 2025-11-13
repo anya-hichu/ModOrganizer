@@ -15,9 +15,9 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
@@ -27,7 +27,7 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE})");
+            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n{jsonElement}");
             return false;
         }
 

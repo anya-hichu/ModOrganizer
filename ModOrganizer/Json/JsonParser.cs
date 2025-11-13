@@ -11,7 +11,7 @@ public class JsonParser(IPluginLog pluginLog)
     // Some mods use tailing commas for some reason
     private static JsonSerializerOptions JsonSerializerOptions { get; set; } = new() { AllowTrailingCommas = true };
 
-    private IPluginLog PluginLog { get; set; } = pluginLog;
+    private IPluginLog PluginLog { get; init; } = pluginLog;
 
     public bool TryParseFile<T>(string path, [NotNullWhen(true)] out T? parsed)
     {
@@ -24,7 +24,8 @@ public class JsonParser(IPluginLog pluginLog)
         }
         catch (Exception e)
         {
-            PluginLog.Debug($"Failed to parse [{typeof(T).Name}] from json file [{path}] ({e})");
+            PluginLog.Error($"Failed to parse [{typeof(T).Name}] from json file [{path}] ({e})");
+            throw;
         }
         return false;
     }

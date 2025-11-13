@@ -8,9 +8,11 @@ using ModOrganizer.Mods;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
+using Scriban.Syntax;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -172,7 +174,7 @@ public class MainWindow : Window, IDisposable
                         using var modInfoNode = ImRaii.TreeNode($"{selectedModDirectory}##modInfo{selectedModDirectory.GetHashCode()}");
 
                         using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite2);
-                        if (modInfoNode) DrawObjectTree(ModInterop.GetModInfo(selectedModDirectory));
+                        if (modInfoNode.Success && ModInterop.TryGetModInfo(selectedModDirectory, out var modInfo)) DrawObjectTree(modInfo);
                     }
                 }
             }
@@ -195,7 +197,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Evaluate##evaluateButton"))
             {
-                EvaluationTask = EvaluationTask.ContinueWith(_ => EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d => Template.Evaluate(Expression, ModInterop.GetModInfo(d), ModInfoMemberRenamer.Rename)));
+                Evaluate();
             }
 
             ImGui.SameLine();
@@ -213,6 +215,8 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
+                // Add clipping ImGui.ImGuiListClipper();
+
                 if (table)
                 {
                     foreach (var evaluationResult in EvaluationResults.OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
@@ -225,6 +229,14 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn())
                         {
+                            if (evaluationResult.Value is Exception e)
+                            {
+                                using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+                                ImGui.Text(e.Message);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(e.Message);
+                                continue;
+                            }
+
                             var content = TemplateContext.ObjectToString(evaluationResult.Value);
                             ImGui.Text(content);
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(content);
@@ -276,5 +288,18 @@ public class MainWindow : Window, IDisposable
         }
 
         DrawObjectTree(value);
+    }
+
+    private void Evaluate()
+    {
+        EvaluationTask = EvaluationTask.ContinueWith(_ =>
+        {
+            EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d =>
+            {
+                if (!ModInterop.TryGetModInfo(d, out var modInfo)) return new ArgumentException("Failed to retrieve mod data");
+
+                return Template.Evaluate(Expression, modInfo, ModInfoMemberRenamer.Rename);
+            });
+        });
     }
 }

@@ -17,19 +17,19 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupCombining)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupCombining)}]:\n{jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupCombining)}], invalid type [{group.Type}] (expected: {TYPE})");
+            PluginLog.Warning($"Failed to build [{nameof(GroupCombining)}], invalid type [{group.Type}] (expected: {TYPE}):\n{jsonElement}");
             return false;
         }
 

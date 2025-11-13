@@ -11,8 +11,10 @@ using Penumbra.Api.Helpers;
 using Penumbra.Api.IpcSubscribers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 
 namespace ModOrganizer.Mods;
@@ -45,7 +47,7 @@ public class ModInterop : IDisposable
 
     private string ModsDirectoryPath { get; set; }
 
-    private Dictionary<string, ModInfo> ModInfoCaches { get; init; } = [];
+    private Dictionary<string, ModInfo?> ModInfoCaches { get; init; } = [];
     private Dictionary<string, string>? MaybeSortOrderDataCache { get; set; }
 
     private GetModDirectory GetModDirectorySubscriber { get; init; }
@@ -283,25 +285,36 @@ public class ModInterop : IDisposable
         return MaybeSortOrderDataCache;
     }
 
-    public ModInfo GetModInfo(string modDirectory)
+    public bool TryGetModInfo(string modDirectory, [NotNullWhen(true)] out ModInfo? modInfo)
     {
-        if (ModInfoCaches.TryGetValue(modDirectory, out var cache)) return cache;
+        modInfo = default;
 
-        var modInfo = new ModInfo()
+        if (ModInfoCaches.TryGetValue(modDirectory, out modInfo)) return modInfo != null;
+
+        try
         {
-            Directory = modDirectory,
-            Path = GetModPath(modDirectory),
-            ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-            Data = LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData) ? localModData : null,
-            Default = DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod) ? defaultMod : null,
-            Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).SelectMany<string, Group>(p => GroupFactory.TryBuildFromFile(p, out var group) ? [group] : [])],
-            Meta = ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta) ? modMeta : null
-        };
+            modInfo = new ModInfo()
+            {
+                Directory = modDirectory,
+                Path = GetModPath(modDirectory),
+                ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
+                Data = LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData) ? localModData : null,
+                Default = DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod) ? defaultMod : null,
+                Groups = [.. Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).SelectMany<string, Group>(p => GroupFactory.TryBuildFromFile(p, out var group) ? [group] : [])],
+                Meta = ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta) ? modMeta : null
+            };
 
-        ModInfoCaches.Add(modDirectory, modInfo);
-
-        return modInfo;
+            ModInfoCaches.Add(modDirectory, modInfo);
+            return true;
+        } 
+        catch (Exception e)
+        {
+            PluginLog.Error($"Failed to build [{nameof(ModInfo)}] for [{modDirectory}]:\n{e.Message}");
+            ModInfoCaches.Add(modDirectory, null);
+            return false;
+        }
     }
+
     #endregion
 
     #region API

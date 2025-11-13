@@ -1,5 +1,5 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Imcs;
+using ModOrganizer.Json.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Options.Imcs;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -14,13 +14,13 @@ public class GroupImcBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
 
     private GroupBuilder GroupBuilder { get; init; } = new(pluginLog);
 
-    private ImcEntryBuilder ImcEntryBuilder { get; init; } = new(pluginLog);
-    private ImcIdentifierBuilder ImcIdentifierBuilder { get; init; } = new(pluginLog);
+    private MetaImcEntryBuilder ImcEntryBuilder { get; init; } = new(pluginLog);
+    private MetaImcIdentifierBuilder ImcIdentifierBuilder { get; init; } = new(pluginLog);
     private OptionImcFactory OptionImcFactory { get; init; } = new(pluginLog);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {
-        instance = default;
+        instance = null;
 
         var allVariants = jsonElement.TryGetProperty(nameof(GroupImc.AllVariants), out var allVariantsProperty) && allVariantsProperty.GetBoolean();
         var allAttributes = jsonElement.TryGetProperty(nameof(GroupImc.AllAttributes), out var allAttributesProperty) && allAttributesProperty.GetBoolean();
@@ -36,13 +36,13 @@ public class GroupImcBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupImc)}]");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupImc)}]:\n{jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE})");
+            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n{jsonElement}");
             return false;
         }
 

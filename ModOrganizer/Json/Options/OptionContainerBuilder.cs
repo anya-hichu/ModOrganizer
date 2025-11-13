@@ -13,9 +13,9 @@ public class OptionContainerBuilder(IPluginLog pluginLog) : Builder<OptionContai
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out OptionContainer? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
         if (!ContainerBuilder.TryBuild(jsonElement, out var container))
         {

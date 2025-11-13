@@ -2,9 +2,9 @@ using Dalamud.Plugin.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Manipulations.Metas.Wrapped;
+namespace ModOrganizer.Json.Manipulations.Metas.Imcs;
 
-public class WrappedMetaImcBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaImc>(pluginLog, TYPE)
+public class MetaImcWrappedBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaImc>(pluginLog, TYPE)
 {
     public static readonly string TYPE = "Imc";
 

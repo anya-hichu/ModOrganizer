@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json;
 
-public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLog)
+public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLog) where T : class
 {
     private static readonly string TYPE_PROPERTY_NAME = "Type";
 
@@ -16,13 +16,13 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
     {
         builder = default;
 
-        if (!AssertIsObject(jsonElement)) return false;
+        if (!AssertObject(jsonElement)) return false;
 
-        if (!AssertStringPropertyPresent(jsonElement, TYPE_PROPERTY_NAME, out var type)) return false;
+        if (!AssertPropertyValuePresent(jsonElement, TYPE_PROPERTY_NAME, out var type)) return false;
 
         if (!Builders.TryGetValue(type, out builder))
         {
-            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder for type [{type}] (registered types: {string.Join(", ", Builders.Keys)})");
+            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder for type [{type}] (registered types: {string.Join(", ", Builders.Keys)}):\n{jsonElement}");
             return false;
         }
 

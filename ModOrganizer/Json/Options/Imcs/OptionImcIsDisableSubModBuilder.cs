@@ -10,9 +10,9 @@ public class OptionImcIsDisableSubModBuilder(IPluginLog pluginLog) : Builder<Opt
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out OptionImc? instance)
     {
-        instance = default;
+        instance = null;
 
-        if (!AssertHasProperty(jsonElement, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
+        if (!AssertPropertyPresent(jsonElement, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {

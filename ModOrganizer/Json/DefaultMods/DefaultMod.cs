@@ -6,5 +6,5 @@ namespace ModOrganizer.Json.DefaultMods;
 public record DefaultMod : Container
 {
     // unused currently
-    public uint? Version { get; set;}
+    public uint? Version { get; init; }
 }

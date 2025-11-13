@@ -6,7 +6,7 @@ namespace ModOrganizer.Json.Options;
 // Where is multi-inheritance when you need it?
 public record OptionContainer : Option
 {
-    public Dictionary<string, string>? Files { get; set; }
-    public Dictionary<string, string>? FileSwaps { get; set; }
-    public ManipulationWrapper[]? Manipulations { get; set; }
+    public Dictionary<string, string>? Files { get; init; }
+    public Dictionary<string, string>? FileSwaps { get; init; }
+    public ManipulationWrapper[]? Manipulations { get; init; }
 }
