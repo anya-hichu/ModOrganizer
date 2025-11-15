@@ -7,5 +7,5 @@ public record MetaAtr : Manipulation
     public string? Slot { get; init; }
     public ushort? Id { get; init; }
     public required string Attribute { get; init; }
-    public uint? GenderRaceCondition { get; init; }
+    public ushort? GenderRaceCondition { get; init; }
 }

@@ -16,7 +16,7 @@ public class OptionImcAttributeMaskBuilder(IPluginLog pluginLog) : Builder<Optio
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]:\n{jsonElement}");
+            PluginLog.Debug($"Failed to build base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]:\n\t{jsonElement}");
             return false;
         }
 

@@ -25,7 +25,6 @@ public class JsonParser(IPluginLog pluginLog)
         catch (Exception e)
         {
             PluginLog.Error($"Failed to parse [{typeof(T).Name}] from json file [{path}] ({e})");
-            throw;
         }
         return false;
     }

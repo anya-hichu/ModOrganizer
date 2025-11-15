@@ -14,7 +14,7 @@ public class NamedContainerBuilder(IPluginLog pluginLog) : Builder<NamedContaine
 
         if(!ContainerBuilder.TryBuild(jsonElement, out var container))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(NamedContainer)}]:\n{jsonElement}");
+            PluginLog.Debug($"Failed to build base [{nameof(Container)}] for [{nameof(NamedContainer)}]:\n\t{jsonElement}");
             return false;
         }
 

@@ -19,13 +19,13 @@ public class MetaImcBuilder(IPluginLog pluginLog) : Builder<MetaImc>(pluginLog)
 
         if (!ImcEntryBuilder.TryBuild(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to build [{nameof(MetaImcEntry)}] for [{nameof(MetaImc)}]:\n{entryProperty}");
+            PluginLog.Debug($"Failed to build [{nameof(MetaImcEntry)}] for [{nameof(MetaImc)}]:\n\t{entryProperty}");
             return false;
         }
 
         if (!ImcIdentifierBuilder.TryBuild(jsonElement, out var identifier))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(MetaImcIdentifier)}] for [{nameof(MetaImc)}]:\n{jsonElement}");
+            PluginLog.Debug($"Failed to build base [{nameof(MetaImcIdentifier)}] for [{nameof(MetaImc)}]:\n\t{jsonElement}");
             return false;
         }
 

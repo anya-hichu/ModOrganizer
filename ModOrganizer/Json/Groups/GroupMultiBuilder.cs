@@ -21,13 +21,13 @@ public class GroupMultiBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupMulti)}]:\n{jsonElement}");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupMulti)}]:\n\t{jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupMulti)}], invalid type [{group.Type}] (expected: {TYPE}):\n{jsonElement}");
+            PluginLog.Warning($"Failed to build [{nameof(GroupMulti)}], invalid type [{group.Type}] (expected: {TYPE}):\n\t{jsonElement}");
             return false;
         }
 

@@ -18,7 +18,7 @@ public class GroupBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
         uint? version = jsonElement.TryGetProperty(nameof(Group.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to build [{typeof(Group).Name}], unsupported [{nameof(Group.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}):\n{jsonElement}");
+            PluginLog.Warning($"Failed to build [{typeof(Group).Name}], unsupported [{nameof(Group.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}):\n\t{jsonElement}");
             return false;
         }
 

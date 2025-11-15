@@ -36,13 +36,13 @@ public class GroupImcBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupImc)}]:\n{jsonElement}");
+            PluginLog.Debug($"Failed to build base [{nameof(Group)}] for [{nameof(GroupImc)}]:\n\t{jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n{jsonElement}");
+            PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n\t{jsonElement}");
             return false;
         }
 

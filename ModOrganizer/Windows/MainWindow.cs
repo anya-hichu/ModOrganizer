@@ -3,12 +3,13 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
+using ModOrganizer.Scriban;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
-using Scriban.Syntax;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,8 +27,9 @@ public class MainWindow : Window, IDisposable
 
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
+    private IPluginLog PluginLog { get; init; }
 
-    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = ModInfoMemberRenamer.Rename };
+    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private string Filter { get; set; } = string.Empty;
@@ -37,7 +39,7 @@ public class MainWindow : Window, IDisposable
     private Dictionary<string, object> EvaluationResults { get; set; } = [];
     private Task EvaluationTask { get; set; } = Task.CompletedTask;
     
-    public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem, IPluginLog pluginLog) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -47,13 +49,14 @@ public class MainWindow : Window, IDisposable
 
         ModInterop = modInterop;
         ModVirtualFileSystem = modVirtualFileSystem;
+        PluginLog = pluginLog;
     }
 
-    public void Dispose() => ModInterop.EnableFileSystemWatchers(false);
+    public void Dispose() => ModInterop.ToggleFileSystemWatchers(false);
 
-    public override void OnOpen() => ModInterop.EnableFileSystemWatchers(true);
+    public override void OnOpen() => ModInterop.ToggleFileSystemWatchers(true);
 
-    public override void OnClose() => ModInterop.EnableFileSystemWatchers(false);
+    public override void OnClose() => ModInterop.ToggleFileSystemWatchers(false);
 
     private void ToggleFolderSelection(ModVirtualFolder folder)
     {
@@ -215,6 +218,8 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
+                // Add column search
+
                 // Add clipping ImGui.ImGuiListClipper();
 
                 if (table)
@@ -233,13 +238,15 @@ public class MainWindow : Window, IDisposable
                             {
                                 using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
                                 ImGui.Text(e.Message);
-                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(e.Message);
+                                if (e.InnerException != null && ImGui.IsItemHovered()) ImGui.SetTooltip(e.InnerException.Message);
                                 continue;
                             }
 
-                            var content = TemplateContext.ObjectToString(evaluationResult.Value);
-                            ImGui.Text(content);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(content);
+                            if (evaluationResult.Value is string value)
+                            {
+                                ImGui.Text(value);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(value);
+                            }
                         }
                     }
                 }
@@ -298,7 +305,16 @@ public class MainWindow : Window, IDisposable
             {
                 if (!ModInterop.TryGetModInfo(d, out var modInfo)) return new ArgumentException("Failed to retrieve mod data");
 
-                return Template.Evaluate(Expression, modInfo, ModInfoMemberRenamer.Rename);
+                try
+                {
+                    var result = Template.Evaluate(Expression, modInfo, MemberRenamer.Rename);
+                    return (object)TemplateContext.ObjectToString(result);
+                }
+                catch (Exception e)
+                {
+                    PluginLog.Warning($"Failed to evaluate expression for mod [{d}]:\n\t{e.Message}");
+                    return new ArgumentException("Failed to evaluate", e);
+                }
             });
         });
     }

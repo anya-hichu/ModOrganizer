@@ -6,7 +6,7 @@ namespace ModOrganizer.Json.Manipulations.Metas.Geqps;
 
 public class MetaGeqpWrappedBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaGeqp>(pluginLog, TYPE)
 {
-    public static readonly string TYPE = "Geqp";
+    public static readonly string TYPE = "GlobalEqp";
 
     private MetaGeqpBuilder MetaGeqpBuilder { get; init; } = new(pluginLog);
 

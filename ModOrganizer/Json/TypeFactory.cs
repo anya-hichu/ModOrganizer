@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using Dalamud.Utility;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -14,7 +13,7 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
 
     protected override bool TryGetBuilder(JsonElement jsonElement, [NotNullWhen(true)] out Builder<T>? builder)
     {
-        builder = default;
+        builder = null;
 
         if (!AssertObject(jsonElement)) return false;
 
@@ -22,7 +21,7 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
 
         if (!Builders.TryGetValue(type, out builder))
         {
-            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder for type [{type}] (registered types: {string.Join(", ", Builders.Keys)}):\n{jsonElement}");
+            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder for type [{type}] (registered types: {string.Join(", ", Builders.Keys)}):\n\t{jsonElement}");
             return false;
         }
 

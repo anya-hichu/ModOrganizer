@@ -201,14 +201,14 @@ public class ModInterop : IDisposable
         watcher.Error += OnFileSystemWatcherError;
     }
 
-    public void EnableFileSystemWatchers(bool enable)
+    public void ToggleFileSystemWatchers(bool enable)
     {
         SortOrderFileSystemWatcher.EnableRaisingEvents = enable;
         DataFileSystemWatcher.EnableRaisingEvents = enable;
         DefaultFileSystemWatcher!.EnableRaisingEvents = enable;
         GroupsFileSystemWatcher!.EnableRaisingEvents = enable;
         MetaFileSystemWatcher!.EnableRaisingEvents = enable;
-        PluginLog.Debug($"{(enable ? "Enabled" : "Disabled")} raising file system events");
+        PluginLog.Debug($"Toggled file system watchers [{enable}]");
     }
 
     private void OnSortOrderFileUpdate(object sender, FileSystemEventArgs e)
@@ -298,50 +298,57 @@ public class ModInterop : IDisposable
 
     public bool TryGetModInfo(string modDirectory, [NotNullWhen(true)] out ModInfo? modInfo)
     {
-        if (!ModInfoCaches.TryGetValue(modDirectory, out modInfo))
+        if (ModInfoCaches.TryGetValue(modDirectory, out modInfo)) return modInfo != null;
+
+        var hasErrors = false;
+        if (!LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData))
         {
-            try
-            {
-                if (!LocalModDataBuilder.TryBuildFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData))
-                {
-                    PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}], ignoring");
-                }
-
-                if (!DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod))
-                {
-                    PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}], ignoring");
-                }
-
-                if (!ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta))
-                {
-                    PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}], ignoring");
-                }
-
-                var groups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
-                    if (!GroupFactory.TryBuildFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}], ignoring");
-                    return group;
-                }).ToList();
-
-                modInfo = new()
-                {
-                    Directory = modDirectory,
-                    Path = GetModPath(modDirectory),
-                    ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
-                    Data = localModData,
-                    Default = defaultMod,
-                    Groups = groups,
-                    Meta = modMeta
-                };
-            }
-            catch (Exception e)
-            {
-                PluginLog.Warning($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}], caching empty:\n{e.Message}");
-            }
-
-            ModInfoCaches.Add(modDirectory, modInfo);
+            PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
+            hasErrors = true;
         }
 
-        return modInfo != null;
+        if (!DefaultModBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod))
+        {
+            PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
+            hasErrors = true;
+        }
+
+        if (!ModMetaBuilder.TryBuildFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta))
+        {
+            PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
+            hasErrors = true;
+        }
+
+        var groups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
+            if (!GroupFactory.TryBuildFromFile(p, out var group))
+            {
+                PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
+                hasErrors = true;
+            }
+            return group;
+        }).ToList();
+
+        if (hasErrors)
+        {
+            PluginLog.Warning($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}], caching failure until next file system update or reload");
+            ModInfoCaches.Add(modDirectory, null);
+            return false;
+        } 
+
+        modInfo = new()
+        {
+            Directory = modDirectory,
+            Path = GetModPath(modDirectory),
+            ChangedItems = GetChangedItemsSubscriber.Invoke(modDirectory, string.Empty),
+            Data = localModData,
+            Default = defaultMod,
+            Groups = groups,
+            Meta = modMeta
+        };
+
+        ModInfoCaches.Add(modDirectory, modInfo);
+
+        return true;
     }
 
     public Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();

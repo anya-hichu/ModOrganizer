@@ -45,8 +45,9 @@ public sealed class Plugin : IDalamudPlugin
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModVirtualFileSystem = new(ModInterop);
 
+        // add top bar actions
         ConfigWindow = new ConfigWindow(Config);
-        MainWindow = new MainWindow(ModInterop, ModVirtualFileSystem);
+        MainWindow = new MainWindow(ModInterop, ModVirtualFileSystem, PluginLog);
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);

@@ -23,7 +23,7 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
-            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}):\n{jsonElement}");
+            PluginLog.Warning($"Failed to build [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}):\n\t{jsonElement}");
             return false;
         }
 
