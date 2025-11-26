@@ -19,7 +19,7 @@ public class ManipulationWrapperFactory : TypeFactory<ManipulationWrapper>
         Builders.Add(MetaImcWrappedBuilder.TYPE, new MetaImcWrappedBuilder(pluginLog));
         Builders.Add(MetaAtchWrappedBuilder.TYPE, new MetaAtchWrappedBuilder(pluginLog));
         Builders.Add(MetaAtrWrappedBuilder.TYPE, new MetaAtrWrappedBuilder(pluginLog));
-        Builders.Add(MetaEqpdWrappedBuilder.TYPE, new MetaEqpdWrappedBuilder(pluginLog));
+        Builders.Add(MetaEqdpWrappedBuilder.TYPE, new MetaEqdpWrappedBuilder(pluginLog));
         Builders.Add(MetaEqpWrappedBuilder.TYPE, new MetaEqpWrappedBuilder(pluginLog));
         Builders.Add(MetaEstWrappedBuilder.TYPE, new MetaEstWrappedBuilder(pluginLog));
         Builders.Add(MetaGeqpWrappedBuilder.TYPE, new MetaGeqpWrappedBuilder(pluginLog));

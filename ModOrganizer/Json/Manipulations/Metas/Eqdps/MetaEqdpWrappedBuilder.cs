@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Manipulations.Metas.Eqdps;
 
-public class MetaEqpdWrappedBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaEqdp>(pluginLog, TYPE)
+public class MetaEqdpWrappedBuilder(IPluginLog pluginLog) : ManipulationWrapperBuilder<MetaEqdp>(pluginLog, TYPE)
 {
     public static readonly string TYPE = "Eqdp";
 
