@@ -7,9 +7,11 @@ using Dalamud.Plugin.Services;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
 using ModOrganizer.Scriban;
+using ModOrganizer.Utils;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
+using Scriban.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,16 +30,19 @@ public class MainWindow : Window, IDisposable
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
-
-    private TemplateContext TemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan SourceSpan { get; init; } = new();
 
     private string Filter { get; set; } = string.Empty;
     private HashSet<string> SelectedModDirectories { get; set; } = [];
 
     private string Expression { get; set; } = string.Empty;
+
+    private string EvalationModDirectoryFilter { get; set; } = string.Empty;
+    private string EvalationEvaluationResultFilter { get; set; } = string.Empty;
     private Dictionary<string, object> EvaluationResults { get; set; } = [];
     private Task EvaluationTask { get; set; } = Task.CompletedTask;
+
+    private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     
     public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem, IPluginLog pluginLog) : base("ModOrganizer - Main##mainWindow")
     {
@@ -50,13 +55,28 @@ public class MainWindow : Window, IDisposable
         ModInterop = modInterop;
         ModVirtualFileSystem = modVirtualFileSystem;
         PluginLog = pluginLog;
+
+        ModInterop.OnModDeleted += OnModDeleted;
+        ModInterop.OnModMoved += OnModMoved;
     }
 
-    public void Dispose() => ModInterop.ToggleFileSystemWatchers(false);
+    public void Dispose() 
+    {
+        ModInterop.OnModDeleted -= OnModDeleted;
+        ModInterop.OnModMoved -= OnModMoved;
+        ModInterop.ToggleFsWatchers(false);
+    } 
 
-    public override void OnOpen() => ModInterop.ToggleFileSystemWatchers(true);
+    public override void OnOpen() => ModInterop.ToggleFsWatchers(true);
 
-    public override void OnClose() => ModInterop.ToggleFileSystemWatchers(false);
+    public override void OnClose() => ModInterop.ToggleFsWatchers(false);
+
+    private void OnModDeleted(string modDirectory) => SelectedModDirectories.Remove(modDirectory);
+
+    private void OnModMoved(string modDirectory, string newModDirectory)
+    {
+        if (SelectedModDirectories.Remove(modDirectory)) SelectedModDirectories.Add(newModDirectory);
+    }
 
     private void ToggleFolderSelection(ModVirtualFolder folder)
     {
@@ -207,24 +227,40 @@ public class MainWindow : Window, IDisposable
             if (ImGui.Button("Clear##clearButton"))
             {
                 Expression = string.Empty;
+                EvalationModDirectoryFilter = string.Empty;
+                EvalationEvaluationResultFilter = string.Empty;
                 EvaluationResults = [];
             }
 
             if (EvaluationResults.Count > 0)
             {
                 using var table = ImRaii.Table("evaluationResultsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
-                ImGui.TableSetupColumn($"Mod directory###directoryName", ImGuiTableColumnFlags.None, 1);
-                ImGui.TableSetupColumn($"Evaluation result###result", ImGuiTableColumnFlags.None, 6);
-                ImGui.TableSetupScrollFreeze(0, 1);
-                ImGui.TableHeadersRow();
-
-                // Add column search
-
-                // Add clipping ImGui.ImGuiListClipper();
 
                 if (table)
                 {
-                    foreach (var evaluationResult in EvaluationResults.OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
+                    // Add column search
+
+                    // Add clipping ImGui.ImGuiListClipper();
+                    ImGui.TableSetupColumn($"Mod directory###directoryName", ImGuiTableColumnFlags.None, 1);
+                    ImGui.TableSetupColumn($"Evaluation result###result", ImGuiTableColumnFlags.None, 6);
+                    ImGui.TableSetupScrollFreeze(0, 2);
+                    ImGui.TableHeadersRow();
+
+                    if (ImGui.TableNextColumn())
+                    {
+                        var filter = EvalationModDirectoryFilter;
+                        if (ImGui.InputText("###evalationModDirectoryFilter", ref filter)) EvalationModDirectoryFilter = filter;
+                        if (ImGui.Button("X###clearEvalationModDirectoryFilter")) EvalationModDirectoryFilter = string.Empty;
+                    }
+
+                    if (ImGui.TableNextColumn())
+                    {
+                        var filter = EvalationEvaluationResultFilter;
+                        if (ImGui.InputText("###evalationModDirectoryFilter", ref filter)) EvalationEvaluationResultFilter = filter;
+                        if (ImGui.Button("X###clearEvalationModDirectoryFilter")) EvalationEvaluationResultFilter = string.Empty;
+                    }
+
+                    foreach (var evaluationResult in EvaluationResults.Where(e => TokenMatcher.Matches(EvalationModDirectoryFilter, e.Key) || TokenMatcher.Matches(EvalationModDirectoryFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
                     {
                         if (ImGui.TableNextColumn())
                         {
@@ -238,7 +274,7 @@ public class MainWindow : Window, IDisposable
                             {
                                 using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
                                 ImGui.Text(e.Message);
-                                if (e.InnerException != null && ImGui.IsItemHovered()) ImGui.SetTooltip(e.InnerException.Message);
+                                if (ImGui.IsItemHovered() && e.InnerException != null) ImGui.SetTooltip(e.InnerException.Message);
                                 continue;
                             }
 
@@ -256,10 +292,10 @@ public class MainWindow : Window, IDisposable
 
     private void DrawObjectTree(object value)
     {
-        var accessor = TemplateContext.GetMemberAccessor(value);
-        foreach (var member in accessor.GetMembers(TemplateContext, SourceSpan, value))
+        var accessor = ViewTemplateContext.GetMemberAccessor(value);
+        foreach (var member in accessor.GetMembers(ViewTemplateContext, SourceSpan, value))
         {
-            if (!accessor.TryGetValue(TemplateContext, SourceSpan, value, member, out var memberValue)) continue;
+            if (!accessor.TryGetValue(ViewTemplateContext, SourceSpan, value, member, out var memberValue)) continue;
 
             DrawMemberTree(member, memberValue, $"inspect{value.GetHashCode()}");
         }
@@ -274,45 +310,51 @@ public class MainWindow : Window, IDisposable
         }
 
         var memberType = value.GetType();
-
-        var isList = typeof(IList).IsAssignableFrom(memberType);
         var isEmptyList = value is IList l && l.Count == 0;
         var isEmptyDict = value is IDictionary d && d.Count == 0;
 
         var isPrintable = (memberType.IsPrimitive || memberType.IsEnum || typeof(string).IsAssignableFrom(memberType) || typeof(ReadOnlySeString).IsAssignableFrom(memberType) || isEmptyList || isEmptyDict);
         var isLeaf = memberType.IsPrimitive || isEmptyList || isEmptyDict;
 
-        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? TemplateContext.ObjectToString(value) : "")} ({memberType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
-        if (value == null || !treeNode) return;
+        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : "")} ({memberType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
+        if (!treeNode) return;
 
         if (value is IList nestedValues)
         {
-            for (var i = 0; i < nestedValues.Count; i++)
-            {
-                DrawMemberTree($"[{i}]", nestedValues[i], baseId);
-            }
-            return;
-        }
-
-        DrawObjectTree(value);
+            for (var i = 0; i < nestedValues.Count; i++) DrawMemberTree($"[{i}]", nestedValues[i], baseId);
+        } 
+        else
+        {
+            DrawObjectTree(value);
+        }   
     }
 
+    // Make generic to support evaluating rules
     private void Evaluate()
     {
         EvaluationTask = EvaluationTask.ContinueWith(_ =>
         {
-            EvaluationResults = SelectedModDirectories.ToDictionary(d => d, d =>
+            // Clear while waiting for new results
+            EvaluationResults = [];
+
+            EvaluationResults = SelectedModDirectories.ToDictionary(d => d, modDirectory =>
             {
-                if (!ModInterop.TryGetModInfo(d, out var modInfo)) return new ArgumentException("Failed to retrieve mod data");
+                if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ArgumentException("Failed to retrieve mod data");
+
+                var templateContext = new TemplateContext() { MemberRenamer = MemberRenamer.Rename };
+
+                var scriptObject = new ScriptObject();
+                scriptObject.Import(modInfo);
+                templateContext.PushGlobal(scriptObject);
 
                 try
                 {
-                    var result = Template.Evaluate(Expression, modInfo, MemberRenamer.Rename);
-                    return (object)TemplateContext.ObjectToString(result);
+                    var result = Template.Evaluate(Expression, templateContext);
+                    return (object)templateContext.ObjectToString(result)!;
                 }
                 catch (Exception e)
                 {
-                    PluginLog.Warning($"Failed to evaluate expression for mod [{d}]:\n\t{e.Message}");
+                    PluginLog.Warning($"Failed to evaluate expression [{Expression}] for mod [{modDirectory}]:\n\t{e.Message}");
                     return new ArgumentException("Failed to evaluate", e);
                 }
             });

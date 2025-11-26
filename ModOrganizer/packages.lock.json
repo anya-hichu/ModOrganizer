@@ -16,9 +16,9 @@
       },
       "Scriban": {
         "type": "Direct",
-        "requested": "[6.5.0, )",
-        "resolved": "6.5.0",
-        "contentHash": "GEdtPvMZk8ilKGnwq3yL/aC+frhu4HKnD0btpb84BiFZQLGUgdtxXG0oMIHf0lRJboMQDwopvQO+jARcvXWd8g=="
+        "requested": "[6.5.2, )",
+        "resolved": "6.5.2",
+        "contentHash": "JXli/Sh1WVZs/pqnPPRJTlwEsZHPJtndzxiaPnrteXDpAqVqHxh4ifhx4puTaYKVMPJUMOp9bnCpEVBpYlt/eQ=="
       },
       "penumbra.api": {
         "type": "Project"

@@ -78,5 +78,5 @@ public enum FullEquipType : byte
     Glasses,
 
     UnknownMainhand,
-    UnknownOffhand
+    UnknownOffhand,
 }

@@ -38,7 +38,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
         var template = Template.Parse(rule.PathTemplate);
         if (template.HasErrors)
         {
-            PluginLog.Error($"Failed to parse rule [{rule.Name}] path template:\n\t{template.Messages}");
+            PluginLog.Error($"Failed to parse rule [{rule.Name}] path template [{rule.PathTemplate}], ignoring:\n\t{template.Messages}");
             return false;
         }
         var result = template.Render(modInfo, MemberRenamer.Rename);

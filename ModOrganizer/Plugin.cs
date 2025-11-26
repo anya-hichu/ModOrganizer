@@ -1,12 +1,18 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Command;
+using Dalamud.Interface;
+using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using ModOrganizer.Windows;
+using ModOrganizer.GameData;
+using ModOrganizer.Json;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
-using ModOrganizer.Json;
+using ModOrganizer.Windows;
+using System.Linq;
+using System.Text.Json;
+using static Dalamud.Interface.Windowing.Window;
 
 
 namespace ModOrganizer;
@@ -45,10 +51,15 @@ public sealed class Plugin : IDalamudPlugin
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModVirtualFileSystem = new(ModInterop);
 
-        // add top bar actions
-        ConfigWindow = new ConfigWindow(Config);
-        MainWindow = new MainWindow(ModInterop, ModVirtualFileSystem, PluginLog);
-
+        ConfigWindow = new ConfigWindow(Config)
+        {
+            TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle Main Window"), Click = _ => ToggleMainUI() }]
+        };
+        MainWindow = new MainWindow(ModInterop, ModVirtualFileSystem, PluginLog)
+        {
+            TitleBarButtons = [new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle Config Window"), Click = _ => ToggleConfigUI() }]
+        };
+     
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
 

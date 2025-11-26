@@ -9,7 +9,7 @@ namespace ModOrganizer.Json;
 public class JsonParser(IPluginLog pluginLog)
 {
     // Some mods use tailing commas for some reason
-    private static JsonSerializerOptions JsonSerializerOptions { get; set; } = new() { AllowTrailingCommas = true };
+    private JsonSerializerOptions JsonSerializerOptions { get; init; } = new() { AllowTrailingCommas = true };
 
     private IPluginLog PluginLog { get; init; } = pluginLog;
 

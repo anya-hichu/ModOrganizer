@@ -36,9 +36,9 @@ public abstract class Builder<T>(IPluginLog pluginLog) where T : class
         if (!AssertPropertyPresent(jsonElement, name, out var property, warn: required)) return false;
 
         value = property.GetString();
-        if (value.IsNullOrWhitespace())
+        if (value.IsNullOrEmpty())
         {
-            PluginLog.Warning($"Property [{name}] for [{typeof(T).Name}] is null or whitespace:\n\t{property}");
+            PluginLog.Warning($"Property [{name}] for [{typeof(T).Name}] is null or empty:\n\t{property}");
             return false;
         }
 
