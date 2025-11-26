@@ -5,14 +5,9 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ModOrganizer.GameData;
-using ModOrganizer.Json;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
-using System.Linq;
-using System.Text.Json;
-using static Dalamud.Interface.Windowing.Window;
 
 
 namespace ModOrganizer;

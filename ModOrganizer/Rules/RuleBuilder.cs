@@ -73,7 +73,7 @@ public static class RuleBuilder
         Name = type.ToString(),
         Priority = 3,
         MatchExpression = $"""changed_items | object.values | array.each @(do; ret ($0 | object.kind == "EquipItem") && ($0.type | object.format null == "{type}"); end) | array.uniq == [true]""",
-        PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}Gears/", type, "/{{ meta.name }}")
+        PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}Equipments/", type, "/{{ meta.name }}")
     };
 
     private static Rule Build(string categoryName, IReadOnlyList<FullEquipType> equipTypes) => new()
@@ -84,7 +84,7 @@ public static class RuleBuilder
         equip_types = {JsonSerializer.Serialize(equipTypes.Select(t => t.ToString()))}
         changed_items | object.values | array.filter @(do; ret $0 | object.typeof == "object"; end) | array.each @(do; ret ($0 | object.kind == "EquipItem") && (equip_types | array.contains ($0.type | object.format null)); end) | array.uniq == [true]
         """,
-        PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}Gears/", categoryName, "/{{ meta.name }}")
+        PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}Equipments/", categoryName, "/{{ meta.name }}")
     };
 
     private static Rule Build(EmoteCategory emoteCategory) => new()

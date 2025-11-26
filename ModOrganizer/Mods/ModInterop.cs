@@ -246,7 +246,7 @@ public class ModInterop : IDisposable
 
     private void InvalidateCaches()
     {
-        PluginLog.Debug($"Invalidate all caches");
+        PluginLog.Debug($"Invalidating all caches");
         InvalidateSortOrderDataCache();
         InvalidateModInfoCaches();
         OnModsChanged?.Invoke();
@@ -254,7 +254,7 @@ public class ModInterop : IDisposable
 
     private void InvalidateCaches(string modDirectory)
     {
-        PluginLog.Debug($"Invalidate caches [{modDirectory}]");
+        PluginLog.Debug($"Invalidating caches for mod [{modDirectory}]");
         InvalidateSortOrderDataCache();
         InvalidateModInfoCache(modDirectory);
         OnModsChanged?.Invoke();
@@ -262,19 +262,19 @@ public class ModInterop : IDisposable
 
     private void InvalidateModInfoCaches()
     {
-        PluginLog.Debug($"Invalidated mod info caches (count: {ModInfoCaches.Count})");
+        PluginLog.Debug($"Invalidating mod info caches (count: {ModInfoCaches.Count})");
         ModInfoCaches.Clear();
     }
 
     private void InvalidateModInfoCache(string modDirectory) 
     {
-        PluginLog.Debug($"Invalidated mod info cache [{modDirectory}]");
+        PluginLog.Debug($"Invalidating mod info cache [{modDirectory}]");
         ModInfoCaches.Remove(modDirectory);
     }
 
     private void InvalidateSortOrderDataCache()
     {
-        PluginLog.Debug($"Invalidated sort order data cache [count: {MaybeSortOrderDataCache?.Count}]");
+        PluginLog.Debug($"Invalidating sort order data cache [count: {MaybeSortOrderDataCache?.Count}]");
         MaybeSortOrderDataCache = null;
     }
 
@@ -289,8 +289,8 @@ public class ModInterop : IDisposable
         }
         else
         {
-            PluginLog.Warning($"Failed to parse [{nameof(SortOrder)}], caching empty");
-            MaybeSortOrderDataCache = []; 
+            MaybeSortOrderDataCache = [];
+            PluginLog.Warning($"Failed to parse [{nameof(SortOrder)}], cached empty until next file system update or reload");
         }
 
         return MaybeSortOrderDataCache;
@@ -316,8 +316,8 @@ public class ModInterop : IDisposable
         var groups = maybeGroups.OfType<Group>().ToList();
         if (localModData == null || defaultMod == null || modMeta == null || maybeGroups.Count != groups.Count)
         {
-            PluginLog.Warning($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}], caching failure until next file system update or reload");
             ModInfoCaches.Add(modDirectory, null);
+            PluginLog.Warning($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}], cached failure until next file system update or reload");
             return false;
         }
 

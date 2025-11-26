@@ -11,7 +11,7 @@ public static class IFileLoaderExtensions
 
         if (!loader.JsonParser.TryParseFile<JsonElement>(path, out var jsonElement))
         {
-            loader.PluginLog.Warning($"Failed to parse {nameof(JsonElement)} from [{path}]");
+            loader.PluginLog.Warning($"Failed to parse [{nameof(JsonElement)}] from [{path}]");
             return false;
         }
 
