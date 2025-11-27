@@ -21,7 +21,7 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
 
         if (!Builders.TryGetValue(type, out builder))
         {
-            PluginLog.Warning($"Failed to find [{typeof(T).Name}] builder for type [{type}] (registered types: {string.Join(", ", Builders.Keys)}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to get [{typeof(T).Name}] builder for type [{type}] (registered types: {string.Join(", ", Builders.Keys)}):\n\t{jsonElement}");
             return false;
         }
 
