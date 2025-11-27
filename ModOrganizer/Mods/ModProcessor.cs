@@ -12,18 +12,18 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
     private IPluginLog PluginLog { get; init; } = pluginLog;
     private RuleEvaluator RuleEvaluator { get; init; } = ruleEvaluator;
 
-    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? newModDirectory)
+    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? path)
     {
-        newModDirectory = default;
-        if (ModInterop.TryGetModInfo(modDirectory, out var modInfo) && RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out newModDirectory) && modDirectory != newModDirectory)
+        path = default;
+        if (ModInterop.TryGetModInfo(modDirectory, out var modInfo) && RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out path))
         {
-            var exitCode = ModInterop.SetModPath(modDirectory, newModDirectory);
+            var exitCode = ModInterop.SetModPath(modDirectory, path);
             if (exitCode == PenumbraApiEc.Success)
             {
-                PluginLog.Info($"Moved mod [{modDirectory}] to [{newModDirectory}]");
+                PluginLog.Info($"Set mod [{modDirectory}] path to [{path}]");
                 return true;
             }
-            PluginLog.Error($"Failed to move mod [{modDirectory}] to [{newModDirectory}] ({exitCode})");
+            PluginLog.Error($"Failed to set mod [{modDirectory}] path to [{path}] ({exitCode})");
         }
         return false;
     }
