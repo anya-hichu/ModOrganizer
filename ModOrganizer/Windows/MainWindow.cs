@@ -273,7 +273,7 @@ public class MainWindow : Window, IDisposable
                                 continue;
                             }
 
-                            using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
+                            using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
                             ImGui.Text(evaluationResult.Value.ToString());
                         }
                     }
