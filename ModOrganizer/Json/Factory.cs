@@ -14,13 +14,13 @@ public abstract class Factory<T>(IPluginLog pluginLog) : Builder<T>(pluginLog) w
 
         if (!TryGetBuilder(jsonElement, out var builder))
         {
-            PluginLog.Debug($"Failed to find [{typeof(T).Name}] builder for [{typeof(T).Name}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to get builder for type [{typeof(T).Name}]:\n\t{jsonElement}");
             return false;
         }
 
         if (!builder.TryBuild(jsonElement, out instance))
         {
-            PluginLog.Debug($"Failed to build instance [{typeof(T).Name}] for [{typeof(T).Name}] using builder [{builder.GetType().Name}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to build [{typeof(T).Name}] using builder [{builder.GetType().Name}]:\n\t{jsonElement}");
             return false;
         }
 
