@@ -5,13 +5,13 @@ namespace ModOrganizer.Json.Loaders;
 
 public static class IFileLoaderExtensions
 {
-    public static bool TryBuildFromFile<T>(this IFileLoader<T> loader, string path, [NotNullWhen(true)] out T? instance)
+    public static bool TryBuildFromFile<T>(this IFileLoader<T> loader, string path, [NotNullWhen(true)] out T? instance) where T : class
     {
-        instance = default;
+        instance = null;
 
         if (!loader.JsonParser.TryParseFile<JsonElement>(path, out var jsonElement))
         {
-            loader.PluginLog.Warning($"Failed to parse [{nameof(JsonElement)}] from [{path}]");
+            loader.PluginLog.Warning($"Failed to parse [{nameof(JsonElement)}] from json file [{path}]");
             return false;
         }
 
