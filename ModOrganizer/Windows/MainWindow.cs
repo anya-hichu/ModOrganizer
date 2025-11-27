@@ -8,17 +8,17 @@ using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
 using ModOrganizer.Scriban;
 using ModOrganizer.Utils;
+using ModOrganizer.Windows.States;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
-using Scriban.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
+
 
 namespace ModOrganizer.Windows;
 
@@ -27,23 +27,20 @@ public class MainWindow : Window, IDisposable
     private static readonly Vector4 LIGHT_BLUE = new(0.753f, 0.941f, 1, 1);
     private static readonly Vector4 BLACK = new(0.2f, 0.2f, 0.2f, 0.5f);
 
+    private static readonly string FILTER_HINT = "Filter...";
+
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
-    private SourceSpan SourceSpan { get; init; } = new();
+    private EvaluationState EvaluationState { get; init; }
 
     private string Filter { get; set; } = string.Empty;
     private HashSet<string> SelectedModDirectories { get; set; } = [];
 
-    private string Expression { get; set; } = string.Empty;
-
-    private string EvalationModDirectoryFilter { get; set; } = string.Empty;
-    private string EvalationEvaluationResultFilter { get; set; } = string.Empty;
-    private Dictionary<string, object> EvaluationResults { get; set; } = [];
-    private Task EvaluationTask { get; set; } = Task.CompletedTask;
 
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
-    
+    private SourceSpan ViewSourceSpan { get; init; } = new();
+
     public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem, IPluginLog pluginLog) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
@@ -55,6 +52,8 @@ public class MainWindow : Window, IDisposable
         ModInterop = modInterop;
         ModVirtualFileSystem = modVirtualFileSystem;
         PluginLog = pluginLog;
+
+        EvaluationState = new(ModInterop, PluginLog);
 
         ModInterop.OnModDeleted += OnModDeleted;
         ModInterop.OnModMoved += OnModMoved;
@@ -81,14 +80,7 @@ public class MainWindow : Window, IDisposable
     private void ToggleFolderSelection(ModVirtualFolder folder)
     {
         var modDirectories = folder.GetNestedFiles().Select(f => f.Directory);
-        if (SelectedModDirectories.Overlaps(modDirectories))
-        {
-            SelectedModDirectories.ExceptWith(modDirectories);
-        }
-        else
-        {
-            SelectedModDirectories.UnionWith(modDirectories);
-        }
+        SelectedModDirectories = [.. SelectedModDirectories.Overlaps(modDirectories) ? SelectedModDirectories.Except(modDirectories) : SelectedModDirectories.Union(modDirectories)];
     }
 
     private void DrawVirtualFolderTree(ModVirtualFolder folder)
@@ -146,7 +138,7 @@ public class MainWindow : Window, IDisposable
             {
                 var clearButtonSize = ImGui.CalcTextSize("NNN");
                 ImGui.SetNextItemWidth(leftRegion.X - clearButtonSize.X);
-                if (ImGui.InputTextWithHint("###filter", "Filter...", ref filter))
+                if (ImGui.InputTextWithHint("###filter", FILTER_HINT, ref filter))
                 {
                     Filter = filter;
                 }
@@ -207,60 +199,56 @@ public class MainWindow : Window, IDisposable
             var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
             var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
 
-            var expression = Expression;
             using (ImRaii.PushColor(ImGuiCol.FrameBg, BLACK))
             {
-                if (ImGui.InputTextMultiline("##expressionInput", ref expression, ushort.MaxValue, bottomWidgetSize))
-                {
-                    Expression = expression;
-                }
-
+                var expression = EvaluationState.Expression;
+                if (ImGui.InputTextMultiline("##evaluationExpression", ref expression, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Expression = expression;
             }
             
             ImGui.SameLine();
-            if (ImGui.Button("Evaluate##evaluateButton"))
+            if (ImGui.Button("Evaluate##evaluateExpression"))
             {
-                Evaluate();
+                EvaluationState.EvaluateAsync(SelectedModDirectories);
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Clear##clearButton"))
+            if (ImGui.Button("Clear##clearEvaluationState"))
             {
-                Expression = string.Empty;
-                EvalationModDirectoryFilter = string.Empty;
-                EvalationEvaluationResultFilter = string.Empty;
-                EvaluationResults = [];
+                EvaluationState.Clear();
             }
 
-            if (EvaluationResults.Count > 0)
+            if (EvaluationState.Results.Count > 0)
             {
-                using var table = ImRaii.Table("evaluationResultsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
+                using var table = ImRaii.Table("evaluationResults", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
 
                 if (table)
                 {
                     // Add column search
 
-                    // Add clipping ImGui.ImGuiListClipper();
-                    ImGui.TableSetupColumn($"Mod directory###directoryName", ImGuiTableColumnFlags.None, 1);
-                    ImGui.TableSetupColumn($"Evaluation result###result", ImGuiTableColumnFlags.None, 6);
+                    
+                    ImGui.TableSetupColumn($"Mod directory###evaluationDirectoryName", ImGuiTableColumnFlags.None, 1);
+                    ImGui.TableSetupColumn($"Evaluation result###evaluationResult", ImGuiTableColumnFlags.None, 6);
                     ImGui.TableSetupScrollFreeze(0, 2);
                     ImGui.TableHeadersRow();
 
                     if (ImGui.TableNextColumn())
                     {
-                        var filter = EvalationModDirectoryFilter;
-                        if (ImGui.InputText("###evalationModDirectoryFilter", ref filter)) EvalationModDirectoryFilter = filter;
-                        if (ImGui.Button("X###clearEvalationModDirectoryFilter")) EvalationModDirectoryFilter = string.Empty;
+                        var modDirectoryFilter = EvaluationState.ModDirectoryFilter;
+                        if (ImGui.InputTextWithHint("###evaluationModDirectoryFilter", FILTER_HINT, ref modDirectoryFilter)) EvaluationState.ModDirectoryFilter = modDirectoryFilter;
+                        ImGui.SameLine();
+                        if (ImGui.Button("X###clearEvaluationModDirectoryFilter")) modDirectoryFilter = string.Empty;
                     }
 
                     if (ImGui.TableNextColumn())
                     {
-                        var filter = EvalationEvaluationResultFilter;
-                        if (ImGui.InputText("###evalationModDirectoryFilter", ref filter)) EvalationEvaluationResultFilter = filter;
-                        if (ImGui.Button("X###clearEvalationModDirectoryFilter")) EvalationEvaluationResultFilter = string.Empty;
+                        var resultFilter = EvaluationState.ResultFilter;
+                        if (ImGui.InputTextWithHint("###evaluationResultFilter", FILTER_HINT, ref resultFilter)) EvaluationState.ResultFilter = resultFilter;
+                        ImGui.SameLine();
+                        if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
                     }
 
-                    foreach (var evaluationResult in EvaluationResults.Where(e => TokenMatcher.Matches(EvalationModDirectoryFilter, e.Key) || TokenMatcher.Matches(EvalationModDirectoryFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
+                    // Add clipping ImGui.ImGuiListClipper();
+                    foreach (var evaluationResult in EvaluationState.Results.Where(e => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, e.Key) || TokenMatcher.Matches(EvaluationState.ResultFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
                     {
                         if (ImGui.TableNextColumn())
                         {
@@ -282,7 +270,11 @@ public class MainWindow : Window, IDisposable
                             {
                                 ImGui.Text(value);
                                 if (ImGui.IsItemHovered()) ImGui.SetTooltip(value);
+                                continue;
                             }
+
+                            using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
+                            ImGui.Text(evaluationResult.Value.ToString());
                         }
                     }
                 }
@@ -293,11 +285,11 @@ public class MainWindow : Window, IDisposable
     private void DrawObjectTree(object value)
     {
         var accessor = ViewTemplateContext.GetMemberAccessor(value);
-        foreach (var member in accessor.GetMembers(ViewTemplateContext, SourceSpan, value))
+        foreach (var member in accessor.GetMembers(ViewTemplateContext, ViewSourceSpan, value))
         {
-            if (!accessor.TryGetValue(ViewTemplateContext, SourceSpan, value, member, out var memberValue)) continue;
+            if (!accessor.TryGetValue(ViewTemplateContext, ViewSourceSpan, value, member, out var memberValue)) continue;
 
-            DrawMemberTree(member, memberValue, $"inspect{value.GetHashCode()}");
+            DrawMemberTree(member, memberValue, $"object{value.GetHashCode()}");
         }
     }
 
@@ -309,55 +301,22 @@ public class MainWindow : Window, IDisposable
             return;
         }
 
-        var memberType = value.GetType();
         var isEmptyList = value is IList l && l.Count == 0;
         var isEmptyDict = value is IDictionary d && d.Count == 0;
 
-        var isPrintable = (memberType.IsPrimitive || memberType.IsEnum || typeof(string).IsAssignableFrom(memberType) || typeof(ReadOnlySeString).IsAssignableFrom(memberType) || isEmptyList || isEmptyDict);
-        var isLeaf = memberType.IsPrimitive || isEmptyList || isEmptyDict;
+        var valueType = value.GetType();
+        var isLeaf = valueType.IsPrimitive || isEmptyList || isEmptyDict;
+        var isPrintable = isLeaf || valueType.IsEnum || value is string || value is ReadOnlySeString;
 
-        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : "")} ({memberType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
+        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : "")} ({valueType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
         if (!treeNode) return;
 
-        if (value is IList nestedValues)
+        if (value is IList list)
         {
-            for (var i = 0; i < nestedValues.Count; i++) DrawMemberTree($"[{i}]", nestedValues[i], baseId);
+            for (var i = 0; i < list.Count; i++) DrawMemberTree($"[{i}]", list[i], baseId);
+            return;
         } 
-        else
-        {
-            DrawObjectTree(value);
-        }   
-    }
-
-    // Make generic to support evaluating rules
-    private void Evaluate()
-    {
-        EvaluationTask = EvaluationTask.ContinueWith(_ =>
-        {
-            // Clear while waiting for new results
-            EvaluationResults = [];
-
-            EvaluationResults = SelectedModDirectories.ToDictionary(d => d, modDirectory =>
-            {
-                if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ArgumentException("Failed to retrieve mod data");
-
-                var templateContext = new TemplateContext() { MemberRenamer = MemberRenamer.Rename };
-
-                var scriptObject = new ScriptObject();
-                scriptObject.Import(modInfo);
-                templateContext.PushGlobal(scriptObject);
-
-                try
-                {
-                    var result = Template.Evaluate(Expression, templateContext);
-                    return (object)templateContext.ObjectToString(result)!;
-                }
-                catch (Exception e)
-                {
-                    PluginLog.Warning($"Failed to evaluate expression [{Expression}] for mod [{modDirectory}]:\n\t{e.Message}");
-                    return new ArgumentException("Failed to evaluate", e);
-                }
-            });
-        });
+        
+        DrawObjectTree(value);
     }
 }

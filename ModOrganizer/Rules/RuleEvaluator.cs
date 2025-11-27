@@ -15,7 +15,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
 {
     private IPluginLog PluginLog { get; init; } = pluginLog;
 
-    public bool TryEvaluateChain(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
+    public bool TryEvaluateByPriority(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = null;
         foreach (var rule in rules.OrderByDescending(r => r.Priority))
