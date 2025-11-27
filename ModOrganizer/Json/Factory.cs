@@ -14,7 +14,7 @@ public abstract class Factory<T>(IPluginLog pluginLog) : Builder<T>(pluginLog) w
 
         if (!TryGetBuilder(jsonElement, out var builder))
         {
-            PluginLog.Debug($"Failed to get builder for type [{typeof(T).Name}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to get [{typeof(T).Name}] builder:\n\t{jsonElement}");
             return false;
         }
 
