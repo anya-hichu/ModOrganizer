@@ -14,7 +14,7 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
 
     public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? path)
     {
-        path = default;
+        path = null;
         if (ModInterop.TryGetModInfo(modDirectory, out var modInfo) && RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out path))
         {
             var exitCode = ModInterop.SetModPath(modDirectory, path);
