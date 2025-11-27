@@ -19,7 +19,7 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {

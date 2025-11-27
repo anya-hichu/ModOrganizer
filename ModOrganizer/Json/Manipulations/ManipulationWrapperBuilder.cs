@@ -12,9 +12,9 @@ public abstract class ManipulationWrapperBuilder<T>(IPluginLog pluginLog, string
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
 
         if (!TryBuildWrapped(manipulationProperty, out var wrapped))
         {

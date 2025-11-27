@@ -10,13 +10,13 @@ public class MetaEstBuilder(IPluginLog pluginLog) : Builder<MetaEst>(pluginLog)
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertU16PropertyValue(jsonElement, nameof(MetaEst.Entry), out var entry)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEst.Gender), out var gender)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEst.Race), out var race)) return false;
-        if (!AssertU16PropertyValue(jsonElement, nameof(MetaEst.SetId), out var setIdProperty)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaEst.Slot), out var slot)) return false;
+        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaEst.Entry), out var entry)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaEst.Gender), out var gender)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaEst.Race), out var race)) return false;
+        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaEst.SetId), out var setIdProperty)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaEst.Slot), out var slot)) return false;
 
         instance = new()
         {

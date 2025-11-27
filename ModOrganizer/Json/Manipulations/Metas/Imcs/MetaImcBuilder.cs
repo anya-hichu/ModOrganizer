@@ -13,9 +13,9 @@ public class MetaImcBuilder(IPluginLog pluginLog) : Builder<MetaImc>(pluginLog)
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaImc.Entry), out var entryProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaImc.Entry), out var entryProperty)) return false;
 
         if (!ImcEntryBuilder.TryBuild(entryProperty, out var entry))
         {

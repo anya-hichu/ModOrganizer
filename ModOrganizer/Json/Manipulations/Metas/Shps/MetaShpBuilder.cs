@@ -12,10 +12,10 @@ public class MetaShpBuilder(IPluginLog pluginLog) : Builder<MetaShp>(pluginLog)
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaShp.Shape), out var shape)) return false;
-        AssertU16PropertyValue(jsonElement, nameof(MetaShp.Id), out var id, false);
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaShp.Shape), out var shape)) return false;
+        Assert.IsU16PropertyValue(jsonElement, nameof(MetaShp.Id), out var id, false);
 
         var entry = jsonElement.TryGetProperty(nameof(MetaShp.Entry), out var entryProperty) && entryProperty.GetBoolean();
         var slot = jsonElement.TryGetProperty(nameof(MetaShp.Slot), out var slotProperty) ? slotProperty.GetString() : null;

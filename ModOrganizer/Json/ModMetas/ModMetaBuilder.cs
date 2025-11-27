@@ -16,9 +16,9 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
 
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
@@ -27,7 +27,7 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
             return false;
         }
 
-        if (!AssertPropertyValuePresent(jsonElement, nameof(ModMeta.Name), out var name)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(ModMeta.Name), out var name)) return false;
 
         var author = jsonElement.TryGetProperty(nameof(ModMeta.Author), out var authorProperty) ? authorProperty.GetString() : null;
         var description = jsonElement.TryGetProperty(nameof(ModMeta.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;

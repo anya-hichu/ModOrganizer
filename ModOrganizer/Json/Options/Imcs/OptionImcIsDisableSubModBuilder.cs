@@ -12,7 +12,7 @@ public class OptionImcIsDisableSubModBuilder(IPluginLog pluginLog) : Builder<Opt
     {
         instance = null;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {

@@ -12,7 +12,7 @@ public class OptionImcAttributeMaskBuilder(IPluginLog pluginLog) : Builder<Optio
     {
         instance = null;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
 
         if (!OptionBuilder.TryBuild(jsonElement, out var option))
         {

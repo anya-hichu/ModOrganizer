@@ -11,11 +11,11 @@ public class MetaRspBuilder(IPluginLog pluginLog) : Builder<MetaRsp>(pluginLog)
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaRsp.Entry), out var entryProperty)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaRsp.SubRace), out var subRace)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaRsp.Attribute), out var attribute)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaRsp.Entry), out var entryProperty)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaRsp.SubRace), out var subRace)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaRsp.Attribute), out var attribute)) return false;
 
         instance = new()
         {

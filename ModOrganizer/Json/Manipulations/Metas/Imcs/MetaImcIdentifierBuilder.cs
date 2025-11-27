@@ -10,14 +10,14 @@ public class MetaImcIdentifierBuilder(IPluginLog pluginLog) : Builder<MetaImcIde
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertU16PropertyValue(jsonElement, nameof(MetaImcIdentifier.PrimaryId), out var primaryId)) return false;
-        if (!AssertU16PropertyValue(jsonElement, nameof(MetaImcIdentifier.SecondaryId), out var secondaryId)) return false;
-        if (!AssertU8PropertyValue(jsonElement, nameof(MetaImcIdentifier.Variant), out var variant)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.ObjectType), out var objectType)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.EquipSlot), out var equipSlot)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.BodySlot), out var bodySlot)) return false;
+        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaImcIdentifier.PrimaryId), out var primaryId)) return false;
+        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaImcIdentifier.SecondaryId), out var secondaryId)) return false;
+        if (!Assert.IsU8PropertyValue(jsonElement, nameof(MetaImcIdentifier.Variant), out var variant)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.ObjectType), out var objectType)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.EquipSlot), out var equipSlot)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaImcIdentifier.BodySlot), out var bodySlot)) return false;
 
         instance = new()
         {

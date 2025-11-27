@@ -15,9 +15,9 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
     {
         builder = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyValuePresent(jsonElement, TYPE_PROPERTY_NAME, out var type)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, TYPE_PROPERTY_NAME, out var type)) return false;
 
         if (!Builders.TryGetValue(type, out builder))
         {

@@ -14,7 +14,7 @@ public class ContainerBuilder(IPluginLog pluginLog) : Builder<Container>(pluginL
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
         var files = jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) ? 
             filesProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!) : null;

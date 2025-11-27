@@ -10,14 +10,14 @@ public class MetaImcEntryBuilder(IPluginLog pluginLog) : Builder<MetaImcEntry>(p
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertU8PropertyValue(jsonElement, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
-        if (!AssertU8PropertyValue(jsonElement, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
-        if (!AssertU8PropertyValue(jsonElement, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
-        if (!AssertU8PropertyValue(jsonElement, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
+        if (!Assert.IsU8PropertyValue(jsonElement, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
+        if (!Assert.IsU8PropertyValue(jsonElement, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
+        if (!Assert.IsU8PropertyValue(jsonElement, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
+        if (!Assert.IsU8PropertyValue(jsonElement, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
 
         instance = new()
         {

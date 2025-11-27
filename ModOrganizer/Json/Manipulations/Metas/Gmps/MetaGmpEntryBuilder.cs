@@ -10,15 +10,15 @@ public class MetaGmpEntryBuilder(IPluginLog pluginLog) : Builder<MetaGmpEntry>(p
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.Enabled), out var enabledProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.Animated), out var animatedProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.RotationA), out var rotationAProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.RotationB), out var rotationBProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.RotationC), out var rotationCProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.UnknownA), out var unknownAProperty)) return false;
-        if (!AssertPropertyPresent(jsonElement, nameof(MetaGmpEntry.UnknownB), out var unknownBProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.Enabled), out var enabledProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.Animated), out var animatedProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.RotationA), out var rotationAProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.RotationB), out var rotationBProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.RotationC), out var rotationCProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.UnknownA), out var unknownAProperty)) return false;
+        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.UnknownB), out var unknownBProperty)) return false;
 
         instance = new()
         {

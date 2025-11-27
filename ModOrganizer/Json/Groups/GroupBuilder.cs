@@ -12,7 +12,7 @@ public class GroupBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
         uint? version = jsonElement.TryGetProperty(nameof(Group.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
@@ -21,8 +21,8 @@ public class GroupBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
             return false;
         }
 
-        if (!AssertPropertyValuePresent(jsonElement, nameof(Group.Name), out var name)) return false;
-        if (!AssertPropertyValuePresent(jsonElement, nameof(Group.Type), out var type)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(Group.Name), out var name)) return false;
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(Group.Type), out var type)) return false;
 
         var description = jsonElement.TryGetProperty(nameof(Group.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
         var image = jsonElement.TryGetProperty(nameof(Group.Image), out var îmageProperty) ? îmageProperty.GetString() : null;

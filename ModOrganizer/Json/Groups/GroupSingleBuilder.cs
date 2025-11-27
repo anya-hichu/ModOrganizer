@@ -17,7 +17,7 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {

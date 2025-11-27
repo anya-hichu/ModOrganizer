@@ -10,10 +10,10 @@ public class MetaGeqpBuilder(IPluginLog pluginLog) : Builder<MetaGeqp>(pluginLog
     {
         instance = null;
 
-        if (!AssertObject(jsonElement)) return false;
+        if (!Assert.IsObject(jsonElement)) return false;
 
-        AssertU16PropertyValue(jsonElement, nameof(MetaGeqp.Condition), out var condition, false);
-        if (!AssertPropertyValuePresent(jsonElement, nameof(MetaGeqp.Type), out var type)) return false;
+        Assert.IsU16PropertyValue(jsonElement, nameof(MetaGeqp.Condition), out var condition, false);
+        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaGeqp.Type), out var type)) return false;
 
         instance = new()
         {
