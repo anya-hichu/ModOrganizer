@@ -3,9 +3,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Loaders;
 
-public static class IFileLoaderExtensions
+public static class IFileParserExtensions
 {
-    public static bool TryBuildFromFile<T>(this IFileLoader<T> loader, string path, [NotNullWhen(true)] out T? instance) where T : class
+    public static bool TryBuildFromFile<T>(this IFileParser<T> loader, string path, [NotNullWhen(true)] out T? instance) where T : class
     {
         instance = null;
 

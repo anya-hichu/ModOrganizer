@@ -1,12 +1,13 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Loaders;
+using ModOrganizer.Json.Parsers;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.ModMetas;
 
-public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog), IFileLoader<ModMeta>
+public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog), IFileParser<ModMeta>
 {
     private static readonly int SUPPORTED_FILE_VERSION = 3;
 

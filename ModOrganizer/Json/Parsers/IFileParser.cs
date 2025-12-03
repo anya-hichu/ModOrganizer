@@ -1,10 +1,11 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Parsers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Loaders;
 
-public interface IFileLoader<T>
+public interface IFileParser<T>
 {
     JsonParser JsonParser { get; }
     IPluginLog PluginLog { get; }

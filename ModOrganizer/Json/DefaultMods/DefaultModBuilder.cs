@@ -1,12 +1,13 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Containers;
 using ModOrganizer.Json.Loaders;
+using ModOrganizer.Json.Parsers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.DefaultMods;
 
-public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(pluginLog), IFileLoader<DefaultMod>
+public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(pluginLog), IFileParser<DefaultMod>
 {
     private static readonly int SUPPORTED_VERSION = 0;
 

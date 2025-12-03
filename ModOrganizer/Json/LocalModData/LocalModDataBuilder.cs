@@ -1,12 +1,13 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Loaders;
+using ModOrganizer.Json.Parsers;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.LocalModData;
 
-public class LocalModDataBuilder(IPluginLog pluginLog) : Builder<LocalModData>(pluginLog), IFileLoader<LocalModData>
+public class LocalModDataBuilder(IPluginLog pluginLog) : Builder<LocalModData>(pluginLog), IFileParser<LocalModData>
 {
     private static readonly int SUPPORTED_FILE_VERSION = 3;
 

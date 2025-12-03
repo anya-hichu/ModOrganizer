@@ -15,7 +15,6 @@ public abstract class Builder<T>(IPluginLog pluginLog) where T : class
     public bool TryBuildMany(JsonElement jsonElement, [NotNullWhen(true)] out T[]? instances)
     {
         instances = null;
-
         if (!Assert.IsArray(jsonElement)) return false;
 
         var list = new List<T>();

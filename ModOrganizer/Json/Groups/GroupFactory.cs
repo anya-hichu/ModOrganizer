@@ -1,9 +1,10 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Loaders;
+using ModOrganizer.Json.Parsers;
 
 namespace ModOrganizer.Json.Groups;
 
-public class GroupFactory : TypeFactory<Group>, IFileLoader<Group>
+public class GroupFactory : TypeFactory<Group>, IFileParser<Group>
 {
     public JsonParser JsonParser { get; init; }
 
