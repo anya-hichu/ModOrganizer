@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json;
 
-public abstract class Builder<T>(IPluginLog pluginLog) where T : class
+public abstract class Builder<T>(IPluginLog pluginLog) : IBuilder<T> where T : class
 {
     public IPluginLog PluginLog { get; init; } = pluginLog;
     protected Assert Assert { get; init; } = new(pluginLog);
