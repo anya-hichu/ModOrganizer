@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Loaders;
+namespace ModOrganizer.Json.Parsers;
 
 public static class IFileParserExtensions
 {

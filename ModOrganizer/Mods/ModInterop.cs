@@ -3,7 +3,6 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Json;
 using ModOrganizer.Json.DefaultMods;
 using ModOrganizer.Json.Groups;
-using ModOrganizer.Json.Loaders;
 using ModOrganizer.Json.LocalModData;
 using ModOrganizer.Json.ModMetas;
 using ModOrganizer.Json.Parsers;

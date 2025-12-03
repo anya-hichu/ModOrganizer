@@ -1,9 +1,8 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Parsers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Loaders;
+namespace ModOrganizer.Json.Parsers;
 
 public interface IFileParser<T>
 {
