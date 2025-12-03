@@ -103,15 +103,17 @@ public static class FullEquipTypeExtensions
         _ => false,
     };
 
-    public static readonly IReadOnlyList<FullEquipType> WeaponTypes = [.. Enum.GetValues<FullEquipType>().Where(IsWeapon).Except([FullEquipType.UnknownMainhand])];
+    public static readonly IReadOnlyList<FullEquipType> Types = Enum.GetValues<FullEquipType>();
 
-    public static readonly IReadOnlyList<FullEquipType> ToolTypes = [.. Enum.GetValues<FullEquipType>().Where(IsTool)];
+    public static readonly IReadOnlyList<FullEquipType> WeaponTypes = [.. Types.Where(IsWeapon).Except([FullEquipType.UnknownMainhand])];
 
-    public static readonly IReadOnlyList<FullEquipType> EquipmentTypes = [.. Enum.GetValues<FullEquipType>().Where(IsEquipment)];
+    public static readonly IReadOnlyList<FullEquipType> ToolTypes = [.. Types.Where(IsTool)];
 
-    public static readonly IReadOnlyList<FullEquipType> AccessoryTypes = [.. Enum.GetValues<FullEquipType>().Where(IsAccessory)];
+    public static readonly IReadOnlyList<FullEquipType> EquipmentTypes = [.. Types.Where(IsEquipment)];
 
-    public static readonly IReadOnlyList<FullEquipType> OffhandTypes = [.. Enum.GetValues<FullEquipType>().Where(IsOffhand)];
+    public static readonly IReadOnlyList<FullEquipType> AccessoryTypes = [.. Types.Where(IsAccessory)];
 
-    public static readonly IReadOnlyList<FullEquipType> BonusTypes = [.. Enum.GetValues<FullEquipType>().Where(IsBonus)];
+    public static readonly IReadOnlyList<FullEquipType> OffhandTypes = [.. Types.Where(IsOffhand)];
+
+    public static readonly IReadOnlyList<FullEquipType> BonusTypes = [.. Types.Where(IsBonus)];
 }

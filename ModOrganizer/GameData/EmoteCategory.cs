@@ -3,9 +3,9 @@ namespace ModOrganizer.GameData;
 // https://exd.camora.dev/sheet/EmoteCategory
 public enum EmoteCategory : byte
 {
-    Unknown,
+    Unknown = 0,
 
-    General,
-    Special,
-    Expressions,
+    General = 1,
+    Special = 2,
+    Expressions = 3,
 }

@@ -1,8 +1,8 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Containers;
 using ModOrganizer.Json.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Groups;
@@ -33,12 +33,19 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
             return false;
         }
 
-        // Provide default values to make it easier to use
-        var options = jsonElement.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) ?
-            optionsProperty.EnumerateArray().SelectMany<JsonElement, Option>(j => OptionBuilder.TryBuild(j, out var option) ? [option] : []).ToArray() : [];
+        var options = Array.Empty<Option>();
+        if (jsonElement.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) && !OptionBuilder.TryBuildMany(optionsProperty, out options))
+        {
+            PluginLog.Warning($"Failed to build one of [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]:\n\t{optionsProperty}");
+            return false;
+        }
 
-        var containers = jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) ?
-            containersProperty.EnumerateArray().SelectMany<JsonElement, NamedContainer>(j => NamedContainerBuilder.TryBuild(j, out var namedContainer) ? [namedContainer] : []).ToArray() : [];
+        var containers = Array.Empty<NamedContainer>();
+        if (jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) && !NamedContainerBuilder.TryBuildMany(containersProperty, out containers))
+        {
+            PluginLog.Warning($"Failed to build one of [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]:\n\t{containersProperty}");
+            return false;
+        }
 
         instance = new GroupCombining()
         {

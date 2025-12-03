@@ -1,8 +1,8 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Options.Imcs;
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Groups;
@@ -25,14 +25,19 @@ public class GroupImcBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
         var allVariants = jsonElement.TryGetProperty(nameof(GroupImc.AllVariants), out var allVariantsProperty) && allVariantsProperty.GetBoolean();
         var allAttributes = jsonElement.TryGetProperty(nameof(GroupImc.AllAttributes), out var allAttributesProperty) && allAttributesProperty.GetBoolean();
 
-        var identifier = jsonElement.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && 
-            ImcIdentifierBuilder.TryBuild(identifierProperty, out var imcIdentifier) ? imcIdentifier : null;
+        MetaImcIdentifier? identifier = null;
+        if (jsonElement.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !ImcIdentifierBuilder.TryBuild(identifierProperty, out identifier))
+        {
+            PluginLog.Warning($"Failed to build [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]:\n\t{identifierProperty}");
+            return false;
+        }
 
-        var defaultEntry = jsonElement.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) &&
-            ImcEntryBuilder.TryBuild(defaultEntryProperty, out var imcEntry) ? imcEntry : null;
-
-        var options = jsonElement.TryGetProperty(nameof(GroupImc.Options), out var optionProperty) ? 
-            optionProperty.EnumerateArray().SelectMany<JsonElement, OptionImc>(j => OptionImcFactory.TryBuild(j, out var optionImc) ? [optionImc] : []).ToArray() : [];
+        MetaImcEntry? defaultEntry = null;
+        if (jsonElement.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !ImcEntryBuilder.TryBuild(defaultEntryProperty, out defaultEntry))
+        {
+            PluginLog.Warning($"Failed to build [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]:\n\t{defaultEntryProperty}");
+            return false;
+        }
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
@@ -43,6 +48,13 @@ public class GroupImcBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
         if (group.Type != TYPE)
         {
             PluginLog.Warning($"Failed to build [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n\t{jsonElement}");
+            return false;
+        }
+
+        var options = Array.Empty<OptionImc>();
+        if (jsonElement.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !OptionImcFactory.TryBuildMany(optionsProperty, out options))
+        {
+            PluginLog.Warning($"Failed to build one of [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{optionsProperty}");
             return false;
         }
 

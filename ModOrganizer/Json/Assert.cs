@@ -14,13 +14,22 @@ public class Assert(IPluginLog pluginLog)
     {
         if (jsonElement.ValueKind == JsonValueKind.Object) return true;
 
-        PluginLog.Warning($"Expected root object but got [{jsonElement.ValueKind}]:\n\t{jsonElement}");
+        PluginLog.Warning($"Expected [{JsonValueKind.Object}] but got [{jsonElement.ValueKind}]:\n\t{jsonElement}");
+        return false;
+    }
+
+    public bool IsArray(JsonElement jsonElement)
+    {
+        if (jsonElement.ValueKind == JsonValueKind.Array) return true;
+
+        PluginLog.Warning($"Expected [{JsonValueKind.Array}] but got [{jsonElement.ValueKind}]:\n\t{jsonElement}");
         return false;
     }
 
     public bool IsPropertyPresent(JsonElement jsonElement, string name, out JsonElement property, bool warn = true)
     {
         if (jsonElement.TryGetProperty(name, out property)) return true;
+
         if (warn) PluginLog.Warning($"Expected property [{name}] is missing:\n\t{jsonElement}");
         return false;
     }

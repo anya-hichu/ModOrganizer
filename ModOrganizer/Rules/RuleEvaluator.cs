@@ -30,7 +30,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
         return false;
     }
 
-    private bool TryEvaluate(Rule rule, ModInfo modInfo, [NotNullWhen(true)] out string? path)
+    public bool TryEvaluate(Rule rule, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = null;
         if (!rule.Enabled || rule.PathTemplate.IsNullOrWhitespace() || !Matches(rule, modInfo)) return false;

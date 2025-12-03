@@ -235,10 +235,7 @@ public class ModInterop : IDisposable
         InvalidateCaches(modDirectory);
     }
 
-    private void OnFsWatcherError(object sender, ErrorEventArgs e)
-    {
-        PluginLog.Debug($"Watcher [{sender.GetHashCode()}] returned error ({e?.GetException().Message}), ignoring");
-    }
+    private void OnFsWatcherError(object sender, ErrorEventArgs e) => PluginLog.Debug($"Watcher [{sender.GetHashCode()}] returned error ({e?.GetException().Message}), ignoring");
 
     #endregion
 

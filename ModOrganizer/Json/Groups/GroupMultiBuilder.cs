@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Options;
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Groups;
@@ -31,8 +31,12 @@ public class GroupMultiBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
             return false;
         }
 
-        var options = jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) ?
-            optionsProperty.EnumerateArray().SelectMany<JsonElement, OptionContainer>(j => OptionContainerBuilder.TryBuild(j, out var optionContainer) ? [optionContainer] : []).ToArray() : [];
+        var options = Array.Empty<OptionContainer>();
+        if (jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !OptionContainerBuilder.TryBuildMany(optionsProperty, out options))
+        {
+            PluginLog.Warning($"Failed to build one of [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]:\n\t{optionsProperty}");
+            return false;
+        }
 
         instance = new GroupMulti()
         {
