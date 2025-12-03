@@ -2,11 +2,11 @@ using Dalamud.Plugin.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Parsers;
+namespace ModOrganizer.Json.Files;
 
-public interface IFileParser<T>
+public interface IFileBuilder<T>
 {
-    JsonParser JsonParser { get; }
+    Parser Parser { get; }
     IPluginLog PluginLog { get; }
 
     bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out T? instance);

@@ -1,16 +1,16 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Parsers;
+using ModOrganizer.Json.Files;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.ModMetas;
 
-public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog), IFileParser<ModMeta>
+public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog), IFileBuilder<ModMeta>
 {
     private static readonly int SUPPORTED_FILE_VERSION = 3;
 
-    public JsonParser JsonParser { get; init; } = new(pluginLog);
+    public Parser Parser { get; init; } = new(pluginLog);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out ModMeta? instance)
     {

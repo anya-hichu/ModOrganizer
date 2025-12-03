@@ -4,9 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Parsers;
+namespace ModOrganizer.Json;
 
-public class JsonParser(IPluginLog pluginLog)
+public class Parser(IPluginLog pluginLog)
 {
     // Some mods use tailing commas for some reason
     private JsonSerializerOptions JsonSerializerOptions { get; init; } = new() { AllowTrailingCommas = true };

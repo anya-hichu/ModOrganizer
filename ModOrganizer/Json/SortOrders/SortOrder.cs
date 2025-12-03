@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ModOrganizer.Json;
+namespace ModOrganizer.Json.SortOrders;
 
 // No schema
 public record SortOrder

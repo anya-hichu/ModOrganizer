@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 
-namespace ModOrganizer.Json;
+namespace ModOrganizer.Json.Asserts;
 
 public class Assert(IPluginLog pluginLog)
 {
@@ -57,7 +57,7 @@ public class Assert(IPluginLog pluginLog)
 
         if (!IsPropertyPresent(jsonElement, name, out var property, warn: required)) return false;
 
-        if ((property.ValueKind == JsonValueKind.Number && property.TryGetByte(out value)) || (property.ValueKind == JsonValueKind.String && byte.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value))) return true;
+        if (property.ValueKind == JsonValueKind.Number && property.TryGetByte(out value) || property.ValueKind == JsonValueKind.String && byte.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
 
         PluginLog.Warning($"Property [{name}] is not parsable as [{typeof(byte).Name}]:\n\t{property}");
         return false;
@@ -70,7 +70,7 @@ public class Assert(IPluginLog pluginLog)
 
         if (!IsPropertyPresent(jsonElement, name, out var property, warn: required)) return false;
 
-        if ((property.ValueKind == JsonValueKind.Number && property.TryGetUInt16(out value)) || (property.ValueKind == JsonValueKind.String && ushort.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value))) return true;
+        if (property.ValueKind == JsonValueKind.Number && property.TryGetUInt16(out value) || property.ValueKind == JsonValueKind.String && ushort.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
 
         PluginLog.Warning($"Property [{name}] is not parsable as [{typeof(ushort).Name}]:\n\t{property}");
         return false;

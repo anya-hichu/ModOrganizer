@@ -1,16 +1,16 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Containers;
-using ModOrganizer.Json.Parsers;
+using ModOrganizer.Json.Files;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.DefaultMods;
 
-public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(pluginLog), IFileParser<DefaultMod>
+public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(pluginLog), IFileBuilder<DefaultMod>
 {
     private static readonly int SUPPORTED_VERSION = 0;
 
-    public JsonParser JsonParser { get; init; } = new(pluginLog);
+    public Parser Parser { get; init; } = new(pluginLog);
 
     private ContainerBuilder ContainerBuilder { get; init; } = new(pluginLog);
 

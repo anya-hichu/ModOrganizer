@@ -5,7 +5,8 @@ using ModOrganizer.Json.DefaultMods;
 using ModOrganizer.Json.Groups;
 using ModOrganizer.Json.LocalModData;
 using ModOrganizer.Json.ModMetas;
-using ModOrganizer.Json.Parsers;
+using ModOrganizer.Json.Files;
+using ModOrganizer.Json.SortOrders;
 using Penumbra.Api.Enums;
 using Penumbra.Api.Helpers;
 using Penumbra.Api.IpcSubscribers;
@@ -33,7 +34,7 @@ public class ModInterop : IDisposable
 
     private DefaultModBuilder DefaultModBuilder { get; init; }
     private GroupFactory GroupFactory { get; init; }
-    private JsonParser JsonParser { get; init; }
+    private Parser Parser { get; init; }
     private LocalModDataBuilder LocalModDataBuilder { get; init; }
     private IPluginLog PluginLog { get; init; }
     private ModMetaBuilder ModMetaBuilder { get; init; }
@@ -74,7 +75,7 @@ public class ModInterop : IDisposable
     {
         DefaultModBuilder = new(pluginLog);
         GroupFactory = new(pluginLog);
-        JsonParser = new(pluginLog);
+        Parser = new(pluginLog);
         LocalModDataBuilder = new(pluginLog);
         ModMetaBuilder = new(pluginLog);
         PluginLog = pluginLog;
@@ -279,7 +280,7 @@ public class ModInterop : IDisposable
     {
         if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
 
-        if (JsonParser.TryParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
+        if (Parser.TryParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
         {
             MaybeSortOrderDataCache = sortOrder.Data;
             PluginLog.Debug($"Loaded [{nameof(SortOrder)}] cache (count: {MaybeSortOrderDataCache.Count})");
