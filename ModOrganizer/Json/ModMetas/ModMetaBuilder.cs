@@ -10,7 +10,7 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
 {
     private static readonly int SUPPORTED_FILE_VERSION = 3;
 
-    public Parser Parser { get; init; } = new(pluginLog);
+    public FileParser FileParser { get; init; } = new(pluginLog);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out ModMeta? instance)
     {

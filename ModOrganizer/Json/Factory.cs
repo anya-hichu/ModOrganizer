@@ -6,7 +6,7 @@ namespace ModOrganizer.Json;
 
 public abstract class Factory<T>(IPluginLog pluginLog) : Builder<T>(pluginLog) where T : class
 {
-    protected abstract bool TryGetBuilder(JsonElement jsonElement, [NotNullWhen(true)] out Builder<T>? builder);
+    protected abstract bool TryGetBuilder(JsonElement jsonElement, [NotNullWhen(true)] out IBuilder<T>? builder);
 
     public override bool TryBuild(JsonElement jsonElement, [NotNullWhen(true)] out T? instance)
     {

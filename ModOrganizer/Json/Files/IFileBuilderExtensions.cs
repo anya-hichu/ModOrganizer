@@ -9,7 +9,7 @@ public static class IFileBuilderExtensions
     {
         instance = null;
 
-        if (!fileBuilder.Parser.TryParseFile<JsonElement>(path, out var jsonElement))
+        if (!fileBuilder.FileParser.TryParseFile<JsonElement>(path, out var jsonElement))
         {
             fileBuilder.PluginLog.Warning($"Failed to parse [{nameof(JsonElement)}] from json file [{path}]");
             return false;

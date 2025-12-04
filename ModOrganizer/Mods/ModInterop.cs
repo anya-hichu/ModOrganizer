@@ -1,6 +1,5 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json;
 using ModOrganizer.Json.DefaultMods;
 using ModOrganizer.Json.Groups;
 using ModOrganizer.Json.LocalModData;
@@ -34,7 +33,7 @@ public class ModInterop : IDisposable
 
     private DefaultModBuilder DefaultModBuilder { get; init; }
     private GroupFactory GroupFactory { get; init; }
-    private Parser Parser { get; init; }
+    private SortOrderBuilder SortOrderBuilder { get; init; }
     private LocalModDataBuilder LocalModDataBuilder { get; init; }
     private IPluginLog PluginLog { get; init; }
     private ModMetaBuilder ModMetaBuilder { get; init; }
@@ -49,7 +48,7 @@ public class ModInterop : IDisposable
     private string ModsDirectoryPath { get; set; }
 
     private Dictionary<string, ModInfo?> ModInfoCaches { get; init; } = [];
-    private Dictionary<string, string>? MaybeSortOrderDataCache { get; set; }
+    private SortOrder? MaybeSortOrderCache { get; set; }
 
     private GetModDirectory GetModDirectorySubscriber { get; init; }
     private GetModList GetModListSubscriber { get; init; }
@@ -75,9 +74,9 @@ public class ModInterop : IDisposable
     {
         DefaultModBuilder = new(pluginLog);
         GroupFactory = new(pluginLog);
-        Parser = new(pluginLog);
         LocalModDataBuilder = new(pluginLog);
         ModMetaBuilder = new(pluginLog);
+        SortOrderBuilder = new(pluginLog);
         PluginLog = pluginLog;
 
         GetModDirectorySubscriber = new(pluginInterface);
@@ -272,26 +271,26 @@ public class ModInterop : IDisposable
 
     private void InvalidateSortOrderDataCache()
     {
-        PluginLog.Debug($"Invalidating sort order data cache [count: {MaybeSortOrderDataCache?.Count}]");
-        MaybeSortOrderDataCache = null;
+        PluginLog.Debug($"Invalidating sort order data cache [count: {MaybeSortOrderCache?.Data?.Count}]");
+        MaybeSortOrderCache = null;
     }
 
-    private Dictionary<string, string> GetSortOrderData()
+    private SortOrder GetSortOrder()
     {
-        if (MaybeSortOrderDataCache != null) return MaybeSortOrderDataCache;
+        if (MaybeSortOrderCache != null) return MaybeSortOrderCache;
 
-        if (Parser.TryParseFile<SortOrder>(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
+        if (SortOrderBuilder.TryBuildFromFile(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
         {
-            MaybeSortOrderDataCache = sortOrder.Data;
-            PluginLog.Debug($"Loaded [{nameof(SortOrder)}] cache (count: {MaybeSortOrderDataCache.Count})");
+            MaybeSortOrderCache = sortOrder;
+            PluginLog.Debug($"Loaded [{nameof(SortOrder)}] cache (count: {sortOrder.Data.Count})");
         }
         else
         {
-            MaybeSortOrderDataCache = [];
+            MaybeSortOrderCache = new() { Data = [] };
             PluginLog.Warning($"Failed to parse [{nameof(SortOrder)}], cached empty until next file system update or reload");
         }
 
-        return MaybeSortOrderDataCache;
+        return MaybeSortOrderCache;
     }
 
     #endregion
@@ -337,7 +336,7 @@ public class ModInterop : IDisposable
 
     public Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();
 
-    public string GetModPath(string modDirectory) => GetSortOrderData().GetValueOrDefault(modDirectory, modDirectory);
+    public string GetModPath(string modDirectory) => GetSortOrder().Data.GetValueOrDefault(modDirectory, modDirectory);
 
     public PenumbraApiEc SetModPath(string modDirectory, string newModPath) {
         var exitCode = SetModPathSubscriber.Invoke(modDirectory, newModPath);

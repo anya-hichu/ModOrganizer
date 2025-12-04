@@ -9,7 +9,7 @@ public class OptionImcFactory(IPluginLog pluginLog) : Factory<OptionImc>(pluginL
     private OptionImcAttributeMaskBuilder OptionImcAttributeMaskBuilder { get; init; } = new(pluginLog);
     private OptionImcIsDisableSubModBuilder OptionImcIsDisableSubModBuilder { get; init; } = new(pluginLog);
 
-    protected override bool TryGetBuilder(JsonElement jsonElement, [NotNullWhen(true)] out Builder<OptionImc>? builder)
+    protected override bool TryGetBuilder(JsonElement jsonElement, [NotNullWhen(true)] out IBuilder<OptionImc>? builder)
     {
         builder = null;
 

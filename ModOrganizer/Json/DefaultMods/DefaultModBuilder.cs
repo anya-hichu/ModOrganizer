@@ -10,7 +10,7 @@ public class DefaultModBuilder(IPluginLog pluginLog) : Builder<DefaultMod>(plugi
 {
     private static readonly int SUPPORTED_VERSION = 0;
 
-    public Parser Parser { get; init; } = new(pluginLog);
+    public FileParser FileParser { get; init; } = new(pluginLog);
 
     private ContainerBuilder ContainerBuilder { get; init; } = new(pluginLog);
 

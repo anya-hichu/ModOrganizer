@@ -5,11 +5,11 @@ namespace ModOrganizer.Json.Groups;
 
 public class GroupFactory : TypeFactory<Group>, IFileBuilder<Group>
 {
-    public Parser Parser { get; init; }
+    public FileParser FileParser { get; init; }
 
     public GroupFactory(IPluginLog pluginLog) : base(pluginLog)
     {
-        Parser = new(pluginLog);
+        FileParser = new(pluginLog);
 
         Builders.Add(GroupCombiningBuilder.TYPE, new GroupCombiningBuilder(pluginLog));
         Builders.Add(GroupMultiBuilder.TYPE, new GroupMultiBuilder(pluginLog));
