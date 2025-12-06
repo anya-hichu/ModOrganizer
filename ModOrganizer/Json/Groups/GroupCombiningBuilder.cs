@@ -19,7 +19,7 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
@@ -36,14 +36,14 @@ public class GroupCombiningBuilder(IPluginLog pluginLog) : Builder<Group>(plugin
         var options = Array.Empty<Option>();
         if (jsonElement.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) && !OptionBuilder.TryBuildMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to build one of [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to build one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]:\n\t{optionsProperty}");
             return false;
         }
 
         var containers = Array.Empty<NamedContainer>();
         if (jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) && !NamedContainerBuilder.TryBuildMany(containersProperty, out containers))
         {
-            PluginLog.Warning($"Failed to build one of [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]:\n\t{containersProperty}");
+            PluginLog.Warning($"Failed to build one or more [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]:\n\t{containersProperty}");
             return false;
         }
 

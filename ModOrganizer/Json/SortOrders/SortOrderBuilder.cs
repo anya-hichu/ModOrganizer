@@ -1,7 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Files;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.SortOrders;
@@ -14,11 +13,14 @@ public class SortOrderBuilder(IPluginLog pluginLog) : Builder<SortOrder>(pluginL
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
-
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
         if (!Assert.IsPropertyPresent(jsonElement, nameof(SortOrder.Data), out var dataProperty)) return false;
 
-        var data = dataProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!);
+        if (!Assert.IsStringDict(dataProperty, out var data))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(SortOrder.Data)}] for [{nameof(SortOrder)}]:\n\t{dataProperty}");
+            return false;
+        }
 
         instance = new()
         {

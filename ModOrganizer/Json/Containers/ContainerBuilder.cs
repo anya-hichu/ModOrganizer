@@ -3,8 +3,8 @@ using ModOrganizer.Json.Groups;
 using ModOrganizer.Json.Manipulations;
 using ModOrganizer.Json.Options.Imcs;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Containers;
@@ -17,18 +17,26 @@ public class ContainerBuilder(IPluginLog pluginLog) : Builder<Container>(pluginL
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        var files = jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) ? 
-            filesProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!) : null;
+        var files = new Dictionary<string, string>();
+        if (jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) && !Assert.IsStringDict(filesProperty, out files))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(Container.Files)}] for [{nameof(GroupImc)}]:\n\t{filesProperty}");
+            return false;
+        }
 
-        var fileSwaps = jsonElement.TryGetProperty(nameof(Container.FileSwaps), out var fileSwapsProperty) ? 
-            fileSwapsProperty.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString()!) : null;
+        var fileSwaps = new Dictionary<string, string>();
+        if (jsonElement.TryGetProperty(nameof(Container.FileSwaps), out var fileSwapsProperty) && !Assert.IsStringDict(fileSwapsProperty, out fileSwaps))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(Container.FileSwaps)}] for [{nameof(GroupImc)}]:\n\t{fileSwapsProperty}");
+            return false;
+        }
 
         var manipulations = Array.Empty<ManipulationWrapper>();
         if (jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && !ManipulationWrapperFactory.TryBuildMany(manipulationsProperty, out manipulations))
         {
-            PluginLog.Warning($"Failed to build one of [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{manipulationsProperty}");
+            PluginLog.Warning($"Failed to build one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{manipulationsProperty}");
             return false;
         }
 

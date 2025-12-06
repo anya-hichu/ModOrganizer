@@ -12,13 +12,13 @@ public class MetaAtchBuilder(IPluginLog pluginLog) : Builder<MetaAtch>(pluginLog
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaAtch.Entry), out var entryProperty)) return false;
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaAtch.Gender), out var gender)) return false;
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaAtch.Race), out var race)) return false;
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaAtch.Type), out var type)) return false;
-        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaAtch.Index), out var index)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(MetaAtch.Gender), out var gender)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(MetaAtch.Race), out var race)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(MetaAtch.Type), out var type)) return false;
+        if (!Assert.IsU16Value(jsonElement, nameof(MetaAtch.Index), out var index)) return false;
 
         if (!MetaAtchEntryBuilder.TryBuild(entryProperty, out var entry))
         {

@@ -10,14 +10,14 @@ public class MetaAtrBuilder(IPluginLog pluginLog) : Builder<MetaAtr>(pluginLog)
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaAtr.Attribute), out var attribute)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(MetaAtr.Attribute), out var attribute)) return false;
 
         var entry = jsonElement.TryGetProperty(nameof(MetaAtr.Entry), out var entryProperty) && entryProperty.GetBoolean();
         var slot = jsonElement.TryGetProperty(nameof(MetaAtr.Slot), out var slotProperty) ? slotProperty.GetString() : null;
 
-        Assert.IsU16PropertyValue(jsonElement, nameof(MetaAtr.Id), out var id, false);
+        Assert.IsU16Value(jsonElement, nameof(MetaAtr.Id), out var id, false);
         ushort? genderRaceCondition = jsonElement.TryGetProperty(nameof(MetaAtr.GenderRaceCondition), out var genderRaceConditionProperty) ? 
             genderRaceConditionProperty.GetUInt16() : null;
 

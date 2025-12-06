@@ -10,9 +10,9 @@ public class MetaAtchEntryBuilder(IPluginLog pluginLog) : Builder<MetaAtchEntry>
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaAtchEntry.Bone), out var bone)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(MetaAtchEntry.Bone), out var bone)) return false;
 
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaAtchEntry.Scale), out var scaleProperty)) return false;
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaAtchEntry.OffsetX), out var offsetXProperty)) return false;

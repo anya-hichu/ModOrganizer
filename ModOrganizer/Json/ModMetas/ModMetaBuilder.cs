@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Files;
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.ModMetas;
@@ -16,7 +16,7 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!Assert.IsPropertyPresent(jsonElement, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
 
@@ -27,7 +27,7 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
             return false;
         }
 
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(ModMeta.Name), out var name)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(ModMeta.Name), out var name)) return false;
 
         var author = jsonElement.TryGetProperty(nameof(ModMeta.Author), out var authorProperty) ? authorProperty.GetString() : null;
         var description = jsonElement.TryGetProperty(nameof(ModMeta.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
@@ -35,15 +35,26 @@ public class ModMetaBuilder(IPluginLog pluginLog) : Builder<ModMeta>(pluginLog),
         var version = jsonElement.TryGetProperty(nameof(ModMeta.Version), out var versionProperty) ? versionProperty.GetString() : null;
         var website = jsonElement.TryGetProperty(nameof(ModMeta.Website), out var websiteProperty) ? websiteProperty.GetString() : null;
 
-        // Provide default values to make it easier to use
-        var modTags = jsonElement.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) ? 
-            modTagsProperty.EnumerateArray().Select(j => j.GetString()!).ToArray() : [];
+        var modTags = Array.Empty<string>();
+        if (jsonElement.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) && !Assert.IsStringArray(modTagsProperty, out modTags))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]:\n\t{modTagsProperty}");
+            return false;
+        }
 
-        var defaultPreferredItems = jsonElement.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) ? 
-            defaultPreferredItemsProperty.EnumerateArray().Select(j => j.GetInt32()).ToArray() : [];
+        var defaultPreferredItems = Array.Empty<int>();
+        if (jsonElement.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) && !Assert.IsIntArray(defaultPreferredItemsProperty, out defaultPreferredItems))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]:\n\t{defaultPreferredItemsProperty}");
+            return false;
+        }
 
-        var requiredFeatures = jsonElement.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) ? 
-            requiredFeaturesProperty.EnumerateArray().Select(j => j.GetString()!).ToArray() : [];
+        var requiredFeatures = Array.Empty<string>();
+        if (jsonElement.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) && !Assert.IsStringArray(requiredFeaturesProperty, out requiredFeatures))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]:\n\t{requiredFeaturesProperty}");
+            return false;
+        }
 
         instance = new()
         {

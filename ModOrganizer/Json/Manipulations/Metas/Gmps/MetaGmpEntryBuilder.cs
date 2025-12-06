@@ -10,7 +10,7 @@ public class MetaGmpEntryBuilder(IPluginLog pluginLog) : Builder<MetaGmpEntry>(p
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.Enabled), out var enabledProperty)) return false;
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmpEntry.Animated), out var animatedProperty)) return false;

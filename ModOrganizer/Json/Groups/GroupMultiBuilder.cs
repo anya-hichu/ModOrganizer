@@ -17,7 +17,7 @@ public class GroupMultiBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
@@ -34,7 +34,7 @@ public class GroupMultiBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
         var options = Array.Empty<OptionContainer>();
         if (jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !OptionContainerBuilder.TryBuildMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to build one of [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to build one or more [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]:\n\t{optionsProperty}");
             return false;
         }
 

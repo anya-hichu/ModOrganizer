@@ -1,5 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Files;
+using ModOrganizer.Json.Groups;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
@@ -16,7 +18,7 @@ public class LocalModDataBuilder(IPluginLog pluginLog) : Builder<LocalModData>(p
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!Assert.IsPropertyPresent(jsonElement, nameof(LocalModData.FileVersion), out var fileVersionProperty)) return false;
         
@@ -29,14 +31,21 @@ public class LocalModDataBuilder(IPluginLog pluginLog) : Builder<LocalModData>(p
 
         long? importDate = jsonElement.TryGetProperty(nameof(LocalModData.ImportDate), out var importDateProperty) ? importDateProperty.GetInt64() : null;
 
-        // Provide default values to make it easier to use
-        var localTags = jsonElement.TryGetProperty(nameof(LocalModData.LocalTags), out var localTagsProperty) ? 
-            localTagsProperty.EnumerateArray().Select(j => j.GetString()!).ToArray() : [];
+        var localTags = Array.Empty<string>();
+        if (jsonElement.TryGetProperty(nameof(LocalModData.LocalTags), out var localTagsProperty) && !Assert.IsStringArray(localTagsProperty, out localTags))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(LocalModData.LocalTags)}] for [{nameof(LocalModData)}]:\n\t{localTagsProperty}");
+            return false;
+        }
 
         var favorite = jsonElement.TryGetProperty(nameof(LocalModData.Favorite), out var favoriteProperty) && favoriteProperty.GetBoolean();
 
-        var preferredChangedItems = jsonElement.TryGetProperty(nameof(LocalModData.PreferredChangedItems), out var preferredChangedItemsProperty) ? 
-            preferredChangedItemsProperty.EnumerateArray().Select(j => j.GetInt32()).ToArray() : [];
+        var preferredChangedItems = Array.Empty<int>();
+        if (jsonElement.TryGetProperty(nameof(LocalModData.PreferredChangedItems), out var preferredChangedItemsProperty) && !Assert.IsIntArray(preferredChangedItemsProperty, out preferredChangedItems))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(LocalModData.PreferredChangedItems)}] for [{nameof(LocalModData)}]:\n\t{preferredChangedItems}");
+            return false;
+        }
 
         instance = new()
         {

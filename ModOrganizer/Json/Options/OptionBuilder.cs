@@ -10,9 +10,9 @@ public class OptionBuilder(IPluginLog pluginLog) : Builder<Option>(pluginLog)
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(Option.Name), out var name)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(Option.Name), out var name)) return false;
 
         var description = jsonElement.TryGetProperty(nameof(Option.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
         int? priority = jsonElement.TryGetProperty(nameof(Option.Priority), out var priorityProperty) ? priorityProperty.GetInt32() : null;

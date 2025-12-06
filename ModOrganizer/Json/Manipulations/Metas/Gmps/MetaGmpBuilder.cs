@@ -12,7 +12,7 @@ public class MetaGmpBuilder(IPluginLog pluginLog) : Builder<MetaGmp>(pluginLog)
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaGmp.Entry), out var entryProperty)) return false;
 
         if (!MetaGmpEntryBuilder.TryBuild(entryProperty, out var entry))
@@ -21,7 +21,7 @@ public class MetaGmpBuilder(IPluginLog pluginLog) : Builder<MetaGmp>(pluginLog)
             return false;
         }
 
-        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaGmp.SetId), out var setId)) return false;
+        if (!Assert.IsU16Value(jsonElement, nameof(MetaGmp.SetId), out var setId)) return false;
 
         instance = new()
         { 

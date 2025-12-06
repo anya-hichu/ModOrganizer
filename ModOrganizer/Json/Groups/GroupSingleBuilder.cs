@@ -1,7 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Options;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -18,7 +17,7 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!GroupBuilder.TryBuild(jsonElement, out var group))
         {
@@ -35,7 +34,7 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
         var options = Array.Empty<OptionContainer>();
         if (jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !OptionContainerBuilder.TryBuildMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to build one of [{nameof(OptionContainer)}] for [{nameof(GroupSingle)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to build one or more [{nameof(OptionContainer)}] for [{nameof(GroupSingle)}]:\n\t{optionsProperty}");
             return false;
         }
 
@@ -47,7 +46,7 @@ public class GroupSingleBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog
             Image = group.Image,
             Priority = group.Priority,
             DefaultSettings = group.DefaultSettings,
-            Options = [.. options]
+            Options = options
         };
 
         return true;

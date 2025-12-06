@@ -11,11 +11,11 @@ public class MetaEqpBuilder(IPluginLog pluginLog) : Builder<MetaEqp>(pluginLog)
     {
         instance = null;
 
-        if (!Assert.IsObject(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaEqp.Entry), out var entryProperty)) return false;
-        if (!Assert.IsU16PropertyValue(jsonElement, nameof(MetaEqp.SetId), out var setId)) return false;
-        if (!Assert.IsPropertyValuePresent(jsonElement, nameof(MetaEqp.Slot), out var slot)) return false;
+        if (!Assert.IsU16Value(jsonElement, nameof(MetaEqp.SetId), out var setId)) return false;
+        if (!Assert.IsValuePresent(jsonElement, nameof(MetaEqp.Slot), out var slot)) return false;
 
         instance = new()
         {

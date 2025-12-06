@@ -54,7 +54,7 @@ public class GroupImcBuilder(IPluginLog pluginLog) : Builder<Group>(pluginLog)
         var options = Array.Empty<OptionImc>();
         if (jsonElement.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !OptionImcFactory.TryBuildMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to build one of [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to build one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{optionsProperty}");
             return false;
         }
 

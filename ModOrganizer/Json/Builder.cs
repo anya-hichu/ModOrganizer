@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -16,7 +15,7 @@ public abstract class Builder<T>(IPluginLog pluginLog) : IBuilder<T> where T : c
     public bool TryBuildMany(JsonElement jsonElement, [NotNullWhen(true)] out T[]? instances)
     {
         instances = null;
-        if (!Assert.IsArray(jsonElement)) return false;
+        if (!Assert.IsValue(jsonElement, JsonValueKind.Array)) return false;
 
         var list = new List<T>();
         foreach (var item in jsonElement.EnumerateArray())
