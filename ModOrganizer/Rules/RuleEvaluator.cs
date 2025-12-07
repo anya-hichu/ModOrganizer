@@ -3,6 +3,7 @@ using Dalamud.Utility;
 using ModOrganizer.Mods;
 using ModOrganizer.Scriban;
 using Scriban;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -41,21 +42,38 @@ public class RuleEvaluator(IPluginLog pluginLog)
             PluginLog.Error($"Failed to parse rule [{rule.Name}] path template, ignoring:\n\t{template.Messages}");
             return false;
         }
-        var result = template.Render(modInfo, MemberRenamer.Rename);
-        if (result.IsNullOrWhitespace()) return false;
 
-        path = result;
-        return true;
+        try
+        {
+            var result = template.Render(modInfo, MemberRenamer.Rename);
+            if (result.IsNullOrWhitespace()) return false;
+
+            path = result;
+            return true;
+        } 
+        catch (Exception e)
+        {
+            PluginLog.Error($"Caught exception when rendering rule [{rule.Name}] path template, ignoring:\n\t{e.Message}");
+            return false;
+        }
     }
 
     private bool Matches(Rule rule, ModInfo modInfo)
     {
         if (rule.MatchExpression.IsNullOrWhitespace()) return false;
 
-        var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
-        if (result is bool validResult) return validResult;
+        try
+        {
+            var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
+            if (result is bool validResult) return validResult;
 
-        PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
-        return false;
+            PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
+            return false;
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error($"Caught exception when evaluating rule [{rule.Name}] match expression, ignoring:\n\t{e.Message}");
+            return false;
+        }
     }
 }

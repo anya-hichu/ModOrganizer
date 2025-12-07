@@ -16,10 +16,11 @@ public sealed class Plugin : IDalamudPlugin
 {
     public static readonly string NAMESPACE = "ModOrganizer"; 
 
-    [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-    [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
-    [PluginService] internal static IChatGui ChatGui { get; private set; } = null!;
-    [PluginService] internal static IPluginLog PluginLog { get; private set; } = null!;
+    [PluginService] public static IDalamudPluginInterface PluginInterface { get; set; } = null!;
+    [PluginService] private static ICommandManager CommandManager { get; set; } = null!;
+    [PluginService] private static IChatGui ChatGui { get; set; } = null!;
+    [PluginService] private static IPluginLog PluginLog { get; set; } = null!;
+    [PluginService] public static IFramework Framework { get; set; } = null!;
 
     private const string CommandName = "/modorganizer";
     private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main and config";
@@ -50,7 +51,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle Main Window"), Click = _ => ToggleMainUI() }]
         };
-        MainWindow = new MainWindow(Config, ModInterop, ModVirtualFileSystem, PluginLog, RuleEvaluator)
+        MainWindow = new MainWindow(ModInterop, ModProcessor, ModVirtualFileSystem, PluginLog)
         {
             TitleBarButtons = [new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle Config Window"), Click = _ => ToggleConfigUI() }]
         };

@@ -1,40 +1,45 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Mods;
-using ModOrganizer.Rules;
+using Penumbra.Api.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.States;
 
-public class RuleEvaluationState(ModInterop modInterop, IPluginLog pluginLog, RuleEvaluator ruleEvaluator) : IDisposable
+public class RuleEvaluationState(ModInterop modInterop, IPluginLog pluginLog, ModProcessor modProcessor) : IDisposable
 {
     private ModInterop ModInterop { get; init; } = modInterop;
-    private RuleEvaluator RuleEvaluator { get; init; } = ruleEvaluator;
+    private ModProcessor ModProcessor { get; init; } = modProcessor;
     private IPluginLog PluginLog { get; init; } = pluginLog;
 
     private Task EvaluationTask { get; set; } = Task.CompletedTask;
     private CancellationTokenSource CancellationTokenSource { get; set; } = new();
-    public Dictionary<string, string?> Results { get; set; } = [];
+    public Dictionary<ModInfo, object?> Results { get; set; } = [];
 
     public void Dispose() => CancelPrevious();
 
-    public Task PreviewAsync(IEnumerable<Rule> rules, IEnumerable<string> modDirectories)
+    public Task EvaluateAsync(IEnumerable<string> modDirectories)
     {
         CancelPrevious();
         var source = CancellationTokenSource = new();
         return EvaluationTask = EvaluationTask.ContinueWith(_ =>
         {
             Results.Clear();
-            Results = modDirectories.ToDictionary(d => d, modDirectory =>
+            var results = new Dictionary<ModInfo, object?>();
+            foreach (var modDirectory in modDirectories)
             {
-                if (source.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(PreviewAsync)}] before processing mod [{modDirectory}]");
-                if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return null;
-                if (!RuleEvaluator.TryEvaluateByPriority(rules, modInfo, out var path)) PluginLog.Warning($"Evaluated mod [{modDirectory}] path as [null] since no rule matched");
-                return path;
-            });
+                if (source.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(EvaluateAsync)}] before processing mod [{modDirectory}]");
+                if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo))
+                {
+                    PluginLog.Warning($"Failed to retrive mod [{modDirectory}] info");
+                    continue;
+                }
+                if (!ModProcessor.TryProcess(modInfo, out var maybePath, dryRun: true)) PluginLog.Warning($"Failed to evaluate mod [{modDirectory}] path, using [null] as result");
+                results.Add(modInfo, maybePath);
+            }
+            Results = results;
         }, source.Token);
     }
 
@@ -44,17 +49,19 @@ public class RuleEvaluationState(ModInterop modInterop, IPluginLog pluginLog, Ru
         var source = CancellationTokenSource = new();
         return EvaluationTask = EvaluationTask.ContinueWith(_ =>
         {
-            foreach (var (modDirectory, maybeNewModPath) in Results)
+            foreach (var (modInfo, result) in Results)
             {
-                if (source.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(ApplyAsync)}] before processing mod [{modDirectory}]");
-                if (maybeNewModPath == null)
+                if (source.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(ApplyAsync)}] before processing mod [{modInfo.Directory}]");
+                if (result is Exception e) continue;
+                
+                var exitCode = ModInterop.SetModPath(modInfo.Directory, result as string);
+                if (exitCode == PenumbraApiEc.PathRenameFailed)
                 {
-                    PluginLog.Debug($"Ignore mod [{modDirectory}] path since it evaluated to [null]");
+                    Results[modInfo] = new ArgumentException("Failed to set path due to conflict");
                     continue;
                 }
-                ModInterop.SetModPath(modDirectory, maybeNewModPath);
+                Results.Remove(modInfo);
             }
-            Results.Clear();
         }, source.Token);
     }
 

@@ -36,7 +36,7 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : IDis
             Results = modDirectories.ToDictionary(d => d, modDirectory =>
             {
                 if (source.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(EvaluateAsync)}] before processing mod [{modDirectory}]");
-                if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ArgumentException("Failed to retrieve mod data");
+                if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ArgumentException("Failed to retrieve mod info");
 
                 var templateContext = new TemplateContext() { MemberRenamer = MemberRenamer.Rename };
 
@@ -62,6 +62,7 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : IDis
 
     public void Clear()
     {
+        CancelPrevious();
         Results.Clear();
         Expression = string.Empty;
         ModDirectoryFilter = string.Empty;

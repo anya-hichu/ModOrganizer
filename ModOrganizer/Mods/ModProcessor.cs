@@ -3,6 +3,7 @@ using ModOrganizer.Rules;
 using Penumbra.Api.Enums;
 using System.Diagnostics.CodeAnalysis;
 
+
 namespace ModOrganizer.Mods;
 
 public class ModProcessor(Config config, ModInterop modInterop, IPluginLog pluginLog, RuleEvaluator ruleEvaluator)
@@ -12,19 +13,21 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
     private IPluginLog PluginLog { get; init; } = pluginLog;
     private RuleEvaluator RuleEvaluator { get; init; } = ruleEvaluator;
 
-    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? path)
+    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? path, bool dryRun = false)
     {
         path = null;
-        if (ModInterop.TryGetModInfo(modDirectory, out var modInfo) && RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out path))
+        if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return false;
+        return TryProcess(modInfo, out path, dryRun);
+    }
+
+    public bool TryProcess(ModInfo modInfo, [NotNullWhen(true)] out string? path, bool dryRun = false)
+    {
+        if (RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out path))
         {
-            var exitCode = ModInterop.SetModPath(modDirectory, path);
-            if (exitCode == PenumbraApiEc.Success)
-            {
-                PluginLog.Info($"Set mod [{modDirectory}] path to [{path}]");
-                return true;
-            }
-            PluginLog.Error($"Failed to set mod [{modDirectory}] path to [{path}] ({exitCode})");
+            if (dryRun) return true;
+            return ModInterop.SetModPath(modInfo.Directory, path) != PenumbraApiEc.PathRenameFailed;
         }
+        PluginLog.Warning($"No rule matched mod [{modInfo.Directory}]");
         return false;
     }
 }
