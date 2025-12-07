@@ -50,7 +50,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle Main Window"), Click = _ => ToggleMainUI() }]
         };
-        MainWindow = new MainWindow(ModInterop, ModVirtualFileSystem, PluginLog)
+        MainWindow = new MainWindow(Config, ModInterop, ModVirtualFileSystem, PluginLog, RuleEvaluator)
         {
             TitleBarButtons = [new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle Config Window"), Click = _ => ToggleConfigUI() }]
         };

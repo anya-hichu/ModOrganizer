@@ -70,14 +70,14 @@ public class ConfigWindow : Window, IDisposable
             }
 
             var matchExpression = rule.MatchExpression;
-            if (ImGui.InputTextMultiline($"Match expression##rule{hash}matchExpression", ref matchExpression))
+            if (ImGui.InputTextMultiline($"Match expression##rule{hash}matchExpression", ref matchExpression, ushort.MaxValue))
             {
                 rule.MatchExpression = matchExpression;
                 Config.Save();
             }
 
             var pathTemplate = rule.PathTemplate;
-            if (ImGui.InputTextMultiline($"Path template##rule{hash}pathTemplate", ref pathTemplate))
+            if (ImGui.InputTextMultiline($"Path template##rule{hash}pathTemplate", ref pathTemplate, ushort.MaxValue))
             {
                 rule.PathTemplate = pathTemplate;
                 Config.Save();

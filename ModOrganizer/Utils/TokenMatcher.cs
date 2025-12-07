@@ -7,9 +7,9 @@ namespace ModOrganizer.Utils;
 
 public static class TokenMatcher
 {
-    public static bool Matches(string filter, string? maybeText) => Matches(filter, [maybeText]);
+    public static bool Matches(string filter, string? maybeText) => MatchesMany(filter, [maybeText]);
 
-    public static bool Matches(string filter, HashSet<string?> maybeTexts)
+    public static bool MatchesMany(string filter, HashSet<string?> maybeTexts)
     {
         if (filter.IsNullOrWhitespace()) return true;
 

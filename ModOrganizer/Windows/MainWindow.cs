@@ -6,6 +6,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
+using ModOrganizer.Rules;
 using ModOrganizer.Scriban;
 using ModOrganizer.Utils;
 using ModOrganizer.Windows.States;
@@ -15,7 +16,6 @@ using Scriban.Parsing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Numerics;
 
@@ -29,19 +29,21 @@ public class MainWindow : Window, IDisposable
 
     private static readonly string FILTER_HINT = "Filter...";
 
+    private Config Config { get; init; }
     private ModInterop ModInterop { get; init; }
     private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
+
+    private RuleEvaluationState RuleEvaluationState { get; init; }
     private EvaluationState EvaluationState { get; init; }
 
     private string Filter { get; set; } = string.Empty;
     private HashSet<string> SelectedModDirectories { get; set; } = [];
 
-
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem, IPluginLog pluginLog) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(Config config, ModInterop modInterop, ModVirtualFileSystem modVirtualFileSystem, IPluginLog pluginLog, RuleEvaluator ruleEvaluator) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -49,10 +51,12 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
+        Config = config;
         ModInterop = modInterop;
         ModVirtualFileSystem = modVirtualFileSystem;
         PluginLog = pluginLog;
 
+        RuleEvaluationState = new(ModInterop, PluginLog, ruleEvaluator);
         EvaluationState = new(ModInterop, PluginLog);
 
         ModInterop.OnModDeleted += OnModDeleted;
@@ -64,6 +68,8 @@ public class MainWindow : Window, IDisposable
         ModInterop.OnModDeleted -= OnModDeleted;
         ModInterop.OnModMoved -= OnModMoved;
         ModInterop.ToggleFsWatchers(false);
+        RuleEvaluationState.Dispose();
+        EvaluationState.Dispose();
     } 
 
     public override void OnOpen() => ModInterop.ToggleFsWatchers(true);
@@ -108,7 +114,6 @@ public class MainWindow : Window, IDisposable
 
             if (!ImGui.IsItemClicked()) continue;
 
-            // TODO: fix
             if (ImGui.IsKeyDown(ImGuiKey.LeftShift) && SelectedModDirectories.Count == 1)
             {
                 var modDirectories = orderedFiles.Select(f => f.Directory).ToArray();
@@ -138,127 +143,214 @@ public class MainWindow : Window, IDisposable
             {
                 var clearButtonSize = ImGui.CalcTextSize("NNN");
                 ImGui.SetNextItemWidth(leftRegion.X - clearButtonSize.X);
-                if (ImGui.InputTextWithHint("###filter", FILTER_HINT, ref filter))
-                {
-                    Filter = filter;
-                }
+                if (ImGui.InputTextWithHint("###filter", FILTER_HINT, ref filter)) Filter = filter;
                 ImGui.SameLine();
-                if (ImGui.Button("X###clearFilter"))
-                {
-                    Filter = string.Empty;
-                }
+                if (ImGui.Button("X###clearFilter")) Filter = string.Empty;
             }
 
             var leftBottomRegion = ImGui.GetContentRegionAvail();
             using var leftBottomPanel = ImRaii.Child("bottomLeftPanel", leftBottomRegion);
-            if (ModVirtualFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder))
-            {
-                DrawVirtualFolderTree(filteredFolder);
-            }
+            if (ModVirtualFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder)) DrawVirtualFolderTree(filteredFolder);
         }
 
         ImGui.SameLine();
 
         using var rightPanel = ImRaii.Child("rightPanel", new(fullRegion.X - leftPanelWidth, fullRegion.Y));
 
-        var rightRegion = ImGui.GetContentRegionAvail();
-        var topRightHeaderHeight = ImGui.GetFrameHeightWithSpacing() * 2;
-        var bottomRightHeight = ImGui.GetFrameHeightWithSpacing() * 15;
-
-        var topRightPanelHeight = rightRegion.Y - bottomRightHeight - topRightHeaderHeight;
-
-        var topRightPanelSize = new Vector2(rightRegion.X, topRightPanelHeight);
-
         if (SelectedModDirectories.Count == 0)
         {
             ImGui.Text("No mod selected");
-            ImGuiComponents.HelpMarker("Click on the left panel to select one and hold <L-CTRL> or <L-SHIFT> for multi-selection");
+            ImGuiComponents.HelpMarker("Click on the left panel to select one and hold <L-CTRL> or <L-SHIFT> (range) for multi-selection");
         }
         else
         {
-            var topRightHeaderOpened = ImGui.CollapsingHeader("Inspector##inspectorHeader", ImGuiTreeNodeFlags.DefaultOpen);
-            if (topRightHeaderOpened)
-            {
+            using var tabBar = ImRaii.TabBar("selectedMacrosTabBar");
 
-                using (ImRaii.PushColor(ImGuiCol.ChildBg, BLACK))
+            using (var organizertab = ImRaii.TabItem($"Organizer###organizerTab"))
+            {
+                if (organizertab) DrawOrganizerTab(); 
+            }
+
+            using var inspectorTab = ImRaii.TabItem($"Inspector###inspectorTab");
+            if (inspectorTab) DrawInspectorTab();
+        }
+    }
+
+    private void DrawOrganizerTab()
+    {
+        if (ImGui.Button("Preview All###evaluateRules")) RuleEvaluationState.PreviewAsync(Config.Rules, SelectedModDirectories);
+
+        var availableRegion = ImGui.GetContentRegionAvail();
+
+        using (var selectedModsTable = ImRaii.Table("selectedModsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2)))
+        {
+            if (selectedModsTable)
+            {
+                ImGui.TableSetupColumn($"Mod directory###selectedDirectoryName", ImGuiTableColumnFlags.None, 6);
+                ImGui.TableSetupColumn($"Actions###selectedDirectoyActions", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupScrollFreeze(0, 1);
+                ImGui.TableHeadersRow();
+
+
+                var clipper = ImGui.ImGuiListClipper();
+
+                var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, StringComparer.OrdinalIgnoreCase).ToList();
+                clipper.Begin(orderedModDirectories.Count, ImGui.GetTextLineHeightWithSpacing());
+
+                while (clipper.Step())
                 {
-                    using var topRightPanel = ImRaii.Child("topRightPanel", topRightPanelSize);
-                    using var _ = ImRaii.PushIndent();
-                    foreach (var selectedModDirectory in SelectedModDirectories)
+                    for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
-                        using var modInfoNode = ImRaii.TreeNode($"{selectedModDirectory}##modInfo{selectedModDirectory.GetHashCode()}");
+                        var modDirectory = orderedModDirectories.ElementAt(i);
 
-                        using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite2);
-                        if (modInfoNode.Success && ModInterop.TryGetModInfo(selectedModDirectory, out var modInfo)) DrawObjectTree(modInfo);
-                    }
-                }
-            }
-
-            using var bottomRightPanel = ImRaii.Child("bottomRightPanel", new(rightRegion.X, topRightHeaderOpened ? bottomRightHeight : rightRegion.Y - topRightHeaderHeight));
-
-            var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
-            var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
-
-            using (ImRaii.PushColor(ImGuiCol.FrameBg, BLACK))
-            {
-                var expression = EvaluationState.Expression;
-                if (ImGui.InputTextMultiline("##evaluationExpression", ref expression, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Expression = expression;
-            }
-            
-            ImGui.SameLine();
-            if (ImGui.Button("Evaluate##evaluateExpression"))
-            {
-                EvaluationState.EvaluateAsync(SelectedModDirectories);
-            }
-
-            ImGui.SameLine();
-            if (ImGui.Button("Clear##clearEvaluationState"))
-            {
-                EvaluationState.Clear();
-            }
-
-            if (EvaluationState.Results.Count > 0)
-            {
-                using var table = ImRaii.Table("evaluationResults", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
-
-                if (table)
-                {
-                    // Add column search
-
-                    
-                    ImGui.TableSetupColumn($"Mod directory###evaluationDirectoryName", ImGuiTableColumnFlags.None, 1);
-                    ImGui.TableSetupColumn($"Evaluation result###evaluationResult", ImGuiTableColumnFlags.None, 6);
-                    ImGui.TableSetupScrollFreeze(0, 2);
-                    ImGui.TableHeadersRow();
-
-                    if (ImGui.TableNextColumn())
-                    {
-                        var modDirectoryFilter = EvaluationState.ModDirectoryFilter;
-                        if (ImGui.InputTextWithHint("###evaluationModDirectoryFilter", FILTER_HINT, ref modDirectoryFilter)) EvaluationState.ModDirectoryFilter = modDirectoryFilter;
-                        ImGui.SameLine();
-                        if (ImGui.Button("X###clearEvaluationModDirectoryFilter")) modDirectoryFilter = string.Empty;
-                    }
-
-                    if (ImGui.TableNextColumn())
-                    {
-                        var resultFilter = EvaluationState.ResultFilter;
-                        if (ImGui.InputTextWithHint("###evaluationResultFilter", FILTER_HINT, ref resultFilter)) EvaluationState.ResultFilter = resultFilter;
-                        ImGui.SameLine();
-                        if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
-                    }
-
-                    // Add clipping ImGui.ImGuiListClipper();
-                    foreach (var evaluationResult in EvaluationState.Results.Where(e => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, e.Key) || TokenMatcher.Matches(EvaluationState.ResultFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase))
-                    {
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(evaluationResult.Key);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(evaluationResult.Key);
+                            ImGui.Text(modDirectory);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(modDirectory);
                         }
 
                         if (ImGui.TableNextColumn())
                         {
-                            if (evaluationResult.Value is Exception e)
+                            if (ImGui.Button($"Unselect###unselectedModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
+                            ImGui.SameLine();
+                            if (ImGui.Button($"Preview###evaluateRule{i}")) RuleEvaluationState.PreviewAsync(Config.Rules, [modDirectory]);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (RuleEvaluationState.Results.Count > 0)
+        {
+            if (ImGui.Button("Apply All##applyRuleEvaluation")) RuleEvaluationState.ApplyAsync();
+            ImGui.SameLine();
+            if (ImGui.Button("Clear##clearRuleEvaluationState")) RuleEvaluationState.Clear();
+
+            using var ruleEvaluationResultsTable = ImRaii.Table("ruleEvaluationResultsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2));
+            if (ruleEvaluationResultsTable)
+            {
+                ImGui.TableSetupColumn($"Mod Directory###ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupColumn($"Path Evaluation Result###pathEvaluationResult", ImGuiTableColumnFlags.None, 6);
+                ImGui.TableSetupScrollFreeze(0, 1);
+                ImGui.TableHeadersRow();
+
+                var orderedResults = RuleEvaluationState.Results.OrderBy(e => e.Key, StringComparer.OrdinalIgnoreCase).ToList();
+
+                var clipper = ImGui.ImGuiListClipper();
+                clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
+                while (clipper.Step())
+                {
+                    for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                    {
+                        var (modDirectory, result) = orderedResults.ElementAt(i);
+
+                        if (ImGui.TableNextColumn())
+                        {
+                            ImGui.Text(modDirectory);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(modDirectory);
+                        }
+
+                        if (ImGui.TableNextColumn())
+                        {
+                            if (result is string value)
+                            {
+                                ImGui.Text(value);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(value);
+                                continue;
+                            }
+
+                            // null and whatever
+                            using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
+
+                            var formattedValue = result == null ? "null" : result.ToString();
+                            ImGui.Text(formattedValue);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(formattedValue);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void DrawInspectorTab()
+    {
+        var rightRegion = ImGui.GetContentRegionAvail();
+
+        using (ImRaii.PushColor(ImGuiCol.ChildBg, BLACK))
+        {
+            using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 2));
+            using var _ = ImRaii.PushIndent();
+            foreach (var selectedModDirectory in SelectedModDirectories)
+            {
+                using var modInfoNode = ImRaii.TreeNode($"{selectedModDirectory}##modInfo{selectedModDirectory.GetHashCode()}");
+
+                using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudWhite2);
+                if (modInfoNode.Success && ModInterop.TryGetModInfo(selectedModDirectory, out var modInfo)) DrawObjectTree(modInfo);
+            }
+        }
+
+        using var bottomRightPanel = ImRaii.Child("bottomRightPanel", new(rightRegion.X, rightRegion.Y / 2 - ImGui.GetTextLineHeightWithSpacing()));
+
+        var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
+        var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
+
+        using (ImRaii.PushColor(ImGuiCol.FrameBg, BLACK))
+        {
+            var expression = EvaluationState.Expression;
+            if (ImGui.InputTextMultiline("##evaluationExpression", ref expression, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Expression = expression;
+        }
+
+        ImGui.SameLine();
+        if (ImGui.Button("Evaluate##evaluateExpression")) EvaluationState.EvaluateAsync(SelectedModDirectories);
+        ImGui.SameLine();
+        if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
+
+        if (EvaluationState.Results.Count > 0)
+        {
+            using var table = ImRaii.Table("evaluationResults", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
+
+            if (table)
+            {
+                ImGui.TableSetupColumn($"Mod Directory###evaluationDirectoryName", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupColumn($"Evaluation Result###evaluationResult", ImGuiTableColumnFlags.None, 6);
+                ImGui.TableSetupScrollFreeze(0, 2);
+                ImGui.TableHeadersRow();
+
+                if (ImGui.TableNextColumn())
+                {
+                    var modDirectoryFilter = EvaluationState.ModDirectoryFilter;
+                    if (ImGui.InputTextWithHint("###evaluationModDirectoryFilter", FILTER_HINT, ref modDirectoryFilter, ushort.MaxValue)) EvaluationState.ModDirectoryFilter = modDirectoryFilter;
+                    ImGui.SameLine();
+                    if (ImGui.Button("X###clearEvaluationModDirectoryFilter")) EvaluationState.ModDirectoryFilter = string.Empty;
+                }
+
+                if (ImGui.TableNextColumn())
+                {
+                    var resultFilter = EvaluationState.ResultFilter;
+                    if (ImGui.InputTextWithHint("###evaluationResultFilter", FILTER_HINT, ref resultFilter)) EvaluationState.ResultFilter = resultFilter;
+                    ImGui.SameLine();
+                    if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
+                }
+
+                var filteredResults = EvaluationState.Results.Where(e => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, e.Key) && TokenMatcher.Matches(EvaluationState.ResultFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                
+                var clipper = ImGui.ImGuiListClipper();
+                clipper.Begin(filteredResults.Count, ImGui.GetTextLineHeightWithSpacing());
+                while (clipper.Step())
+                {
+                    for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                    {
+                        var (modDirectory, result) = filteredResults.ElementAt(i);
+
+                        if (ImGui.TableNextColumn())
+                        {
+                            ImGui.Text(modDirectory);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(modDirectory);
+                        }
+
+                        if (ImGui.TableNextColumn())
+                        {
+                            if (result is Exception e)
                             {
                                 using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
                                 ImGui.Text(e.Message);
@@ -266,15 +358,19 @@ public class MainWindow : Window, IDisposable
                                 continue;
                             }
 
-                            if (evaluationResult.Value is string value)
+                            if (result is string value)
                             {
                                 ImGui.Text(value);
                                 if (ImGui.IsItemHovered()) ImGui.SetTooltip(value);
                                 continue;
                             }
 
-                            using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
-                            ImGui.Text(evaluationResult.Value.ToString());
+                            // null and whatever
+                            using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
+
+                            var formattedValue = result == null ? "null" : result.ToString();
+                            ImGui.Text(formattedValue);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(formattedValue);
                         }
                     }
                 }
