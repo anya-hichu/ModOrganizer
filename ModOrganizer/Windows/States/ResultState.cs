@@ -53,7 +53,7 @@ public abstract class ResultState : IDisposable
         Results.Clear();
     }
 
-    protected Task Run(Action<CancellationTokenSource> action)
+    protected Task RunTask(Action<CancellationTokenSource> action)
     {
         CancelTask();
         var cancellationTokenSource = CancellationTokenSource = new();

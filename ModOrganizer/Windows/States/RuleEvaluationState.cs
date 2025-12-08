@@ -12,12 +12,12 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
 {
     private ModProcessor ModProcessor { get; init; } = modProcessor;
 
-    public Task EvaluateAsync(IEnumerable<string> modDirectories) => Run(cancellationTokenSource =>
+    public Task Evaluate(IEnumerable<string> modDirectories) => RunTask(cancellationTokenSource =>
     {
         Results.Clear();
         Results = modDirectories.ToDictionary(d => d, modDirectory =>
         {
-            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(EvaluateAsync)}] before processing mod [{modDirectory}]");
+            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(Evaluate)}] before processing mod [{modDirectory}]");
             try
             {
                 if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new ArgumentException("No rule matched");
@@ -31,11 +31,11 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
         });
     });
 
-    public Task ApplyAsync() => Run(cancellationTokenSource =>
+    public Task Apply() => RunTask(cancellationTokenSource =>
     {
         foreach (var (modDirectory, result) in Results)
         {
-            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(ApplyAsync)}] before processing mod [{modDirectory}]");
+            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(Apply)}] before processing mod [{modDirectory}]");
             if (result is not string newModPath) continue;
 
             if (ModInterop.SetModPath(modDirectory, newModPath) == PenumbraApiEc.PathRenameFailed)

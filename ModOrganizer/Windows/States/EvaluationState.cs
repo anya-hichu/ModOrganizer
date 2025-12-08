@@ -16,12 +16,12 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
     public string ModDirectoryFilter { get; set; } = string.Empty;
     public string ResultFilter { get; set; } = string.Empty;
 
-    public Task EvaluateAsync(IEnumerable<string> modDirectories) => Run(cancellationTokenSource =>
+    public Task Evaluate(IEnumerable<string> modDirectories) => RunTask(cancellationTokenSource =>
     {
         Results.Clear();
         Results = modDirectories.ToDictionary(d => d, modDirectory =>
         {
-            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(EvaluateAsync)}] before processing mod [{modDirectory}]");
+            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(Evaluate)}] before processing mod [{modDirectory}]");
             if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ArgumentException("Failed to retrieve mod info");
 
             // Need to keep context for string conversion

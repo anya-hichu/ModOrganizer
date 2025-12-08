@@ -179,7 +179,7 @@ public class MainWindow : Window, IDisposable
 
     private void DrawOrganizerTab()
     {
-        if (ImGui.Button("Evaluate All###evaluateModDirectories")) RuleEvaluationState.EvaluateAsync(SelectedModDirectories);
+        if (ImGui.Button("Evaluate All###evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
 
         ImGui.SameLine();
         ImGui.Text($"Selection count: {SelectedModDirectories.Count}");
@@ -219,7 +219,7 @@ public class MainWindow : Window, IDisposable
                         {
                             if (ImGui.Button($"Unselect###unselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
-                            if (ImGui.Button($"Evaluate###evaluateModDirectory{i}")) RuleEvaluationState.EvaluateAsync([modDirectory]);
+                            if (ImGui.Button($"Evaluate###evaluateModDirectory{i}")) RuleEvaluationState.Evaluate([modDirectory]);
                         }
                     }
                 }
@@ -228,7 +228,7 @@ public class MainWindow : Window, IDisposable
 
         if (hasResults)
         {
-            if (ImGui.Button("Apply Selected##applyRuleEvaluation")) RuleEvaluationState.ApplyAsync();
+            if (ImGui.Button("Apply Selected##applyRuleEvaluation")) RuleEvaluationState.Apply();
             ImGui.SameLine();
             if (ImGui.Button("Clear##clearRuleEvaluationState")) RuleEvaluationState.Clear();
 
@@ -241,7 +241,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                //TODO add selections with checkboxes like Quack + checkbox to hide unchangeable
+                //TODO add selections with checkboxes (none for error) + union buttons + checkbox to hide unchangeable (same path) or exception and store state inside RuleEvaluationState
 
                 var orderedResults = RuleEvaluationState.GetResults().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
 
@@ -302,7 +302,7 @@ public class MainWindow : Window, IDisposable
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Evaluate##evaluateExpression")) EvaluationState.EvaluateAsync(SelectedModDirectories);
+        if (ImGui.Button("Evaluate##evaluateExpression")) EvaluationState.Evaluate(SelectedModDirectories);
         ImGui.SameLine();
         if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
 
