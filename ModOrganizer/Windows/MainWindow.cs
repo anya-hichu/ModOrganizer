@@ -1,7 +1,6 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
-using Dalamud.Interface.ImGuiSeStringRenderer;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
@@ -25,7 +24,8 @@ namespace ModOrganizer.Windows;
 public class MainWindow : Window, IDisposable
 {
     private static readonly Vector4 LIGHT_BLUE = new(0.753f, 0.941f, 1, 1);
-    private static readonly Vector4 BLACK = new(0.2f, 0.2f, 0.2f, 0.5f);
+    private static readonly Vector4 LIGHT_BLACK = new(0.2f, 0.2f, 0.2f, 0.5f);
+    private static readonly Vector4 BLACK = new(0, 0, 0, 1);
 
     private static readonly string FILTER_HINT = "Filter...";
 
@@ -179,15 +179,16 @@ public class MainWindow : Window, IDisposable
 
     private void DrawOrganizerTab()
     {
-        if (ImGui.Button("Evaluate All###evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
+        if (SelectedModDirectories.Count > 1)
+        {
+            if (ImGui.Button("Evaluate All###evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
 
-        ImGui.SameLine();
-        ImGui.Text($"Selection count: {SelectedModDirectories.Count}");
+            ImGui.SameLine();
+            ImGui.Text($"Selection count: {SelectedModDirectories.Count}");
+        }
 
         var availableRegion = ImGui.GetContentRegionAvail();
-
         var hasResults = RuleEvaluationState.GetResults().Count > 0;
-
         using (var selectedModsTable = ImRaii.Table("selectedModsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, (availableRegion.Y / 2) - (2 * ImGui.GetTextLineHeightWithSpacing())) : availableRegion))
         {
             if (selectedModsTable)
@@ -197,9 +198,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-
                 var clipper = ImGui.ImGuiListClipper();
-
                 var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, StringComparer.OrdinalIgnoreCase).ToList();
                 clipper.Begin(orderedModDirectories.Count, ImGui.GetTextLineHeightWithSpacing());
 
@@ -217,7 +216,7 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn())
                         {
-                            if (ImGui.Button($"Unselect###unselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
+                            if (ImGui.Button($"Deselect###deselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
                             if (ImGui.Button($"Evaluate###evaluateModDirectory{i}")) RuleEvaluationState.Evaluate([modDirectory]);
                         }
@@ -228,13 +227,33 @@ public class MainWindow : Window, IDisposable
 
         if (hasResults)
         {
-            if (ImGui.Button("Apply Selected##applyRuleEvaluation")) RuleEvaluationState.Apply();
+            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.HealerGreen), __ = ImRaii.PushColor(ImGuiCol.Text, BLACK))
+            {
+                if (ImGui.Button("Apply Selected##applyRuleEvaluation")) RuleEvaluationState.Apply();
+            }
             ImGui.SameLine();
-            if (ImGui.Button("Clear##clearRuleEvaluationState")) RuleEvaluationState.Clear();
+            if (ImGui.Button("Invert Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.InvertResultSelection();
+            ImGui.SameLine();
+            if (ImGui.Button("Clear Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.ClearResultSelection();
+            ImGui.SameLine();
 
-            using var ruleEvaluationResultsTable = ImRaii.Table("ruleEvaluationResultsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2));
+            var showErrors = RuleEvaluationState.ShowErrors;
+            if (ImGui.Checkbox("Show Errors", ref showErrors)) RuleEvaluationState.ShowErrors = showErrors;
+            ImGui.SameLine();
+
+            var showUnchanging = RuleEvaluationState.ShowUnchanging;
+            if (ImGui.Checkbox("Show Unchanging", ref showUnchanging)) RuleEvaluationState.ShowUnchanging = showUnchanging;
+            ImGui.SameLine(availableRegion.X - 100);
+
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
+            {
+                if (ImGui.Button("Clear All##clearRuleEvaluationState")) RuleEvaluationState.Clear();
+            }  
+
+            using var ruleEvaluationResultsTable = ImRaii.Table("ruleEvaluationResultsTable", 4, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2));
             if (ruleEvaluationResultsTable)
             {
+                ImGui.TableSetupColumn($"##ruleEvaluationActions", ImGuiTableColumnFlags.None, 1);
                 ImGui.TableSetupColumn($"Mod Directory##ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 3);
                 ImGui.TableSetupColumn($"Current Path##ruleEvaluationCurrentPath", ImGuiTableColumnFlags.None, 2);
                 ImGui.TableSetupColumn($"New Path##ruleEvaluationNewPath", ImGuiTableColumnFlags.None, 2);
@@ -252,14 +271,26 @@ public class MainWindow : Window, IDisposable
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
                         var (modDirectory, result) = orderedResults.ElementAt(i);
+                        var modPath = ModInterop.GetModPath(modDirectory);
+
+                        if (result is Exception && !showErrors) continue;
+
+                        var isUnchanging = result is string newModPath && modPath == newModPath;
+                        if (isUnchanging && !showUnchanging) continue;
+
+                        if (ImGui.TableNextColumn() && result is not Exception)
+                        {
+                            var selected = RuleEvaluationState.IsResultSelected(modDirectory);
+                            if (ImGui.Checkbox($"###selectRuleEvaluationResult{i}", ref selected)) RuleEvaluationState.SelectResult(modDirectory, selected);
+                        }
+
                         if (ImGui.TableNextColumn())
                         {
                             ImGui.Text(modDirectory);
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
                         
-                        var modPath = ModInterop.GetModPath(modDirectory);
-                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, result is string newModPath && modPath == newModPath);
+                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, isUnchanging);
                         if (ImGui.TableNextColumn())
                         {
                             ImGui.Text(modPath);
@@ -277,7 +308,7 @@ public class MainWindow : Window, IDisposable
     {
         var rightRegion = ImGui.GetContentRegionAvail();
 
-        using (ImRaii.PushColor(ImGuiCol.ChildBg, BLACK))
+        using (ImRaii.PushColor(ImGuiCol.ChildBg, LIGHT_BLACK))
         {
             using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 2));
             using var _ = ImRaii.PushIndent();
@@ -295,7 +326,7 @@ public class MainWindow : Window, IDisposable
         var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
         var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
 
-        using (ImRaii.PushColor(ImGuiCol.FrameBg, BLACK))
+        using (ImRaii.PushColor(ImGuiCol.FrameBg, LIGHT_BLACK))
         {
             var expression = EvaluationState.Expression;
             if (ImGui.InputTextMultiline("##evaluationExpression", ref expression, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Expression = expression;

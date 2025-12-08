@@ -22,6 +22,7 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
         Results = modDirectories.ToDictionary(d => d, modDirectory =>
         {
             if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(Evaluate)}] before processing mod [{modDirectory}]");
+
             if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ArgumentException("Failed to retrieve mod info");
 
             // Need to keep context for string conversion
