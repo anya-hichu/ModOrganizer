@@ -13,19 +13,14 @@ public class ModProcessor(Config config, ModInterop modInterop, IPluginLog plugi
     private IPluginLog PluginLog { get; init; } = pluginLog;
     private RuleEvaluator RuleEvaluator { get; init; } = ruleEvaluator;
 
-    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? path, bool dryRun = false)
+    public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? newModPath, bool dryRun = false)
     {
-        path = null;
+        newModPath = null;
         if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return false;
-        return TryProcess(modInfo, out path, dryRun);
-    }
-
-    public bool TryProcess(ModInfo modInfo, [NotNullWhen(true)] out string? path, bool dryRun = false)
-    {
-        if (RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out path))
+        if (RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out newModPath))
         {
             if (dryRun) return true;
-            return ModInterop.SetModPath(modInfo.Directory, path) != PenumbraApiEc.PathRenameFailed;
+            return ModInterop.SetModPath(modInfo.Directory, newModPath) != PenumbraApiEc.PathRenameFailed;
         }
         PluginLog.Warning($"No rule matched mod [{modInfo.Directory}]");
         return false;

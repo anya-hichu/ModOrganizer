@@ -1,6 +1,7 @@
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.ImGuiSeStringRenderer;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
@@ -55,7 +56,7 @@ public class MainWindow : Window, IDisposable
         ModVirtualFileSystem = modVirtualFileSystem;
         PluginLog = pluginLog;
 
-        RuleEvaluationState = new(ModInterop, PluginLog, ModProcessor);
+        RuleEvaluationState = new(ModInterop, ModProcessor, PluginLog);
         EvaluationState = new(ModInterop, PluginLog);
 
         ModInterop.OnModDeleted += OnModDeleted;
@@ -66,6 +67,7 @@ public class MainWindow : Window, IDisposable
     {
         ModInterop.OnModDeleted -= OnModDeleted;
         ModInterop.OnModMoved -= OnModMoved;
+
         ModInterop.ToggleFsWatchers(false);
         RuleEvaluationState.Dispose();
         EvaluationState.Dispose();
@@ -177,21 +179,21 @@ public class MainWindow : Window, IDisposable
 
     private void DrawOrganizerTab()
     {
-        if (ImGui.Button("Evaluate All###evaluateRules")) RuleEvaluationState.EvaluateAsync(SelectedModDirectories);
+        if (ImGui.Button("Evaluate All###evaluateModDirectories")) RuleEvaluationState.EvaluateAsync(SelectedModDirectories);
 
         ImGui.SameLine();
         ImGui.Text($"Selection count: {SelectedModDirectories.Count}");
 
         var availableRegion = ImGui.GetContentRegionAvail();
 
-        var hasResults = RuleEvaluationState.Results.Count > 0;
+        var hasResults = RuleEvaluationState.GetResults().Count > 0;
 
         using (var selectedModsTable = ImRaii.Table("selectedModsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, (availableRegion.Y / 2) - (2 * ImGui.GetTextLineHeightWithSpacing())) : availableRegion))
         {
             if (selectedModsTable)
             {
-                ImGui.TableSetupColumn($"Mod directory###selectedDirectoryName", ImGuiTableColumnFlags.None, 6);
-                ImGui.TableSetupColumn($"Actions###selectedDirectoyActions", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupColumn($"Mod directory##selectedDirectoryName", ImGuiTableColumnFlags.None, 6);
+                ImGui.TableSetupColumn($"Actions##selectedDirectoyActions", ImGuiTableColumnFlags.None, 1);
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
@@ -215,9 +217,9 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn())
                         {
-                            if (ImGui.Button($"Unselect###unselectedModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
+                            if (ImGui.Button($"Unselect###unselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
-                            if (ImGui.Button($"Evaluate###evaluateRule{i}")) RuleEvaluationState.EvaluateAsync([modDirectory]);
+                            if (ImGui.Button($"Evaluate###evaluateModDirectory{i}")) RuleEvaluationState.EvaluateAsync([modDirectory]);
                         }
                     }
                 }
@@ -233,15 +235,15 @@ public class MainWindow : Window, IDisposable
             using var ruleEvaluationResultsTable = ImRaii.Table("ruleEvaluationResultsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2));
             if (ruleEvaluationResultsTable)
             {
-                ImGui.TableSetupColumn($"Mod Directory###ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 1);
-                ImGui.TableSetupColumn($"Current Path###ruleEvaluationCurrentPath", ImGuiTableColumnFlags.None, 3);
-                ImGui.TableSetupColumn($"New Path###ruleEvaluationNewPath", ImGuiTableColumnFlags.None, 3);
+                ImGui.TableSetupColumn($"Mod Directory##ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 3);
+                ImGui.TableSetupColumn($"Current Path##ruleEvaluationCurrentPath", ImGuiTableColumnFlags.None, 2);
+                ImGui.TableSetupColumn($"New Path##ruleEvaluationNewPath", ImGuiTableColumnFlags.None, 2);
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
                 //TODO add selections with checkboxes like Quack + checkbox to hide unchangeable
 
-                var orderedResults = RuleEvaluationState.Results.OrderBy(p => p.Key.Directory, StringComparer.OrdinalIgnoreCase).ToList();
+                var orderedResults = RuleEvaluationState.GetResults().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
@@ -249,36 +251,22 @@ public class MainWindow : Window, IDisposable
                 {
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
-                        var (modInfo, result) = orderedResults.ElementAt(i);
-
+                        var (modDirectory, result) = orderedResults.ElementAt(i);
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(modInfo.Directory);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modInfo.Directory, true));
+                            ImGui.Text(modDirectory);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
-
-                        var maybeNewPath = result as string;
-                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, maybeNewPath == modInfo.Path);
+                        
+                        var modPath = ModInterop.GetModPath(modDirectory);
+                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, result is string newModPath && modPath == newModPath);
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(modInfo.Path);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modInfo.Path, true));
+                            ImGui.Text(modPath);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modPath, true));
                         }
 
-                        if (ImGui.TableNextColumn())
-                        {
-                            if (result is Exception e)
-                            {
-                                using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-                                ImGui.Text(e.Message);
-                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(e.Message);
-                                continue;
-                            }
-
-                            using var ___ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, maybeNewPath == null);
-                            ImGui.Text(maybeNewPath ?? "null");
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(maybeNewPath, true));
-                        }
+                        if (ImGui.TableNextColumn()) DrawResult(result);
                     }
                 }
             }
@@ -318,7 +306,7 @@ public class MainWindow : Window, IDisposable
         ImGui.SameLine();
         if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
 
-        if (EvaluationState.Results.Count > 0)
+        if (EvaluationState.GetResults().Count > 0)
         {
             using var table = ImRaii.Table("evaluationResults", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
 
@@ -345,7 +333,7 @@ public class MainWindow : Window, IDisposable
                     if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
                 }
 
-                var filteredResults = EvaluationState.Results.Where(e => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, e.Key) && TokenMatcher.Matches(EvaluationState.ResultFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                var filteredResults = EvaluationState.GetResults().Where(e => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, e.Key) && TokenMatcher.Matches(EvaluationState.ResultFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToList();
                 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(filteredResults.Count, ImGui.GetTextLineHeightWithSpacing());
@@ -361,29 +349,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
 
-                        if (ImGui.TableNextColumn())
-                        {
-                            if (result is Exception e)
-                            {
-                                using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-                                ImGui.Text(e.Message);
-                                if (ImGui.IsItemHovered() && e.InnerException != null) ImGui.SetTooltip(e.InnerException.Message);
-                                continue;
-                            }
-
-                            if (result is string value)
-                            {
-                                ImGui.Text(value);
-                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(value, true));
-                                continue;
-                            }
-
-                            // null and whatever
-                            using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
-
-                            ImGui.Text(result.ToString());
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(result, true));
-                        }
+                        if (ImGui.TableNextColumn()) DrawResult(result);
                     }
                 }
             }
@@ -416,7 +382,7 @@ public class MainWindow : Window, IDisposable
         var isLeaf = valueType.IsPrimitive || isEmptyList || isEmptyDict;
         var isPrintable = isLeaf || valueType.IsEnum || value is string || value is ReadOnlySeString;
 
-        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : "")} ({valueType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
+        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : string.Empty)} ({valueType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
         if (!treeNode) return;
 
         if (value is IList list)
@@ -426,5 +392,27 @@ public class MainWindow : Window, IDisposable
         } 
         
         DrawObjectTree(value);
+    }
+
+    private void DrawResult(object result)
+    {
+        if (result is Exception e)
+        {
+            using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+            ImGui.Text(e.Message);
+            if (ImGui.IsItemHovered() && e.InnerException != null) ImGui.SetTooltip(e.InnerException.Message);
+            return;
+        }
+
+        if (result is string newModPath)
+        {
+            ImGui.Text(newModPath);
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(newModPath, true));
+            return;
+        }
+
+        using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
+        ImGui.Text(ViewTemplateContext.ObjectToString(result, result == null));
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(result, true));
     }
 }

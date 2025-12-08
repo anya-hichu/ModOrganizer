@@ -338,19 +338,17 @@ public class ModInterop : IDisposable
 
     public string GetModPath(string modDirectory) => GetSortOrder().Data.GetValueOrDefault(modDirectory, modDirectory);
 
-    public PenumbraApiEc? SetModPath(string modDirectory, string? maybeModPath)
+    public PenumbraApiEc SetModPath(string modDirectory, string newModPath)
     {
-        if (maybeModPath == null) return null;
-
-        var exitCode = SetModPathSubscriber.Invoke(modDirectory, maybeModPath);
+        var exitCode = SetModPathSubscriber.Invoke(modDirectory, newModPath);
         if (exitCode == PenumbraApiEc.Success)
         {
-            PluginLog.Info($"Set mod [{modDirectory}] path to [{maybeModPath}]");
+            PluginLog.Info($"Set mod [{modDirectory}] path to [{newModPath}]");
             // Watchers might not be enabled, invalidate manually
             InvalidateCaches(modDirectory);
             return exitCode;
         }
-        PluginLog.Error($"Failed to set mod [{modDirectory}] path to [{maybeModPath}] ({exitCode})");
+        PluginLog.Error($"Failed to set mod [{modDirectory}] path to [{newModPath}] ({exitCode})");
         return exitCode;
     }
     #endregion

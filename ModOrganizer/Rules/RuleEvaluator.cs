@@ -43,37 +43,21 @@ public class RuleEvaluator(IPluginLog pluginLog)
             return false;
         }
 
-        try
-        {
-            var result = template.Render(modInfo, MemberRenamer.Rename);
-            if (result.IsNullOrWhitespace()) return false;
+        var result = template.Render(modInfo, MemberRenamer.Rename);
+        if (result.IsNullOrWhitespace()) return false;
 
-            path = result;
-            return true;
-        } 
-        catch (Exception e)
-        {
-            PluginLog.Error($"Caught exception when rendering rule [{rule.Name}] path template, ignoring:\n\t{e.Message}");
-            return false;
-        }
+        path = result;
+        return true;
     }
 
     private bool Matches(Rule rule, ModInfo modInfo)
     {
         if (rule.MatchExpression.IsNullOrWhitespace()) return false;
 
-        try
-        {
-            var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
-            if (result is bool validResult) return validResult;
+        var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
+        if (result is bool validResult) return validResult;
 
-            PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
-            return false;
-        }
-        catch (Exception e)
-        {
-            PluginLog.Error($"Caught exception when evaluating rule [{rule.Name}] match expression, ignoring:\n\t{e.Message}");
-            return false;
-        }
+        PluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
+        return false;
     }
 }

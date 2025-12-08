@@ -32,9 +32,9 @@ public class ModAutoProcessor : IDisposable
 
         Task.Delay((int)Config.AutoProcessDelayMs).ContinueWith(_ =>
         {
-            if (ModProcessor.TryProcess(modDirectory, out var path))
+            if (ModProcessor.TryProcess(modDirectory, out var newModPath))
             {
-                ChatGui.Print($"Set mod [{modDirectory}] path to [{path}]", Plugin.NAMESPACE);
+                ChatGui.Print($"Set mod [{modDirectory}] path to [{newModPath}]", Plugin.NAMESPACE);
             }
         }); 
     }
