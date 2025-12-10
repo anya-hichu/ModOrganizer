@@ -1,4 +1,5 @@
 using Dalamud.Utility;
+using ModOrganizer.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -40,4 +41,7 @@ public class VirtualFolder : IEquatable<VirtualFolder>
     public override bool Equals(object? obj) => Equals(obj as VirtualFile);
     public bool Equals(VirtualFolder? other) => other != null && GetHashCode() == other.GetHashCode();
     public override int GetHashCode() => Path.GetHashCode();
+
+    public IEnumerable<VirtualFile> GetOrderedFiles() => Files.OrderBy(f => f.Name, Constants.ORDER_COMPARER);
+    public IEnumerable<VirtualFolder> GetOrderedFolders() => Folders.OrderBy(f => f.Name, Constants.ORDER_COMPARER);
 }

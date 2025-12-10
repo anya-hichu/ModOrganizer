@@ -2,7 +2,7 @@ using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
-using ModOrganizer.Utils;
+using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
 using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results.Rules;
@@ -34,12 +34,6 @@ public class PreviewWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (!RuleResultFileSystem.HasRulePathResults())
-        {
-            ImGui.Text("No rule path results to preview");
-            return;
-        }
-
         var filter = Filter;
         if (ImGui.InputTextWithHint("##resultFilter", Constants.FILTER_HINT, ref filter)) Filter = filter;
         ImGui.SameLine();
@@ -54,18 +48,16 @@ public class PreviewWindow : Window, IDisposable
 
     private void DrawVirtualFolderTree(VirtualFolder folder)
     {
-        var orderedSubfolders = folder.Folders.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase);
-        foreach (var subfolder in orderedSubfolders)
+        foreach (var subfolder in folder.GetOrderedFolders())
         {
             using var _ = ImRaii.PushColor(ImGuiCol.Text, Constants.LIGHT_BLUE);
             using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###resultVirtualFolder{subfolder.GetHashCode()}");
             if (treeNode) DrawVirtualFolderTree(subfolder);
         }
 
-        var orderedFiles = folder.Files.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase);
-        foreach (var file in orderedFiles)
+        foreach (var file in folder.GetOrderedFiles())
         {
-            if (!RuleResultFileSystem.TryGetRulePathResult(file.Directory, out var rulePathResult)) continue;
+            if (!RuleResultFileSystem.TryGetFileData(file, out var rulePathResult)) continue;
 
             var isSelected = rulePathResult.IsSelected;
             if (!isSelected && !ShowUnselected) continue;

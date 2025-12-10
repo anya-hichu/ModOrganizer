@@ -20,7 +20,6 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
 
     public bool ShowErrors { get; set; } = true;
     public bool ShowUnchanging { get; set; } = false;
-    public bool ShowUnselected => false;
 
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {

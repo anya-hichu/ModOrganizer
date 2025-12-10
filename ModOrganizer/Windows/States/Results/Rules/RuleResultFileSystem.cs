@@ -51,13 +51,11 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
         return true;
     }
 
-    public bool TryGetRulePathResult(string modDirectory, [NotNullWhen(true)] out RulePathResult? rulePathResult) {
+    public bool TryGetFileData(VirtualFile file, [NotNullWhen(true)] out RulePathResult? rulePathResult) {
         rulePathResult = null;
 
         if (MaybeCache == null) return false;
 
-        return MaybeCache.TryGetValue(modDirectory, out rulePathResult);
+        return MaybeCache.TryGetValue(file.Directory, out rulePathResult);
     }
-
-    public bool HasRulePathResults() => MaybeCache != null && MaybeCache.Any();
 }

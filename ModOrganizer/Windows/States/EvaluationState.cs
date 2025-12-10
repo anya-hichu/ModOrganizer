@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Mods;
-using ModOrganizer.Utils;
+using ModOrganizer.Shared;
 using ModOrganizer.Windows.States.Results;
 using Scriban;
 using Scriban.Runtime;

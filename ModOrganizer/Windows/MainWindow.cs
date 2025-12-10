@@ -7,7 +7,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
-using ModOrganizer.Utils;
+using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
 using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results;
@@ -94,8 +94,7 @@ public class MainWindow : Window, IDisposable
 
     private void DrawVirtualFolderTree(VirtualFolder folder)
     {
-        var orderedSubfolders = folder.Folders.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase);
-        foreach (var subfolder in orderedSubfolders)
+        foreach (var subfolder in folder.GetOrderedFolders())
         {
             var hash = subfolder.GetHashCode();
             using var _ = ImRaii.PushColor(ImGuiCol.Text, Constants.LIGHT_BLUE);
@@ -105,7 +104,7 @@ public class MainWindow : Window, IDisposable
             if (treeNode) DrawVirtualFolderTree(subfolder);
         }
 
-        var orderedFiles = folder.Files.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase).ToArray();
+        var orderedFiles = folder.GetOrderedFiles().ToArray();
         for (var i = 0; i < orderedFiles.Length; i++)
         {
             var file = orderedFiles.ElementAt(i);
@@ -201,7 +200,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableHeadersRow();
 
                 var clipper = ImGui.ImGuiListClipper();
-                var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, StringComparer.OrdinalIgnoreCase).ToList();
+                var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, Constants.ORDER_COMPARER).ToList();
                 clipper.Begin(orderedModDirectories.Count, ImGui.GetTextLineHeightWithSpacing());
 
                 while (clipper.Step())
@@ -262,7 +261,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                var orderedResults = RuleEvaluationState.GetVisibleResultByModDirectory().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                var orderedResults = RuleEvaluationState.GetVisibleResultByModDirectory().OrderBy(p => p.Key, Constants.ORDER_COMPARER).ToList();
 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
@@ -374,7 +373,7 @@ public class MainWindow : Window, IDisposable
                     if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
                 }
 
-                var filteredResults = EvaluationState.GetResultByModDirectory().Where(p => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, p.Key) && p.Value is EvaluationResult r && TokenMatcher.Matches(EvaluationState.ResultFilter, r.Value)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                var filteredResults = EvaluationState.GetResultByModDirectory().Where(p => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, p.Key) && p.Value is EvaluationResult r && TokenMatcher.Matches(EvaluationState.ResultFilter, r.Value)).OrderBy(r => r.Key, Constants.ORDER_COMPARER).ToList();
                 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(filteredResults.Count, ImGui.GetTextLineHeightWithSpacing());
