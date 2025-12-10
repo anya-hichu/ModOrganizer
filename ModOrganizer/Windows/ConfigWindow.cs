@@ -2,6 +2,7 @@ using System;
 using Dalamud.Interface.Windowing;
 using Dalamud.Bindings.ImGui;
 using System.Linq;
+using Dalamud.Interface;
 
 namespace ModOrganizer.Windows;
 
@@ -9,13 +10,15 @@ public class ConfigWindow : Window, IDisposable
 {
     private Config Config { get; init; }
 
-    public ConfigWindow(Config config) : base("ModOrganizer - Config##configWindow")
+    public ConfigWindow(Config config, Action toggleMainWindow) : base("ModOrganizer - Config##configWindow")
     {
         SizeConstraints = new()
         {
             MinimumSize = new(375, 330),
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
+
+        TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle Main Window"), Click = _ => toggleMainWindow() }];
 
         Config = config;
     }

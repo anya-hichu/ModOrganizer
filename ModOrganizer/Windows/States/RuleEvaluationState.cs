@@ -14,6 +14,8 @@ namespace ModOrganizer.Windows.States;
 
 public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IVisibleResultState
 {
+    public event Action? OnResultsChanged;
+
     private ModProcessor ModProcessor { get; init; } = modProcessor;
 
     public bool ShowErrors { get; set; } = true;
@@ -22,6 +24,8 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
         ResultByModDirectory.Clear();
+        OnResultsChanged?.Invoke();
+
         ResultByModDirectory = modDirectories.ToDictionary<string, string, Result>(d => d, modDirectory =>
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -40,6 +44,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
                 return new RuleErrorResult(currentPath, "Failed to evaluate", e.Message);
             }
         });
+        OnResultsChanged?.Invoke();
     });
 
     public Task Apply() => CancelAndRunTask(cancellationToken =>
@@ -59,11 +64,14 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
             }
             ResultByModDirectory.Remove(modDirectory); 
         }
+        OnResultsChanged?.Invoke();
     });
 
     public IEnumerable<ISelectableResult> GetSelectableResults() => ResultByModDirectory.Values.OfType<ISelectableResult>();
 
     public IReadOnlyDictionary<string, IVisibleResult> GetVisibleResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is IVisibleResult r && r.IsVisible(this)).ToDictionary(p => p.Key, p => (IVisibleResult)p.Value);
     public IReadOnlyDictionary<string, ISelectableResult> GetSelectedResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is ISelectableResult r && r.IsSelected).ToDictionary(p => p.Key, p => (ISelectableResult)p.Value);
-    
+
+    public IReadOnlyDictionary<string, RulePathResult> GetRulePathResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is RulePathResult).ToDictionary(p => p.Key, p => (RulePathResult)p.Value);
+
 }

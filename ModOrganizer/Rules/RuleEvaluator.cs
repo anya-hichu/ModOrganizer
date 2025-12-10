@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ModOrganizer.Mods;
-using ModOrganizer.Scriban;
+using ModOrganizer.Utils;
 using Scriban;
 using System;
 using System.Collections.Generic;

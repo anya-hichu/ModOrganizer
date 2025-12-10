@@ -1,7 +1,7 @@
 using Scriban.Runtime;
 using System.Reflection;
 
-namespace ModOrganizer.Scriban;
+namespace ModOrganizer.Utils;
 
 public static class MemberRenamer
 {

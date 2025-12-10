@@ -1,4 +1,5 @@
 using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility.Raii;
@@ -6,8 +7,8 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using Lumina.Text.ReadOnly;
 using ModOrganizer.Mods;
-using ModOrganizer.Scriban;
 using ModOrganizer.Utils;
+using ModOrganizer.Virtuals;
 using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Rules;
@@ -26,15 +27,8 @@ namespace ModOrganizer.Windows;
 
 public class MainWindow : Window, IDisposable
 {
-    private static readonly Vector4 LIGHT_BLUE = new(0.753f, 0.941f, 1, 1);
-    private static readonly Vector4 LIGHT_BLACK = new(0.2f, 0.2f, 0.2f, 0.5f);
-    private static readonly Vector4 BLACK = new(0, 0, 0, 1);
-
-    private static readonly string FILTER_HINT = "Filter...";
-
     private ModInterop ModInterop { get; init; }
-    private ModProcessor ModProcessor { get; init; }
-    private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
+    private ModFileSystem ModFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
 
     private RuleEvaluationState RuleEvaluationState { get; init; }
@@ -46,7 +40,7 @@ public class MainWindow : Window, IDisposable
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(ModInterop modInterop, ModProcessor modProcessor, ModVirtualFileSystem modVirtualFileSystem, IPluginLog pluginLog) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleEvaluationState ruleEvaluationState, Action toggleMainWindow, Action togglePreviewWindow) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -54,12 +48,16 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        ModInterop = modInterop;
-        ModProcessor = modProcessor;
-        ModVirtualFileSystem = modVirtualFileSystem;
-        PluginLog = pluginLog;
+        TitleBarButtons = [
+            new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle Config Window"), Click = _ => toggleMainWindow() },
+            new() { Icon = FontAwesomeIcon.Eye, ShowTooltip = () => ImGui.SetTooltip("Toggle Preview Window"), Click = _ => togglePreviewWindow() },
+        ];
 
-        RuleEvaluationState = new(ModInterop, ModProcessor, PluginLog);
+        ModInterop = modInterop;
+        ModFileSystem = modFileSystem;
+        PluginLog = pluginLog;
+        RuleEvaluationState = ruleEvaluationState;
+
         EvaluationState = new(ModInterop, PluginLog);
 
         ModInterop.OnModDeleted += OnModDeleted;
@@ -87,19 +85,19 @@ public class MainWindow : Window, IDisposable
         if (SelectedModDirectories.Remove(modDirectory)) SelectedModDirectories.Add(newModDirectory);
     }
 
-    private void ToggleFolderSelection(ModVirtualFolder folder)
+    private void ToggleFolderSelection(VirtualFolder folder)
     {
         var modDirectories = folder.GetNestedFiles().Select(f => f.Directory);
         SelectedModDirectories = [.. SelectedModDirectories.Overlaps(modDirectories) ? SelectedModDirectories.Except(modDirectories) : SelectedModDirectories.Union(modDirectories)];
     }
 
-    private void DrawVirtualFolderTree(ModVirtualFolder folder)
+    private void DrawVirtualFolderTree(VirtualFolder folder)
     {
         var orderedSubfolders = folder.Folders.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase);
         foreach (var subfolder in orderedSubfolders)
         {
             var hash = subfolder.GetHashCode();
-            using var _ = ImRaii.PushColor(ImGuiCol.Text, LIGHT_BLUE);
+            using var _ = ImRaii.PushColor(ImGuiCol.Text, Constants.LIGHT_BLUE);
             using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###modVirtualFolder{hash}");
             if (ImGui.IsItemHovered()) ImGui.SetTooltip(subfolder.Name);
             if (ImGui.IsItemClicked() && ImGui.IsKeyDown(ImGuiKey.LeftCtrl)) ToggleFolderSelection(subfolder);
@@ -147,14 +145,14 @@ public class MainWindow : Window, IDisposable
             {
                 var clearButtonSize = ImGui.CalcTextSize("NNN");
                 ImGui.SetNextItemWidth(leftRegion.X - clearButtonSize.X);
-                if (ImGui.InputTextWithHint("###filter", FILTER_HINT, ref filter)) Filter = filter;
+                if (ImGui.InputTextWithHint("##modFilter", Constants.FILTER_HINT, ref filter)) Filter = filter;
                 ImGui.SameLine();
-                if (ImGui.Button("X###clearFilter")) Filter = string.Empty;
+                if (ImGui.Button("X##clearModFilter")) Filter = string.Empty;
             }
 
             var leftBottomRegion = ImGui.GetContentRegionAvail();
             using var leftBottomPanel = ImRaii.Child("bottomLeftPanel", leftBottomRegion);
-            if (ModVirtualFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder)) DrawVirtualFolderTree(filteredFolder);
+            if (ModFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder)) DrawVirtualFolderTree(filteredFolder);
         }
 
         ImGui.SameLine();
@@ -230,7 +228,7 @@ public class MainWindow : Window, IDisposable
 
         if (hasResults)
         {
-            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.HealerGreen), __ = ImRaii.PushColor(ImGuiCol.Text, BLACK))
+            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.HealerGreen), __ = ImRaii.PushColor(ImGuiCol.Text, Constants.BLACK))
             {
                 if (ImGui.Button("Apply Selected##applyRuleEvaluation")) RuleEvaluationState.Apply();
             }
@@ -272,8 +270,9 @@ public class MainWindow : Window, IDisposable
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
                         var (modDirectory, result) = visibleResults.ElementAt(i);
+                        if (result is not RuleResult ruleResult) throw new ArgumentException($"Unhandled result type [{result?.GetType().ScriptPrettyName()}]");
 
-                        if (ImGui.TableNextColumn() && result is ISelectableResult selectableResult)
+                        if (ImGui.TableNextColumn() && ruleResult is ISelectableResult selectableResult)
                         {
                             var isSelected = selectableResult.IsSelected;
                             if (ImGui.Checkbox($"###selectResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.IsSelected = isSelected;
@@ -285,8 +284,7 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
 
-                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, result is RuleSamePathResult);
-                        if (result is not RuleResult ruleResult) throw new ArgumentException($"Invalid result type [{result?.GetType().ScriptPrettyName()}]");
+                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, ruleResult is RuleSamePathResult);
 
                         if (ImGui.TableNextColumn())
                         {
@@ -296,7 +294,7 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn())
                         {
-                            switch (result)
+                            switch (ruleResult)
                             {
                                 case RulePathResult rulePathResult:
                                     DrawResult(rulePathResult);
@@ -319,7 +317,7 @@ public class MainWindow : Window, IDisposable
     {
         var rightRegion = ImGui.GetContentRegionAvail();
 
-        using (ImRaii.PushColor(ImGuiCol.ChildBg, LIGHT_BLACK))
+        using (ImRaii.PushColor(ImGuiCol.ChildBg, Constants.LIGHT_BLACK))
         {
             using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 2));
             using var _ = ImRaii.PushIndent();
@@ -337,7 +335,7 @@ public class MainWindow : Window, IDisposable
         var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
         var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
 
-        using (ImRaii.PushColor(ImGuiCol.FrameBg, LIGHT_BLACK))
+        using (ImRaii.PushColor(ImGuiCol.FrameBg, Constants.LIGHT_BLACK))
         {
             var expression = EvaluationState.Expression;
             if (ImGui.InputTextMultiline("##evaluationExpression", ref expression, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Expression = expression;
@@ -362,7 +360,7 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var modDirectoryFilter = EvaluationState.ModDirectoryFilter;
-                    if (ImGui.InputTextWithHint("###evaluationModDirectoryFilter", FILTER_HINT, ref modDirectoryFilter, ushort.MaxValue)) EvaluationState.ModDirectoryFilter = modDirectoryFilter;
+                    if (ImGui.InputTextWithHint("###evaluationModDirectoryFilter", Constants.FILTER_HINT, ref modDirectoryFilter, ushort.MaxValue)) EvaluationState.ModDirectoryFilter = modDirectoryFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearEvaluationModDirectoryFilter")) EvaluationState.ModDirectoryFilter = string.Empty;
                 }
@@ -370,7 +368,7 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var resultFilter = EvaluationState.ResultFilter;
-                    if (ImGui.InputTextWithHint("###evaluationResultFilter", FILTER_HINT, ref resultFilter)) EvaluationState.ResultFilter = resultFilter;
+                    if (ImGui.InputTextWithHint("###evaluationResultFilter", Constants.FILTER_HINT, ref resultFilter)) EvaluationState.ResultFilter = resultFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
                 }

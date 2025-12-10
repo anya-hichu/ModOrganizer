@@ -1,6 +1,4 @@
-using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Command;
-using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -8,6 +6,7 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
+using ModOrganizer.Windows.States;
 
 
 namespace ModOrganizer;
@@ -29,12 +28,13 @@ public sealed class Plugin : IDalamudPlugin
     public readonly WindowSystem WindowSystem = new(NAMESPACE);
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
+    private PreviewWindow PreviewWindow { get; init; }
 
     private ModInterop ModInterop { get; init; }
     private RuleEvaluator RuleEvaluator { get; init; }
     private ModProcessor ModProcessor { get; init; }
     private ModAutoProcessor ModAutoProcessor { get; init; }
-    private ModVirtualFileSystem ModVirtualFileSystem { get; init; }
+    private ModFileSystem ModFileSystem { get; init; }
 
     public Plugin()
     {
@@ -44,19 +44,17 @@ public sealed class Plugin : IDalamudPlugin
         RuleEvaluator = new(PluginLog);
         ModProcessor = new(Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
-        ModVirtualFileSystem = new(ModInterop);
+        ModFileSystem = new(ModInterop);
 
-        ConfigWindow = new ConfigWindow(Config)
-        {
-            TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle Main Window"), Click = _ => ToggleMainUI() }]
-        };
-        MainWindow = new MainWindow(ModInterop, ModProcessor, ModVirtualFileSystem, PluginLog)
-        {
-            TitleBarButtons = [new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle Config Window"), Click = _ => ToggleConfigUI() }]
-        };
-     
+        ConfigWindow = new(Config, ToggleMainUI);
+
+        var ruleEvaluationState = new RuleEvaluationState(ModInterop, ModProcessor, PluginLog);
+        MainWindow = new(ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI);
+        PreviewWindow = new(ruleEvaluationState);
+
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
+        WindowSystem.AddWindow(PreviewWindow);
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
@@ -74,12 +72,13 @@ public sealed class Plugin : IDalamudPlugin
 
         ConfigWindow.Dispose();
         MainWindow.Dispose();
+        PreviewWindow.Dispose();
 
         CommandManager.RemoveHandler(CommandName);
 
         ModAutoProcessor.Dispose();
         ModInterop.Dispose();
-        ModVirtualFileSystem.Dispose();
+        ModFileSystem.Dispose();
     }
 
     private void OnCommand(string command, string args)
@@ -102,5 +101,8 @@ public sealed class Plugin : IDalamudPlugin
     private void DrawUI() => WindowSystem.Draw();
 
     private void ToggleConfigUI() => ConfigWindow.Toggle();
+
     private void ToggleMainUI() => MainWindow.Toggle();
+
+    private void TogglePreviewUI() => PreviewWindow.Toggle();
 }
