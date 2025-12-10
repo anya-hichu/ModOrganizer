@@ -18,7 +18,7 @@ public class ConfigWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle Main Window"), Click = _ => toggleMainWindow() }];
+        TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle main window"), Click = _ => toggleMainWindow() }];
 
         Config = config;
     }
@@ -52,35 +52,35 @@ public class ConfigWindow : Window, IDisposable
             var hash = rule.GetHashCode();
 
             var enabled = rule.Enabled;
-            if (ImGui.Checkbox($"Enable##rule{hash}enabled", ref enabled))
+            if (ImGui.Checkbox($"Enable##rule{hash}Enabled", ref enabled))
             {
                 rule.Enabled = enabled;
                 Config.Save();
             }
 
             var name = rule.Name;
-            if (ImGui.InputText($"Name##rule{hash}name", ref name))
+            if (ImGui.InputText($"Name##rule{hash}Name", ref name))
             {
                 rule.Name = name;
                 Config.Save();
             }
 
             var priority = rule.Priority;
-            if (ImGui.InputInt($"Priority##rule{hash}priority", ref priority, 1, 1))
+            if (ImGui.InputInt($"Priority##rule{hash}Priority", ref priority, 1, 1))
             {
                 rule.Priority = priority;
                 Config.Save();
             }
 
             var matchExpression = rule.MatchExpression;
-            if (ImGui.InputTextMultiline($"Match expression##rule{hash}matchExpression", ref matchExpression, ushort.MaxValue))
+            if (ImGui.InputTextMultiline($"Match expression##rule{hash}MatchExpression", ref matchExpression, ushort.MaxValue))
             {
                 rule.MatchExpression = matchExpression;
                 Config.Save();
             }
 
             var pathTemplate = rule.PathTemplate;
-            if (ImGui.InputTextMultiline($"Path template##rule{hash}pathTemplate", ref pathTemplate, ushort.MaxValue))
+            if (ImGui.InputTextMultiline($"Path template##rule{hash}PathTemplate", ref pathTemplate, ushort.MaxValue))
             {
                 rule.PathTemplate = pathTemplate;
                 Config.Save();

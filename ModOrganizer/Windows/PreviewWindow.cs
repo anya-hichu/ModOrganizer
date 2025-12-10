@@ -13,10 +13,11 @@ namespace ModOrganizer.Windows;
 
 public class PreviewWindow : Window, IDisposable
 {
-    private RuleEvaluationState RuleEvaluationState { get; init; }
     private RuleResultFileSystem RuleResultFileSystem { get; init; }
 
     private string Filter { get; set; } = string.Empty;
+
+    public bool ShowUnselected { get; set; } = false;
 
     public PreviewWindow(RuleEvaluationState ruleEvaluationState) : base("ModOrganizer - Preview##previewWindow")
     {
@@ -26,17 +27,16 @@ public class PreviewWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        RuleEvaluationState = ruleEvaluationState;
-        RuleResultFileSystem = new(RuleEvaluationState);
+        RuleResultFileSystem = new(ruleEvaluationState);
     }
 
     public void Dispose() => RuleResultFileSystem.Dispose();
 
     public override void Draw()
     {
-        if (RuleEvaluationState.GetRulePathResultByModDirectory().Count == 0)
+        if (!RuleResultFileSystem.HasRulePathResults())
         {
-            ImGui.Text("No result to display");
+            ImGui.Text("No rule path results to preview");
             return;
         }
 
@@ -44,6 +44,10 @@ public class PreviewWindow : Window, IDisposable
         if (ImGui.InputTextWithHint("##resultFilter", Constants.FILTER_HINT, ref filter)) Filter = filter;
         ImGui.SameLine();
         if (ImGui.Button("X##clearResultFilter")) Filter = string.Empty;
+
+        ImGui.SameLine(50 - ImGui.GetWindowWidth());
+        var showUnselected = ShowUnselected;
+        if (ImGui.Checkbox("Show Unselected##showUnselectedResults", ref showUnselected)) ShowUnselected = showUnselected;
 
         if (RuleResultFileSystem.GetRootFolder().TrySearch(filter, out var filteredFolder)) DrawVirtualFolderTree(filteredFolder);
     }
@@ -61,9 +65,15 @@ public class PreviewWindow : Window, IDisposable
         var orderedFiles = folder.Files.OrderBy(f => f.Name, StringComparer.OrdinalIgnoreCase);
         foreach (var file in orderedFiles)
         {
-            var isSelected = RuleResultFileSystem.IsSelected(file.Directory);
+            if (!RuleResultFileSystem.TryGetRulePathResult(file.Directory, out var rulePathResult)) continue;
+
+            var isSelected = rulePathResult.IsSelected;
+            if (!isSelected && !ShowUnselected) continue;
+
             using var _ = ImRaii.PushColor(ImGuiCol.Text, isSelected ? ImGuiColors.DalamudWhite : ImGuiColors.DalamudGrey3);
             using var __ = ImRaii.TreeNode($"{file.Name}###resultVirtualFile{file.GetHashCode()}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
+
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Current [{rulePathResult.CurrentPath}]");
         }
     }
 }

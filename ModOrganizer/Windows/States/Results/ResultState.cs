@@ -2,6 +2,7 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Mods;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -62,4 +63,5 @@ public abstract class ResultState : IDisposable
     }
 
     public IReadOnlyDictionary<string, Result> GetResultByModDirectory() => ResultByModDirectory;
+    public IReadOnlyDictionary<string, T> GetResultByModDirectory<T>() => ResultByModDirectory.SelectMany<KeyValuePair<string, Result>, KeyValuePair<string, T>>(p => p.Value is T casted ? [new(p.Key, casted)] : []).ToDictionary();
 }

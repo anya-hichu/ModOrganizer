@@ -49,8 +49,8 @@ public class MainWindow : Window, IDisposable
         };
 
         TitleBarButtons = [
-            new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle Config Window"), Click = _ => toggleMainWindow() },
-            new() { Icon = FontAwesomeIcon.Eye, ShowTooltip = () => ImGui.SetTooltip("Toggle Preview Window"), Click = _ => togglePreviewWindow() },
+            new() { Icon = FontAwesomeIcon.Cog, ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), Click = _ => toggleMainWindow() },
+            new() { Icon = FontAwesomeIcon.Eye, ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"), Click = _ => togglePreviewWindow() },
         ];
 
         ModInterop = modInterop;
@@ -185,7 +185,7 @@ public class MainWindow : Window, IDisposable
             if (ImGui.Button("Evaluate All##evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
 
             ImGui.SameLine();
-            ImGui.Text($"Selection count: {SelectedModDirectories.Count}");
+            ImGui.Text($"Selection Count: {SelectedModDirectories.Count}");
         }
 
         var availableRegion = ImGui.GetContentRegionAvail();
@@ -261,16 +261,16 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                var visibleResults = RuleEvaluationState.GetVisibleResultByModDirectory().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                var orderedResults = RuleEvaluationState.GetVisibleResultByModDirectory().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
 
                 var clipper = ImGui.ImGuiListClipper();
-                clipper.Begin(visibleResults.Count, ImGui.GetTextLineHeightWithSpacing());
+                clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
                 while (clipper.Step())
                 {
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
-                        var (modDirectory, result) = visibleResults.ElementAt(i);
-                        if (result is not RuleResult ruleResult) throw new ArgumentException($"Unhandled result type [{result?.GetType().ScriptPrettyName()}]");
+                        var (modDirectory, result) = orderedResults.ElementAt(i);
+                        if (result is not RuleResult ruleResult) continue;
 
                         if (ImGui.TableNextColumn() && ruleResult is ISelectableResult selectableResult)
                         {

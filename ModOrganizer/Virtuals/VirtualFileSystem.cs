@@ -1,5 +1,3 @@
-using FFXIVClientStructs.FFXIV.Client.UI;
-using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;

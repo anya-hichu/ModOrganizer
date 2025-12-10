@@ -20,6 +20,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
 
     public bool ShowErrors { get; set; } = true;
     public bool ShowUnchanging { get; set; } = false;
+    public bool ShowUnselected => false;
 
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
@@ -67,11 +68,9 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
         OnResultsChanged?.Invoke();
     });
 
+
     public IEnumerable<ISelectableResult> GetSelectableResults() => ResultByModDirectory.Values.OfType<ISelectableResult>();
 
-    public IReadOnlyDictionary<string, IVisibleResult> GetVisibleResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is IVisibleResult r && r.IsVisible(this)).ToDictionary(p => p.Key, p => (IVisibleResult)p.Value);
-    public IReadOnlyDictionary<string, ISelectableResult> GetSelectedResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is ISelectableResult r && r.IsSelected).ToDictionary(p => p.Key, p => (ISelectableResult)p.Value);
-
-    public IReadOnlyDictionary<string, RulePathResult> GetRulePathResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is RulePathResult).ToDictionary(p => p.Key, p => (RulePathResult)p.Value);
-
+    public IReadOnlyDictionary<string, IVisibleResult> GetVisibleResultByModDirectory() => GetResultByModDirectory<IVisibleResult>().Where(p => p.Value.IsVisible(this)).ToDictionary();
+    public IReadOnlyDictionary<string, ISelectableResult> GetSelectedResultByModDirectory() => GetResultByModDirectory<ISelectableResult>().Where(p => p.Value.IsSelected).ToDictionary();
 }
