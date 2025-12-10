@@ -337,6 +337,7 @@ public class ModInterop : IDisposable
     public Dictionary<string, string> GetModList() => GetModListSubscriber.Invoke();
 
     public string GetModPath(string modDirectory) => GetSortOrder().Data.GetValueOrDefault(modDirectory, modDirectory);
+    public string GetModDirectory(string modPath) => GetSortOrder().Data.FirstOrDefault(d => d.Value == modPath, new(modPath, modPath)).Key;
 
     public PenumbraApiEc SetModPath(string modDirectory, string newModPath)
     {

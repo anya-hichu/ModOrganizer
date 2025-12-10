@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ModOrganizer.Windows.States;
+namespace ModOrganizer.Windows.States.Results;
 
 public abstract class ResultState : IDisposable
 {
@@ -15,7 +15,7 @@ public abstract class ResultState : IDisposable
     private Task EvaluationTask { get; set; } = Task.CompletedTask;
     private CancellationTokenSource CancellationTokenSource { get; set; } = new();
 
-    protected Dictionary<string, object> Results { get; set; } = [];
+    protected Dictionary<string, Result> ResultByModDirectory { get; set; } = [];
 
     public ResultState(ModInterop modInterop, IPluginLog pluginLog)
     {
@@ -36,29 +36,30 @@ public abstract class ResultState : IDisposable
 
     private void CancelTask() => CancellationTokenSource.Cancel();
 
-    private void OnModDeleted(string modDirectory) => Results.Remove(modDirectory);
+    private void OnModDeleted(string modDirectory) => ResultByModDirectory.Remove(modDirectory);
 
     private void OnModMoved(string modDirectory, string newModDirectory)
     {
-        if (Results.TryGetValue(modDirectory, out var result))
+        if (ResultByModDirectory.TryGetValue(modDirectory, out var result))
         {
-            Results.Remove(modDirectory);
-            Results.Add(newModDirectory, result);
+            ResultByModDirectory.Remove(modDirectory);
+            ResultByModDirectory.Add(newModDirectory, result);
         }
     }
 
     public virtual void Clear()
     {
         CancelTask();
-        Results.Clear();
+        ResultByModDirectory.Clear();
     }
 
-    protected Task RunTask(Action<CancellationTokenSource> action)
+    protected Task CancelAndRunTask(Action<CancellationToken> action)
     {
         CancelTask();
-        var cancellationTokenSource = CancellationTokenSource = new();
-        return EvaluationTask = EvaluationTask.ContinueWith(_ => action(cancellationTokenSource), cancellationTokenSource.Token);
+        CancellationTokenSource = new();
+        var cancellationToken = CancellationTokenSource.Token;
+        return EvaluationTask = EvaluationTask.ContinueWith(_ => action(cancellationToken), cancellationToken);
     }
 
-    public IReadOnlyDictionary<string, object> GetResults() => Results;
+    public IReadOnlyDictionary<string, Result> GetResultByModDirectory() => ResultByModDirectory;
 }

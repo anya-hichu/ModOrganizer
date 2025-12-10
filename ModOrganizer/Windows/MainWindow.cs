@@ -9,6 +9,9 @@ using ModOrganizer.Mods;
 using ModOrganizer.Scriban;
 using ModOrganizer.Utils;
 using ModOrganizer.Windows.States;
+using ModOrganizer.Windows.States.Results;
+using ModOrganizer.Windows.States.Results.Rules;
+using ModOrganizer.Windows.States.Results.Selectables;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
@@ -181,14 +184,14 @@ public class MainWindow : Window, IDisposable
     {
         if (SelectedModDirectories.Count > 1)
         {
-            if (ImGui.Button("Evaluate All###evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
+            if (ImGui.Button("Evaluate All##evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
 
             ImGui.SameLine();
             ImGui.Text($"Selection count: {SelectedModDirectories.Count}");
         }
 
         var availableRegion = ImGui.GetContentRegionAvail();
-        var hasResults = RuleEvaluationState.GetResults().Count > 0;
+        var hasResults = RuleEvaluationState.GetResultByModDirectory().Count > 0;
         using (var selectedModsTable = ImRaii.Table("selectedModsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, (availableRegion.Y / 2) - (2 * ImGui.GetTextLineHeightWithSpacing())) : availableRegion))
         {
             if (selectedModsTable)
@@ -216,7 +219,7 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn())
                         {
-                            if (ImGui.Button($"Deselect###deselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
+                            if (ImGui.Button($"X###deselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
                             if (ImGui.Button($"Evaluate###evaluateModDirectory{i}")) RuleEvaluationState.Evaluate([modDirectory]);
                         }
@@ -238,13 +241,13 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
 
             var showErrors = RuleEvaluationState.ShowErrors;
-            if (ImGui.Checkbox("Show Errors", ref showErrors)) RuleEvaluationState.ShowErrors = showErrors;
+            if (ImGui.Checkbox("Show Errors##showRulePathErrors", ref showErrors)) RuleEvaluationState.ShowErrors = showErrors;
             ImGui.SameLine();
 
             var showUnchanging = RuleEvaluationState.ShowUnchanging;
-            if (ImGui.Checkbox("Show Unchanging", ref showUnchanging)) RuleEvaluationState.ShowUnchanging = showUnchanging;
-            ImGui.SameLine(availableRegion.X - 100);
+            if (ImGui.Checkbox("Show Unchanging##showUnchangingRulePathResults", ref showUnchanging)) RuleEvaluationState.ShowUnchanging = showUnchanging;
 
+            ImGui.SameLine(availableRegion.X - 100);
             using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
             {
                 if (ImGui.Button("Clear All##clearRuleEvaluationState")) RuleEvaluationState.Clear();
@@ -253,35 +256,27 @@ public class MainWindow : Window, IDisposable
             using var ruleEvaluationResultsTable = ImRaii.Table("ruleEvaluationResultsTable", 4, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2));
             if (ruleEvaluationResultsTable)
             {
-                ImGui.TableSetupColumn($"##ruleEvaluationActions", ImGuiTableColumnFlags.None, 1);
-                ImGui.TableSetupColumn($"Mod Directory##ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 3);
-                ImGui.TableSetupColumn($"Current Path##ruleEvaluationCurrentPath", ImGuiTableColumnFlags.None, 2);
-                ImGui.TableSetupColumn($"New Path##ruleEvaluationNewPath", ImGuiTableColumnFlags.None, 2);
+                ImGui.TableSetupColumn($"##ruleEvaluationsSelection", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupColumn($"Mod Directory##ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 4);
+                ImGui.TableSetupColumn($"Current Path##ruleEvaluationCurrentPath", ImGuiTableColumnFlags.None, 4);
+                ImGui.TableSetupColumn($"New Path##ruleEvaluationNewPath", ImGuiTableColumnFlags.None, 4);
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                //TODO add selections with checkboxes (none for error) + union buttons + checkbox to hide unchangeable (same path) or exception and store state inside RuleEvaluationState
-
-                var orderedResults = RuleEvaluationState.GetResults().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                var visibleResults = RuleEvaluationState.GetVisibleResultByModDirectory().OrderBy(p => p.Key, StringComparer.OrdinalIgnoreCase).ToList();
 
                 var clipper = ImGui.ImGuiListClipper();
-                clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
+                clipper.Begin(visibleResults.Count, ImGui.GetTextLineHeightWithSpacing());
                 while (clipper.Step())
                 {
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
-                        var (modDirectory, result) = orderedResults.ElementAt(i);
-                        var modPath = ModInterop.GetModPath(modDirectory);
+                        var (modDirectory, result) = visibleResults.ElementAt(i);
 
-                        if (result is Exception && !showErrors) continue;
-
-                        var isUnchanging = result is string newModPath && modPath == newModPath;
-                        if (isUnchanging && !showUnchanging) continue;
-
-                        if (ImGui.TableNextColumn() && result is not Exception)
+                        if (ImGui.TableNextColumn() && result is ISelectableResult selectableResult)
                         {
-                            var selected = RuleEvaluationState.IsResultSelected(modDirectory);
-                            if (ImGui.Checkbox($"###selectRuleEvaluationResult{i}", ref selected)) RuleEvaluationState.SelectResult(modDirectory, selected);
+                            var isSelected = selectableResult.IsSelected;
+                            if (ImGui.Checkbox($"###selectResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.IsSelected = isSelected;
                         }
 
                         if (ImGui.TableNextColumn())
@@ -289,15 +284,31 @@ public class MainWindow : Window, IDisposable
                             ImGui.Text(modDirectory);
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
-                        
-                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, isUnchanging);
+
+                        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, result is RuleSamePathResult);
+                        if (result is not RuleResult ruleResult) throw new ArgumentException($"Invalid result type [{result?.GetType().ScriptPrettyName()}]");
+
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(modPath);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modPath, true));
+                            ImGui.Text(ruleResult.CurrentPath);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleResult.CurrentPath, true));
                         }
 
-                        if (ImGui.TableNextColumn()) DrawResult(result);
+                        if (ImGui.TableNextColumn())
+                        {
+                            switch (result)
+                            {
+                                case RulePathResult rulePathResult:
+                                    DrawResult(rulePathResult);
+                                    break;
+                                case RuleSamePathResult ruleSamePathResult:
+                                    DrawResult(ruleSamePathResult);
+                                    break;
+                                case IErrorResult errorResult:
+                                    DrawResult(errorResult);
+                                    break;
+                            }
+                        }
                     }
                 }
             }
@@ -337,7 +348,7 @@ public class MainWindow : Window, IDisposable
         ImGui.SameLine();
         if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
 
-        if (EvaluationState.GetResults().Count > 0)
+        if (EvaluationState.GetResultByModDirectory().Count > 0)
         {
             using var table = ImRaii.Table("evaluationResults", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
 
@@ -364,7 +375,7 @@ public class MainWindow : Window, IDisposable
                     if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
                 }
 
-                var filteredResults = EvaluationState.GetResults().Where(e => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, e.Key) && TokenMatcher.Matches(EvaluationState.ResultFilter, e.Value as string)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToList();
+                var filteredResults = EvaluationState.GetResultByModDirectory().Where(p => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, p.Key) && p.Value is EvaluationResult r && TokenMatcher.Matches(EvaluationState.ResultFilter, r.Value)).OrderBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToList();
                 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(filteredResults.Count, ImGui.GetTextLineHeightWithSpacing());
@@ -380,7 +391,18 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
 
-                        if (ImGui.TableNextColumn()) DrawResult(result);
+                        if (ImGui.TableNextColumn())
+                        {
+                            switch (result)
+                            {
+                                case EvaluationResult evaluationResult:
+                                    DrawResult(evaluationResult);
+                                    break;
+                                case IErrorResult errorResult: 
+                                    DrawResult(errorResult); 
+                                    break;
+                            }
+                        }
                     }
                 }
             }
@@ -425,25 +447,33 @@ public class MainWindow : Window, IDisposable
         DrawObjectTree(value);
     }
 
-    private void DrawResult(object result)
+    private void DrawResult(RulePathResult rulePathResult)
     {
-        if (result is Exception e)
-        {
-            using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-            ImGui.Text(e.Message);
-            if (ImGui.IsItemHovered() && e.InnerException != null) ImGui.SetTooltip(e.InnerException.Message);
-            return;
-        }
+        ImGui.Text(rulePathResult.NewPath);
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(rulePathResult.NewPath, true));
+    }
 
-        if (result is string newModPath)
-        {
-            ImGui.Text(newModPath);
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(newModPath, true));
-            return;
-        }
+    private void DrawResult(RuleSamePathResult ruleSamePathResult)
+    {
+        ImGui.Text(ruleSamePathResult.CurrentPath);
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleSamePathResult.CurrentPath, true));
+    }
 
-        using var __ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3);
-        ImGui.Text(ViewTemplateContext.ObjectToString(result, result == null));
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(result, true));
+    private void DrawResult(EvaluationResult evaluationResult)
+    {
+        ImGui.Text(evaluationResult.Value);
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.Value, true));
+    }
+
+    private static void DrawResult(IErrorResult errorResult)
+    {
+        using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+        ImGui.Text(errorResult.Message);
+        if (ImGui.IsItemHovered() && errorResult.InnerMessage != null) ImGui.SetTooltip(errorResult.InnerMessage);
+    }
+
+    private static void ThrowInvalidResultType()
+    {
+
     }
 }

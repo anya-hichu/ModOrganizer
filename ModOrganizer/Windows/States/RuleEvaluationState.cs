@@ -1,5 +1,9 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Mods;
+using ModOrganizer.Windows.States.Results;
+using ModOrganizer.Windows.States.Results.Rules;
+using ModOrganizer.Windows.States.Results.Selectables;
+using ModOrganizer.Windows.States.Results.Visibles;
 using Penumbra.Api.Enums;
 using System;
 using System.Collections.Generic;
@@ -8,68 +12,58 @@ using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.States;
 
-public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog)
+public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IVisibleResultState
 {
     private ModProcessor ModProcessor { get; init; } = modProcessor;
-    public HashSet<string> SelectedResultKeys { get; set; } = [];
 
     public bool ShowErrors { get; set; } = true;
     public bool ShowUnchanging { get; set; } = false;
 
-    public Task Evaluate(IEnumerable<string> modDirectories) => RunTask(cancellationTokenSource =>
+    public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
-        SelectedResultKeys.Clear();
-        Results.Clear();
-
-        var selectedResultKeys = new HashSet<string>();
-        Results = modDirectories.ToDictionary(d => d, modDirectory =>
+        ResultByModDirectory.Clear();
+        ResultByModDirectory = modDirectories.ToDictionary<string, string, Result>(d => d, modDirectory =>
         {
-            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(Evaluate)}] before processing mod [{modDirectory}]");
+            cancellationToken.ThrowIfCancellationRequested();
 
+            var currentPath = ModInterop.GetModPath(modDirectory);
             try
             {
-                if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new ArgumentException("No rule matched");
-                selectedResultKeys.Add(modDirectory);
-                return (object)newModPath;
+                if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new RuleErrorResult(currentPath, "No rule matched");
+                if (currentPath == newModPath) return new RuleSamePathResult(currentPath);
+
+                return new RulePathResult(currentPath, newModPath);
             }
             catch (Exception e)
             {
                 PluginLog.Warning($"Caught exception while evaluating mod [{modDirectory}] path:\n\t{e.Message}");
-                return new ArgumentException("Failed to evaluate", e);
+                return new RuleErrorResult(currentPath, "Failed to evaluate", e.Message);
             }
         });
-        SelectedResultKeys = selectedResultKeys;
     });
 
-    public Task Apply() => RunTask(cancellationTokenSource =>
+    public Task Apply() => CancelAndRunTask(cancellationToken =>
     {
-        foreach (var modDirectory in SelectedResultKeys)
+        foreach (var (modDirectory, selectedResult) in GetSelectedResultByModDirectory())
         {
-            if (!Results.TryGetValue(modDirectory, out var result)) continue;
-            if (cancellationTokenSource.IsCancellationRequested) throw new TaskCanceledException($"Task [{Task.CurrentId}] has been canceled inside [{nameof(Apply)}] before processing mod [{modDirectory}]");
-            if (result is not string newModPath) continue;
+            cancellationToken.ThrowIfCancellationRequested();
 
-            SelectedResultKeys.Remove(modDirectory);
+            if (selectedResult is not RulePathResult rulePathResult) continue;
+
+            var newModPath = rulePathResult.NewPath;
             if (ModInterop.SetModPath(modDirectory, newModPath) == PenumbraApiEc.PathRenameFailed)
             {
-                // Override path with error
-                Results[modDirectory] = new ArgumentException("Failed to apply path", new ArgumentException($"Probably a conflict for path [{newModPath}]"));
+                var conflictingModDirectory = ModInterop.GetModDirectory(newModPath);
+                ResultByModDirectory[modDirectory] = new RuleErrorResult(rulePathResult.CurrentPath, $"Failed to apply [{newModPath}]", $"Conflicts with mod [{conflictingModDirectory}]");
                 continue;
             }
-            Results.Remove(modDirectory); 
+            ResultByModDirectory.Remove(modDirectory); 
         }
     });
 
-    public override void Clear()
-    {
-        SelectedResultKeys.Clear();
-        base.Clear();
-    }
+    public IEnumerable<ISelectableResult> GetSelectableResults() => ResultByModDirectory.Values.OfType<ISelectableResult>();
 
-    public bool IsResultSelected(string key) => SelectedResultKeys.Contains(key);
-    public bool SelectResult(string key, bool value) => value ? SelectedResultKeys.Add(key) : SelectedResultKeys.Remove(key);
-
-    public void InvertResultSelection() => SelectedResultKeys = [.. Results.Keys.Except(SelectedResultKeys)];
-
-    public void ClearResultSelection() => SelectedResultKeys.Clear();
+    public IReadOnlyDictionary<string, IVisibleResult> GetVisibleResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is IVisibleResult r && r.IsVisible(this)).ToDictionary(p => p.Key, p => (IVisibleResult)p.Value);
+    public IReadOnlyDictionary<string, ISelectableResult> GetSelectedResultByModDirectory() => ResultByModDirectory.Where(p => p.Value is ISelectableResult r && r.IsSelected).ToDictionary(p => p.Key, p => (ISelectableResult)p.Value);
+    
 }

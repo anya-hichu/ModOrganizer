@@ -20,7 +20,6 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] private static ICommandManager CommandManager { get; set; } = null!;
     [PluginService] private static IChatGui ChatGui { get; set; } = null!;
     [PluginService] private static IPluginLog PluginLog { get; set; } = null!;
-    [PluginService] public static IFramework Framework { get; set; } = null!;
 
     private const string CommandName = "/modorganizer";
     private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main and config";
@@ -102,6 +101,6 @@ public sealed class Plugin : IDalamudPlugin
 
     private void DrawUI() => WindowSystem.Draw();
 
-    public void ToggleConfigUI() => ConfigWindow.Toggle();
-    public void ToggleMainUI() => MainWindow.Toggle();
+    private void ToggleConfigUI() => ConfigWindow.Toggle();
+    private void ToggleMainUI() => MainWindow.Toggle();
 }
