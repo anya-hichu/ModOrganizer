@@ -50,7 +50,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
 
     public Task Apply() => CancelAndRunTask(cancellationToken =>
     {
-        foreach (var (modDirectory, selectedResult) in GetSelectedResultByModDirectory())
+        foreach (var (modDirectory, selectedResult) in this.GetSelectedResultByModDirectory())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -67,10 +67,4 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
         }
         OnResultsChanged?.Invoke();
     });
-
-
-    public IEnumerable<ISelectableResult> GetSelectableResults() => ResultByModDirectory.Values.OfType<ISelectableResult>();
-
-    public IReadOnlyDictionary<string, IVisibleResult> GetVisibleResultByModDirectory() => GetResultByModDirectory<IVisibleResult>().Where(p => p.Value.IsVisible(this)).ToDictionary();
-    public IReadOnlyDictionary<string, ISelectableResult> GetSelectedResultByModDirectory() => GetResultByModDirectory<ISelectableResult>().Where(p => p.Value.IsSelected).ToDictionary();
 }

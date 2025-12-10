@@ -13,6 +13,7 @@ using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Rules;
 using ModOrganizer.Windows.States.Results.Selectables;
+using ModOrganizer.Windows.States.Results.Visibles;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
@@ -468,10 +469,5 @@ public class MainWindow : Window, IDisposable
         using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
         ImGui.Text(errorResult.Message);
         if (ImGui.IsItemHovered() && errorResult.InnerMessage != null) ImGui.SetTooltip(errorResult.InnerMessage);
-    }
-
-    private static void ThrowInvalidResultType()
-    {
-
     }
 }
