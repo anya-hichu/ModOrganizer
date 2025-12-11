@@ -15,7 +15,7 @@ public sealed class Plugin : IDalamudPlugin
 {
     public static readonly string NAMESPACE = "ModOrganizer"; 
 
-    [PluginService] public static IDalamudPluginInterface PluginInterface { get; set; } = null!;
+    [PluginService] private static IDalamudPluginInterface PluginInterface { get; set; } = null!;
     [PluginService] private static ICommandManager CommandManager { get; set; } = null!;
     [PluginService] private static IChatGui ChatGui { get; set; } = null!;
     [PluginService] private static IPluginLog PluginLog { get; set; } = null!;
@@ -46,10 +46,10 @@ public sealed class Plugin : IDalamudPlugin
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
 
-        ConfigWindow = new(Config, ToggleMainUI);
+        ConfigWindow = new(Config, PluginInterface, ToggleMainUI);
 
         var ruleEvaluationState = new RuleEvaluationState(ModInterop, ModProcessor, PluginLog);
-        MainWindow = new(ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI);
+        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI);
         PreviewWindow = new(ruleEvaluationState);
 
         WindowSystem.AddWindow(ConfigWindow);

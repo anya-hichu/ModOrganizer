@@ -1,11 +1,11 @@
-using ModOrganizer.Windows.States.Results.Visibles;
+using ModOrganizer.Windows.States.Results.Showables;
 
 namespace ModOrganizer.Windows.States.Results.Rules;
 
-public class RuleErrorResult(string currentPath, string message, string? innerMessage = null) : RuleResult(currentPath), IErrorResult
+public class RuleErrorResult : RuleResult, IErrorResult
 {
-    public string Message { get; init; } = message;
-    public string? InnerMessage { get; init; } = innerMessage;
+    public required string Message { get; init; }
+    public string? InnerMessage { get; init; }
 
-    public override bool IsVisible(IVisibleResultState visibleResultState) => visibleResultState.ShowErrors;
+    public override bool IsShowed(IShowableRuleResultState state) => state.ShowErrors;
 }

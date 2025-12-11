@@ -22,11 +22,7 @@ public class SortOrderBuilder(IPluginLog pluginLog) : Builder<SortOrder>(pluginL
             return false;
         }
 
-        instance = new()
-        {
-            Data = data
-        };
-
+        instance = new() { Data = data };
         return true;
     }
 }

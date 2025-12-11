@@ -30,17 +30,21 @@ public abstract class VirtualFileSystem
             {
                 if (i == segments.Length - 1)
                 {
-                    currentParent.Files.Add(new() { Directory = fileDirectory, Name = fileName, Path = filePath });
+                    currentParent.Files.Add(new() { 
+                        Directory = fileDirectory, 
+                        Name = fileName, 
+                        Path = filePath 
+                    });
+                    continue;
                 }
-                else
-                {
-                    var maybeNewFolder = new VirtualFolder() { Name = segments[i], Path = string.Join(PATH_SEPARATOR, segments.Take(i + 1)) };
-                    currentParent.Folders.Add(maybeNewFolder);
-                    if (currentParent.Folders.TryGetValue(maybeNewFolder, out var existingFolder))
-                    {
-                        currentParent = existingFolder;
-                    }
-                }
+
+                var maybeNewFolder = new VirtualFolder() { 
+                    Name = segments[i], 
+                    Path = string.Join(PATH_SEPARATOR, segments.Take(i + 1)) 
+                };
+
+                currentParent.Folders.Add(maybeNewFolder);
+                if (currentParent.Folders.TryGetValue(maybeNewFolder, out var existingFolder)) currentParent = existingFolder;
             }
         }
 

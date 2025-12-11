@@ -1,11 +1,12 @@
 using ModOrganizer.Windows.States.Results.Selectables;
-using ModOrganizer.Windows.States.Results.Visibles;
+using ModOrganizer.Windows.States.Results.Showables;
 
 namespace ModOrganizer.Windows.States.Results.Rules;
 
-public class RulePathResult(string currentPath, string newPath) : RuleResult(currentPath), ISelectableResult
+public class RulePathResult : RuleResult, ISelectableResult
 {
-    public string NewPath { get; init; } = newPath;
+    public required string NewPath { get; init; }
     public bool IsSelected { get; set; } = true;
-    public override bool IsVisible(IVisibleResultState _) => true;
+    
+    public override bool IsShowed(IShowableRuleResultState _) => true;
 }

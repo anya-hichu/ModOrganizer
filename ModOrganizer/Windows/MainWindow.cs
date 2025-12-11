@@ -13,13 +13,14 @@ using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Rules;
 using ModOrganizer.Windows.States.Results.Selectables;
-using ModOrganizer.Windows.States.Results.Visibles;
+using ModOrganizer.Windows.States.Results.Showables;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Numerics;
 
@@ -28,6 +29,7 @@ namespace ModOrganizer.Windows;
 
 public class MainWindow : Window, IDisposable
 {
+    private Config Config { get; init; }
     private ModInterop ModInterop { get; init; }
     private ModFileSystem ModFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
@@ -41,7 +43,7 @@ public class MainWindow : Window, IDisposable
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleEvaluationState ruleEvaluationState, Action toggleMainWindow, Action togglePreviewWindow) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(Config config, ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleEvaluationState ruleEvaluationState, Action toggleMainWindow, Action togglePreviewWindow) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -54,6 +56,7 @@ public class MainWindow : Window, IDisposable
             new() { Icon = FontAwesomeIcon.Eye, ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"), Click = _ => togglePreviewWindow() },
         ];
 
+        Config = config;
         ModInterop = modInterop;
         ModFileSystem = modFileSystem;
         PluginLog = pluginLog;
@@ -242,8 +245,8 @@ public class MainWindow : Window, IDisposable
             if (ImGui.Checkbox("Show Errors##showRulePathErrors", ref showErrors)) RuleEvaluationState.ShowErrors = showErrors;
             ImGui.SameLine();
 
-            var showUnchanging = RuleEvaluationState.ShowUnchanging;
-            if (ImGui.Checkbox("Show Unchanging##showUnchangingRulePathResults", ref showUnchanging)) RuleEvaluationState.ShowUnchanging = showUnchanging;
+            var showSamePaths = RuleEvaluationState.ShowSamePaths;
+            if (ImGui.Checkbox("Show Same Paths##showSameRulePathResults", ref showSamePaths)) RuleEvaluationState.ShowSamePaths = showSamePaths;
 
             ImGui.SameLine(availableRegion.X - 100);
             using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
@@ -261,7 +264,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                var orderedResults = RuleEvaluationState.GetVisibleResultByModDirectory().OrderBy(p => p.Key, Constants.ORDER_COMPARER).ToList();
+                var orderedResults = RuleEvaluationState.GetShowedResultByModDirectory().OrderBy(p => p.Key, Constants.ORDER_COMPARER).ToList();
 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
@@ -339,12 +342,23 @@ public class MainWindow : Window, IDisposable
         {
             var expression = EvaluationState.Expression;
             if (ImGui.InputTextMultiline("##evaluationExpression", ref expression, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Expression = expression;
+
+            var template = EvaluationState.Template;
+            if (ImGui.InputTextMultiline("##evaluationTemplate", ref template, ushort.MaxValue, bottomWidgetSize)) EvaluationState.Template = template;
         }
+
+        // TODO add second input for template expression
 
         ImGui.SameLine();
         if (ImGui.Button("Evaluate##evaluateExpression")) EvaluationState.Evaluate(SelectedModDirectories);
         ImGui.SameLine();
         if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
+
+        var orderedRules = Config.Rules.OrderByDescending(r => r.Priority);
+        var selectedRuleItemIndex = 0;
+
+        ImGui.SameLine();
+        if (ImGui.Combo("Load rule##loadRuleConfig", ref selectedRuleItemIndex, orderedRules.Select(r => $"{r.Name} ({r.Priority})").Prepend("None").ToArray()) && selectedRuleItemIndex > 0) EvaluationState.Load(orderedRules.ElementAt(selectedRuleItemIndex - 1));
 
         if (EvaluationState.GetResultByModDirectory().Count > 0)
         {
@@ -353,7 +367,8 @@ public class MainWindow : Window, IDisposable
             if (table)
             {
                 ImGui.TableSetupColumn($"Mod Directory###evaluationDirectoryName", ImGuiTableColumnFlags.None, 1);
-                ImGui.TableSetupColumn($"Evaluation Result###evaluationResult", ImGuiTableColumnFlags.None, 6);
+                ImGui.TableSetupColumn($"Expression Result###evaluationResult", ImGuiTableColumnFlags.None, 3);
+                ImGui.TableSetupColumn($"Template Result###evaluationResult", ImGuiTableColumnFlags.None, 3);
                 ImGui.TableSetupScrollFreeze(0, 2);
                 ImGui.TableHeadersRow();
 
@@ -367,13 +382,21 @@ public class MainWindow : Window, IDisposable
 
                 if (ImGui.TableNextColumn())
                 {
-                    var resultFilter = EvaluationState.ResultFilter;
-                    if (ImGui.InputTextWithHint("###evaluationResultFilter", Constants.FILTER_HINT, ref resultFilter)) EvaluationState.ResultFilter = resultFilter;
+                    var expressionResultFilter = EvaluationState.ExpressionFilter;
+                    if (ImGui.InputTextWithHint("###expressionResultFilter", Constants.FILTER_HINT, ref expressionResultFilter)) EvaluationState.ExpressionFilter = expressionResultFilter;
                     ImGui.SameLine();
-                    if (ImGui.Button("X###clearEvaluationResultFilter")) EvaluationState.ResultFilter = string.Empty;
+                    if (ImGui.Button("X###clearExpressionResultFilter")) EvaluationState.ExpressionFilter = string.Empty;
                 }
 
-                var filteredResults = EvaluationState.GetResultByModDirectory().Where(p => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, p.Key) && p.Value is EvaluationResult r && TokenMatcher.Matches(EvaluationState.ResultFilter, r.Value)).OrderBy(r => r.Key, Constants.ORDER_COMPARER).ToList();
+                if (ImGui.TableNextColumn())
+                {
+                    var templateResultFilter = EvaluationState.TemplateFilter;
+                    if (ImGui.InputTextWithHint("###templateResultFilter", Constants.FILTER_HINT, ref templateResultFilter)) EvaluationState.TemplateFilter = templateResultFilter;
+                    ImGui.SameLine();
+                    if (ImGui.Button("X###clearTemplateResultFilter")) EvaluationState.TemplateFilter = string.Empty;
+                }
+
+                var filteredResults = EvaluationState.GetShowedResultByModDirectory().Where(p => TokenMatcher.Matches(EvaluationState.ModDirectoryFilter, p.Key)).OrderBy(r => r.Key, Constants.ORDER_COMPARER).ToList();
                 
                 var clipper = ImGui.ImGuiListClipper();
                 clipper.Begin(filteredResults.Count, ImGui.GetTextLineHeightWithSpacing());
@@ -459,8 +482,8 @@ public class MainWindow : Window, IDisposable
 
     private void DrawResult(EvaluationResult evaluationResult)
     {
-        ImGui.Text(evaluationResult.Value);
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.Value, true));
+        ImGui.Text(evaluationResult.ExpressionValue);
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.ExpressionValue, true));
     }
 
     private static void DrawResult(IErrorResult errorResult)

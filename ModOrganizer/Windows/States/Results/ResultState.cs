@@ -41,11 +41,10 @@ public abstract class ResultState : IDisposable
 
     private void OnModMoved(string modDirectory, string newModDirectory)
     {
-        if (ResultByModDirectory.TryGetValue(modDirectory, out var result))
-        {
-            ResultByModDirectory.Remove(modDirectory);
-            ResultByModDirectory.Add(newModDirectory, result);
-        }
+        if (!ResultByModDirectory.TryGetValue(modDirectory, out var result)) return;
+
+        ResultByModDirectory.Remove(modDirectory);
+        ResultByModDirectory.Add(newModDirectory, result);
     }
 
     public virtual void Clear()

@@ -34,7 +34,6 @@ public static class RuleBuilder
 
         // Meh, good enough I guess
         new() {
-            Enabled = true,
             Name = "Sets",
             Priority = 0,
             MatchExpression = """
@@ -73,7 +72,6 @@ public static class RuleBuilder
 
     private static Rule Build(FullEquipType type) => new()
     {
-        Enabled = true,
         Name = type.ToString(),
         Priority = 3,
         MatchExpression = $"""changed_items | object.values | array.each @(do; ret ($0 | object.kind == "EquipItem") && (object.format($0.type, null) == "{type}"); end) | array.uniq == [true]""",
@@ -82,7 +80,6 @@ public static class RuleBuilder
 
     private static Rule Build(string categoryName, IReadOnlyList<FullEquipType> equipTypes) => new()
     {
-        Enabled = true,
         Name = categoryName,
         Priority = 2,
         MatchExpression = $"""
@@ -94,7 +91,6 @@ public static class RuleBuilder
 
     private static Rule Build(EmoteCategory emoteCategory) => new()
     {
-        Enabled = true,
         Name = emoteCategory.ToString(),
         Priority = 1,
         MatchExpression = $"""changed_items | object.values | array.each @(do; ret ($0 | object.kind == "Emote") && ($0.emote_category?.row_id == {(byte)emoteCategory}); end) | array.uniq == [true]""",

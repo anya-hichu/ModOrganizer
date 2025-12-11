@@ -1,9 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Files;
-using ModOrganizer.Json.Groups;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.LocalModData;

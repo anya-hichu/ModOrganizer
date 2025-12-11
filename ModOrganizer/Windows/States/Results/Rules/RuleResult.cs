@@ -1,10 +1,10 @@
-using ModOrganizer.Windows.States.Results.Visibles;
+using ModOrganizer.Windows.States.Results.Showables;
 
 namespace ModOrganizer.Windows.States.Results.Rules;
 
-public abstract class RuleResult(string currentPath) : Result, IVisibleResult
+public abstract class RuleResult : Result, IShowableRuleResult
 {
-    public string CurrentPath { get; init; } = currentPath;
+    public required string CurrentPath { get; init; }
 
-    public abstract bool IsVisible(IVisibleResultState visibleResultState);
+    public abstract bool IsShowed(IShowableRuleResultState state);
 }

@@ -10,7 +10,7 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
 {
     private RuleEvaluationState RuleEvaluationState { get; init; }
 
-    private IReadOnlyDictionary<string, RulePathResult>? MaybeCache { get; set; }
+    private IReadOnlyDictionary<string, RulePathResult>? MaybeDataCache { get; set; }
 
     public RuleResultFileSystem(RuleEvaluationState ruleEvaluationState)
     {
@@ -19,14 +19,11 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
         RuleEvaluationState.OnResultsChanged += OnResultsChanged;
     }
 
-    public void Dispose()
-    {
-        RuleEvaluationState.OnResultsChanged -= OnResultsChanged;
-    }
+    public void Dispose() => RuleEvaluationState.OnResultsChanged -= OnResultsChanged;
 
     private void OnResultsChanged()
     {
-        MaybeCache = RuleEvaluationState.GetResultByModDirectory<RulePathResult>();
+        MaybeDataCache = RuleEvaluationState.GetResultByModDirectory<RulePathResult>();
         InvalidateRootFolderCache();
     }
 
@@ -34,9 +31,9 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
     {
         rulePathResultList = null;
 
-        if (MaybeCache == null) return false;
+        if (MaybeDataCache == null) return false;
 
-        rulePathResultList = MaybeCache.ToDictionary(p => p.Key, p => p.Value.NewPath.Split(PATH_SEPARATOR).Last());
+        rulePathResultList = MaybeDataCache.ToDictionary(p => p.Key, p => p.Value.NewPath.Split(PATH_SEPARATOR).Last());
         return true;
     }
 
@@ -44,18 +41,19 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
     {
         newModPath = null;
 
-        if (MaybeCache == null) return false;
-        if (!MaybeCache.TryGetValue(modDirectory, out var rulePathResult)) return false;
+        if (MaybeDataCache == null) return false;
+        if (!MaybeDataCache.TryGetValue(modDirectory, out var rulePathResult)) return false;
 
         newModPath = rulePathResult.NewPath;
         return true;
     }
 
-    public bool TryGetFileData(VirtualFile file, [NotNullWhen(true)] out RulePathResult? rulePathResult) {
+    public bool TryGetFileData(VirtualFile file, [NotNullWhen(true)] out RulePathResult? rulePathResult) 
+    {
         rulePathResult = null;
 
-        if (MaybeCache == null) return false;
+        if (MaybeDataCache == null) return false;
 
-        return MaybeCache.TryGetValue(file.Directory, out rulePathResult);
+        return MaybeDataCache.TryGetValue(file.Directory, out rulePathResult);
     }
 }
