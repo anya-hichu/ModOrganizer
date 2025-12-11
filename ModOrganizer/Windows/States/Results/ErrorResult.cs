@@ -4,7 +4,7 @@ namespace ModOrganizer.Windows.States.Results;
 
 public class ErrorResult : Result, IErrorResult, IShowableEvaluationResult
 {
-    required public string Message { get; init; }
+    public required string Message { get; init; }
     public string? InnerMessage { get; init; }
 
     public bool IsShowed(IShowableEvaluationResultState state) => !state.HasFilters();

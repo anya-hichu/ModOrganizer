@@ -1,7 +1,7 @@
 namespace ModOrganizer.Json.Manipulations.Metas.Imcs;
 
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_imc.json
-public record MetaImcEntry
+public class MetaImcEntry : Data
 {
     public required byte MaterialId { get; set; }
     public required byte DecalId { get; set; }

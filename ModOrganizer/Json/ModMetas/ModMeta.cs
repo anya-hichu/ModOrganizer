@@ -2,7 +2,7 @@ namespace ModOrganizer.Json.ModMetas;
 
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/mod_meta-v3.json
 
-public record ModMeta
+public class ModMeta : Data
 {
     public required uint FileVersion { get; init; }
     public required string Name { get; init; }

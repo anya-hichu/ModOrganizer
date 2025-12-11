@@ -308,10 +308,10 @@ public class ModInterop : IDisposable
         var maybeGroups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
             if (!GroupFactory.TryBuildFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
             return group;
-        }).ToList();
+        }).ToArray();
 
-        var groups = maybeGroups.OfType<Group>().ToList();
-        if (localModData == null || defaultMod == null || modMeta == null || maybeGroups.Count != groups.Count)
+        var groups = maybeGroups.OfType<Group>().ToArray();
+        if (localModData == null || defaultMod == null || modMeta == null || maybeGroups.Length != groups.Length)
         {
             ModInfoCaches.Add(modDirectory, null);
             PluginLog.Warning($"Failed to build [{nameof(ModInfo)}] for mod [{modDirectory}], cached failure until next file system update or reload");

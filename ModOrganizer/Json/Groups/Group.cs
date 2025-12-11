@@ -2,7 +2,7 @@ namespace ModOrganizer.Json.Groups;
 
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/group.json
 
-public record Group
+public class Group : Data
 {
     // unused currently
     public uint? Version { get; init; }

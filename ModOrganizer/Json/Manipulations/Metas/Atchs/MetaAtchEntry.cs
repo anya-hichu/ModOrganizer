@@ -1,6 +1,6 @@
 namespace ModOrganizer.Json.Manipulations.Metas.Atchs;
 
-public record MetaAtchEntry
+public class MetaAtchEntry : Data
 {
     public required string Bone { get; init; }
     public required float Scale { get; init; }

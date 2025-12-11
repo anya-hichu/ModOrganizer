@@ -47,7 +47,7 @@ public class MainWindow : Window, IDisposable
     {
         SizeConstraints = new()
         {
-            MinimumSize = new(375, 330),
+            MinimumSize = new(1200, 850),
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
@@ -185,7 +185,7 @@ public class MainWindow : Window, IDisposable
     {
         if (SelectedModDirectories.Count > 1)
         {
-            if (ImGui.Button("Evaluate All##evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
+            if (ImGui.Button("Preview All##evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
 
             ImGui.SameLine();
             ImGui.Text($"Selection Count: {SelectedModDirectories.Count}");
@@ -222,7 +222,7 @@ public class MainWindow : Window, IDisposable
                         {
                             if (ImGui.Button($"X###deselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
-                            if (ImGui.Button($"Evaluate###evaluateModDirectory{i}")) RuleEvaluationState.Evaluate([modDirectory]);
+                            if (ImGui.Button($"Preview###evaluateModDirectory{i}")) RuleEvaluationState.Evaluate([modDirectory]);
                         }
                     }
                 }
@@ -277,8 +277,8 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn() && ruleResult is ISelectableResult selectableResult)
                         {
-                            var isSelected = selectableResult.IsSelected;
-                            if (ImGui.Checkbox($"###selectResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.IsSelected = isSelected;
+                            var isSelected = selectableResult.Selected;
+                            if (ImGui.Checkbox($"###selectResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.Selected = isSelected;
                         }
 
                         if (ImGui.TableNextColumn())
@@ -322,7 +322,7 @@ public class MainWindow : Window, IDisposable
 
         using (ImRaii.PushColor(ImGuiCol.ChildBg, Constants.LIGHT_BLACK))
         {
-            using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 2));
+            using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 3));
             using var _ = ImRaii.PushIndent();
             foreach (var selectedModDirectory in SelectedModDirectories)
             {
@@ -333,11 +333,23 @@ public class MainWindow : Window, IDisposable
             }
         }
 
-        using var bottomRightPanel = ImRaii.Child("bottomRightPanel", new(rightRegion.X, rightRegion.Y / 2 - ImGui.GetTextLineHeightWithSpacing()));
+        using var bottomRightPanel = ImRaii.Child("bottomRightPanel");
 
-        var bottomRightButtonsWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNN").X;
-        var bottomWidgetSize = new Vector2(rightRegion.X - bottomRightButtonsWidth, ImGui.GetFrameHeightWithSpacing() * 4);
+        ImGui.SameLine();
+        if (ImGui.Button("Evaluate##evaluateExpression")) EvaluationState.Evaluate(SelectedModDirectories);
+        ImGuiComponents.HelpMarker("Scriban syntax, check documentation for usage");
+        var orderedRules = Config.Rules.OrderByDescending(r => r.Priority);
+        var selectedRuleItemIndex = 0;
+        ImGui.SameLine();
+        if (ImGui.Combo("##loadEvaluationRule", ref selectedRuleItemIndex, orderedRules.Select(r => $"{r.Name} ({r.Priority})").Prepend("Load Rule...").ToArray()) && selectedRuleItemIndex > 0) EvaluationState.Load(orderedRules.ElementAt(selectedRuleItemIndex - 1));
 
+
+        ImGui.SameLine(rightRegion.X - 50);
+        if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
+
+
+
+        var bottomWidgetSize = new Vector2(rightRegion.X, rightRegion.Y / 6f);
         using (ImRaii.PushColor(ImGuiCol.FrameBg, Constants.LIGHT_BLACK))
         {
             var expression = EvaluationState.Expression;
@@ -348,21 +360,9 @@ public class MainWindow : Window, IDisposable
         }
 
         // TODO add second input for template expression
-
-        ImGui.SameLine();
-        if (ImGui.Button("Evaluate##evaluateExpression")) EvaluationState.Evaluate(SelectedModDirectories);
-        ImGui.SameLine();
-        if (ImGui.Button("Clear##clearEvaluationState")) EvaluationState.Clear();
-
-        var orderedRules = Config.Rules.OrderByDescending(r => r.Priority);
-        var selectedRuleItemIndex = 0;
-
-        ImGui.SameLine();
-        if (ImGui.Combo("Load rule##loadRuleConfig", ref selectedRuleItemIndex, orderedRules.Select(r => $"{r.Name} ({r.Priority})").Prepend("None").ToArray()) && selectedRuleItemIndex > 0) EvaluationState.Load(orderedRules.ElementAt(selectedRuleItemIndex - 1));
-
         if (EvaluationState.GetResultByModDirectory().Count > 0)
         {
-            using var table = ImRaii.Table("evaluationResults", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
+            using var table = ImRaii.Table("evaluationResults", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
 
             if (table)
             {
@@ -372,9 +372,11 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 2);
                 ImGui.TableHeadersRow();
 
+                var buttonWidth = ImGui.CalcTextSize("NNNN").X;
                 if (ImGui.TableNextColumn())
                 {
                     var modDirectoryFilter = EvaluationState.ModDirectoryFilter;
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
                     if (ImGui.InputTextWithHint("###evaluationModDirectoryFilter", Constants.FILTER_HINT, ref modDirectoryFilter, ushort.MaxValue)) EvaluationState.ModDirectoryFilter = modDirectoryFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearEvaluationModDirectoryFilter")) EvaluationState.ModDirectoryFilter = string.Empty;
@@ -383,6 +385,7 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var expressionResultFilter = EvaluationState.ExpressionFilter;
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
                     if (ImGui.InputTextWithHint("###expressionResultFilter", Constants.FILTER_HINT, ref expressionResultFilter)) EvaluationState.ExpressionFilter = expressionResultFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearExpressionResultFilter")) EvaluationState.ExpressionFilter = string.Empty;
@@ -391,6 +394,7 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var templateResultFilter = EvaluationState.TemplateFilter;
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
                     if (ImGui.InputTextWithHint("###templateResultFilter", Constants.FILTER_HINT, ref templateResultFilter)) EvaluationState.TemplateFilter = templateResultFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearTemplateResultFilter")) EvaluationState.TemplateFilter = string.Empty;
@@ -412,17 +416,15 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
 
-                        if (ImGui.TableNextColumn())
+                        switch (result)
                         {
-                            switch (result)
-                            {
-                                case EvaluationResult evaluationResult:
-                                    DrawResult(evaluationResult);
-                                    break;
-                                case IErrorResult errorResult: 
-                                    DrawResult(errorResult); 
-                                    break;
-                            }
+                            case EvaluationResult evaluationResult:
+                                DrawResultColumns(evaluationResult);
+                                break;
+                            case IErrorResult errorResult:
+                                if (ImGui.TableNextColumn()) DrawResult(errorResult);
+                                if (ImGui.TableNextColumn()) DrawResult(errorResult);
+                                break;
                         }
                     }
                 }
@@ -480,16 +482,25 @@ public class MainWindow : Window, IDisposable
         if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleSamePathResult.CurrentPath, true));
     }
 
-    private void DrawResult(EvaluationResult evaluationResult)
-    {
-        ImGui.Text(evaluationResult.ExpressionValue);
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.ExpressionValue, true));
-    }
-
     private static void DrawResult(IErrorResult errorResult)
     {
         using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
         ImGui.Text(errorResult.Message);
         if (ImGui.IsItemHovered() && errorResult.InnerMessage != null) ImGui.SetTooltip(errorResult.InnerMessage);
+    }
+
+    private void DrawResultColumns(EvaluationResult evaluationResult)
+    {
+        if (ImGui.TableNextColumn())
+        {
+            ImGui.Text(evaluationResult.ExpressionValue);
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.ExpressionValue, true));
+        }
+
+        if (ImGui.TableNextColumn())
+        {
+            ImGui.Text(evaluationResult.TemplateValue);
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.TemplateValue, true));
+        }
     }
 }

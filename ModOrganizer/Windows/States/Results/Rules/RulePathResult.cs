@@ -6,7 +6,7 @@ namespace ModOrganizer.Windows.States.Results.Rules;
 public class RulePathResult : RuleResult, ISelectableResult
 {
     public required string NewPath { get; init; }
-    public bool IsSelected { get; set; } = true;
+    public bool Selected { get; set; } = true;
     
     public override bool IsShowed(IShowableRuleResultState _) => true;
 }

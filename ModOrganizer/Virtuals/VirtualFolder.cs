@@ -15,9 +15,11 @@ public class VirtualFolder : IEquatable<VirtualFolder>
     public HashSet<VirtualFolder> Folders { get; init; } = [];
     public HashSet<VirtualFile> Files { get; init; } = [];
 
-    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? filteredFolder)
+    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? filteredFolder) => TrySearch(new VirtualFileAttributesMatcher(filter), out filteredFolder);
+
+    public bool TrySearch(IVirtualFileMatcher matcher, [NotNullWhen(true)] out VirtualFolder? filteredFolder)
     {
-        if (filter.IsNullOrWhitespace())
+        if (!matcher.IsEnabled())
         {
             filteredFolder = this;
             return true;
@@ -27,8 +29,8 @@ public class VirtualFolder : IEquatable<VirtualFolder>
         {
             Name = Name,
             Path = Path,
-            Folders = [.. Folders.SelectMany<VirtualFolder, VirtualFolder>(f => f.TrySearch(filter, out var filteredSubfolder) ? [filteredSubfolder] : [])],
-            Files = [.. Files.Where(f => f.Matches(filter))]
+            Folders = [.. Folders.SelectMany<VirtualFolder, VirtualFolder>(f => f.TrySearch(matcher, out var filteredSubfolder) ? [filteredSubfolder] : [])],
+            Files = [.. Files.Where(matcher.Matches)]
         };
 
         return !filteredFolder.IsEmpty();

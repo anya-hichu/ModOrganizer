@@ -1,6 +1,6 @@
 namespace ModOrganizer.Json.Options.Imcs;
 
-public abstract record OptionImc : Option
+public abstract class OptionImc : Option
 {
     // Empty
 }

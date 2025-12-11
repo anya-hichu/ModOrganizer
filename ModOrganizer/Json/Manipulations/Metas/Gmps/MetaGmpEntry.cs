@@ -1,6 +1,6 @@
 namespace ModOrganizer.Json.Manipulations.Metas.Gmps;
 
-public record MetaGmpEntry
+public class MetaGmpEntry : Data
 {
     public required bool Enabled { get; init; }
     public required bool Animated { get; init; }
