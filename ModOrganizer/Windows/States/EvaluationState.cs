@@ -2,13 +2,13 @@ using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
-using ModOrganizer.Shared;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Showables;
 using Scriban;
-using Scriban.Runtime;
-using System;
+using Scriban.Parsing;
+using Scriban.Syntax;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,36 +30,60 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return new ErrorResult() { Message = "Failed to retrieve mod info" };
-
-            // Need to keep context for string conversion
-            var templateContext = new TemplateContext() { MemberRenamer = MemberRenamer.Rename };
-
-            var scriptObject = new ScriptObject();
-            scriptObject.Import(modInfo);
-            templateContext.PushGlobal(scriptObject);
-
-            try
+            var evaluationResult = new EvaluationResult();
+            if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) 
             {
-                var expressionResult = Scriban.Template.Evaluate(Expression, templateContext);
-                var templateResult = Scriban.Template.Parse(Template).Render(templateContext);
-                return new EvaluationResult() 
-                { 
-                    ExpressionValue = templateContext.ObjectToString(expressionResult) , 
-                    TemplateValue = templateResult 
-                };
+                evaluationResult.ExpressionError = evaluationResult.TemplateError = new() { Message = "Failed to retrieve mod info" };
+                return evaluationResult;
             }
-            catch (Exception e)
-            {
-                PluginLog.Warning($"Caught exception while evaluating for mod [{modDirectory}]:\n\t{e.Message}");
-                return new ErrorResult()
-                {
-                    Message = "Failed to evaluate",
-                    InnerMessage = e.Message
-                };
-            }
+             
+            if (!TryEvaluate(modInfo, Expression, out var expressionValue, out var expressionError, ScriptMode.ScriptOnly)) PluginLog.Warning($"Failed to evaluate [{Expression}] for mod [{modDirectory}]");
+            evaluationResult.ExpressionValue = expressionValue;
+            evaluationResult.ExpressionError = expressionError;
+
+            if (!TryEvaluate(modInfo, Template, out var templateValue, out var templateError)) PluginLog.Warning($"Failed to evaluate [{Template}] for mod [{modDirectory}]");
+            evaluationResult.TemplateValue = templateValue;
+            evaluationResult.TemplateError = templateError;
+
+            return evaluationResult;
         });
     });
+
+    private bool TryEvaluate(ModInfo modInfo, string template, [NotNullWhen(true)] out string? value, [NotNullWhen(false)] out Error? error, ScriptMode scriptMode = ScriptMode.Default)
+    {
+        value = null;
+        error = null;
+
+        var parsedTemplate = Scriban.Template.Parse(template, lexerOptions: new() { Mode = scriptMode });
+        if (parsedTemplate.HasErrors)
+        {
+            error = new()
+            {
+                Message = "Failed to parse template",
+                InnerMessage = parsedTemplate.Messages.ToString()
+            };
+            return false;
+        }
+        else
+        {
+            try
+            {
+                value = parsedTemplate.Render(modInfo);
+                return true;
+            }
+            catch (ScriptRuntimeException e)
+            {
+                PluginLog.Debug($"Caught exception while evaluating [{template}] for mod [{modInfo.Directory}]:\n\t{e.Message}");
+                error = new()
+                {
+                    Message = "Failed to evaluate template",
+                    InnerMessage = e.Message
+                };
+
+                return false;
+            }
+        }
+    }
 
     public override void Clear()
     {
@@ -77,4 +101,6 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
     }
 
     public bool HasFilters() => !ModDirectoryFilter.IsNullOrWhitespace() || !ExpressionFilter.IsNullOrWhitespace() || !TemplateFilter.IsNullOrWhitespace();
+
+
 }

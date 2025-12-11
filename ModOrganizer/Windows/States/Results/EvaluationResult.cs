@@ -1,3 +1,4 @@
+using Dalamud.Utility;
 using ModOrganizer.Shared;
 using ModOrganizer.Windows.States.Results.Showables;
 
@@ -5,8 +6,16 @@ namespace ModOrganizer.Windows.States.Results;
 
 public class EvaluationResult : Result, IShowableEvaluationResult
 {
-    required public string ExpressionValue { get; init; }
-    required public string TemplateValue { get; init; }
+    public string? ExpressionValue { get; set; }
+    public Error? ExpressionError { get; set; }
+    
+    public string? TemplateValue { get; set; }
+    public Error? TemplateError { get; set; }
 
-    public bool IsShowed(IShowableEvaluationResultState state) => TokenMatcher.Matches(state.ExpressionFilter, ExpressionValue) && TokenMatcher.Matches(state.TemplateFilter, TemplateValue);
+    public bool IsShowed(IShowableEvaluationResultState state) {
+        if (ExpressionError == null && !TokenMatcher.Matches(state.ExpressionFilter, ExpressionValue)) return false;
+        if (TemplateError == null && !TokenMatcher.Matches(state.TemplateFilter, TemplateValue)) return false;
+
+        return true;
+    }
 }

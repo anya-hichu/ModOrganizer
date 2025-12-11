@@ -305,8 +305,8 @@ public class MainWindow : Window, IDisposable
                                 case RuleSamePathResult ruleSamePathResult:
                                     DrawResult(ruleSamePathResult);
                                     break;
-                                case IErrorResult errorResult:
-                                    DrawResult(errorResult);
+                                case IError error:
+                                    DrawError(error);
                                     break;
                             }
                         }
@@ -409,6 +409,7 @@ public class MainWindow : Window, IDisposable
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     {
                         var (modDirectory, result) = filteredResults.ElementAt(i);
+                        if (result is not EvaluationResult evaluationResult) continue;
 
                         if (ImGui.TableNextColumn())
                         {
@@ -416,15 +417,30 @@ public class MainWindow : Window, IDisposable
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(modDirectory, true));
                         }
 
-                        switch (result)
+                        if (ImGui.TableNextColumn())
                         {
-                            case EvaluationResult evaluationResult:
-                                DrawResultColumns(evaluationResult);
-                                break;
-                            case IErrorResult errorResult:
-                                if (ImGui.TableNextColumn()) DrawResult(errorResult);
-                                if (ImGui.TableNextColumn()) DrawResult(errorResult);
-                                break;
+                            if (evaluationResult.ExpressionError == null)
+                            {
+                                ImGui.Text(evaluationResult.ExpressionValue);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.ExpressionValue, true));
+                            } 
+                            else
+                            {
+                                DrawError(evaluationResult.ExpressionError);
+                            } 
+                        }
+
+                        if (ImGui.TableNextColumn())
+                        {
+                            if (evaluationResult.TemplateError == null)
+                            {
+                                ImGui.Text(evaluationResult.TemplateValue);
+                                if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.TemplateValue, true));
+                            }
+                            else
+                            {
+                                DrawError(evaluationResult.TemplateError);
+                            }
                         }
                     }
                 }
@@ -482,25 +498,10 @@ public class MainWindow : Window, IDisposable
         if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleSamePathResult.CurrentPath, true));
     }
 
-    private static void DrawResult(IErrorResult errorResult)
+    private static void DrawError(IError error)
     {
         using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-        ImGui.Text(errorResult.Message);
-        if (ImGui.IsItemHovered() && errorResult.InnerMessage != null) ImGui.SetTooltip(errorResult.InnerMessage);
-    }
-
-    private void DrawResultColumns(EvaluationResult evaluationResult)
-    {
-        if (ImGui.TableNextColumn())
-        {
-            ImGui.Text(evaluationResult.ExpressionValue);
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.ExpressionValue, true));
-        }
-
-        if (ImGui.TableNextColumn())
-        {
-            ImGui.Text(evaluationResult.TemplateValue);
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(evaluationResult.TemplateValue, true));
-        }
+        ImGui.Text(error.Message);
+        if (ImGui.IsItemHovered() && error.InnerMessage != null) ImGui.SetTooltip(error.InnerMessage);
     }
 }
