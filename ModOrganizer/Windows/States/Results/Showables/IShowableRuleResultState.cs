@@ -4,4 +4,8 @@ public interface IShowableRuleResultState: IShowableResultState
 {
     bool ShowErrors { get; }
     bool ShowSamePaths { get; }
+
+    string ModDirectoryFilter { get; }
+    string CurrentPathFilter { get; }
+    string NewPathFilter { get; }
 }

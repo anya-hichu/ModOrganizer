@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 namespace ModOrganizer.Windows.States.Results.Showables;
 
 public static class IShowableRuleResultStateExtensions

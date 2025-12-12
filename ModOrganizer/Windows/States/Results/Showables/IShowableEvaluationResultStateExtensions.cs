@@ -1,4 +1,3 @@
-using ModOrganizer.Windows.States.Results.Showables;
 using System.Collections.Generic;
 
 namespace ModOrganizer.Windows.States.Results.Showables;

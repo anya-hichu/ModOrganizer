@@ -6,8 +6,8 @@ using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
 using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results.Rules;
-using ModOrganizer.Windows.States.Results.Selectables;
 using System;
+using System.Linq;
 
 namespace ModOrganizer.Windows;
 
@@ -47,22 +47,22 @@ public class PreviewWindow : Window, IDisposable
 
     private void DrawVirtualFolderTree(VirtualFolder folder)
     {
-        foreach (var subfolder in folder.GetOrderedFolders())
+        foreach (var subfolder in folder.Folders.Order())
         {
             using var _ = ImRaii.PushColor(ImGuiCol.Text, Constants.LIGHT_BLUE);
             using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###resultVirtualFolder{subfolder.GetHashCode()}");
             if (treeNode) DrawVirtualFolderTree(subfolder);
         }
 
-        foreach (var file in folder.GetOrderedFiles())
+        foreach (var file in folder.Files.Order())
         {
             if (!RuleResultFileSystem.TryGetFileData(file, out var rulePathResult)) continue;
             using var _ = ImRaii.PushColor(ImGuiCol.Text, rulePathResult.Selected ? ImGuiColors.DalamudWhite : ImGuiColors.DalamudGrey3);
             using var node = ImRaii.TreeNode($"{file.Name}###resultVirtualFile{file.GetHashCode()}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
-            if (ImGui.IsItemClicked()) rulePathResult.InvertSelected();
+            if (ImGui.IsItemClicked()) rulePathResult.Selected = !rulePathResult.Selected;;
             if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Current: {rulePathResult.CurrentPath}");
         }
     }
 
-    private VirtualFileMultiMatcher GetMatcher() => new([new VirtualFileAttributesMatcher(Filter), new RuleResultVirtualFileMatcher(RuleResultFileSystem, ShowUnselected)]);
+    private VirtualMultiMatcher GetMatcher() => new([new VirtualAttributesMatcher(Filter), new RuleResultMatcher(RuleResultFileSystem, ShowUnselected)]);
 }

@@ -1,4 +1,3 @@
-using Dalamud.Utility;
 using ModOrganizer.Shared;
 using System;
 using System.Collections.Generic;
@@ -7,19 +6,19 @@ using System.Linq;
 
 namespace ModOrganizer.Virtuals;
 
-public class VirtualFolder : IEquatable<VirtualFolder>
+public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolder>
 {
-    public string Name { get; init; } = string.Empty;
-    public string Path { get; init; } = string.Empty;
+    public required string Name { get; init; }
+    public required string Path { get; init; }
 
     public HashSet<VirtualFolder> Folders { get; init; } = [];
     public HashSet<VirtualFile> Files { get; init; } = [];
 
-    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? filteredFolder) => TrySearch(new VirtualFileAttributesMatcher(filter), out filteredFolder);
+    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? filteredFolder) => TrySearch(new VirtualAttributesMatcher(filter), out filteredFolder);
 
-    public bool TrySearch(IVirtualFileMatcher matcher, [NotNullWhen(true)] out VirtualFolder? filteredFolder)
+    public bool TrySearch(VirtualMatcher matcher, [NotNullWhen(true)] out VirtualFolder? filteredFolder)
     {
-        if (!matcher.IsEnabled())
+        if (matcher.Matches(this))
         {
             filteredFolder = this;
             return true;
@@ -40,10 +39,9 @@ public class VirtualFolder : IEquatable<VirtualFolder>
 
     public IEnumerable<VirtualFile> GetNestedFiles() => Folders.SelectMany(f => f.GetNestedFiles()).Union(Files);
 
+    public int CompareTo(VirtualFolder? other) => Constants.ORDER_COMPARER.Compare(Name, other?.Name);
+
     public override bool Equals(object? obj) => Equals(obj as VirtualFile);
     public bool Equals(VirtualFolder? other) => other != null && GetHashCode() == other.GetHashCode();
     public override int GetHashCode() => Path.GetHashCode();
-
-    public IEnumerable<VirtualFile> GetOrderedFiles() => Files.OrderBy(f => f.Name, Constants.ORDER_COMPARER);
-    public IEnumerable<VirtualFolder> GetOrderedFolders() => Folders.OrderBy(f => f.Name, Constants.ORDER_COMPARER);
 }

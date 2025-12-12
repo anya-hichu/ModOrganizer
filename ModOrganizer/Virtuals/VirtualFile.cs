@@ -3,11 +3,13 @@ using System;
 
 namespace ModOrganizer.Virtuals;
 
-public class VirtualFile : IEquatable<VirtualFile>
+public class VirtualFile : IComparable<VirtualFile>, IEquatable<VirtualFile>
 {
-    public string Name { get; init; } = string.Empty;
-    public string Directory { get; init; } = string.Empty;
-    public string Path { get; init; } = string.Empty;
+    public required string Name { get; init; }
+    public required string Directory { get; init; }
+    public required string Path { get; init; }
+
+    public int CompareTo(VirtualFile? other) => Constants.ORDER_COMPARER.Compare(Name, other?.Name);
 
     public override bool Equals(object? obj) => Equals(obj as VirtualFile);
     public bool Equals(VirtualFile? other) => other != null && GetHashCode() == other.GetHashCode();

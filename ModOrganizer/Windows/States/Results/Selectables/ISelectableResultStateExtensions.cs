@@ -7,7 +7,7 @@ public static class ISelectableResultStateExtensions
 {
     public static void InvertResultSelection(this ISelectableResultState selectableResultState)
     {
-        foreach (var selectableResult in selectableResultState.GetSelectableResultByModDirectory().Values) selectableResult.InvertSelected();
+        foreach (var selectableResult in selectableResultState.GetSelectableResultByModDirectory().Values) selectableResult.Selected = !selectableResult.Selected;
     }
 
     public static void ClearResultSelection(this ISelectableResultState selectableResultState)

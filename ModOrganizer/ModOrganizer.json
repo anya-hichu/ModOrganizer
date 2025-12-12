@@ -6,7 +6,13 @@
   "ApplicableVersion": "any",
   "Tags": [
     "mod",
-    "organizer",
+    "organize",
+    "sort",
+    "dynamic",
+    "custom",
     "rule"
-  ]
+  ],
+  "RepoUrl": "https://github.com/anya-hichu/ModOrganizer",
+  "IconUrl": "https://raw.githubusercontent.com/anya-hichu/ModOrganizer/master/images/icon.png",
+  "ImageUrls": []
 }

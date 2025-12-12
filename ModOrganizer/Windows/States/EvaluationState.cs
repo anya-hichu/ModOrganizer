@@ -2,9 +2,9 @@ using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
+using ModOrganizer.Shared;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Showables;
-using Scriban;
 using Scriban.Parsing;
 using Scriban.Syntax;
 using System.Collections.Generic;
@@ -68,7 +68,7 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
         {
             try
             {
-                value = parsedTemplate.Render(modInfo);
+                value = parsedTemplate.Render(modInfo, MemberRenamer.Rename);
                 return true;
             }
             catch (ScriptRuntimeException e)
@@ -101,6 +101,4 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
     }
 
     public bool HasFilters() => !ModDirectoryFilter.IsNullOrWhitespace() || !ExpressionFilter.IsNullOrWhitespace() || !TemplateFilter.IsNullOrWhitespace();
-
-
 }

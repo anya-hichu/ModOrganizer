@@ -16,7 +16,7 @@ public abstract class VirtualFileSystem
     {
         if (MaybeRootFolderCache != null) return MaybeRootFolderCache;
 
-        var rootFolder = new VirtualFolder();
+        var rootFolder = new VirtualFolder() { Name = string.Empty, Path = string.Empty };
         if (!TryGetFileList(out var fileList)) return rootFolder;
 
         foreach (var (fileDirectory, fileName) in fileList)

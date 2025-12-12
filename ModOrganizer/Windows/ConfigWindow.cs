@@ -20,7 +20,12 @@ public class ConfigWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        TitleBarButtons = [new() { Icon = FontAwesomeIcon.ListAlt, ShowTooltip = () => ImGui.SetTooltip("Toggle main window"), Click = _ => toggleMainWindow() }];
+        TitleBarButtons = [new() 
+        { 
+            Icon = FontAwesomeIcon.ListAlt, 
+            ShowTooltip = () => ImGui.SetTooltip("Toggle main window"), 
+            Click = _ => toggleMainWindow() 
+        }];
 
         Config = config;
         PluginInterface = pluginInterface;

@@ -1,4 +1,5 @@
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
 using ModOrganizer.Mods;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Rules;
@@ -20,6 +21,10 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
 
     public bool ShowErrors { get; set; } = true;
     public bool ShowSamePaths { get; set; } = false;
+
+    public string ModDirectoryFilter { get; set; } = string.Empty;
+    public string CurrentPathFilter { get; set; } = string.Empty;
+    public string NewPathFilter { get; set; } = string.Empty;
 
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
@@ -80,4 +85,12 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
         }
         OnResultsChanged?.Invoke();
     });
+
+    public override void Clear()
+    {
+        base.Clear();
+        ModDirectoryFilter = string.Empty;
+        CurrentPathFilter = string.Empty;
+        NewPathFilter = string.Empty;
+    }
 }

@@ -23,9 +23,8 @@ public sealed class Plugin : IDalamudPlugin
     private const string CommandName = "/modorganizer";
     private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main and config";
 
-    public Config Config { get; init; }
-
-    public readonly WindowSystem WindowSystem = new(NAMESPACE);
+    private Config Config { get; init; }
+    private WindowSystem WindowSystem { get; init; } = new(NAMESPACE);
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
     private PreviewWindow PreviewWindow { get; init; }

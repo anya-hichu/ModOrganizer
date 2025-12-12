@@ -1,8 +1,6 @@
-using Scriban.Helpers;
-
 namespace ModOrganizer.Json;
 
-public abstract class Data
+public abstract partial class Data
 {
-    public override string ToString() => GetType().ScriptPrettyName();
+    // Empty
 }
