@@ -203,12 +203,10 @@ public class MainWindow : Window, IDisposable
         var availableRegion = ImGui.GetContentRegionAvail();
         var hasResults = RuleEvaluationState.GetResultByModDirectory().Count > 0;
 
-        // TODO: Fix it not showing all the lines
         using (var selectedModsTable = ImRaii.Table("selectedModsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, (availableRegion.Y / 2) - (2 * ImGui.GetTextLineHeightWithSpacing())) : availableRegion))
         {
             if (selectedModsTable)
             {
-                // TODO: Add filters like inspector
                 ImGui.TableSetupColumn($"Mod directory##selectedDirectoryName", ImGuiTableColumnFlags.None, 6);
                 ImGui.TableSetupColumn($"Actions##selectedDirectoyActions", ImGuiTableColumnFlags.None, 1);
                 ImGui.TableSetupScrollFreeze(0, 1);
@@ -216,7 +214,7 @@ public class MainWindow : Window, IDisposable
 
                 var clipper = ImGui.ImGuiListClipper();
                 var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, Constants.ORDER_COMPARER).ToList();
-                clipper.Begin(orderedModDirectories.Count, ImGui.GetTextLineHeightWithSpacing());
+                clipper.Begin(orderedModDirectories.Count, GetItemHeight());
 
                 while (clipper.Step())
                 {
@@ -313,7 +311,7 @@ public class MainWindow : Window, IDisposable
                 var orderedResults = RuleEvaluationState.GetShowedResultByModDirectory().Where(p => TokenMatcher.Matches(RuleEvaluationState.ModDirectoryFilter, p.Key)).OrderBy(p => p.Key, Constants.ORDER_COMPARER).ToList();
 
                 var clipper = ImGui.ImGuiListClipper();
-                clipper.Begin(orderedResults.Count, ImGui.GetTextLineHeightWithSpacing());
+                clipper.Begin(orderedResults.Count, GetItemHeight());
                 while (clipper.Step())
                 {
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -321,10 +319,17 @@ public class MainWindow : Window, IDisposable
                         var (modDirectory, result) = orderedResults.ElementAt(i);
                         if (result is not RuleResult ruleResult) continue;
 
-                        if (ImGui.TableNextColumn() && ruleResult is ISelectableResult selectableResult)
+                        if (ImGui.TableNextColumn())
                         {
-                            var isSelected = selectableResult.Selected;
-                            if (ImGui.Checkbox($"###selectResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.Selected = isSelected;
+                            if (ruleResult is ISelectableResult selectableResult)
+                            {
+                                var isSelected = selectableResult.Selected;
+                                if (ImGui.Checkbox($"###selectResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.Selected = isSelected;
+                            } 
+                            else
+                            {
+                                DrawInvisibleCheckbox();
+                            }
                         }
 
                         if (ImGui.TableNextColumn())
@@ -368,9 +373,9 @@ public class MainWindow : Window, IDisposable
 
         using (ImRaii.PushColor(ImGuiCol.ChildBg, Constants.LIGHT_BLACK))
         {
-            using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 3));
-            using var _ = ImRaii.PushIndent();
-            foreach (var selectedModDirectory in SelectedModDirectories)
+            using var _ = ImRaii.PushStyle(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
+            using var topRightPanel = ImRaii.Child("topRightPanel", new(rightRegion.X, rightRegion.Y / 3), false, ImGuiWindowFlags.AlwaysUseWindowPadding);
+            foreach (var selectedModDirectory in SelectedModDirectories.OrderBy(d => d, Constants.ORDER_COMPARER))
             {
                 using var modInfoNode = ImRaii.TreeNode($"{selectedModDirectory}##modInfo{selectedModDirectory.GetHashCode()}");
 
@@ -398,7 +403,7 @@ public class MainWindow : Window, IDisposable
             if (ImGui.Button("Clear All##clearEvaluationState")) EvaluationState.Clear();
         }
             
-        var bottomWidgetSize = new Vector2(rightRegion.X, rightRegion.Y / 6f);
+        var bottomWidgetSize = new Vector2(rightRegion.X, rightRegion.Y / 8);
         using (ImRaii.PushColor(ImGuiCol.FrameBg, Constants.LIGHT_BLACK))
         {
             var expression = EvaluationState.Expression;
@@ -551,5 +556,15 @@ public class MainWindow : Window, IDisposable
         using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
         ImGui.Text(error.Message);
         if (error.InnerMessage != null && ImGui.IsItemHovered()) ImGui.SetTooltip(error.InnerMessage);
+    }
+
+    private static float GetItemHeight() => ImGui.GetTextLineHeightWithSpacing() + (2 * ImGui.GetStyle().FramePadding.Y);
+
+    private static void DrawInvisibleCheckbox()
+    {
+        using var _ = ImRaii.Disabled();
+        using var __ = ImRaii.PushColor(ImGuiCol.FrameBg, 0);
+        var ___ = false;
+        ImGui.Checkbox(string.Empty, ref ___);
     }
 }
