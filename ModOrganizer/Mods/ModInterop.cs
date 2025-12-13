@@ -21,7 +21,7 @@ public class ModInterop : IDisposable
 {
     private static readonly int INTERNAL_BUFFER_SIZE = 1024 * 32;
 
-    private static readonly string PENUMBRA_FOLDER_NAME = "Penumbra";
+    private static readonly string PENUMBRA_NAMESPACE = "Penumbra";
     private static readonly string SORT_ORDER_FILE_NAME = "sort_order.json";
 
     private static readonly string DATA_FOLDER_NAME = "mod_data";
@@ -61,7 +61,7 @@ public class ModInterop : IDisposable
     private EventSubscriber<string> ModDeletedSubscriber { get; init; }
     private EventSubscriber<string, string> ModMovedSubscriber { get; init; }
 
-    private string SortOrderDirectory { get; init; }
+    private string PenumbraConfigDirectory { get; init; }
     private FileSystemWatcher SortOrderFileSystemWatcher { get; init; }
 
     private string DataDirectory { get; init; }
@@ -88,16 +88,14 @@ public class ModInterop : IDisposable
         ModDeletedSubscriber = ModDeleted.Subscriber(pluginInterface, OnWrappedModDeleted);
         ModMovedSubscriber = ModMoved.Subscriber(pluginInterface, OnWrappedModMoved);
 
-        var pluginConfigsDirectory = Path.GetFullPath(Path.Combine(pluginInterface.GetPluginConfigDirectory(), ".."));
-
-        SortOrderDirectory = Path.GetFullPath(Path.Combine(pluginConfigsDirectory, PENUMBRA_FOLDER_NAME));
-        SortOrderFileSystemWatcher = new FileSystemWatcher(SortOrderDirectory, SORT_ORDER_FILE_NAME)
+        PenumbraConfigDirectory = Path.Combine(pluginInterface.ConfigDirectory.Parent!.FullName, PENUMBRA_NAMESPACE);
+        SortOrderFileSystemWatcher = new FileSystemWatcher(PenumbraConfigDirectory, SORT_ORDER_FILE_NAME)
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
         };
         AddFsEventHandlers(SortOrderFileSystemWatcher, OnSortOrderFileUpdate);
 
-        DataDirectory = Path.GetFullPath(Path.Combine(pluginConfigsDirectory, PENUMBRA_FOLDER_NAME, DATA_FOLDER_NAME));
+        DataDirectory = Path.Combine(PenumbraConfigDirectory, DATA_FOLDER_NAME);
         DataFileSystemWatcher = new FileSystemWatcher(DataDirectory, DATA_FILE_NAME_PATTERN) 
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
@@ -172,7 +170,7 @@ public class ModInterop : IDisposable
 
     #region Watchers
 
-    public void CreateModFsWatchers()
+    private void CreateModFsWatchers()
     {
         DefaultFileSystemWatcher = new FileSystemWatcher(ModsDirectoryPath, DEFAULT_FILE_NAME)
         {
@@ -205,14 +203,14 @@ public class ModInterop : IDisposable
         fsWatcher.Error += OnFsWatcherError;
     }
 
-    public void ToggleFsWatchers(bool enable)
+    public void EnableFsWatchers(bool enable)
     {
         SortOrderFileSystemWatcher.EnableRaisingEvents = enable;
         DataFileSystemWatcher.EnableRaisingEvents = enable;
         DefaultFileSystemWatcher!.EnableRaisingEvents = enable;
         GroupsFileSystemWatcher!.EnableRaisingEvents = enable;
         MetaFileSystemWatcher!.EnableRaisingEvents = enable;
-        PluginLog.Debug($"Toggled file system watchers [{enable}]");
+        PluginLog.Debug($"File system watchers {(enable ? "enabled" : "disabled")}");
     }
 
     private void OnSortOrderFileUpdate(object sender, FileSystemEventArgs e)
@@ -275,11 +273,13 @@ public class ModInterop : IDisposable
         MaybeSortOrderCache = null;
     }
 
+    public string GetSortOrderPath() => Path.Combine(PenumbraConfigDirectory, SORT_ORDER_FILE_NAME);
+
     private SortOrder GetSortOrder()
     {
         if (MaybeSortOrderCache != null) return MaybeSortOrderCache;
 
-        if (SortOrderBuilder.TryBuildFromFile(Path.Combine(SortOrderDirectory, SORT_ORDER_FILE_NAME), out var sortOrder))
+        if (SortOrderBuilder.TryBuildFromFile(GetSortOrderPath(), out var sortOrder))
         {
             MaybeSortOrderCache = sortOrder;
             PluginLog.Debug($"Loaded [{nameof(SortOrder)}] cache (count: {sortOrder.Data.Count})");

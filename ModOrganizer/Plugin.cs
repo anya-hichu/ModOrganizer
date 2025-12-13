@@ -3,10 +3,14 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using ModOrganizer.Backups;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
+using ModOrganizer.Shared;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.States;
+using System.IO;
+using ThrottleDebounce;
 
 
 namespace ModOrganizer;
@@ -24,16 +28,18 @@ public sealed class Plugin : IDalamudPlugin
     private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main and config";
 
     private Config Config { get; init; }
+    private ModInterop ModInterop { get; init; }
+    private RuleEvaluator RuleEvaluator { get; init; }
+    private ActionDebouncer ActionDebouncer { get; init; }
+    private ModProcessor ModProcessor { get; init; }
+    private ModAutoProcessor ModAutoProcessor { get; init; }
+    private ModFileSystem ModFileSystem { get; init; }
+    
+
     private WindowSystem WindowSystem { get; init; } = new(NAMESPACE);
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
     private PreviewWindow PreviewWindow { get; init; }
-
-    private ModInterop ModInterop { get; init; }
-    private RuleEvaluator RuleEvaluator { get; init; }
-    private ModProcessor ModProcessor { get; init; }
-    private ModAutoProcessor ModAutoProcessor { get; init; }
-    private ModFileSystem ModFileSystem { get; init; }
 
     public Plugin()
     {
@@ -41,11 +47,14 @@ public sealed class Plugin : IDalamudPlugin
 
         ModInterop = new(PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
-        ModProcessor = new(Config, ModInterop, PluginLog, RuleEvaluator);
-        ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
+
+        ActionDebouncer = new(PluginLog);
+        var backupManager = new BackupManager(ModInterop, PluginInterface, PluginLog);
+        ModProcessor = new(ActionDebouncer, backupManager, Config, ModInterop, PluginInterface, PluginLog, RuleEvaluator);
+        ModAutoProcessor = new(backupManager, ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
 
-        ConfigWindow = new(Config, PluginInterface, ToggleMainUI);
+        ConfigWindow = new(ActionDebouncer, Config, PluginInterface, ToggleMainUI);
 
         var ruleEvaluationState = new RuleEvaluationState(ModInterop, ModProcessor, PluginLog);
         MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI);
@@ -78,6 +87,7 @@ public sealed class Plugin : IDalamudPlugin
         ModAutoProcessor.Dispose();
         ModInterop.Dispose();
         ModFileSystem.Dispose();
+        ActionDebouncer.Dispose();
     }
 
     private void OnCommand(string command, string args)

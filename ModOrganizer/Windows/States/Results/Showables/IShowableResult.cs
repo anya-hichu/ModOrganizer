@@ -1,5 +1,3 @@
-using ModOrganizer.Windows.States.Results.Showables;
-
 namespace ModOrganizer.Windows.States.Results.Showables;
 
 public interface IShowableResult<T> where T : IShowableResultState

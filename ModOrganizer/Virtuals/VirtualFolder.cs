@@ -39,7 +39,7 @@ public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolde
 
     public IEnumerable<VirtualFile> GetNestedFiles() => Folders.SelectMany(f => f.GetNestedFiles()).Union(Files);
 
-    public int CompareTo(VirtualFolder? other) => Constants.ORDER_COMPARER.Compare(Name, other?.Name);
+    public int CompareTo(VirtualFolder? other) => StringComparer.OrdinalIgnoreCase.Compare(Name, other?.Name);
 
     public override bool Equals(object? obj) => Equals(obj as VirtualFile);
     public bool Equals(VirtualFolder? other) => other != null && GetHashCode() == other.GetHashCode();

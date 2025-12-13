@@ -4,5 +4,7 @@ namespace ModOrganizer.Windows.States.Results.Showables;
 
 public interface IShowableResultState
 {
-    IReadOnlyDictionary<string, T> GetResultByModDirectory<T>();
+    string DirectoryFilter { get; }
+
+    IEnumerable<T> GetResults<T>();
 }

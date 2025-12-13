@@ -20,6 +20,12 @@
         "resolved": "6.5.2",
         "contentHash": "JXli/Sh1WVZs/pqnPPRJTlwEsZHPJtndzxiaPnrteXDpAqVqHxh4ifhx4puTaYKVMPJUMOp9bnCpEVBpYlt/eQ=="
       },
+      "ThrottleDebounce": {
+        "type": "Direct",
+        "requested": "[2.0.1, )",
+        "resolved": "2.0.1",
+        "contentHash": "6kdd65+HCrSbO80ELfyQJMs/My8tbpqoxS6VDfhQSdTq8y2kLjxpfxnVEeh3Av1Q+XDOxMv/rBXYsgQR3iQswA=="
+      },
       "penumbra.api": {
         "type": "Project"
       }

@@ -7,14 +7,14 @@ public static class ISelectableResultStateExtensions
 {
     public static void InvertResultSelection(this ISelectableResultState selectableResultState)
     {
-        foreach (var selectableResult in selectableResultState.GetSelectableResultByModDirectory().Values) selectableResult.Selected = !selectableResult.Selected;
+        foreach (var selectableResult in selectableResultState.GetSelectableResults()) selectableResult.Selected = !selectableResult.Selected;
     }
 
     public static void ClearResultSelection(this ISelectableResultState selectableResultState)
     {
-        foreach (var selectedResult in selectableResultState.GetSelectedResultByModDirectory().Values) selectedResult.Selected = false;
+        foreach (var selectedResult in selectableResultState.GetSelectedResults()) selectedResult.Selected = false;
     }
 
-    public static IReadOnlyDictionary<string, ISelectableResult> GetSelectableResultByModDirectory(this ISelectableResultState selectableResultState) => selectableResultState.GetResultByModDirectory<ISelectableResult>().ToDictionary();
-    public static IReadOnlyDictionary<string, ISelectableResult> GetSelectedResultByModDirectory(this ISelectableResultState selectableResultState) => selectableResultState.GetSelectableResultByModDirectory().Where(r => r.Value.Selected).ToDictionary();
+    public static IEnumerable<ISelectableResult> GetSelectableResults(this ISelectableResultState selectableResultState) => selectableResultState.GetResults<ISelectableResult>();
+    public static IEnumerable<ISelectableResult> GetSelectedResults(this ISelectableResultState selectableResultState) => selectableResultState.GetSelectableResults().Where(r => r.Selected);
 }

@@ -10,7 +10,7 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
 {
     private RuleEvaluationState RuleEvaluationState { get; init; }
 
-    private IReadOnlyDictionary<string, RulePathResult>? MaybeDataCache { get; set; }
+    private HashSet<Result>? MaybeResultsCache { get; set; }
 
     public RuleResultFileSystem(RuleEvaluationState ruleEvaluationState)
     {
@@ -23,37 +23,42 @@ public class RuleResultFileSystem : VirtualFileSystem, IDisposable
 
     private void OnResultsChanged()
     {
-        MaybeDataCache = RuleEvaluationState.GetResultByModDirectory<RulePathResult>();
+        MaybeResultsCache = [.. RuleEvaluationState.GetResults<RulePathResult>()];
         InvalidateRootFolderCache();
     }
 
-    protected override bool TryGetFileList([NotNullWhen(true)] out Dictionary<string, string>? rulePathResultList)
+    protected override bool TryGetFileList([NotNullWhen(true)] out Dictionary<string, string>? fileList)
     {
-        rulePathResultList = null;
+        fileList = null;
 
-        if (MaybeDataCache == null) return false;
+        if (MaybeResultsCache == null) return false;
 
-        rulePathResultList = MaybeDataCache.ToDictionary(p => p.Key, p => p.Value.NewPath.Split(PATH_SEPARATOR).Last());
+        fileList = MaybeResultsCache.OfType<RulePathResult>().ToDictionary(r => r.Directory, r => r.NewPath.Split(PATH_SEPARATOR).Last());
         return true;
     }
 
-    protected override bool TryGetFilePath(string modDirectory, [NotNullWhen(true)] out string? newModPath)
+    protected override bool TryGetFilePath(string modDirectory, [NotNullWhen(true)] out string? filePath)
     {
-        newModPath = null;
+        filePath = null;
 
-        if (MaybeDataCache == null) return false;
-        if (!MaybeDataCache.TryGetValue(modDirectory, out var rulePathResult)) return false;
+        if (MaybeResultsCache == null) return false;
+        if (!MaybeResultsCache.TryGetValue(new Result() { Directory = modDirectory }, out var result)) return false;
+        if (result is not RulePathResult rulePathResult) return false;
 
-        newModPath = rulePathResult.NewPath;
+        filePath = rulePathResult.NewPath;
         return true;
     }
 
-    public bool TryGetFileData(VirtualFile file, [NotNullWhen(true)] out RulePathResult? rulePathResult) 
+    public bool TryGetFileData(VirtualFile file, [NotNullWhen(true)] out RulePathResult? fileData) 
     {
-        rulePathResult = null;
+        fileData = null;
 
-        if (MaybeDataCache == null) return false;
+        if (MaybeResultsCache == null) return false;
 
-        return MaybeDataCache.TryGetValue(file.Directory, out rulePathResult);
+        if (!MaybeResultsCache.TryGetValue(new() { Directory = file.Directory }, out var result)) return false;
+        if (result is not RulePathResult rulePathResult) return false;
+
+        fileData = rulePathResult;
+        return true;
     }
 }

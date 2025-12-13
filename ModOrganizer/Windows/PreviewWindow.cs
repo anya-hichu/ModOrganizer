@@ -34,7 +34,7 @@ public class PreviewWindow : Window, IDisposable
     public override void Draw()
     {
         var filter = Filter;
-        if (ImGui.InputTextWithHint("##resultFilter", Constants.FILTER_HINT, ref filter)) Filter = filter;
+        if (ImGui.InputTextWithHint("##resultFilter", Texts.FilterHint, ref filter)) Filter = filter;
         ImGui.SameLine();
         if (ImGui.Button("X##clearResultFilter")) Filter = string.Empty;
 
@@ -49,7 +49,7 @@ public class PreviewWindow : Window, IDisposable
     {
         foreach (var subfolder in folder.Folders.Order())
         {
-            using var _ = ImRaii.PushColor(ImGuiCol.Text, Constants.LIGHT_BLUE);
+            using var _ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.LightBlue);
             using var treeNode = ImRaii.TreeNode($"{subfolder.Name}###resultVirtualFolder{subfolder.GetHashCode()}");
             if (treeNode) DrawVirtualFolderTree(subfolder);
         }

@@ -19,18 +19,17 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
     public string Expression { get; set; } = string.Empty;
     public string Template { get; set; } = string.Empty;
 
-    public string ModDirectoryFilter { get; set; } = string.Empty;
     public string ExpressionFilter { get; set; } = string.Empty;
     public string TemplateFilter { get; set; } = string.Empty;
 
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
-        ResultByModDirectory.Clear();
-        ResultByModDirectory = modDirectories.ToDictionary<string, string, Result>(d => d, modDirectory =>
+        Results.Clear();
+        Results = [.. modDirectories.Select<string, Result>(modDirectory =>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var evaluationResult = new EvaluationResult();
+            var evaluationResult = new EvaluationResult() { Directory = modDirectory };
             if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) 
             {
                 evaluationResult.ExpressionError = evaluationResult.TemplateError = new() { Message = "Failed to retrieve mod info" };
@@ -46,7 +45,7 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
             evaluationResult.TemplateError = templateError;
 
             return evaluationResult;
-        });
+        })];
     });
 
     private bool TryEvaluate(ModInfo modInfo, string template, [NotNullWhen(true)] out string? value, [NotNullWhen(false)] out Error? error, ScriptMode scriptMode = ScriptMode.Default)
@@ -90,7 +89,7 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
         base.Clear();
         Expression = string.Empty;
         Template = string.Empty;
-        ModDirectoryFilter = string.Empty;
+        DirectoryFilter = string.Empty;
         ExpressionFilter = string.Empty;
     }
 
@@ -99,6 +98,4 @@ public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : Resu
         Expression = rule.MatchExpression;
         Template = rule.PathTemplate;
     }
-
-    public bool HasFilters() => !ModDirectoryFilter.IsNullOrWhitespace() || !ExpressionFilter.IsNullOrWhitespace() || !TemplateFilter.IsNullOrWhitespace();
 }

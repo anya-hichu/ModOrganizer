@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using Dalamud.Utility;
 using ModOrganizer.Mods;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Rules;
@@ -22,27 +21,27 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
     public bool ShowErrors { get; set; } = true;
     public bool ShowSamePaths { get; set; } = false;
 
-    public string ModDirectoryFilter { get; set; } = string.Empty;
     public string CurrentPathFilter { get; set; } = string.Empty;
     public string NewPathFilter { get; set; } = string.Empty;
 
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
-        ResultByModDirectory.Clear();
+        Results.Clear();
         OnResultsChanged?.Invoke();
 
-        ResultByModDirectory = modDirectories.ToDictionary<string, string, Result>(d => d, modDirectory =>
+        Results = [.. modDirectories.Select<string, Result>(modDirectory =>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var currentModPath = ModInterop.GetModPath(modDirectory);
             try
             {
-                if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new RuleErrorResult() { CurrentPath = currentModPath, Message = "No rule matched" };
-                if (currentModPath == newModPath) return new RuleSamePathResult() { CurrentPath = currentModPath };
+                if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new RuleErrorResult() { Directory = modDirectory, CurrentPath = currentModPath, Message = "No rule matched" };
+                if (currentModPath == newModPath) return new RuleSamePathResult() { Directory = modDirectory, CurrentPath = currentModPath };
 
                 return new RulePathResult()
                 {
+                    Directory = modDirectory,
                     CurrentPath = currentModPath, 
                     NewPath = newModPath
                 };
@@ -52,36 +51,39 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
                 PluginLog.Warning($"Caught exception while evaluating mod [{modDirectory}] path:\n\t{e.Message}");
                 return new RuleErrorResult()
                 {
+                    Directory = modDirectory,
                     CurrentPath = currentModPath, 
                     Message = "Failed to evaluate", 
                     InnerMessage = e.Message
                 };
             }
-        });
+        })];
         OnResultsChanged?.Invoke();
     });
 
     public Task Apply() => CancelAndRunTask(cancellationToken =>
     {
-        foreach (var (modDirectory, selectedResult) in this.GetSelectedResultByModDirectory())
+        foreach (var selectedResult in this.GetSelectedResults())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             if (selectedResult is not RulePathResult rulePathResult) continue;
 
             var newModPath = rulePathResult.NewPath;
-            if (ModInterop.SetModPath(modDirectory, newModPath) == PenumbraApiEc.PathRenameFailed)
+            if (ModInterop.SetModPath(rulePathResult.Directory, newModPath) == PenumbraApiEc.PathRenameFailed)
             {
                 var conflictingModDirectory = ModInterop.GetModDirectory(newModPath);
-                ResultByModDirectory[modDirectory] = new RuleErrorResult()
+                Results.Remove(rulePathResult);
+                Results.Add(new RuleErrorResult()
                 {
+                    Directory = rulePathResult.Directory,
                     CurrentPath = rulePathResult.CurrentPath,
                     Message = $"Failed to apply [{newModPath}]",
                     InnerMessage = $"Conflicts with mod [{conflictingModDirectory}]"
-                };
+                });
                 continue;
             }
-            ResultByModDirectory.Remove(modDirectory); 
+            Results.Remove(rulePathResult); 
         }
         OnResultsChanged?.Invoke();
     });
@@ -89,7 +91,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
     public override void Clear()
     {
         base.Clear();
-        ModDirectoryFilter = string.Empty;
+        DirectoryFilter = string.Empty;
         CurrentPathFilter = string.Empty;
         NewPathFilter = string.Empty;
     }

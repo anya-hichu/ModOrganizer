@@ -1,28 +1,44 @@
+using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using ModOrganizer.Backups;
 using ModOrganizer.Rules;
+using ModOrganizer.Shared;
 using Penumbra.Api.Enums;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 
 namespace ModOrganizer.Mods;
 
-public class ModProcessor(Config config, ModInterop modInterop, IPluginLog pluginLog, RuleEvaluator ruleEvaluator)
+public class ModProcessor(ActionDebouncer actionDebouncer, BackupManager backupManager, Config config, ModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, RuleEvaluator ruleEvaluator)
 {
-    private Config Config { get; init; } = config;
-    private ModInterop ModInterop { get; init; } = modInterop;
-    private IPluginLog PluginLog { get; init; } = pluginLog;
-    private RuleEvaluator RuleEvaluator { get; init; } = ruleEvaluator;
-
     public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? newModPath, bool dryRun = false)
     {
         newModPath = null;
-        if (!ModInterop.TryGetModInfo(modDirectory, out var modInfo)) return false;
-        if (RuleEvaluator.TryEvaluateByPriority(Config.Rules, modInfo, out newModPath))
+        if (!modInterop.TryGetModInfo(modDirectory, out var modInfo)) return false;
+        if (ruleEvaluator.TryEvaluateByPriority(config.Rules, modInfo, out newModPath))
         {
             if (dryRun) return true;
-            return ModInterop.SetModPath(modInfo.Directory, newModPath) != PenumbraApiEc.PathRenameFailed;
+
+            if (config.AutoBackupEnabled) actionDebouncer.Invoke(nameof(CreateAutoBackup), CreateAutoBackup, TimeSpan.FromMicroseconds(config.AutoBackupWaitMs), leading: true, trailing: false);
+
+            return modInterop.SetModPath(modInfo.Directory, newModPath) != PenumbraApiEc.PathRenameFailed;
         }
-        PluginLog.Warning($"No rule matched mod [{modInfo.Directory}]");
+        pluginLog.Warning($"No rule matched mod [{modInfo.Directory}]");
         return false;
+    }
+
+    private void CreateAutoBackup()
+    {
+        var kind = BackupKind.Auto;
+        if (!backupManager.TryCreate(kind, out var backup))
+        {
+            pluginLog.Error($"Failed to create [{kind}] backup");
+            return;
+        }
+        config.Backups.Add(backup);
+        pluginInterface.SavePluginConfig(config);
+
+        pluginLog.Info($"Successfully created [{kind}] backup [{backup.CreatedAt}] as file [{backup.FileName}]");
     }
 }
