@@ -241,16 +241,21 @@ public class MainWindow : Window, IDisposable
 
         if (hasResults)
         {
-            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+            var selectedCount = RuleEvaluationState.GetSelectedResults().Count();
+
+            using (ImRaii.Disabled(selectedCount == 0))
             {
-                if (ImGui.Button($"Apply Selected ({RuleEvaluationState.GetSelectedResults().Count()})##applyRuleEvaluation") && ImGui.GetIO().KeyCtrl) RuleEvaluationState.Apply();
+                using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+                {
+                    if (ImGui.Button($"Apply Selected ({selectedCount})##applyRuleEvaluation") && ImGui.GetIO().KeyCtrl) RuleEvaluationState.Apply();
+                }
+                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold <L-CTRL> to confirm");
+                ImGui.SameLine();
+                if (ImGui.Button("Invert Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.InvertResultSelection();
+                ImGui.SameLine();
+                if (ImGui.Button("Clear Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.ClearResultSelection();
+                ImGui.SameLine();
             }
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold <L-CTRL> to confirm");
-            ImGui.SameLine();
-            if (ImGui.Button("Invert Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.InvertResultSelection();
-            ImGui.SameLine();
-            if (ImGui.Button("Clear Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.ClearResultSelection();
-            ImGui.SameLine();
 
             var showErrors = RuleEvaluationState.ShowErrors;
             if (ImGui.Checkbox("Show Errors##showRulePathErrors", ref showErrors)) RuleEvaluationState.ShowErrors = showErrors;

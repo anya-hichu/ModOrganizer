@@ -36,7 +36,7 @@ public class Assert(IPluginLog pluginLog)
         value = property.GetString();
         if (value.IsNullOrEmpty())
         {
-            PluginLog.Warning($"Property [{propertyName}] is null or empty:\n\t{property}");
+            PluginLog.Warning($"Property [{propertyName}] is null or empty:\n\t{jsonElement}");
             return false;
         }
 

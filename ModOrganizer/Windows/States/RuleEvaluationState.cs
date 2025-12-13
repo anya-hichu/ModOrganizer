@@ -63,28 +63,28 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
 
     public Task Apply() => CancelAndRunTask(cancellationToken =>
     {
-        foreach (var selectedResult in this.GetSelectedResults())
+        Results = [.. Results.SelectMany<Result, Result>(result =>
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (selectedResult is not RulePathResult rulePathResult) continue;
+            if (result is not RulePathResult rulePathResult) return [result];
+            if (!rulePathResult.Selected) return [result];
 
             var newModPath = rulePathResult.NewPath;
             if (ModInterop.SetModPath(rulePathResult.Directory, newModPath) == PenumbraApiEc.PathRenameFailed)
             {
                 var conflictingModDirectory = ModInterop.GetModDirectory(newModPath);
-                Results.Remove(rulePathResult);
-                Results.Add(new RuleErrorResult()
+                return [new RuleErrorResult()
                 {
                     Directory = rulePathResult.Directory,
                     CurrentPath = rulePathResult.CurrentPath,
                     Message = $"Failed to apply [{newModPath}]",
                     InnerMessage = $"Conflicts with mod [{conflictingModDirectory}]"
-                });
-                continue;
+                }];
             }
-            Results.Remove(rulePathResult); 
-        }
+
+            return [];
+        })];
         OnResultsChanged?.Invoke();
     });
 
