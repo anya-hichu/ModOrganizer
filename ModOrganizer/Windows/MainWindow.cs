@@ -201,7 +201,7 @@ public class MainWindow : Window, IDisposable
         }
 
         var availableRegion = ImGui.GetContentRegionAvail();
-        var hasResults = RuleEvaluationState.GetResults().Count() > 0;
+        var hasResults = RuleEvaluationState.GetResults().Any();
 
         using (var selectedModsTable = ImRaii.Table("selectedModsTable", 2, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, (availableRegion.Y / 2) - (2 * ImGui.GetTextLineHeightWithSpacing())) : availableRegion))
         {
@@ -251,12 +251,16 @@ public class MainWindow : Window, IDisposable
                 }
                 if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold <L-CTRL> to confirm");
                 ImGui.SameLine();
-                if (ImGui.Button("Invert Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.InvertResultSelection();
-                ImGui.SameLine();
                 if (ImGui.Button("Clear Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.ClearResultSelection();
-                ImGui.SameLine();
             }
 
+            ImGui.SameLine();
+            using (ImRaii.Disabled(!RuleEvaluationState.GetSelectableResults().Any()))
+            {
+                if (ImGui.Button("Invert Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.InvertResultSelection();
+            }
+
+            ImGui.SameLine();
             var showErrors = RuleEvaluationState.ShowErrors;
             if (ImGui.Checkbox("Show Errors##showRulePathErrors", ref showErrors)) RuleEvaluationState.ShowErrors = showErrors;
             ImGui.SameLine();
@@ -402,9 +406,12 @@ public class MainWindow : Window, IDisposable
         if (ImGui.Combo("##loadEvaluationRule", ref selectedRuleItemIndex, orderedRules.Select(r => $"{r.Name} ({r.Priority})").Prepend("Load Rule...").ToArray()) && selectedRuleItemIndex > 0) EvaluationState.Load(orderedRules.ElementAt(selectedRuleItemIndex - 1));
 
         ImGui.SameLine(rightRegion.X - 70);
-        using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
+        using (ImRaii.Disabled(!EvaluationState.GetResults().Any()))
         {
-            if (ImGui.Button("Clear All##clearEvaluationState")) EvaluationState.Clear();
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
+            {
+                if (ImGui.Button("Clear All##clearEvaluationState")) EvaluationState.Clear();
+            }
         }
             
         var bottomWidgetSize = new Vector2(rightRegion.X, rightRegion.Y / 8);
