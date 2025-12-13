@@ -48,10 +48,11 @@ public sealed class Plugin : IDalamudPlugin
         ModInterop = new(PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
 
-        ActionDebouncer = new(PluginLog);
         var backupManager = new BackupManager(ModInterop, PluginInterface, PluginLog);
+
+        ActionDebouncer = new(PluginLog);
         ModProcessor = new(ActionDebouncer, backupManager, Config, ModInterop, PluginInterface, PluginLog, RuleEvaluator);
-        ModAutoProcessor = new(backupManager, ChatGui, Config, ModInterop, ModProcessor, PluginLog);
+        ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
 
         ConfigWindow = new(ActionDebouncer, Config, PluginInterface, ToggleMainUI);

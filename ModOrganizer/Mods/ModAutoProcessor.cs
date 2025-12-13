@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Backups;
 using System;
 using System.Threading.Tasks;
 
@@ -13,7 +12,7 @@ public class ModAutoProcessor : IDisposable
     private ModProcessor ModProcessor { get; init; }
     private IPluginLog PluginInfo { get; init; }
     
-    public ModAutoProcessor(BackupManager backupManager, IChatGui chatGui, Config config, ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginInfo)
+    public ModAutoProcessor(IChatGui chatGui, Config config, ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginInfo)
     {
         ChatGui = chatGui;
         Config = config;

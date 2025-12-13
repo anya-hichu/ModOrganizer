@@ -21,7 +21,6 @@ public class ModInterop : IDisposable
 {
     private static readonly int INTERNAL_BUFFER_SIZE = 1024 * 32;
 
-    private static readonly string PENUMBRA_NAMESPACE = "Penumbra";
     private static readonly string SORT_ORDER_FILE_NAME = "sort_order.json";
 
     private static readonly string DATA_FOLDER_NAME = "mod_data";
@@ -88,7 +87,7 @@ public class ModInterop : IDisposable
         ModDeletedSubscriber = ModDeleted.Subscriber(pluginInterface, OnWrappedModDeleted);
         ModMovedSubscriber = ModMoved.Subscriber(pluginInterface, OnWrappedModMoved);
 
-        PenumbraConfigDirectory = Path.Combine(pluginInterface.ConfigDirectory.Parent!.FullName, PENUMBRA_NAMESPACE);
+        PenumbraConfigDirectory = Path.Combine(pluginInterface.ConfigDirectory.Parent!.FullName, nameof(Penumbra));
         SortOrderFileSystemWatcher = new FileSystemWatcher(PenumbraConfigDirectory, SORT_ORDER_FILE_NAME)
         {
             InternalBufferSize = INTERNAL_BUFFER_SIZE 
