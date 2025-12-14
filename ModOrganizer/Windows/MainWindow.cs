@@ -38,7 +38,7 @@ public class MainWindow : Window, IDisposable
     private Action TogglePreviewUI { get; init; }
     private Action ToggleBackupUI { get; init; }
 
-    private RuleEvaluationState RuleEvaluationState { get; init; }
+    private RuleState RuleEvaluationState { get; init; }
     private EvaluationState EvaluationState { get; init; }
 
     private string Filter { get; set; } = string.Empty;
@@ -49,7 +49,7 @@ public class MainWindow : Window, IDisposable
 
     
 
-    public MainWindow(Config config, ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleEvaluationState ruleEvaluationState, Action toggleBackupUI, Action toggleMainUI, Action togglePreviewUI) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(Config config, ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleState ruleEvaluationState, Action toggleBackupUI, Action toggleMainUI, Action togglePreviewUI) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -62,16 +62,16 @@ public class MainWindow : Window, IDisposable
                 Icon = FontAwesomeIcon.Cog, 
                 ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), 
                 Click = _ => toggleMainUI() 
-            }, 
-            new() {
-                Icon = FontAwesomeIcon.Eye,
-                ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"),
-                Click = _ => togglePreviewUI()
             },
             new() {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
                 Click = _ => toggleBackupUI()
+            },
+            new() {
+                Icon = FontAwesomeIcon.Eye,
+                ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"),
+                Click = _ => togglePreviewUI()
             }
         ];
 
@@ -207,7 +207,7 @@ public class MainWindow : Window, IDisposable
         {
             using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
             {
-                if (ImGui.Button("Preview All##evaluateModDirectories")) RuleEvaluationState.Evaluate(SelectedModDirectories);
+                if (ImGui.Button("Preview All##evaluateModDirectories")) RuleEvaluationState.Preview(SelectedModDirectories);
             } 
 
             ImGui.SameLine();
@@ -246,7 +246,7 @@ public class MainWindow : Window, IDisposable
                         {
                             if (ImGui.Button($"Deselect###deselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
-                            if (ImGui.Button($"Preview###evaluateModDirectory{i}")) RuleEvaluationState.Evaluate([modDirectory]);
+                            if (ImGui.Button($"Preview###evaluateModDirectory{i}")) RuleEvaluationState.Preview([modDirectory]);
                         }
                     }
                 }
@@ -256,15 +256,16 @@ public class MainWindow : Window, IDisposable
         if (hasResults)
         {
             var selectedCount = RuleEvaluationState.GetSelectedResults().Count();
+            
+            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+            {
+                using var ___ = ImRaii.Disabled(selectedCount == 0 || !ImGui.GetIO().KeyCtrl);
+                if (ImGui.Button($"Apply Selected ({selectedCount})##applyRuleEvaluation")) RuleEvaluationState.Apply();
+            }
+            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.CtrlConfirmHint);
 
             using (ImRaii.Disabled(selectedCount == 0))
             {
-                using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
-                {
-                    using var ___ = ImRaii.Disabled(!ImGui.GetIO().KeyCtrl);
-                    if (ImGui.Button($"Apply Selected ({selectedCount})##applyRuleEvaluation")) RuleEvaluationState.Apply();
-                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.CtrlConfirmHint);
-                }
                 ImGui.SameLine();
                 if (ImGui.Button("Clear Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.ClearResultSelection();
             }

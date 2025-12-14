@@ -19,7 +19,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
     public bool TryEvaluate(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = null;
-        foreach (var rule in rules)
+        foreach (var rule in rules.OrderDescending())
         {
             if (TryEvaluate(rule, modInfo, out path))
             {

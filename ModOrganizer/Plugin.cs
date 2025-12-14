@@ -56,13 +56,14 @@ public sealed class Plugin : IDalamudPlugin
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
 
-        ConfigWindow = new(ActionDebouncer, Config, PluginInterface, ToggleMainUI);
+        ConfigWindow = new(ActionDebouncer, Config, PluginInterface, ToggleBackupUI, ToggleMainUI);
 
-        var ruleEvaluationState = new RuleEvaluationState(ModInterop, ModProcessor, PluginLog);
-        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI, ToggleBackupUI);
+        var ruleEvaluationState = new RuleState(ModInterop, ModProcessor, PluginLog);
+        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleBackupUI, ToggleConfigUI, TogglePreviewUI);
         PreviewWindow = new(ruleEvaluationState);
         BackupWindow = new(backupManager, Config, ModInterop, PluginLog);
 
+        WindowSystem.AddWindow(BackupWindow);
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
         WindowSystem.AddWindow(PreviewWindow);
@@ -81,6 +82,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         WindowSystem.RemoveAllWindows();
 
+        BackupWindow.Dispose();
         MainWindow.Dispose();
         PreviewWindow.Dispose();
 

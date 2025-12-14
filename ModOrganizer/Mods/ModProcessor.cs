@@ -5,8 +5,6 @@ using ModOrganizer.Shared;
 using Penumbra.Api.Enums;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-
 
 namespace ModOrganizer.Mods;
 
@@ -16,7 +14,7 @@ public class ModProcessor(ActionDebouncer actionDebouncer, BackupManager backupM
     {
         newModPath = null;
         if (!modInterop.TryGetModInfo(modDirectory, out var modInfo)) return false;
-        if (ruleEvaluator.TryEvaluate(config.Rules.OrderDescending(), modInfo, out newModPath))
+        if (ruleEvaluator.TryEvaluate(config.Rules, modInfo, out newModPath))
         {
             if (dryRun) return true;
 

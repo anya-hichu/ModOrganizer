@@ -8,11 +8,11 @@ namespace ModOrganizer.Windows.States.Results.Rules;
 
 public class RuleResultFileSystem : VirtualFileSystem, IDisposable
 {
-    private RuleEvaluationState RuleEvaluationState { get; init; }
+    private RuleState RuleEvaluationState { get; init; }
 
     private HashSet<Result>? MaybeResultsCache { get; set; }
 
-    public RuleResultFileSystem(RuleEvaluationState ruleEvaluationState)
+    public RuleResultFileSystem(RuleState ruleEvaluationState)
     {
         RuleEvaluationState = ruleEvaluationState;
 

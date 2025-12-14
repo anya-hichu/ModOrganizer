@@ -9,8 +9,6 @@ namespace ModOrganizer.Backups;
 
 public class BackupManager(Config config, ModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
 {
-    private static readonly string FILE_NAME_FORMAT = "sort_order.%s.json";
-
     private Config Config { get; init; } = config;
     private ModInterop ModInterop { get; init; } = modInterop;
     private IDalamudPluginInterface PluginInterface { get; init; } = pluginInterface;
@@ -21,34 +19,42 @@ public class BackupManager(Config config, ModInterop modInterop, IDalamudPluginI
         backup = null;
         
         var createdAt = DateTimeOffset.UtcNow;
-        var fileName = string.Format(FILE_NAME_FORMAT, createdAt.ToUnixTimeMilliseconds());
+        var fileName = GenerateBackupFileName(createdAt);
 
         if (!TryCopyFile(ModInterop.GetSortOrderPath(), GetBackupPath(fileName), false)) return false;
 
         backup = new()
         {
             Manual = manual,
-            CreatedAt = createdAt.Date,
+            CreatedAt = createdAt,
             FileName = fileName
         };
 
-        Config.Backups.Add(backup);
-        PluginInterface.SavePluginConfig(Config);
-
+        RegisterBackup(backup);
         return true;
     }
 
-    public bool TryRestore(Backup backup) => TryCopyFile(GetBackupPath(backup), ModInterop.GetSortOrderPath(), true);
+    public bool TryRestore(Backup backup) 
+    {
+        if (Config.AutoBackupEnabled)
+        {
+            if (!TryCreate(out var newBackup, manual: false))
+            {
+                PluginLog.Error("Failed to create security backup before restore, aborting");
+                return false;
+            }
+            RegisterBackup(newBackup);
+        }
+
+        return TryCopyFile(GetBackupPath(backup), ModInterop.GetSortOrderPath(), true);
+    } 
 
     public bool TryDelete(Backup backup)
     {
         try
         {
             File.Delete(GetBackupPath(backup));
-
-            Config.Backups.Remove(backup);
-            PluginInterface.SavePluginConfig(Config);
-
+            UnregisterBackup(backup);
             return true;
         }
         catch (Exception e)
@@ -57,6 +63,20 @@ public class BackupManager(Config config, ModInterop modInterop, IDalamudPluginI
         }
         return false;
     }
+
+    private void RegisterBackup(Backup backup)
+    {
+        Config.Backups.Add(backup);
+        SaveConfig();
+    }
+
+    private void UnregisterBackup(Backup backup)
+    {
+        Config.Backups.Remove(backup);
+        SaveConfig();
+    }
+
+    private void SaveConfig() => PluginInterface.SavePluginConfig(Config);
 
     private bool TryCopyFile(string sourcePath, string destinationPath, bool overwrite)
     {
@@ -77,4 +97,6 @@ public class BackupManager(Config config, ModInterop modInterop, IDalamudPluginI
     private string GetBackupPath(string backupFileName) => Path.Combine(GetBackupsFolderPath(), backupFileName);
 
     public string GetBackupsFolderPath() => PluginInterface.ConfigDirectory.FullName;
+
+    private static string GenerateBackupFileName(DateTimeOffset offset) => string.Concat("sort_order.", offset.ToUnixTimeMilliseconds(), ".json");
 }

@@ -14,7 +14,7 @@ public class ConfigWindow : Window
     private Config Config { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
 
-    public ConfigWindow(ActionDebouncer actionDebouncer, Config config, IDalamudPluginInterface pluginInterface, Action toggleMainWindow) : base("ModOrganizer - Config##configWindow")
+    public ConfigWindow(ActionDebouncer actionDebouncer, Config config, IDalamudPluginInterface pluginInterface, Action toggleBackupUI, Action toggleMainUI) : base("ModOrganizer - Config##configWindow")
     {
         SizeConstraints = new()
         {
@@ -22,12 +22,19 @@ public class ConfigWindow : Window
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        TitleBarButtons = [new() 
-        { 
-            Icon = FontAwesomeIcon.ListAlt, 
-            ShowTooltip = () => ImGui.SetTooltip("Toggle main window"), 
-            Click = _ => toggleMainWindow() 
-        }];
+        TitleBarButtons = [
+            new() 
+            { 
+                Icon = FontAwesomeIcon.ListAlt, 
+                ShowTooltip = () => ImGui.SetTooltip("Toggle main window"), 
+                Click = _ => toggleMainUI() 
+            },
+            new() {
+                Icon = FontAwesomeIcon.Database,
+                ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
+                Click = _ => toggleBackupUI()
+            }
+        ];
 
         ActionDebouncer = actionDebouncer;
         Config = config;

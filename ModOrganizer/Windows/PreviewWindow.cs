@@ -18,7 +18,7 @@ public class PreviewWindow : Window, IDisposable
     private string Filter { get; set; } = string.Empty;
     public bool ShowUnselected { get; set; } = false;
 
-    public PreviewWindow(RuleEvaluationState ruleEvaluationState) : base("ModOrganizer - Preview##previewWindow")
+    public PreviewWindow(RuleState ruleEvaluationState) : base("ModOrganizer - Preview##previewWindow")
     {
         SizeConstraints = new()
         {

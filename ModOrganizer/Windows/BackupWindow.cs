@@ -3,14 +3,11 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using ModOrganizer.Backups;
 using ModOrganizer.Mods;
 using ModOrganizer.Shared;
 using ModOrganizer.Windows.States;
-using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Backups;
-using ModOrganizer.Windows.States.Results.Rules;
 using ModOrganizer.Windows.States.Results.Showables;
 using Scriban;
 using System;
@@ -49,36 +46,44 @@ public class BackupWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.Button("Create Backup##createBackup") && BackupManager.TryCreate(out var newBackup)) BackupState.Select(newBackup);
-
-        if (ImGui.Button("Open Backups Folder##openBackupFolder")) Process.Start("explorer", BackupManager.GetBackupsFolderPath());
-
+        if (ImGui.Button("Create Manually##createBackup") && BackupManager.TryCreate(out var newBackup)) BackupState.Select(newBackup);
+        ImGui.SameLine(ImGui.GetWindowWidth() - 95);
+        if (ImGui.Button("Open Folder##openBackupFolder")) Process.Start("explorer", BackupManager.GetBackupsFolderPath());
 
         var hasResults = BackupState.GetResults().Any();
 
         var availableRegion = ImGui.GetContentRegionAvail();
-        using (var backupsTable = ImRaii.Table("backupsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, availableRegion.Y / 2) : availableRegion))
+        using (var backupsTable = ImRaii.Table("backupsTable", 4, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, hasResults ? new(availableRegion.X, availableRegion.Y / 2) : availableRegion))
         {
             if (backupsTable)
             {
-                ImGui.TableSetupColumn($"Created At##backupCreatedAt", ImGuiTableColumnFlags.None, 1);
-                ImGui.TableSetupColumn($"File Name##backupFileName", ImGuiTableColumnFlags.None, 1);
+                ImGui.TableSetupColumn($"Type##backupType", ImGuiTableColumnFlags.None, 2);
+                ImGui.TableSetupColumn($"Date##backupCreatedAt", ImGuiTableColumnFlags.None, 2);
+                ImGui.TableSetupColumn($"File Name##backupFileName", ImGuiTableColumnFlags.None, 3);
                 ImGui.TableSetupColumn($"Actions##backupActions", ImGuiTableColumnFlags.None, 3);
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
                 foreach (var backup in Config.Backups.OrderDescending())
                 {
-                    if (ImGui.TableNextColumn()) ImGui.Text(backup.CreatedAt.ToString());
-                    if (ImGui.TableNextColumn()) ImGui.Text(backup.FileName);
+                    var hash = backup.GetHashCode();
+
+                    var selected = backup == BackupState.Selected;
+                    using (ImRaii.PushColor(ImGuiCol.Text, CustomColors.LightBlue, selected))
+                    {
+                        if (ImGui.TableNextColumn()) ImGui.Text(backup.Manual ? "Manual" : "Auto");
+                        if (ImGui.TableNextColumn()) ImGui.Text(backup.CreatedAt.ToLocalTime().ToString());
+                        if (ImGui.TableNextColumn()) ImGui.Text(backup.FileName);
+                    }
+
                     if (ImGui.TableNextColumn())
                     {
-                        if (ImGui.Button("Preview##previewBackup")) BackupState.Select(backup);
-
+                        if (ImGui.Button($"Select###selectBackup{hash}")) BackupState.Select(backup);
+                        ImGui.SameLine();
                         using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
                         {
-                            using var _ = ImRaii.Disabled(!ImGui.GetIO().KeyCtrl);
-                            if (ImGui.Button("Delete##deleteBackup") && BackupManager.TryDelete(backup)) BackupState.Deselect(backup);  
+                            using var ___ = ImRaii.Disabled(!ImGui.GetIO().KeyCtrl);
+                            if (ImGui.Button($"Delete###deleteBackup{hash}") && BackupManager.TryDelete(backup) && selected) BackupState.Unselect();
                             if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.CtrlConfirmHint);
                         }
                     }
@@ -88,17 +93,21 @@ public class BackupWindow : Window, IDisposable
 
         if (hasResults)
         {
-            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
+            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
             {
-                using var _ = ImRaii.Disabled(!ImGui.GetIO().KeyCtrl);
-                if (ImGui.Button("Restore##restoreBackup")) BackupState.Restore();
-                if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.CtrlConfirmHint);
+                using var ___ = ImRaii.Disabled(!ImGui.GetIO().KeyCtrl);
+                if (ImGui.Button("Apply##applyBackup")) BackupState.Apply();
             }
+            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.CtrlConfirmHint);
+            ImGui.SameLine();
 
             var showSamePaths = BackupState.ShowSamePaths;
             if (ImGui.Checkbox("Show Same Paths##showSamePathBackupResults", ref showSamePaths)) BackupState.ShowSamePaths = showSamePaths;
 
-            using var backupsTable = ImRaii.Table("backupResultsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, new(availableRegion.X, availableRegion.Y / 2));
+            ImGui.SameLine(ImGui.GetWindowWidth() - 60);
+            if (ImGui.Button("Clear##clearBackupState")) BackupState.Clear();
+
+            using var backupsTable = ImRaii.Table("backupResultsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable);
             if (backupsTable)
             {
                 ImGui.TableSetupColumn($"Mod Directory##backupCreatedAt", ImGuiTableColumnFlags.None, 2);
@@ -182,12 +191,10 @@ public class BackupWindow : Window, IDisposable
         {
             using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
             ImGui.Text("deleted");
-        }
-        else
-        {
-            ImGui.Text(value);
+            return;
         }
 
+        ImGui.Text(value);
         if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(value, true));
     }
 

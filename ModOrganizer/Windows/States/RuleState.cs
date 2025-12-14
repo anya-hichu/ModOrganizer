@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.States;
 
-public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IShowableRuleResultState
+public class RuleState(ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IShowableRuleResultState
 {
     public event Action? OnResultsChanged;
 
@@ -24,7 +24,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
     public string PathFilter { get; set; } = string.Empty;
     public string NewPathFilter { get; set; } = string.Empty;
 
-    public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
+    public Task Preview(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
     {
         Results.Clear();
         OnResultsChanged?.Invoke();
