@@ -8,22 +8,22 @@ namespace ModOrganizer.Windows.States.Results.Rules;
 
 public class RuleResultFileSystem : VirtualFileSystem, IDisposable
 {
-    private RuleState RuleEvaluationState { get; init; }
+    private RuleState RuleState { get; init; }
 
     private HashSet<Result>? MaybeResultsCache { get; set; }
 
-    public RuleResultFileSystem(RuleState ruleEvaluationState)
+    public RuleResultFileSystem(RuleState ruleState)
     {
-        RuleEvaluationState = ruleEvaluationState;
+        RuleState = ruleState;
 
-        RuleEvaluationState.OnResultsChanged += OnResultsChanged;
+        RuleState.OnResultsChanged += OnResultsChanged;
     }
 
-    public void Dispose() => RuleEvaluationState.OnResultsChanged -= OnResultsChanged;
+    public void Dispose() => RuleState.OnResultsChanged -= OnResultsChanged;
 
     private void OnResultsChanged()
     {
-        MaybeResultsCache = [.. RuleEvaluationState.GetResults<RulePathResult>()];
+        MaybeResultsCache = [.. RuleState.GetResults<RulePathResult>()];
         InvalidateRootFolderCache();
     }
 

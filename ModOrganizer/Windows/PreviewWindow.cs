@@ -18,7 +18,7 @@ public class PreviewWindow : Window, IDisposable
     private string Filter { get; set; } = string.Empty;
     public bool ShowUnselected { get; set; } = false;
 
-    public PreviewWindow(RuleState ruleEvaluationState) : base("ModOrganizer - Preview##previewWindow")
+    public PreviewWindow(RuleState ruleState) : base("ModOrganizer - Preview##previewWindow")
     {
         SizeConstraints = new()
         {
@@ -26,7 +26,7 @@ public class PreviewWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        RuleResultFileSystem = new(ruleEvaluationState);
+        RuleResultFileSystem = new(ruleState);
     }
 
     public void Dispose() => RuleResultFileSystem.Dispose();

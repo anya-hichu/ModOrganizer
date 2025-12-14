@@ -58,9 +58,9 @@ public sealed class Plugin : IDalamudPlugin
 
         ConfigWindow = new(ActionDebouncer, Config, PluginInterface, ToggleBackupUI, ToggleMainUI);
 
-        var ruleEvaluationState = new RuleState(ModInterop, ModProcessor, PluginLog);
-        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleBackupUI, ToggleConfigUI, TogglePreviewUI);
-        PreviewWindow = new(ruleEvaluationState);
+        var ruleState = new RuleState(ModInterop, ModProcessor, PluginLog);
+        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleState, ToggleBackupUI, ToggleConfigUI, TogglePreviewUI);
+        PreviewWindow = new(ruleState);
         BackupWindow = new(backupManager, Config, ModInterop, PluginLog);
 
         WindowSystem.AddWindow(BackupWindow);
