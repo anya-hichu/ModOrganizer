@@ -46,7 +46,7 @@ public class BackupManager(Config config, ModInterop modInterop, IDalamudPluginI
         {
             File.Delete(GetBackupPath(backup));
 
-            Config.Backups.Add(backup);
+            Config.Backups.Remove(backup);
             PluginInterface.SavePluginConfig(Config);
 
             return true;

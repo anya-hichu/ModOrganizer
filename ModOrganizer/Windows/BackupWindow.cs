@@ -67,14 +67,13 @@ public class BackupWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                // TODO: Add clipper
                 foreach (var backup in Config.Backups.OrderDescending())
                 {
                     if (ImGui.TableNextColumn()) ImGui.Text(backup.CreatedAt.ToString());
                     if (ImGui.TableNextColumn()) ImGui.Text(backup.FileName);
                     if (ImGui.TableNextColumn())
                     {
-                        if (ImGui.Button("Select##selectBackup")) BackupState.Select(backup);
+                        if (ImGui.Button("Preview##previewBackup")) BackupState.Select(backup);
 
                         using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
                         {
@@ -108,11 +107,11 @@ public class BackupWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 2);
                 ImGui.TableHeadersRow();
 
-                var buttonWidth = ImGui.CalcTextSize("NNNN").X;
+                var clearButtonWidth = ImGui.CalcTextSize("NNNN").X;
                 if (ImGui.TableNextColumn())
                 {
                     var directoryFilter = BackupState.DirectoryFilter;
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
                     if (ImGui.InputTextWithHint("##backupDirectoryFilter", Texts.FilterHint, ref directoryFilter, ushort.MaxValue)) BackupState.DirectoryFilter = directoryFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearBackupDirectoryFilter")) BackupState.DirectoryFilter = string.Empty;
@@ -121,7 +120,7 @@ public class BackupWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var pathFilter = BackupState.PathFilter;
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
                     if (ImGui.InputTextWithHint("##backupPathFilter", Texts.FilterHint, ref pathFilter)) BackupState.PathFilter = pathFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X##clearBackupPathFilter")) BackupState.PathFilter = string.Empty;
@@ -130,7 +129,7 @@ public class BackupWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var newPathFilter = BackupState.NewPathFilter;
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
                     if (ImGui.InputTextWithHint("##backupNewPathFilter", Texts.FilterHint, ref newPathFilter)) BackupState.NewPathFilter = newPathFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X##clearBackupNewPathFilter")) BackupState.NewPathFilter = string.Empty;

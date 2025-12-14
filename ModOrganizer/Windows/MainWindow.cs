@@ -167,8 +167,8 @@ public class MainWindow : Window, IDisposable
             var filter = Filter;
             using (var leftTopPanel = ImRaii.Child("topLeftPanel", new(leftRegion.X, topLeftPanelHeight), false, ImGuiWindowFlags.NoScrollbar))
             {
-                var clearButtonSize = ImGui.CalcTextSize("NNN");
-                ImGui.SetNextItemWidth(leftRegion.X - clearButtonSize.X);
+                var clearButtonWidth = ImGui.CalcTextSize("NNN").X;
+                ImGui.SetNextItemWidth(leftRegion.X - clearButtonWidth);
                 if (ImGui.InputTextWithHint("##modFilter", Texts.FilterHint, ref filter)) Filter = filter;
                 ImGui.SameLine();
                 if (ImGui.Button("X##clearModFilter")) Filter = string.Empty;
@@ -307,11 +307,11 @@ public class MainWindow : Window, IDisposable
 
                 ImGui.TableNextColumn();
 
-                var buttonWidth = ImGui.CalcTextSize("NNNN").X;
+                var clearButtonWidth = ImGui.CalcTextSize("NNNN").X;
                 if (ImGui.TableNextColumn())
                 {
                     var directoryFilter = RuleEvaluationState.DirectoryFilter;
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
                     if (ImGui.InputTextWithHint("##ruleEvaluationDirectoryFilter", Texts.FilterHint, ref directoryFilter, ushort.MaxValue)) RuleEvaluationState.DirectoryFilter = directoryFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X###clearRuleEvaluationDirectoryFilter")) RuleEvaluationState.DirectoryFilter = string.Empty;
@@ -320,7 +320,7 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var pathFilter = RuleEvaluationState.PathFilter;
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
                     if (ImGui.InputTextWithHint("##ruleEvaluationPathFilter", Texts.FilterHint, ref pathFilter)) RuleEvaluationState.PathFilter = pathFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X##clearRuleEvaluationPathFilter")) RuleEvaluationState.PathFilter = string.Empty;
@@ -329,7 +329,7 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.TableNextColumn())
                 {
                     var newPathFilter = RuleEvaluationState.NewPathFilter;
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
                     if (ImGui.InputTextWithHint("##ruleEvaluationNewPathFilter", Texts.FilterHint, ref newPathFilter)) RuleEvaluationState.NewPathFilter = newPathFilter;
                     ImGui.SameLine();
                     if (ImGui.Button("X##clearRuleEvaluationNewPathFilter")) RuleEvaluationState.NewPathFilter = string.Empty;
