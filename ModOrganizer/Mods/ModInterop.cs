@@ -43,6 +43,7 @@ public class ModInterop : IDisposable
     public event Action<string, string>? OnModMoved;
 
     public event Action? OnModsChanged;
+    public event Action? OnSortOrderChanged;
 
     private string ModsDirectoryPath { get; set; }
 
@@ -274,7 +275,7 @@ public class ModInterop : IDisposable
 
     public string GetSortOrderPath() => Path.Combine(PenumbraConfigDirectory, SORT_ORDER_FILE_NAME);
 
-    private SortOrder GetSortOrder()
+    public SortOrder GetSortOrder()
     {
         if (MaybeSortOrderCache != null) return MaybeSortOrderCache;
 
@@ -285,10 +286,10 @@ public class ModInterop : IDisposable
         }
         else
         {
-            MaybeSortOrderCache = new() { Data = [] };
+            MaybeSortOrderCache = new() { Data = [], EmptyFolders = [] };
             PluginLog.Warning($"Failed to parse [{nameof(SortOrder)}], cached empty until next file system update or reload");
         }
-
+        OnSortOrderChanged?.Invoke();
         return MaybeSortOrderCache;
     }
 

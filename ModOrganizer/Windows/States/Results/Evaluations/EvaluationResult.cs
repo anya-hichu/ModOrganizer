@@ -1,7 +1,7 @@
 using ModOrganizer.Shared;
 using ModOrganizer.Windows.States.Results.Showables;
 
-namespace ModOrganizer.Windows.States.Results;
+namespace ModOrganizer.Windows.States.Results.Evaluations;
 
 public class EvaluationResult : Result, IShowableResult<IShowableEvaluationResultState>
 {

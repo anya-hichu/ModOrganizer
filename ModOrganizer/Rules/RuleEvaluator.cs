@@ -16,10 +16,10 @@ public class RuleEvaluator(IPluginLog pluginLog)
 {
     private IPluginLog PluginLog { get; init; } = pluginLog;
 
-    public bool TryEvaluateByPriority(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
+    public bool TryEvaluate(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = null;
-        foreach (var rule in rules.OrderByDescending(r => r.Priority))
+        foreach (var rule in rules)
         {
             if (TryEvaluate(rule, modInfo, out path))
             {
@@ -27,7 +27,7 @@ public class RuleEvaluator(IPluginLog pluginLog)
                 return true;
             }
         }
-        PluginLog.Debug($"No rule matched mod [{modInfo.Directory}]");
+        PluginLog.Debug($"No rule matched mod [{modInfo.Directory}] with [{rules.Where(r => r.Enabled).Count()}] rules enabled out of [{rules.Count()}]");
         return false;
     }
 

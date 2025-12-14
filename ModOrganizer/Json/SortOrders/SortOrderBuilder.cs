@@ -1,5 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Files;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -14,15 +16,26 @@ public class SortOrderBuilder(IPluginLog pluginLog) : Builder<SortOrder>(pluginL
         instance = null;
 
         if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
-        if (!Assert.IsPropertyPresent(jsonElement, nameof(SortOrder.Data), out var dataProperty)) return false;
 
-        if (!Assert.IsStringDict(dataProperty, out var data))
+        var data = new Dictionary<string, string>();
+        if (jsonElement.TryGetProperty(nameof(SortOrder.Data), out var dataProperty) && !Assert.IsStringDict(dataProperty, out data))
         {
             PluginLog.Warning($"Failed to build one or more [{nameof(SortOrder.Data)}] for [{nameof(SortOrder)}]:\n\t{dataProperty}");
             return false;
         }
 
-        instance = new() { Data = data };
+        var emptyFolders = Array.Empty<string>();
+        if (jsonElement.TryGetProperty(nameof(SortOrder.EmptyFolders), out var emptyFoldersProperty) && !Assert.IsStringArray(emptyFoldersProperty, out emptyFolders))
+        {
+            PluginLog.Warning($"Failed to build one or more [{nameof(SortOrder.EmptyFolders)}] for [{nameof(SortOrder)}]:\n\t{emptyFoldersProperty}");
+            return false;
+        }
+
+        instance = new() { 
+            Data = data,
+            EmptyFolders = emptyFolders
+        };
+
         return true;
     }
 }

@@ -25,7 +25,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] private static IPluginLog PluginLog { get; set; } = null!;
 
     private const string CommandName = "/modorganizer";
-    private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main and config";
+    private const string CommandHelpMessage = $"Available subcommands for {CommandName} are main, config, preview and backup";
 
     private Config Config { get; init; }
     private ModInterop ModInterop { get; init; }
@@ -40,6 +40,7 @@ public sealed class Plugin : IDalamudPlugin
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
     private PreviewWindow PreviewWindow { get; init; }
+    private BackupWindow BackupWindow { get; init; }
 
     public Plugin()
     {
@@ -48,18 +49,19 @@ public sealed class Plugin : IDalamudPlugin
         ModInterop = new(PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
 
-        var backupManager = new BackupManager(ModInterop, PluginInterface, PluginLog);
+        var backupManager = new BackupManager(Config, ModInterop, PluginInterface, PluginLog);
 
         ActionDebouncer = new(PluginLog);
-        ModProcessor = new(ActionDebouncer, backupManager, Config, ModInterop, PluginInterface, PluginLog, RuleEvaluator);
+        ModProcessor = new(ActionDebouncer, backupManager, Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
 
         ConfigWindow = new(ActionDebouncer, Config, PluginInterface, ToggleMainUI);
 
         var ruleEvaluationState = new RuleEvaluationState(ModInterop, ModProcessor, PluginLog);
-        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI);
+        MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, ruleEvaluationState, ToggleConfigUI, TogglePreviewUI, ToggleBackupUI);
         PreviewWindow = new(ruleEvaluationState);
+        BackupWindow = new(backupManager, Config, ModInterop, PluginLog);
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
@@ -79,7 +81,6 @@ public sealed class Plugin : IDalamudPlugin
     {
         WindowSystem.RemoveAllWindows();
 
-        ConfigWindow.Dispose();
         MainWindow.Dispose();
         PreviewWindow.Dispose();
 
@@ -91,28 +92,33 @@ public sealed class Plugin : IDalamudPlugin
         ActionDebouncer.Dispose();
     }
 
-    private void OnCommand(string command, string args)
+    private void OnCommand(string command, string subcommand)
     {
-        var subcommand = args.Split(" ", 2)[0];
-        if (subcommand == "main")
+        switch (subcommand)
         {
-            ToggleMainUI();
-        }
-        else if (subcommand == "config")
-        {
-            ToggleConfigUI();
-        }
-        else
-        {
-            ChatGui.Print(CommandHelpMessage);
+            case "main":
+                ToggleMainUI();
+                break;
+            case "config":
+                ToggleConfigUI();
+                break;
+            case "preview":
+                TogglePreviewUI();
+                break;
+            case "backup":
+                ToggleBackupUI();
+                break;
+            default:
+                ChatGui.Print(CommandHelpMessage);
+                break;
         }
     }
 
     private void DrawUI() => WindowSystem.Draw();
 
-    private void ToggleConfigUI() => ConfigWindow.Toggle();
 
     private void ToggleMainUI() => MainWindow.Toggle();
-
+    private void ToggleConfigUI() => ConfigWindow.Toggle();
     private void TogglePreviewUI() => PreviewWindow.Toggle();
+    private void ToggleBackupUI() => BackupWindow.Toggle();
 }

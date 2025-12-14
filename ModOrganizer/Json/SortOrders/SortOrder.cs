@@ -6,4 +6,5 @@ namespace ModOrganizer.Json.SortOrders;
 public class SortOrder
 {
     public required Dictionary<string, string> Data { get; set; }
+    public required string[] EmptyFolders { get; set; }
 }

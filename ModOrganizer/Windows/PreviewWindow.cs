@@ -60,7 +60,7 @@ public class PreviewWindow : Window, IDisposable
             using var _ = ImRaii.PushColor(ImGuiCol.Text, rulePathResult.Selected ? ImGuiColors.DalamudWhite : ImGuiColors.DalamudGrey3);
             using var node = ImRaii.TreeNode($"{file.Name}###resultVirtualFile{file.GetHashCode()}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
             if (ImGui.IsItemClicked()) rulePathResult.Selected = !rulePathResult.Selected;;
-            if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Current: {rulePathResult.CurrentPath}");
+            if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Current: {rulePathResult.Path}");
         }
     }
 

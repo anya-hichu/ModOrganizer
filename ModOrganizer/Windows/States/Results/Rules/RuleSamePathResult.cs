@@ -5,5 +5,5 @@ namespace ModOrganizer.Windows.States.Results.Rules;
 
 public class RuleSamePathResult : RuleResult
 {
-    public override bool IsShowed(IShowableRuleResultState state) => state.ShowSamePaths && base.IsShowed(state) && TokenMatcher.Matches(state.NewPathFilter, CurrentPath);
+    public override bool IsShowed(IShowableRuleResultState state) => state.ShowSamePaths && base.IsShowed(state) && TokenMatcher.Matches(state.NewPathFilter, Path);
 }

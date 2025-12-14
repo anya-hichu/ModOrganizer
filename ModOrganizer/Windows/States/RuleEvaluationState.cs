@@ -21,7 +21,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
     public bool ShowErrors { get; set; } = true;
     public bool ShowSamePaths { get; set; } = false;
 
-    public string CurrentPathFilter { get; set; } = string.Empty;
+    public string PathFilter { get; set; } = string.Empty;
     public string NewPathFilter { get; set; } = string.Empty;
 
     public Task Evaluate(HashSet<string> modDirectories) => CancelAndRunTask(cancellationToken =>
@@ -36,13 +36,13 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
             var currentModPath = ModInterop.GetModPath(modDirectory);
             try
             {
-                if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new RuleErrorResult() { Directory = modDirectory, CurrentPath = currentModPath, Message = "No rule matched" };
-                if (currentModPath == newModPath) return new RuleSamePathResult() { Directory = modDirectory, CurrentPath = currentModPath };
+                if (!ModProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new RuleErrorResult() { Directory = modDirectory, Path = currentModPath, Message = "No rule matched" };
+                if (currentModPath == newModPath) return new RuleSamePathResult() { Directory = modDirectory, Path = currentModPath };
 
                 return new RulePathResult()
                 {
                     Directory = modDirectory,
-                    CurrentPath = currentModPath, 
+                    Path = currentModPath, 
                     NewPath = newModPath
                 };
             }
@@ -52,7 +52,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
                 return new RuleErrorResult()
                 {
                     Directory = modDirectory,
-                    CurrentPath = currentModPath, 
+                    Path = currentModPath, 
                     Message = "Failed to evaluate", 
                     InnerMessage = e.Message
                 };
@@ -77,7 +77,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
                 return [new RuleErrorResult()
                 {
                     Directory = rulePathResult.Directory,
-                    CurrentPath = rulePathResult.CurrentPath,
+                    Path = rulePathResult.Path,
                     Message = $"Failed to apply [{newModPath}]",
                     InnerMessage = $"Conflicts with mod [{conflictingModDirectory}]"
                 }];
@@ -92,7 +92,7 @@ public class RuleEvaluationState(ModInterop modInterop, ModProcessor modProcesso
     {
         base.Clear();
         DirectoryFilter = string.Empty;
-        CurrentPathFilter = string.Empty;
+        PathFilter = string.Empty;
         NewPathFilter = string.Empty;
     }
 }

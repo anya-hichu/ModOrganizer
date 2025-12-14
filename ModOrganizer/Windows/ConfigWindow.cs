@@ -8,7 +8,7 @@ using ModOrganizer.Shared;
 
 namespace ModOrganizer.Windows;
 
-public class ConfigWindow : Window, IDisposable
+public class ConfigWindow : Window
 {
     private ActionDebouncer ActionDebouncer { get; init; }
     private Config Config { get; init; }
@@ -34,8 +34,6 @@ public class ConfigWindow : Window, IDisposable
         PluginInterface = pluginInterface;
     }
 
-    public void Dispose() { }
-
     public override void Draw()
     {
         var autoProcessEnabled = Config.AutoProcessEnabled;
@@ -58,7 +56,7 @@ public class ConfigWindow : Window, IDisposable
             SaveConfig();
         }
 
-        foreach (var rule in Config.Rules.OrderByDescending(r => r.Priority))
+        foreach (var rule in Config.Rules.OrderDescending())
         {
             var hash = rule.GetHashCode();
 

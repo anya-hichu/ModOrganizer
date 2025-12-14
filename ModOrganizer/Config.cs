@@ -1,4 +1,5 @@
 using Dalamud.Configuration;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using ModOrganizer.Backups;
 using ModOrganizer.Rules;
 using System;
@@ -18,5 +19,6 @@ public class Config : IPluginConfiguration
 
     public bool AutoBackupEnabled { get; set; } = true;
     public uint AutoBackupWaitMs { get; set; } = 1000;
+    public uint AutoBackupLimit { get; set; } = 100;
     public List<Backup> Backups { get; set; } = [];
 }

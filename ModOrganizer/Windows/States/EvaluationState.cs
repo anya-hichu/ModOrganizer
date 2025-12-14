@@ -4,6 +4,7 @@ using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Shared;
 using ModOrganizer.Windows.States.Results;
+using ModOrganizer.Windows.States.Results.Evaluations;
 using ModOrganizer.Windows.States.Results.Showables;
 using Scriban.Parsing;
 using Scriban.Syntax;

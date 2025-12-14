@@ -12,6 +12,7 @@ using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
 using ModOrganizer.Windows.States;
 using ModOrganizer.Windows.States.Results;
+using ModOrganizer.Windows.States.Results.Evaluations;
 using ModOrganizer.Windows.States.Results.Rules;
 using ModOrganizer.Windows.States.Results.Selectables;
 using ModOrganizer.Windows.States.Results.Showables;
@@ -34,7 +35,8 @@ public class MainWindow : Window, IDisposable
     private ModInterop ModInterop { get; init; }
     private ModFileSystem ModFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
-    private Action TogglePreviewWindow { get; init; }
+    private Action TogglePreviewUI { get; init; }
+    private Action ToggleBackupUI { get; init; }
 
     private RuleEvaluationState RuleEvaluationState { get; init; }
     private EvaluationState EvaluationState { get; init; }
@@ -47,7 +49,7 @@ public class MainWindow : Window, IDisposable
 
     
 
-    public MainWindow(Config config, ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleEvaluationState ruleEvaluationState, Action toggleMainWindow, Action togglePreviewWindow) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(Config config, ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleEvaluationState ruleEvaluationState, Action toggleBackupUI, Action toggleMainUI, Action togglePreviewUI) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -55,19 +57,31 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        TitleBarButtons = [new()
-        { 
-            Icon = FontAwesomeIcon.Cog, 
-            ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), 
-            Click = _ => toggleMainWindow() 
-        }];
+        TitleBarButtons = [
+            new(){ 
+                Icon = FontAwesomeIcon.Cog, 
+                ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), 
+                Click = _ => toggleMainUI() 
+            }, 
+            new() {
+                Icon = FontAwesomeIcon.Eye,
+                ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"),
+                Click = _ => togglePreviewUI()
+            },
+            new() {
+                Icon = FontAwesomeIcon.Database,
+                ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
+                Click = _ => toggleBackupUI()
+            }
+        ];
 
         Config = config;
         ModInterop = modInterop;
         ModFileSystem = modFileSystem;
         PluginLog = pluginLog;
         RuleEvaluationState = ruleEvaluationState;
-        TogglePreviewWindow = togglePreviewWindow;
+        TogglePreviewUI = togglePreviewUI;
+        ToggleBackupUI = toggleBackupUI;
 
         EvaluationState = new(ModInterop, PluginLog);
 
@@ -247,9 +261,10 @@ public class MainWindow : Window, IDisposable
             {
                 using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
                 {
-                    if (ImGui.Button($"Apply Selected ({selectedCount})##applyRuleEvaluation") && ImGui.GetIO().KeyCtrl) RuleEvaluationState.Apply();
+                    using var ___ = ImRaii.Disabled(!ImGui.GetIO().KeyCtrl);
+                    if (ImGui.Button($"Apply Selected ({selectedCount})##applyRuleEvaluation")) RuleEvaluationState.Apply();
+                    if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.CtrlConfirmHint);
                 }
-                if (ImGui.IsItemHovered()) ImGui.SetTooltip("Hold <L-CTRL> to confirm");
                 ImGui.SameLine();
                 if (ImGui.Button("Clear Selection##toggleRuleEvaluationSelection")) RuleEvaluationState.ClearResultSelection();
             }
@@ -268,10 +283,13 @@ public class MainWindow : Window, IDisposable
             var showSamePaths = RuleEvaluationState.ShowSamePaths;
             if (ImGui.Checkbox("Show Same Paths##showSameRulePathResults", ref showSamePaths)) RuleEvaluationState.ShowSamePaths = showSamePaths;
 
-            ImGui.SameLine();
-            if (ImGui.Button("Preview New Paths##previewNewPaths")) TogglePreviewWindow();
+            ImGui.SameLine(availableRegion.X - 300);
+            if (ImGui.Button("Backup##toggleBackupUI")) ToggleBackupUI();
 
-            ImGui.SameLine(availableRegion.X - 100);
+            ImGui.SameLine();
+            if (ImGui.Button("Preview##togglePreviewUI")) TogglePreviewUI();
+
+            ImGui.SameLine();
             using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
             {
                 if (ImGui.Button("Clear All##clearRuleEvaluationState")) RuleEvaluationState.Clear();
@@ -282,7 +300,7 @@ public class MainWindow : Window, IDisposable
             {
                 ImGui.TableSetupColumn($"##ruleEvaluationsSelection", ImGuiTableColumnFlags.None, 1);
                 ImGui.TableSetupColumn($"Mod Directory##ruleEvaluationDirectoryName", ImGuiTableColumnFlags.None, 4);
-                ImGui.TableSetupColumn($"Current Path##ruleEvaluationCurrentPath", ImGuiTableColumnFlags.None, 4);
+                ImGui.TableSetupColumn($"Path##ruleEvaluationPath", ImGuiTableColumnFlags.None, 4);
                 ImGui.TableSetupColumn($"New Path##ruleEvaluationNewPath", ImGuiTableColumnFlags.None, 4);
                 ImGui.TableSetupScrollFreeze(0, 2);
                 ImGui.TableHeadersRow();
@@ -301,11 +319,11 @@ public class MainWindow : Window, IDisposable
 
                 if (ImGui.TableNextColumn())
                 {
-                    var currentPathFilter = RuleEvaluationState.CurrentPathFilter;
+                    var pathFilter = RuleEvaluationState.PathFilter;
                     ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - buttonWidth);
-                    if (ImGui.InputTextWithHint("##ruleEvaluationCurrentPathFilter", Texts.FilterHint, ref currentPathFilter)) RuleEvaluationState.CurrentPathFilter = currentPathFilter;
+                    if (ImGui.InputTextWithHint("##ruleEvaluationPathFilter", Texts.FilterHint, ref pathFilter)) RuleEvaluationState.PathFilter = pathFilter;
                     ImGui.SameLine();
-                    if (ImGui.Button("X##clearRuleEvaluationCurrentPathFilter")) RuleEvaluationState.CurrentPathFilter = string.Empty;
+                    if (ImGui.Button("X##clearRuleEvaluationPathFilter")) RuleEvaluationState.PathFilter = string.Empty;
                 }
 
                 if (ImGui.TableNextColumn())
@@ -350,8 +368,8 @@ public class MainWindow : Window, IDisposable
 
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(ruleResult.CurrentPath);
-                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleResult.CurrentPath, true));
+                            ImGui.Text(ruleResult.Path);
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleResult.Path, true));
                         }
 
                         if (ImGui.TableNextColumn())
@@ -557,8 +575,8 @@ public class MainWindow : Window, IDisposable
 
     private void DrawResult(RuleSamePathResult ruleSamePathResult)
     {
-        ImGui.Text(ruleSamePathResult.CurrentPath);
-        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleSamePathResult.CurrentPath, true));
+        ImGui.Text(ruleSamePathResult.Path);
+        if (ImGui.IsItemHovered()) ImGui.SetTooltip(ViewTemplateContext.ObjectToString(ruleSamePathResult.Path, true));
     }
 
     private static void DrawError(IError error)
