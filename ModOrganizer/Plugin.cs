@@ -7,6 +7,7 @@ using ModOrganizer.Backups;
 using ModOrganizer.Configs;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
+using ModOrganizer.Shared;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.States;
@@ -48,7 +49,7 @@ public sealed class Plugin : IDalamudPlugin
         ModInterop = new(CommandManager, PluginInterface, PluginLog);
         RuleEvaluator = new(PluginLog);
 
-        BackupManager = new(Config, ModInterop, PluginInterface, PluginLog);
+        BackupManager = new(new Clock(), Config, ModInterop, PluginInterface, PluginLog);
 
         ModProcessor = new(BackupManager, Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);

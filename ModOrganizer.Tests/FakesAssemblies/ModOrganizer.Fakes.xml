@@ -154,5 +154,17 @@
         <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.TryGetModInfoStringModInfoOut">
             <summary>Sets the stub of IModInterop.TryGetModInfo(IModInterop this, String modDirectory, ModInfo* modInfo)</summary>
         </member>
+        <member name="T:ModOrganizer.Shared.Fakes.StubIClock">
+            <summary>Stub type of ModOrganizer.Shared.IClock</summary>
+        </member>
+        <member name="M:ModOrganizer.Shared.Fakes.StubIClock.#ctor">
+            <summary>Initializes a new instance of type StubIClock</summary>
+        </member>
+        <member name="F:ModOrganizer.Shared.Fakes.StubIClock.GetNowUtc">
+            <summary>Sets the stub of IClock.GetNowUtc(IClock this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Shared.Fakes.StubIClock.ModOrganizer#Shared#IClock#GetNowUtc">
+            <summary>Sets the Stub of IClock.GetNowUtc(IClock this)</summary>
+        </member>
     </members>
 </doc>

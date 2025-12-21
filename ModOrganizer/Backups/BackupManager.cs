@@ -2,6 +2,7 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ModOrganizer.Configs;
 using ModOrganizer.Mods;
+using ModOrganizer.Shared;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -12,6 +13,7 @@ namespace ModOrganizer.Backups;
 
 public class BackupManager : IDisposable
 {
+    private IClock Clock { get; init; }
     private IConfig Config { get; init; }
     private IModInterop ModInterop { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
@@ -19,8 +21,9 @@ public class BackupManager : IDisposable
 
     private RateLimitedAction<bool> CreateRecentAction { get; init; }
 
-    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
+    public BackupManager(IClock clock, IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
     {
+        Clock = clock;
         Config = config;
         ModInterop = modInterop;
         PluginInterface = pluginInterface;
@@ -35,7 +38,7 @@ public class BackupManager : IDisposable
     {
         backup = null;
         
-        var createdAt = DateTimeOffset.UtcNow;
+        var createdAt = Clock.GetNowUtc();
         if (!TryCopyFile(ModInterop.GetSortOrderPath(), GetPath(createdAt))) return false;
 
         backup = new()
@@ -84,10 +87,16 @@ public class BackupManager : IDisposable
     {
         try
         {
-            File.Delete(GetPath(backup));
-            if (!Unregister(backup)) PluginLog.Debug("Failed to unregister backup, ignoring");
-
-            return true;
+            var path = GetPath(backup);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            } 
+            else
+            {
+                PluginLog.Warning($"Failed to delete backup [{backup.CreatedAt}] file since it does not exists, ignoring");
+            }
+            return Unregister(backup);
         }
         catch (Exception e)
         {
@@ -98,7 +107,12 @@ public class BackupManager : IDisposable
 
     private bool Register(Backup backup)
     {
-        if (!Config.Backups.Add(backup)) return false;
+        if (!Config.Backups.Add(backup))
+        {
+            PluginLog.Warning("Failed to register backup in config, ignoring");
+            return true;
+        }
+
         EnforceLimit();
         SaveConfig();
         return true;
@@ -108,8 +122,8 @@ public class BackupManager : IDisposable
     {
         if (!Config.Backups.Remove(backup))
         {
-            PluginLog.Debug("Failed to remove backup entry from config");
-            return false;
+            PluginLog.Warning("Failed to unregister backup from config, ignoring");
+            return true;
         }
 
         SaveConfig();

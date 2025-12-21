@@ -1,28 +1,33 @@
 using ModOrganizer.Backups;
-using ModOrganizer.Tests.Shared;
 
 namespace ModOrganizer.Tests.Backups;
 
 [TestClass]
-public class TestBackupManager
+public class TestBackupManager : TestClass
 {
-    public TestContext TestContext { get; set; } = null!;
+    [TestMethod]
+    public void TestGetFileName()
+    {
+        var offset = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        Assert.AreEqual("sort_order.1735689600000.json", BackupManager.GetFileName(offset));
+    }
 
     [TestMethod]
-    public void TestTryCreateManualWithMissingSortOrderPath()
+    public void TestTryCreateWithMissingSortOrderPath()
     {
-        var tempDirectory = TestContext.CreateTestTempDirectory();
+        var tempDirectory = CreateResultsTempDirectory();
 
-        var stubs = new TestBackupManagerStubs(tempDirectory);
+        var fakes = new BackupManagerFakes(tempDirectory);
         var missingSortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
-        stubs.ModInteropStub.GetSortOrderPath = () => missingSortOrderPath;
+        fakes.ModInterop.GetSortOrderPath = () => missingSortOrderPath;
 
-        var created = stubs.BackupManager.TryCreate(out var backup);
+        var backupManager = new BackupManager(fakes.Clock, fakes.Config, fakes.ModInterop, fakes.PluginInterface, fakes.PluginLog);
+        var created = backupManager.TryCreate(out var backup);
 
         Assert.IsFalse(created);
         Assert.IsNull(backup);
 
-        var calls = stubs.PluginLogObserver.GetCalls();
+        var calls = fakes.PluginLogObserver.GetCalls();
         Assert.HasCount(1, calls);
 
         var call = calls[0];
@@ -38,24 +43,85 @@ public class TestBackupManager
     [DataRow(false)]
     public void TestTryCreate(bool manual)
     {
-        var tempDirectory = TestContext.CreateTestTempDirectory();
+        var tempDirectory = CreateResultsTempDirectory();
 
-        var stubs = new TestBackupManagerStubs(tempDirectory);
+        var createdAt = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+        var fakes = new BackupManagerFakes(tempDirectory);
         var sortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
         File.WriteAllText(sortOrderPath, string.Empty);
 
-        stubs.ModInteropStub.GetSortOrderPath = () => sortOrderPath;
+        fakes.Clock.GetNowUtc = () => createdAt;
+        fakes.ModInterop.GetSortOrderPath = () => sortOrderPath;
          
         var registeredBackups = new HashSet<Backup>();
-        stubs.ConfigStub.BackupsGet = () => registeredBackups;
+        fakes.Config.BackupsGet = () => registeredBackups;
 
-        var created = stubs.BackupManager.TryCreate(out var backup, manual);
+        var backupManager = new BackupManager(fakes.Clock, fakes.Config, fakes.ModInterop, fakes.PluginInterface, fakes.PluginLog);
+        var created = backupManager.TryCreate(out var backup, manual);
 
         Assert.IsTrue(created);
         Assert.IsNotNull(backup);
+        Assert.AreEqual(createdAt, backup.CreatedAt);
         Assert.AreEqual(backup.Manual, manual);
 
         Assert.HasCount(1, registeredBackups);
         Assert.AreEqual(backup, registeredBackups.First());
+
+        Assert.IsEmpty(fakes.PluginLogObserver.GetCalls());
+    }
+
+    [TestMethod]
+    public void TestTryDeleteWithMissingBackupFile()
+    {
+        var tempDirectory = CreateResultsTempDirectory();
+
+        var fakes = new BackupManagerFakes(tempDirectory);
+
+        var registeredBackup = new Backup() { CreatedAt = DateTimeOffset.UtcNow };
+        fakes.Config.BackupsGet = () => [registeredBackup];
+
+        var backupManager = new BackupManager(fakes.Clock, fakes.Config, fakes.ModInterop, fakes.PluginInterface, fakes.PluginLog); 
+        var deleted = backupManager.TryDelete(registeredBackup);
+
+        Assert.IsTrue(deleted);
+
+        var calls = fakes.PluginLogObserver.GetCalls();
+        Assert.HasCount(1, calls);
+
+        var call = calls[0];
+        Assert.AreEqual("Warning", call.StubbedMethod.Name);
+
+        var arguments = call.GetArguments();
+        Assert.HasCount(2, arguments);
+        Assert.StartsWith($"Failed to delete backup", arguments[0] as string);
+    }
+
+    [TestMethod]
+    public void TestTryDeleteUnregistered()
+    {
+        var tempDirectory = CreateResultsTempDirectory();
+        var fakes = new BackupManagerFakes(tempDirectory);
+
+        var backupManager = new BackupManager(fakes.Clock, fakes.Config, fakes.ModInterop, fakes.PluginInterface, fakes.PluginLog);
+
+        var registeredBackup = new Backup() { CreatedAt = DateTimeOffset.UtcNow };
+        var backupPath = Path.Combine(tempDirectory, backupManager.GetPath(registeredBackup));
+        File.WriteAllText(backupPath, string.Empty);
+        fakes.Config.BackupsGet = () => [];
+
+        var deleted = backupManager.TryDelete(registeredBackup);
+
+        Assert.IsTrue(deleted);
+
+        var calls = fakes.PluginLogObserver.GetCalls();
+        Assert.HasCount(1, calls);
+
+        var call = calls[0];
+        Assert.AreEqual("Warning", call.StubbedMethod.Name);
+
+        var arguments = call.GetArguments();
+        Assert.HasCount(2, arguments);
+        Assert.StartsWith($"Failed to unregister backup from config, ignoring", arguments[0] as string);
     }
 }

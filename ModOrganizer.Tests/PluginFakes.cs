@@ -8,32 +8,32 @@ using Penumbra.Api.IpcSubscribers;
 
 namespace ModOrganizer.Tests;
 
-public class TestPluginStubs
+public class PluginFakes
 {
-    public StubIUiBuilder UiBuilderStub { get; init; }
-    public StubIDalamudPluginInterface  PluginInterfaceStub { get; init; }
-    public StubICommandManager CommandManagerStub { get; init; }
-    public StubIPluginLog PluginLogStub { get; init; }
+    public StubIUiBuilder UiBuilder { get; init; }
+    public StubIDalamudPluginInterface  PluginInterface { get; init; }
+    public StubICommandManager CommandManager { get; init; }
+    public StubIPluginLog PluginLog { get; init; }
 
-    public TestPluginStubs(string tempDirectory)
+    public PluginFakes(string tempDirectory)
     {
         var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
         var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
         Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
 
-        UiBuilderStub = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+        UiBuilder = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-        PluginInterfaceStub = new()
+        PluginInterface = new()
         {
             GetPluginConfig = () => null,
             ConfigDirectoryGet = () => configDirectory,
             InjectObjectObjectArray = (instance, scopedObjects) => false,
-            UiBuilderGet = () => UiBuilderStub,
+            UiBuilderGet = () => UiBuilder,
             InstanceBehavior = StubBehaviors.NotImplemented
         };
 
         var modDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "Mods"));
-        PluginInterfaceStub.GetIpcSubscriberOf1String(name => new StubICallGateSubscriber<string>()
+        PluginInterface.GetIpcSubscriberOf1String(name => new StubICallGateSubscriber<string>()
         {
             InvokeFunc = () =>
             {
@@ -45,7 +45,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf1String(name => new StubICallGateSubscriber<Dictionary<string, string>>()
+        PluginInterface.GetIpcSubscriberOf1String(name => new StubICallGateSubscriber<Dictionary<string, string>>()
         {
             InvokeFunc = () =>
             {
@@ -57,7 +57,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, string, Dictionary<string, object?>>()
+        PluginInterface.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, string, Dictionary<string, object?>>()
         {
             InvokeFuncT0T1 = (modDirectory, modName) =>
             {
@@ -69,7 +69,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf4String(name => new StubICallGateSubscriber<string, string, string, int>()
+        PluginInterface.GetIpcSubscriberOf4String(name => new StubICallGateSubscriber<string, string, string, int>()
         {
             InvokeFuncT0T1T2 = (modDirectory, newPath, modName) =>
             {
@@ -81,7 +81,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<string, object?>()
+        PluginInterface.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<string, object?>()
         {
             SubscribeActionOfT0 = action =>
             {
@@ -95,7 +95,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, string, object?>()
+        PluginInterface.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, string, object?>()
         {
             SubscribeActionOfT0T1 = action =>
             {
@@ -108,7 +108,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, bool, object?>()
+        PluginInterface.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, bool, object?>()
         {
             SubscribeActionOfT0T1 = action =>
             {
@@ -121,7 +121,7 @@ public class TestPluginStubs
             }
         });
 
-        PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<Action, int>()
+        PluginInterface.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<Action, int>()
         {
             InvokeFuncT0 = action =>
             {
@@ -133,13 +133,13 @@ public class TestPluginStubs
             }
         });
 
-        CommandManagerStub = new()
+        CommandManager = new()
         {
             AddHandlerStringCommandInfo = (command, commandInfo) => true,
             RemoveHandlerString = (command) => true,
             InstanceBehavior = StubBehaviors.NotImplemented
         };
 
-        PluginLogStub = new() { InstanceBehavior = StubBehaviors.DefaultValue };
+        PluginLog = new() { InstanceBehavior = StubBehaviors.DefaultValue };
     }
 }
