@@ -11,7 +11,7 @@ public class TestBackupManager
     [TestMethod]
     public void TestTryCreateManualWithMissingSortOrderPath()
     {
-        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, TestContext.TestDisplayName!);
+        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, TestContext.TestName.GetHashCode().ToString());
 
         var stubs = new TestBackupManagerStubs(testDirectory);
 
@@ -39,7 +39,7 @@ public class TestBackupManager
     [DataRow(false)]
     public void TestTryCreate(bool manual)
     {
-        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, TestContext.TestDisplayName!);
+        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, HashCode.Combine(TestContext.TestName, TestContext.TestData).ToString());
 
         var stubs = new TestBackupManagerStubs(testDirectory);
         var sortOrderPath = Path.Combine(testDirectory, "sort_order.json");
