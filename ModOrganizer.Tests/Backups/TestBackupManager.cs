@@ -6,22 +6,24 @@ namespace ModOrganizer.Tests.Backups;
 [TestClass]
 public class TestBackupManager
 {
-    public TestContext TextContext { get; set; } = null!;
+    public TestContext TestContext { get; set; } = null!;
 
     [TestMethod]
     public void TestTryCreateManualWithMissingSortOrderPath()
     {
-        using var state = new TestBackupManagerState();
+        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, TestContext.TestDisplayName!);
 
-        var missingSortOrderPath = "sort_order.json";
-        state.ModInteropStub.GetSortOrderPath = () => missingSortOrderPath;
+        var stubs = new TestBackupManagerStubs(testDirectory);
 
-        var created = state.BackupManager.TryCreate(out var backup);
+        var missingSortOrderPath = Path.Combine(testDirectory, "sort_order.json");
+        stubs.ModInteropStub.GetSortOrderPath = () => missingSortOrderPath;
+
+        var created = stubs.BackupManager.TryCreate(out var backup);
 
         Assert.IsFalse(created);
         Assert.IsNull(backup);
 
-        var calls = state.PluginLogObserver.GetCalls();
+        var calls = stubs.PluginLogObserver.GetCalls();
         Assert.HasCount(1, calls);
 
         var call = calls[0];
@@ -37,18 +39,18 @@ public class TestBackupManager
     [DataRow(false)]
     public void TestTryCreate(bool manual)
     {
-        using var state = new TestBackupManagerState();
+        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, TestContext.TestDisplayName!);
 
-        var sortOrderPath = $"sort_order_{manual}.json";
-        using var _ = new RaiiGuard(() => File.WriteAllText(sortOrderPath, string.Empty), () => File.Delete(sortOrderPath));
+        var stubs = new TestBackupManagerStubs(testDirectory);
+        var sortOrderPath = Path.Combine(testDirectory, "sort_order.json");
+        File.WriteAllText(sortOrderPath, string.Empty);
 
-        state.ModInteropStub.GetSortOrderPath = () => sortOrderPath;
+        stubs.ModInteropStub.GetSortOrderPath = () => sortOrderPath;
          
         var registeredBackups = new HashSet<Backup>();
-        state.ConfigStub.BackupsGet = () => registeredBackups;
-        state.ConfigStub.AutoBackupLimitGet = () => 1;
+        stubs.ConfigStub.BackupsGet = () => registeredBackups;
 
-        var created = state.BackupManager.TryCreate(out var backup, manual);
+        var created = stubs.BackupManager.TryCreate(out var backup, manual);
 
         Assert.IsTrue(created);
         Assert.IsNotNull(backup);

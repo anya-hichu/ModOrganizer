@@ -7,7 +7,7 @@ using ModOrganizer.Mods.Fakes;
 
 namespace ModOrganizer.Tests.Backups;
 
-public class TestBackupManagerState : IDisposable
+public class TestBackupManagerStubs
 {
     public StubIConfig ConfigStub { get; init; }
     public StubIModInterop ModInteropStub { get; init; }
@@ -20,12 +20,16 @@ public class TestBackupManagerState : IDisposable
 
     public BackupManager BackupManager { get; init; }
 
-    public TestBackupManagerState()
+    public TestBackupManagerStubs(string testDirectory)
     {
-        ConfigStub = new StubIConfig() { InstanceBehavior = StubBehaviors.NotImplemented };
+        ConfigStub = new StubIConfig() { 
+            AutoBackupLimitGet = () => 100, 
+            InstanceBehavior = StubBehaviors.NotImplemented 
+        };
+
         ModInteropStub = new StubIModInterop() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-        ConfigDirectory = Directory.CreateDirectory(nameof(ModOrganizer));
+        ConfigDirectory = Directory.CreateDirectory(Path.Combine(testDirectory, nameof(ModOrganizer)));
         PluginInterfaceStub = new StubIDalamudPluginInterface()
         {
             ConfigDirectoryGet = () => ConfigDirectory,
@@ -37,6 +41,4 @@ public class TestBackupManagerState : IDisposable
 
         BackupManager = new(ConfigStub, ModInteropStub, PluginInterfaceStub, PluginLogStub);
     }
-
-    public void Dispose() => Directory.Delete(ConfigDirectory.FullName, true);
 }
