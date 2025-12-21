@@ -87,8 +87,7 @@ public class PluginFakes
             {
                 switch (name)
                 {
-                    case ModAdded.Label: return;
-                    case ModDeleted.Label: return;
+                    case ModAdded.Label or ModDeleted.Label: return;
                     default: throw new NotImplementedException(name);
                 }
                 ;
@@ -136,7 +135,7 @@ public class PluginFakes
         CommandManager = new()
         {
             AddHandlerStringCommandInfo = (command, commandInfo) => true,
-            RemoveHandlerString = (command) => true,
+            RemoveHandlerString = command => true,
             InstanceBehavior = StubBehaviors.NotImplemented
         };
 

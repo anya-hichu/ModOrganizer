@@ -45,7 +45,7 @@ public class TestBackupManager : TestClass
     {
         var tempDirectory = CreateResultsTempDirectory();
 
-        var createdAt = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        var createdAt = DateTimeOffset.UtcNow.AddHours(-1);
 
         var fakes = new BackupManagerFakes(tempDirectory);
         var sortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
@@ -123,5 +123,27 @@ public class TestBackupManager : TestClass
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
         Assert.StartsWith($"Failed to unregister backup from config, ignoring", arguments[0] as string);
+    }
+
+    [TestMethod]
+    public void TestEnforceLimit()
+    {
+        var tempDirectory = CreateResultsTempDirectory();
+        var fakes = new BackupManagerFakes(tempDirectory);
+
+        var registeredBackups = new HashSet<Backup>();
+        fakes.Config.BackupsGet = () => registeredBackups;
+        fakes.Config.AutoBackupLimitGet = () => ushort.MinValue;
+
+        var sortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
+        File.WriteAllText(sortOrderPath, string.Empty);
+
+        fakes.ModInterop.GetSortOrderPath = () => sortOrderPath;
+
+        var backupManager = new BackupManager(fakes.Clock, fakes.Config, fakes.ModInterop, fakes.PluginInterface, fakes.PluginLog);
+        var created = backupManager.TryCreate(out var backup, manual: false);
+
+        Assert.IsTrue(created);
+        Assert.IsEmpty(registeredBackups);
     }
 }

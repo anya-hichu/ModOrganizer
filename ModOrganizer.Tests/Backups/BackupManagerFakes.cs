@@ -4,12 +4,13 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Configs.Fakes;
 using ModOrganizer.Mods.Fakes;
 using ModOrganizer.Shared.Fakes;
-using System;
 
 namespace ModOrganizer.Tests.Backups;
 
 public class BackupManagerFakes
 {
+    private Random Random { get; init; } = new();
+
     public StubIClock Clock { get; init; }
     public StubIConfig Config { get; init; }
     public StubIModInterop ModInterop { get; init; }
@@ -24,10 +25,12 @@ public class BackupManagerFakes
     {
         Clock = new StubIClock()
         {
-            GetNowUtc = () => DateTimeOffset.UtcNow.AddSeconds(new Random().Next(short.MinValue, 0))
+            // Non-deterministic clock
+            GetNowUtc = () => DateTimeOffset.UtcNow.AddHours(Random.Next(short.MinValue, 0))
         };
 
-        Config = new StubIConfig() { 
+        Config = new StubIConfig() 
+        { 
             AutoBackupLimitGet = () => ushort.MaxValue, 
             InstanceBehavior = StubBehaviors.NotImplemented 
         };
@@ -38,11 +41,16 @@ public class BackupManagerFakes
         PluginInterface = new StubIDalamudPluginInterface()
         {
             ConfigDirectoryGet = () => ConfigDirectory,
-            SavePluginConfigIPluginConfiguration = (config) => { },
+            SavePluginConfigIPluginConfiguration = config => { },
             InstanceBehavior = StubBehaviors.NotImplemented
         };
 
         PluginLogObserver = new();
-        PluginLog = new StubIPluginLog() { InstanceBehavior = StubBehaviors.DefaultValue, InstanceObserver = PluginLogObserver };
+
+        PluginLog = new StubIPluginLog() 
+        { 
+            InstanceBehavior = StubBehaviors.DefaultValue, 
+            InstanceObserver = PluginLogObserver 
+        };
     }
 }
