@@ -33,7 +33,7 @@ jobs:
         run: dotnet restore
 
       - name: Build Project
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release -p:AssemblyVersion=${{ github.ref_name }}
 
       - name: Run Tests
         run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests

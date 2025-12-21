@@ -31,7 +31,10 @@ jobs:
         run: dotnet restore
 
       - name: Build Project
-        run: dotnet build --configuration Release ModOrganizer/ModOrganizer.csproj -p:AssemblyVersion=${{ github.ref_name }}
+        run: dotnet build --configuration Release -p:AssemblyVersion=${{ github.ref_name }}
+
+      - name: Run Tests
+        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests
 
       - name: Create Release
         uses: actions/create-release@v1
