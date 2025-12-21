@@ -46,8 +46,8 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupLimitGet">
             <summary>Sets the stub of IConfig.get_AutoBackupLimit(IConfig this)</summary>
         </member>
-        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupLimitSetUInt32">
-            <summary>Sets the stub of IConfig.set_AutoBackupLimit(IConfig this, UInt32 value)</summary>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupLimitSetUInt16">
+            <summary>Sets the stub of IConfig.set_AutoBackupLimit(IConfig this, UInt16 value)</summary>
         </member>
         <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#AutoProcessDelayMs">
             <summary>Sets the stub of IConfig.get_AutoProcessDelayMs(IConfig this)</summary>
@@ -55,8 +55,8 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessDelayMsGet">
             <summary>Sets the stub of IConfig.get_AutoProcessDelayMs(IConfig this)</summary>
         </member>
-        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessDelayMsSetUInt32">
-            <summary>Sets the stub of IConfig.set_AutoProcessDelayMs(IConfig this, UInt32 value)</summary>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessDelayMsSetUInt16">
+            <summary>Sets the stub of IConfig.set_AutoProcessDelayMs(IConfig this, UInt16 value)</summary>
         </member>
         <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#AutoProcessEnabled">
             <summary>Sets the stub of IConfig.get_AutoProcessEnabled(IConfig this)</summary>

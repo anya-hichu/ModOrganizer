@@ -10,10 +10,10 @@ public interface IConfig : IPluginConfiguration
     HashSet<Rule> Rules { get; set; }
 
     bool AutoProcessEnabled { get; set; }
-    uint AutoProcessDelayMs { get; set; }
+    ushort AutoProcessDelayMs { get; set; }
 
     HashSet<Backup> Backups { get; set; }
 
     bool AutoBackupEnabled { get; set; }
-    uint AutoBackupLimit { get; set; }
+    ushort AutoBackupLimit { get; set; }
 }

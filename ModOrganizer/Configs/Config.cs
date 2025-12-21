@@ -13,10 +13,10 @@ public class Config : IConfig
     public HashSet<Rule> Rules { get; set; } = [];
 
     public bool AutoProcessEnabled { get; set; } = false;
-    public uint AutoProcessDelayMs { get; set; } = 1000;
+    public ushort AutoProcessDelayMs { get; set; } = 1000;
 
     public HashSet<Backup> Backups { get; set; } = [];
 
     public bool AutoBackupEnabled { get; set; } = true;
-    public uint AutoBackupLimit { get; set; } = 10;
+    public ushort AutoBackupLimit { get; set; } = 10;
 }

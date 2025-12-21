@@ -73,7 +73,7 @@ public class ConfigWindow : Window, IDisposable
         }
 
         var autoBackupLimit = Config.AutoBackupLimit;
-        if (ImGui.InputUInt("Auto-Backup Limit##autoBackupLimit", ref autoBackupLimit, 1))
+        if (ImGui.InputUShort("Auto-Backup Limit##autoBackupLimit", ref autoBackupLimit, 1))
         {
             Config.AutoBackupLimit = autoBackupLimit;
             SaveConfigLater();
@@ -146,7 +146,7 @@ public class ConfigWindow : Window, IDisposable
         // TODO add info that only added mods are auto-processed
 
         var autoProcessDelayMs = Config.AutoProcessDelayMs;
-        if (ImGui.InputUInt("Auto-Process Delay (ms)##autoProcessDelayMs", ref autoProcessDelayMs, 50))
+        if (ImGui.InputUShort("Auto-Process Delay (ms)##autoProcessDelayMs", ref autoProcessDelayMs, 50))
         {
             Config.AutoProcessDelayMs = autoProcessDelayMs;
             SaveConfigLater();

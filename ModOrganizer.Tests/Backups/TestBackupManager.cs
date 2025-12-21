@@ -1,5 +1,5 @@
 using ModOrganizer.Backups;
-using ModOrganizer.Shared;
+using ModOrganizer.Tests.Shared;
 
 namespace ModOrganizer.Tests.Backups;
 
@@ -11,11 +11,10 @@ public class TestBackupManager
     [TestMethod]
     public void TestTryCreateManualWithMissingSortOrderPath()
     {
-        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, TestContext.TestName.GetHashCode().ToString());
+        var tempDirectory = TestContext.CreateTestTempDirectory();
 
-        var stubs = new TestBackupManagerStubs(testDirectory);
-
-        var missingSortOrderPath = Path.Combine(testDirectory, "sort_order.json");
+        var stubs = new TestBackupManagerStubs(tempDirectory);
+        var missingSortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
         stubs.ModInteropStub.GetSortOrderPath = () => missingSortOrderPath;
 
         var created = stubs.BackupManager.TryCreate(out var backup);
@@ -39,10 +38,10 @@ public class TestBackupManager
     [DataRow(false)]
     public void TestTryCreate(bool manual)
     {
-        var testDirectory = Path.Combine(TestContext.TestRunDirectory!, HashCode.Combine(TestContext.TestName, TestContext.TestData).ToString());
+        var tempDirectory = TestContext.CreateTestTempDirectory();
 
-        var stubs = new TestBackupManagerStubs(testDirectory);
-        var sortOrderPath = Path.Combine(testDirectory, "sort_order.json");
+        var stubs = new TestBackupManagerStubs(tempDirectory);
+        var sortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
         File.WriteAllText(sortOrderPath, string.Empty);
 
         stubs.ModInteropStub.GetSortOrderPath = () => sortOrderPath;

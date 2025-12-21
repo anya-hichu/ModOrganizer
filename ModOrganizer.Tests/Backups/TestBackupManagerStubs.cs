@@ -20,16 +20,16 @@ public class TestBackupManagerStubs
 
     public BackupManager BackupManager { get; init; }
 
-    public TestBackupManagerStubs(string testDirectory)
+    public TestBackupManagerStubs(string tempDirectory)
     {
         ConfigStub = new StubIConfig() { 
-            AutoBackupLimitGet = () => 100, 
+            AutoBackupLimitGet = () => ushort.MaxValue, 
             InstanceBehavior = StubBehaviors.NotImplemented 
         };
 
         ModInteropStub = new StubIModInterop() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-        ConfigDirectory = Directory.CreateDirectory(Path.Combine(testDirectory, nameof(ModOrganizer)));
+        ConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
         PluginInterfaceStub = new StubIDalamudPluginInterface()
         {
             ConfigDirectoryGet = () => ConfigDirectory,

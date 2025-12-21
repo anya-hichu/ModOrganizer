@@ -133,7 +133,7 @@ public class BackupManager : IDisposable
     private void EnforceLimit()
     {
         var orderedAutoBackups = Config.Backups.Where(b => !b.Manual).OrderDescending();
-        foreach (var oldAutoBackup in orderedAutoBackups.Skip((int)Config.AutoBackupLimit))
+        foreach (var oldAutoBackup in orderedAutoBackups.Skip(Convert.ToInt32(Config.AutoBackupLimit)))
         {
             if (!TryDelete(oldAutoBackup)) PluginLog.Debug("Failed to properly delete auto backup to enforce limit, ignoring");
         }
