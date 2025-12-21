@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ModOrganizer.Fakes</name>
+    </assembly>
+    <members>
+        <member name="T:ModOrganizer.Configs.Fakes.StubIConfig">
+            <summary>Stub type of ModOrganizer.Configs.IConfig</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.#ctor">
+            <summary>Initializes a new instance of type StubIConfig</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToAutoBackupEnabled">
+            <summary>Attaches delegates to emulate StubIConfig.AutoBackupEnabled as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToAutoBackupLimit">
+            <summary>Attaches delegates to emulate StubIConfig.AutoBackupLimit as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToAutoProcessDelayMs">
+            <summary>Attaches delegates to emulate StubIConfig.AutoProcessDelayMs as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToAutoProcessEnabled">
+            <summary>Attaches delegates to emulate StubIConfig.AutoProcessEnabled as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToBackups">
+            <summary>Attaches delegates to emulate StubIConfig.Backups as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToRules">
+            <summary>Attaches delegates to emulate StubIConfig.Rules as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfig.AttachBackingFieldToVersion">
+            <summary>Attaches delegates to emulate StubIConfig.Version as a property with a backing field.</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#AutoBackupEnabled">
+            <summary>Sets the stub of IConfig.get_AutoBackupEnabled(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupEnabledGet">
+            <summary>Sets the stub of IConfig.get_AutoBackupEnabled(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupEnabledSetBoolean">
+            <summary>Sets the stub of IConfig.set_AutoBackupEnabled(IConfig this, Boolean value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#AutoBackupLimit">
+            <summary>Sets the stub of IConfig.get_AutoBackupLimit(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupLimitGet">
+            <summary>Sets the stub of IConfig.get_AutoBackupLimit(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoBackupLimitSetUInt32">
+            <summary>Sets the stub of IConfig.set_AutoBackupLimit(IConfig this, UInt32 value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#AutoProcessDelayMs">
+            <summary>Sets the stub of IConfig.get_AutoProcessDelayMs(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessDelayMsGet">
+            <summary>Sets the stub of IConfig.get_AutoProcessDelayMs(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessDelayMsSetUInt32">
+            <summary>Sets the stub of IConfig.set_AutoProcessDelayMs(IConfig this, UInt32 value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#AutoProcessEnabled">
+            <summary>Sets the stub of IConfig.get_AutoProcessEnabled(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessEnabledGet">
+            <summary>Sets the stub of IConfig.get_AutoProcessEnabled(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.AutoProcessEnabledSetBoolean">
+            <summary>Sets the stub of IConfig.set_AutoProcessEnabled(IConfig this, Boolean value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#Backups">
+            <summary>Sets the stub of IConfig.get_Backups(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.BackupsGet">
+            <summary>Sets the stub of IConfig.get_Backups(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.BackupsSetHashSetOfBackup">
+            <summary>Sets the stub of IConfig.set_Backups(IConfig this, HashSet`1 value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.ModOrganizer#Configs#IConfig#Rules">
+            <summary>Sets the stub of IConfig.get_Rules(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.RulesGet">
+            <summary>Sets the stub of IConfig.get_Rules(IConfig this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.RulesSetHashSetOfRule">
+            <summary>Sets the stub of IConfig.set_Rules(IConfig this, HashSet`1 value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Configs.Fakes.StubIConfig.Dalamud#Configuration#IPluginConfiguration#Version">
+            <summary>Sets the stub of IPluginConfiguration.get_Version(IPluginConfiguration this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionGet">
+            <summary>Sets the stub of IPluginConfiguration.get_Version(IPluginConfiguration this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
+            <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
+        </member>
+        <member name="T:ModOrganizer.Mods.Fakes.StubIModInterop">
+            <summary>Stub type of ModOrganizer.Mods.IModInterop</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.#ctor">
+            <summary>Initializes a new instance of type StubIModInterop</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.GetModDirectoryString">
+            <summary>Sets the stub of IModInterop.GetModDirectory(IModInterop this, String modPath)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.GetModList">
+            <summary>Sets the stub of IModInterop.GetModList(IModInterop this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.GetModPathString">
+            <summary>Sets the stub of IModInterop.GetModPath(IModInterop this, String modDirectory)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.GetSortOrder">
+            <summary>Sets the stub of IModInterop.GetSortOrder(IModInterop this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.GetSortOrderPath">
+            <summary>Sets the stub of IModInterop.GetSortOrderPath(IModInterop this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#GetModDirectory(System.String)">
+            <summary>Sets the Stub of IModInterop.GetModDirectory(IModInterop this, String modPath)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#GetModList">
+            <summary>Sets the Stub of IModInterop.GetModList(IModInterop this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#GetModPath(System.String)">
+            <summary>Sets the Stub of IModInterop.GetModPath(IModInterop this, String modDirectory)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#GetSortOrder">
+            <summary>Sets the Stub of IModInterop.GetSortOrder(IModInterop this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#GetSortOrderPath">
+            <summary>Sets the Stub of IModInterop.GetSortOrderPath(IModInterop this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#ReloadPenumbra">
+            <summary>Sets the Stub of IModInterop.ReloadPenumbra(IModInterop this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#SetModPath(System.String,System.String)">
+            <summary>Sets the Stub of IModInterop.SetModPath(IModInterop this, String modDirectory, String newModPath)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#ToggleFsWatchers(System.Boolean)">
+            <summary>Sets the Stub of IModInterop.ToggleFsWatchers(IModInterop this, Boolean enable)</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.ModOrganizer#Mods#IModInterop#TryGetModInfo(System.String,ModOrganizer.Mods.ModInfo@)">
+            <summary>Sets the Stub of IModInterop.TryGetModInfo(IModInterop this, String modDirectory, ModInfo* modInfo)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.ReloadPenumbra">
+            <summary>Sets the stub of IModInterop.ReloadPenumbra(IModInterop this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.SetModPathStringString">
+            <summary>Sets the stub of IModInterop.SetModPath(IModInterop this, String modDirectory, String newModPath)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.ToggleFsWatchersBoolean">
+            <summary>Sets the stub of IModInterop.ToggleFsWatchers(IModInterop this, Boolean enable)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.TryGetModInfoStringModInfoOut">
+            <summary>Sets the stub of IModInterop.TryGetModInfo(IModInterop this, String modDirectory, ModInfo* modInfo)</summary>
+        </member>
+    </members>
+</doc>

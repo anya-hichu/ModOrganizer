@@ -1,0 +1,18 @@
+{
+  "Author": "Anya Hichu",
+  "Name": "ModOrganizer",
+  "Punchline": "Ain't nobody got time for sorting mods",
+  "Description": "Organize penumbra mods dynamically based on customizable rules",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "mod",
+    "organize",
+    "sort",
+    "dynamic",
+    "custom",
+    "rule"
+  ],
+  "RepoUrl": "https://github.com/anya-hichu/ModOrganizer",
+  "IconUrl": "https://raw.githubusercontent.com/anya-hichu/ModOrganizer/master/images/icon.png",
+  "ImageUrls": []
+}

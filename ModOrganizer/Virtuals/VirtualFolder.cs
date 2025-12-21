@@ -1,0 +1,48 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+
+namespace ModOrganizer.Virtuals;
+
+public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolder>
+{
+    public required string Name { get; init; }
+    public required string Path { get; init; }
+
+    public HashSet<VirtualFolder> Folders { get; init; } = [];
+    public HashSet<VirtualFile> Files { get; init; } = [];
+
+    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? filteredFolder) => TrySearch(new VirtualAttributesMatcher(filter), out filteredFolder);
+
+    public bool TrySearch(VirtualMatcher matcher, [NotNullWhen(true)] out VirtualFolder? filteredFolder)
+    {
+        if (matcher.Matches(this))
+        {
+            filteredFolder = this;
+            return true;
+        }
+
+        filteredFolder = new()
+        {
+            Name = Name,
+            Path = Path,
+            Folders = [.. Folders.SelectMany<VirtualFolder, VirtualFolder>(f => f.TrySearch(matcher, out var filteredSubfolder) ? [filteredSubfolder] : [])],
+            Files = [.. Files.Where(matcher.Matches)]
+        };
+
+        return !filteredFolder.IsEmpty();
+    }
+    
+    public bool IsEmpty() => Files.Count == 0 && Folders.All(f => f.IsEmpty());
+
+    public IEnumerable<VirtualFile> GetNestedFiles() => Folders.SelectMany(f => f.GetNestedFiles()).Union(Files);
+
+    public int CompareTo(VirtualFolder? other) => StringComparer.OrdinalIgnoreCase.Compare(Name, other?.Name);
+
+    public override bool Equals(object? obj) => Equals(obj as VirtualFile);
+    public bool Equals(VirtualFolder? other) => other != null && GetHashCode() == other.GetHashCode();
+    public override int GetHashCode() => Path.GetHashCode();
+
+    public static VirtualFolder BuildRoot() => new() { Name = string.Empty, Path = string.Empty };
+}

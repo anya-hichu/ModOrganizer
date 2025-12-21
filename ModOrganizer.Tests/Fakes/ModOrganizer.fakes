@@ -1,0 +1,9 @@
+<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/">
+    <Assembly Name="ModOrganizer"/>
+    <StubGeneration>
+        <Clear/>
+        <Add FullName="ModOrganizer.Configs.IConfig"/>
+        <Add FullName="ModOrganizer.Mods.IModInterop"/>
+    </StubGeneration>
+    <ShimGeneration Disable="true"/>
+</Fakes>
