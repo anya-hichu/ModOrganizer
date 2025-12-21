@@ -2,17 +2,11 @@
     <Assembly Name="Dalamud" Version="14.0.0.0"/>
     <StubGeneration>
         <Clear/>
-        <Add Namespace="Dalamud.Interface"/>
-        <Add Namespace="Dalamud.Plugin"/>
-        <Add Namespace="Dalamud.Plugin.Ipc"/>
-        <Add Namespace="Dalamud.Plugin.Services"/>
-
-        <!-- Generates errors due to warnings -->
-        <Remove FullName="Dalamud.Interface.ITitleScreenMenuEntry"/>
-        <Remove FullName="Dalamud.Plugin.Services.IConsole"/>
-        <Remove FullName="Dalamud.Plugin.Services.IPluginLinkHandler"/>
-        <Remove FullName="Dalamud.Plugin.Services.IReliableFileStorage"/>
-        <Remove FullName="Dalamud.Plugin.Services.IReliableFileStorage"/>
+        <Add FullName="Dalamud.Plugin.IDalamudPluginInterface"/>
+        <Add FullName="Dalamud.Plugin.Services.IPluginLog"/>
+        <Add FullName="Dalamud.Plugin.Services.ICommandManager"/>
+        <Add FullName="Dalamud.Interface.IUiBuilder"/>
+        <Add FullName="Dalamud.Plugin.Ipc.ICallGateSubscriber"/>
     </StubGeneration>
     <ShimGeneration Disable="true"/>
 </Fakes>
