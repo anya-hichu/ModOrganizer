@@ -39,7 +39,7 @@ public class TestBackupManager
     {
         using var state = new TestBackupManagerState();
 
-        var sortOrderPath = $"{testName}_sort_order_{manual}.json";
+        var sortOrderPath = $"sort_order_{manual}.json";
         using var _ = new RaiiGuard(() => File.WriteAllText(sortOrderPath, string.Empty), () => File.Delete(sortOrderPath));
 
         state.ModInteropStub.GetSortOrderPath = () => sortOrderPath;
