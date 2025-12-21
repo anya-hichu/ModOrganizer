@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ModOrganizer/bin/Release/ModOrganizer/latest.zip
+          asset_path: ModOrganizer/bin/x64/Release/ModOrganizer/latest.zip
           asset_name: ModOrganizer.zip
           asset_content_type: application/zip
         env:

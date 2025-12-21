@@ -43,5 +43,5 @@ jobs:
         with:
           name: ModOrganizer
           path: |
-             ModOrganizer/bin/Release/*
-             !ModOrganizer/bin/Release/ModOrganizer/*
+             ModOrganizer/bin/x64/Release/*
+             !ModOrganizer/bin/x64/Release/ModOrganizer/*
