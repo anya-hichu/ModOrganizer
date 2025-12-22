@@ -176,7 +176,7 @@ public class PluginBuilder
         return this;
     }
 
-    public PluginBuilder WithPenumbraRegisterOrUnregisterSettingSection(PenumbraApiEc exitCode)
+    public PluginBuilder WithPenumbraRegisterOrUnregisterSettingsSection(PenumbraApiEc exitCode)
     {
         PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<Action, int>()
         {

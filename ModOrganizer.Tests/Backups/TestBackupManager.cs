@@ -224,14 +224,14 @@ public class TestBackupManager : TestClass
 
         var firstArguments = firstCall.GetArguments();
         Assert.HasCount(2, firstArguments);
-        Assert.StartsWith($"Failed to delete backup [{createdAt}] file since it does not exists, ignoring", firstArguments[0] as string);
+        Assert.AreEqual($"Failed to delete backup [{createdAt}] file since it does not exists, ignoring", firstArguments[0] as string);
 
         var secondCall = calls[1];
         Assert.AreEqual("Warning", secondCall.StubbedMethod.Name);
 
         var secondArguments = secondCall.GetArguments();
         Assert.HasCount(2, secondArguments);
-        Assert.StartsWith("Failed to unregister backup from config, ignoring", secondArguments[0] as string);
+        Assert.AreEqual("Failed to unregister backup from config, ignoring", secondArguments[0] as string);
     }
 
     [TestMethod]

@@ -15,6 +15,7 @@ using ModOrganizer.Windows.States.Results.Showables;
 using Scriban;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace ModOrganizer.Windows;
@@ -87,10 +88,13 @@ public class BackupWindow : Window, IDisposable
                             if (ImGui.IsItemClicked()) BackupState.Select(backup);
                         }
 
-
                         if (ImGui.TableNextColumn())
                         {
+                            var path = BackupManager.GetPath(backup);
+                            using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed, !File.Exists(path));
+
                             ImGui.Text(BackupManager.GetFileName(backup.CreatedAt));
+                            if (ImGui.IsItemHovered()) ImGui.SetTooltip(path);
                             if (ImGui.IsItemClicked()) BackupState.Select(backup);
                         }
                     }

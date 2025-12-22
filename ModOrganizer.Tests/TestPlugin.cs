@@ -31,7 +31,7 @@ public sealed class TestPlugin : TestClass
             .WithPenumbraModAddedOrDeletedNoop()
             .WithPenumbraModMovedNoop()
             .WithPenumbraModDirectoryChangedNoop()
-            .WithPenumbraRegisterOrUnregisterSettingSection(PenumbraApiEc.Success)
+            .WithPenumbraRegisterOrUnregisterSettingsSection(PenumbraApiEc.Success)
             .Build();
 
         Assert.IsNotNull(plugin);
