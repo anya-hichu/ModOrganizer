@@ -124,7 +124,7 @@ public class PluginBuilder
         return this;
     }
 
-    public PluginBuilder WithPenumbraModDeletedOrAddedNoop()
+    public PluginBuilder WithPenumbraModAddedOrDeletedNoop()
     {
         PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<string, object?>()
         {
@@ -192,11 +192,6 @@ public class PluginBuilder
 
         return this;
     }
-
-
-
-
-
 
     public Plugin Build()
     {

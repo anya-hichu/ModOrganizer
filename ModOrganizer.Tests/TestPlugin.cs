@@ -28,7 +28,7 @@ public sealed class TestPlugin : TestClass
             .WithPenumbraModList([])
             .WithPenumbraChangedItems([])
             .WithPenumbraSetModPath(PenumbraApiEc.Success)
-            .WithPenumbraModDeletedOrAddedNoop()
+            .WithPenumbraModAddedOrDeletedNoop()
             .WithPenumbraModMovedNoop()
             .WithPenumbraModDirectoryChangedNoop()
             .WithPenumbraRegisterOrUnregisterSettingSectionNoop()
