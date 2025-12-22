@@ -6,8 +6,8 @@ namespace ModOrganizer.Backups;
 [Serializable]
 public class Backup : IComparable<Backup>, IEquatable<Backup>
 {
-    public bool Manual { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
+    public bool Auto { get; set; } = false;
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
     public int CompareTo(Backup? other) => other == null ? 1 : DateTimeOffset.Compare(CreatedAt, other.CreatedAt);
 

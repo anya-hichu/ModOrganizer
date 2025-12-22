@@ -76,7 +76,7 @@ public class BackupWindow : Window, IDisposable
                     {
                         if (ImGui.TableNextColumn())
                         {
-                            ImGui.Text(backup.Manual ? "Manual" : "Auto");
+                            ImGui.Text(backup.Auto ? "Auto" : "Manual");
                             if (ImGui.IsItemClicked()) BackupState.Select(backup);
                         }
 

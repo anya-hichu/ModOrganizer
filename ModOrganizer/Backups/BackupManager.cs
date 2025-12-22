@@ -29,12 +29,24 @@ public class BackupManager : IDisposable
         PluginInterface = pluginInterface;
         PluginLog = pluginLog;
 
-        CreateRecentAction = Debouncer.Debounce<bool>(Create, TimeSpan.FromSeconds(5), leading: true, trailing: false);
+        CreateRecentAction = Debouncer.Debounce<bool>(auto => Create(auto), TimeSpan.FromSeconds(5), leading: true, trailing: false);
     }
 
     public void Dispose() => CreateRecentAction.Dispose();
 
-    public bool TryCreate([NotNullWhen(true)] out Backup? backup, bool manual = true) 
+    public Backup Create(bool auto = false)
+    {
+        if (!TryCreate(out var newBackup, auto))
+        {
+            var message = $"Failed to create {(auto ? "auto" : "manual")} backup";
+            PluginLog.Error(message);
+            throw new BackupCreationException(message);
+        }
+
+        return newBackup;
+    }
+
+    public bool TryCreate([NotNullWhen(true)] out Backup? backup, bool auto = false) 
     {
         backup = null;
         
@@ -43,32 +55,20 @@ public class BackupManager : IDisposable
 
         backup = new()
         {
-            Manual = manual,
-            CreatedAt = createdAt
+            CreatedAt = createdAt,
+            Auto = auto
         };
 
         return Register(backup);
     }
 
-    public void Create(bool manual = true)
-    {
-        if (!TryCreate(out var newBackup, manual))
-        {
-            var message = $"Failed to create {(manual ? "manual" : "auto")} backup";
-            PluginLog.Error(message);
-            throw new BackupCreationException(message);
-        }
-
-        PluginLog.Debug($"Successfully created backup [{newBackup.CreatedAt}] file");
-    }
-
-    public void CreateRecent(bool manual = true) => CreateRecentAction.Invoke(manual);
+    public void CreateRecent(bool auto = false) => CreateRecentAction.Invoke(auto);
 
     public bool TryRestore(Backup backup, bool reloadPenumbra = false) 
     {
         if (Config.AutoBackupEnabled)
         {
-            if (!TryCreate(out var autoBackup, manual: false))
+            if (!TryCreate(out var autoBackup, auto: true))
             {
                 PluginLog.Error("Failed to create auto backup before restore, aborting");
                 return false;
@@ -146,7 +146,7 @@ public class BackupManager : IDisposable
 
     private void EnforceLimit()
     {
-        var orderedAutoBackups = Config.Backups.Where(b => !b.Manual).OrderDescending();
+        var orderedAutoBackups = Config.Backups.Where(b => b.Auto).OrderDescending();
         foreach (var oldAutoBackup in orderedAutoBackups.Skip(Convert.ToInt32(Config.AutoBackupLimit)))
         {
             if (!TryDelete(oldAutoBackup)) PluginLog.Debug("Failed to properly delete auto backup to enforce limit, ignoring");

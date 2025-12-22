@@ -70,7 +70,7 @@ public class RuleState(Config config, BackupManager backupManager, ModInterop mo
             if (result is not RulePathResult rulePathResult) return [result];
             if (!rulePathResult.Selected) return [result];
 
-            if (config.AutoBackupEnabled) backupManager.CreateRecent(manual: false);
+            if (config.AutoBackupEnabled) backupManager.CreateRecent(auto: false);
 
             var newModPath = rulePathResult.NewPath;
             if (ModInterop.SetModPath(rulePathResult.Directory, newModPath) == PenumbraApiEc.PathRenameFailed)
