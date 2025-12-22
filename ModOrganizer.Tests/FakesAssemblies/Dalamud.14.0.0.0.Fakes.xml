@@ -952,6 +952,18 @@
         <member name="F:Dalamud.Plugin.Services.Fakes.StubICommandManager.RemoveHandlerString">
             <summary>Sets the stub of ICommandManager.RemoveHandler(ICommandManager this, String command)</summary>
         </member>
+        <member name="T:Dalamud.Plugin.Services.Fakes.StubINotificationManager">
+            <summary>Stub type of Dalamud.Plugin.Services.INotificationManager</summary>
+        </member>
+        <member name="M:Dalamud.Plugin.Services.Fakes.StubINotificationManager.#ctor">
+            <summary>Initializes a new instance of type StubINotificationManager</summary>
+        </member>
+        <member name="F:Dalamud.Plugin.Services.Fakes.StubINotificationManager.AddNotificationNotification">
+            <summary>Sets the stub of INotificationManager.AddNotification(INotificationManager this, Notification notification)</summary>
+        </member>
+        <member name="M:Dalamud.Plugin.Services.Fakes.StubINotificationManager.Dalamud#Plugin#Services#INotificationManager#AddNotification(Dalamud.Interface.ImGuiNotification.Notification)">
+            <summary>Sets the Stub of INotificationManager.AddNotification(INotificationManager this, Notification notification)</summary>
+        </member>
         <member name="T:Dalamud.Plugin.Services.Fakes.StubIPluginLog">
             <summary>Stub type of Dalamud.Plugin.Services.IPluginLog</summary>
         </member>

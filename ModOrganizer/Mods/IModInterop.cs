@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Mods;
 
-public interface IModInterop
+public interface IModInterop : IDisposable
 {
     event Action<string>? OnModAdded;
     event Action<string>? OnModDeleted;

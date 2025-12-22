@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.States;
 
-public class RuleState(Config config, BackupManager backupManager, ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IShowableRuleResultState
+public class RuleState(IConfig config, IBackupManager backupManager, IModInterop modInterop, IModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IShowableRuleResultState
 {
     public event Action? OnResultsChanged;
 

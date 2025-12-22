@@ -16,14 +16,13 @@ namespace ModOrganizer;
 
 public sealed class Plugin : IDalamudPlugin
 {
-    public static readonly string NAMESPACE = "ModOrganizer";
-
     private static readonly string COMMAND_NAME = "/modorganizer";
     private static readonly string COMMAND_HELP_MESSAGE = $"Available subcommands for {COMMAND_NAME} are main, config, preview and backup";
 
-    [PluginService] public static IDalamudPluginInterface PluginInterface { get; set; } = null!;
-    [PluginService] public static ICommandManager CommandManager { get; set; } = null!;
     [PluginService] public static IChatGui ChatGui { get; set; } = null!;
+    [PluginService] public static ICommandManager CommandManager { get; set; } = null!;
+    [PluginService] public static INotificationManager NotificationManager { get; set; } = null!;
+    [PluginService] public static IDalamudPluginInterface PluginInterface { get; set; } = null!;
     [PluginService] public static IPluginLog PluginLog { get; set; } = null!;
 
     private Config Config { get; init; }
@@ -36,7 +35,7 @@ public sealed class Plugin : IDalamudPlugin
 
     private RuleState RuleState { get; init; }
 
-    private WindowSystem WindowSystem { get; init; } = new(NAMESPACE);
+    private WindowSystem WindowSystem { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
     private PreviewWindow PreviewWindow { get; init; }
@@ -52,12 +51,13 @@ public sealed class Plugin : IDalamudPlugin
         BackupManager = new(new Clock(), Config, ModInterop, PluginInterface, PluginLog);
 
         ModProcessor = new(BackupManager, Config, ModInterop, PluginLog, RuleEvaluator);
-        ModAutoProcessor = new(ChatGui, Config, ModInterop, ModProcessor, PluginLog);
+        ModAutoProcessor = new(Config, NotificationManager, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
 
-        ConfigWindow = new(Config, PluginInterface, ToggleBackupUI, ToggleMainUI);
-
         RuleState = new(Config, BackupManager, ModInterop, ModProcessor, PluginLog);
+
+        WindowSystem = new(nameof(ModOrganizer));
+        ConfigWindow = new(Config, PluginInterface, ToggleBackupUI, ToggleMainUI);
         MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, RuleState, ToggleBackupUI, ToggleConfigUI, TogglePreviewUI);
         PreviewWindow = new(RuleState);
         BackupWindow = new(BackupManager, Config, ModInterop, PluginLog);

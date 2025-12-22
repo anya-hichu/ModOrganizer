@@ -4,6 +4,7 @@
         <Clear/>
         <Add FullName="ModOrganizer.Configs.IConfig"/>
         <Add FullName="ModOrganizer.Mods.IModInterop"/>
+        <Add FullName="ModOrganizer.Mods.IModProcessor"/>
         <Add FullName="ModOrganizer.Shared.IClock"/>
     </StubGeneration>
     <ShimGeneration Disable="true"/>

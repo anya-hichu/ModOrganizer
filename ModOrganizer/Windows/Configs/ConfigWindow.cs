@@ -13,7 +13,7 @@ namespace ModOrganizer.Windows.Configs;
 
 public class ConfigWindow : Window, IDisposable
 {
-    private Config Config { get; init; }
+    private IConfig Config { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
     
 
@@ -22,7 +22,7 @@ public class ConfigWindow : Window, IDisposable
     private RegisterSettingsSection RegisterSettingsSection { get; init; }
     private UnregisterSettingsSection UnregisterSettingsSection { get; init; }
 
-    public ConfigWindow(Config config, IDalamudPluginInterface pluginInterface, Action toggleBackupUI, Action toggleMainUI) : base("ModOrganizer - Config##configWindow")
+    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, Action toggleBackupUI, Action toggleMainUI) : base("ModOrganizer - Config##configWindow")
     {
         SizeConstraints = new()
         {

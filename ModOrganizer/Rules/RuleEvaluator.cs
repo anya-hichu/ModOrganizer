@@ -9,10 +9,9 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-
 namespace ModOrganizer.Rules;
 
-public class RuleEvaluator(IPluginLog pluginLog)
+public class RuleEvaluator(IPluginLog pluginLog) : IRuleEvaluator
 {
     public bool TryEvaluate(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {

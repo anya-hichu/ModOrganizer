@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using Dalamud.Utility;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Shared;
@@ -15,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.States;
 
-public class EvaluationState(ModInterop modInterop, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), IShowableEvaluationResultState
+public class EvaluationState(IModInterop modInterop, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), IShowableEvaluationResultState
 {
     public string Expression { get; set; } = string.Empty;
     public string Template { get; set; } = string.Empty;

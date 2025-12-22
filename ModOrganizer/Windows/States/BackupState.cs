@@ -12,7 +12,7 @@ namespace ModOrganizer.Windows.States;
 
 public class BackupState : ResultState, IShowableBackupResultState
 {
-    private BackupManager BackupManager { get; init; }
+    private IBackupManager BackupManager { get; init; }
     private SortOrderReader SortOrderReader { get; init; }
 
     public bool ShowSamePaths { get; set; } = false;
@@ -25,7 +25,7 @@ public class BackupState : ResultState, IShowableBackupResultState
     public bool ReloadPenumbra { get; set; } = true;
 
 
-    public BackupState(BackupManager backupManager, ModInterop modInterop, IPluginLog pluginLog) : base(modInterop, pluginLog)
+    public BackupState(IBackupManager backupManager, IModInterop modInterop, IPluginLog pluginLog) : base(modInterop, pluginLog)
     {
         BackupManager = backupManager;
         ModInterop = modInterop;

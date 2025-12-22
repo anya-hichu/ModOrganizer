@@ -10,17 +10,17 @@ namespace ModOrganizer.Windows.States.Results;
 
 public abstract class ResultState : IDisposable
 {
-    protected ModInterop ModInterop { get; init; }
+    protected IModInterop ModInterop { get; init; }
     protected IPluginLog PluginLog { get; init; }
 
-    private Task EvaluationTask { get; set; } = Task.CompletedTask;
+    private Task Task { get; set; } = Task.CompletedTask;
     private CancellationTokenSource CancellationTokenSource { get; set; } = new();
 
     protected HashSet<Result> Results { get; set; } = [];
 
     public string DirectoryFilter { get; set; } = string.Empty;
 
-    public ResultState(ModInterop modInterop, IPluginLog pluginLog)
+    public ResultState(IModInterop modInterop, IPluginLog pluginLog)
     {
         ModInterop = modInterop;
         PluginLog = pluginLog;
@@ -61,7 +61,7 @@ public abstract class ResultState : IDisposable
         CancelTask();
         CancellationTokenSource = new();
         var cancellationToken = CancellationTokenSource.Token;
-        return EvaluationTask = EvaluationTask.ContinueWith(_ => action(cancellationToken), cancellationToken);
+        return Task = Task.ContinueWith(_ => action(cancellationToken), cancellationToken);
     }
 
     public IEnumerable<Result> GetResults() => Results;

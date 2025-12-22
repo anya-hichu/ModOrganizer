@@ -11,7 +11,7 @@ public static class IStubbablePluginLogExtensions
         return stubbable;
     }
 
-    public static T WithPluginLogObserver<T>(this T stubbable, StubObserver observer) where T : IStubbablePluginLog
+    public static T WithPluginLogObserver<T>(this T stubbable, IStubObserver observer) where T : IStubbablePluginLog
     {
         stubbable.PluginLogStub.InstanceObserver = observer;
 

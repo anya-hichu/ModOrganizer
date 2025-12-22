@@ -5,21 +5,23 @@ using System.Threading.Tasks;
 
 namespace ModOrganizer.Mods;
 
-public class ModAutoProcessor : IDisposable
+public class ModAutoProcessor : IModAutoProcessor
 {
-    private IChatGui ChatGui { get; init; }
-    private Config Config { get; init; }
-    private ModInterop ModInterop { get; init; }
-    private ModProcessor ModProcessor { get; init; }
-    private IPluginLog PluginInfo { get; init; }
+    private IConfig Config { get; init; }
+    private INotificationManager NotificationManager { get; init; }
+    private IModInterop ModInterop { get; init; }
+    private IModProcessor ModProcessor { get; init; }
+    private IPluginLog PluginLog { get; init; }
+
+    public Task Task { get; private set; } = Task.CompletedTask;
     
-    public ModAutoProcessor(IChatGui chatGui, Config config, ModInterop modInterop, ModProcessor modProcessor, IPluginLog pluginInfo)
+    public ModAutoProcessor(IConfig config, INotificationManager notificationManager, IModInterop modInterop, IModProcessor modProcessor, IPluginLog pluginLog)
     {
-        ChatGui = chatGui;
         Config = config;
+        NotificationManager = notificationManager;
         ModInterop = modInterop;
         ModProcessor = modProcessor;
-        PluginInfo = pluginInfo;
+        PluginLog = pluginLog;
 
         ModInterop.OnModAdded += ProcessIfEnabled;
     }
@@ -29,14 +31,13 @@ public class ModAutoProcessor : IDisposable
     private void ProcessIfEnabled(string modDirectory)
     {
         if (!Config.AutoProcessEnabled) return;
-        PluginInfo.Debug($"Waiting [{Config.AutoProcessDelayMs}] ms before processing mod [{modDirectory}]");
+        PluginLog.Debug($"Waiting [{Config.AutoProcessDelayMs}] ms before processing mod [{modDirectory}]");
 
-        Task.Delay(Convert.ToInt32(Config.AutoProcessDelayMs)).ContinueWith(_ =>
+        Task = Task.Delay(Convert.ToInt32(Config.AutoProcessDelayMs)).ContinueWith(_ =>
         {
             if (!ModProcessor.TryProcess(modDirectory, out var newModPath)) return;
 
-            // Maybe use notification with button to open mod directly in penumbra?
-            ChatGui.Print($"Updated mod [{modDirectory}] path to [{newModPath}]", Plugin.NAMESPACE);
+            NotificationManager.AddNotification(new() { Title = nameof(ModOrganizer), MinimizedText = $"Updated mod [{modDirectory}] path to [{newModPath}]" });
         }); 
     }
 }

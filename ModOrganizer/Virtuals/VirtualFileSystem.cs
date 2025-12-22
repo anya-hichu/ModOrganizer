@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ModOrganizer.Virtuals;
 
-public abstract class VirtualFileSystem
+public abstract class VirtualFileSystem : IVirtualFileSystem
 {
     protected static readonly char PATH_SEPARATOR = '/';
 

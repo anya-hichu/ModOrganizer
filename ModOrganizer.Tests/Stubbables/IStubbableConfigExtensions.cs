@@ -12,6 +12,20 @@ public static class IStubbableConfigExtensions
         return stubbable;
     }
 
+    public static T WithConfigAutoProcessEnabled<T>(this T stubbable, bool value) where T : IStubbableConfig
+    {
+        stubbable.ConfigStub.AutoProcessEnabledGet = () => value;
+
+        return stubbable;
+    }
+
+    public static T WithConfigAutoProcessDelay<T>(this T stubbable, ushort value) where T : IStubbableConfig
+    {
+        stubbable.ConfigStub.AutoProcessDelayMsGet = () => value;
+
+        return stubbable;
+    }
+
     public static T WithConfigAutoBackupLimit<T>(this T stubbable, ushort value) where T : IStubbableConfig
     {
         stubbable.ConfigStub.AutoBackupLimitGet = () => value;

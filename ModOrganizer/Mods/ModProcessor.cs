@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Mods;
 
-public class ModProcessor(BackupManager backupManager, Config config, ModInterop modInterop, IPluginLog pluginLog, RuleEvaluator ruleEvaluator)
+public class ModProcessor(IBackupManager backupManager, IConfig config, IModInterop modInterop, IPluginLog pluginLog, IRuleEvaluator ruleEvaluator) : IModProcessor
 {
     public bool TryProcess(string modDirectory, [NotNullWhen(true)] out string? newModPath, bool dryRun = false)
     {

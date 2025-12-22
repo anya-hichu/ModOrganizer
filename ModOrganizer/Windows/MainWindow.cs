@@ -31,9 +31,9 @@ namespace ModOrganizer.Windows;
 
 public class MainWindow : Window, IDisposable
 {
-    private Config Config { get; init; }
-    private ModInterop ModInterop { get; init; }
-    private ModFileSystem ModFileSystem { get; init; }
+    private IConfig Config { get; init; }
+    private IModInterop ModInterop { get; init; }
+    private IModFileSystem ModFileSystem { get; init; }
     private IPluginLog PluginLog { get; init; }
     private Action TogglePreviewUI { get; init; }
     private Action ToggleBackupUI { get; init; }
@@ -47,7 +47,7 @@ public class MainWindow : Window, IDisposable
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(Config config, ModInterop modInterop, ModFileSystem modFileSystem, IPluginLog pluginLog, RuleState ruleState, Action toggleBackupUI, Action toggleMainUI, Action togglePreviewUI) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(IConfig config, IModInterop modInterop, IModFileSystem modFileSystem, IPluginLog pluginLog, RuleState ruleState, Action toggleBackupUI, Action toggleMainUI, Action togglePreviewUI) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {

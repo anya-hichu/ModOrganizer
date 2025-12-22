@@ -21,14 +21,14 @@ namespace ModOrganizer.Windows;
 
 public class BackupWindow : Window, IDisposable
 {
-    private BackupManager BackupManager { get; init; }
-    private Config Config { get; init; }
+    private IBackupManager BackupManager { get; init; }
+    private IConfig Config { get; init; }
 
     private BackupState BackupState { get; init; }
     private TemplateContext ViewTemplateContext { get; init; } = new();
 
 
-    public BackupWindow(BackupManager backupManager, Config config, ModInterop ModInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
+    public BackupWindow(IBackupManager backupManager, IConfig config, IModInterop ModInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
     {
         SizeConstraints = new()
         {
@@ -92,7 +92,7 @@ public class BackupWindow : Window, IDisposable
                             var path = BackupManager.GetPath(backup);
                             using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed, !File.Exists(path));
 
-                            ImGui.Text(BackupManager.GetFileName(backup.CreatedAt));
+                            ImGui.Text(BackupManager.GetFileName(backup));
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(path);
                             if (ImGui.IsItemClicked()) BackupState.Select(backup);
                         }

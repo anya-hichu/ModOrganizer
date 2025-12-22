@@ -11,7 +11,7 @@ using ThrottleDebounce;
 
 namespace ModOrganizer.Backups;
 
-public class BackupManager : IDisposable
+public class BackupManager : IBackupManager
 {
     private IClock Clock { get; init; }
     private IConfig Config { get; init; }
@@ -154,14 +154,12 @@ public class BackupManager : IDisposable
     }
 
     public string GetPath(Backup backup) => GetPath(backup.CreatedAt);
-
     private string GetPath(DateTimeOffset offset) => Path.Combine(GetFolderPath(), GetFileName(offset));
 
     public string GetFolderPath() => PluginInterface.ConfigDirectory.FullName;
 
+    public string GetFileName(Backup backup) => GetFileName(backup.CreatedAt);
     public static string GetFileName(DateTimeOffset offset) => string.Concat("sort_order.", offset.ToUnixTimeMilliseconds(), ".json");
 
     private void SaveConfig() => PluginInterface.SavePluginConfig(Config);
-
-
 }

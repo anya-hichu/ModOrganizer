@@ -4,11 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Mods;
 
-public class ModFileSystem : VirtualFileSystem
+public class ModFileSystem : VirtualFileSystem, IModFileSystem
 {
-    private ModInterop ModInterop { get; init; }
+    private IModInterop ModInterop { get; init; }
 
-    public ModFileSystem(ModInterop modInterop)
+    public ModFileSystem(IModInterop modInterop)
     {
         ModInterop = modInterop;
         ModInterop.OnModsChanged += InvalidateRootFolderCache;

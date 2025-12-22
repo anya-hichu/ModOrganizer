@@ -17,7 +17,7 @@ using ModOrganizer.Json.Readers.Files;
 
 namespace ModOrganizer.Mods;
 
-public class ModInterop : IDisposable, IModInterop
+public class ModInterop : IModInterop
 {
     private static readonly int INTERNAL_BUFFER_SIZE = 1024 * 32;
 

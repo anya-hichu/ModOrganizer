@@ -4,6 +4,9 @@
         <name>ModOrganizer.Fakes</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.QualityTools.Testing.Fakes.Delegates.ModOrganizerDelegates">
+            <summary>Contains custom delegates used for the stubs and shims of ModOrganizer</summary>
+        </member>
         <member name="T:ModOrganizer.Configs.Fakes.StubIConfig">
             <summary>Stub type of ModOrganizer.Configs.IConfig</summary>
         </member>
@@ -100,6 +103,9 @@
         <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.#ctor">
             <summary>Initializes a new instance of type StubIModInterop</summary>
         </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.Dispose">
+            <summary>Sets the stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
         <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.GetModDirectoryString">
             <summary>Sets the stub of IModInterop.GetModDirectory(IModInterop this, String modPath)</summary>
         </member>
@@ -148,11 +154,26 @@
         <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.SetModPathStringString">
             <summary>Sets the stub of IModInterop.SetModPath(IModInterop this, String modDirectory, String newModPath)</summary>
         </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModInterop.System#IDisposable#Dispose">
+            <summary>Sets the Stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
         <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.ToggleFsWatchersBoolean">
             <summary>Sets the stub of IModInterop.ToggleFsWatchers(IModInterop this, Boolean enable)</summary>
         </member>
         <member name="F:ModOrganizer.Mods.Fakes.StubIModInterop.TryGetModInfoStringModInfoOut">
             <summary>Sets the stub of IModInterop.TryGetModInfo(IModInterop this, String modDirectory, ModInfo* modInfo)</summary>
+        </member>
+        <member name="T:ModOrganizer.Mods.Fakes.StubIModProcessor">
+            <summary>Stub type of ModOrganizer.Mods.IModProcessor</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModProcessor.#ctor">
+            <summary>Initializes a new instance of type StubIModProcessor</summary>
+        </member>
+        <member name="M:ModOrganizer.Mods.Fakes.StubIModProcessor.ModOrganizer#Mods#IModProcessor#TryProcess(System.String,System.String@,System.Boolean)">
+            <summary>Sets the Stub of IModProcessor.TryProcess(IModProcessor this, String modDirectory, String* newModPath, Boolean dryRun)</summary>
+        </member>
+        <member name="F:ModOrganizer.Mods.Fakes.StubIModProcessor.TryProcessStringStringOutBoolean">
+            <summary>Sets the stub of IModProcessor.TryProcess(IModProcessor this, String modDirectory, String* newModPath, Boolean dryRun)</summary>
         </member>
         <member name="T:ModOrganizer.Shared.Fakes.StubIClock">
             <summary>Stub type of ModOrganizer.Shared.IClock</summary>
