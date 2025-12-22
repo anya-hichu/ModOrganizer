@@ -36,6 +36,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <PackageReference Include="Microsoft.Testing.Extensions.AzureDevOpsReport" Version="2.0.2" />
         <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
     </ItemGroup>
 </Project>
