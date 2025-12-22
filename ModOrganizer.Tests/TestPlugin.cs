@@ -1,3 +1,4 @@
+using ModOrganizer.Tests.Stubbables;
 using Penumbra.Api.Enums;
 
 namespace ModOrganizer.Tests;
@@ -19,19 +20,20 @@ public sealed class TestPlugin : TestClass
 
         using var plugin = new PluginBuilder()
             .WithPluginLogDefaults()
+            .WithCommandManagerAddHandler(true)
+            .WithCommandManagerRemoveHandler(true)
             .WithPluginInterfaceConfig(null)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .WithPluginInterfaceInjectObject(false)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithPenumbraModDirectory(modDirectory)
-            .WithPenumbraModList([])
-            .WithPenumbraChangedItems([])
-            .WithPenumbraSetModPath(PenumbraApiEc.Success)
-            .WithPenumbraModAddedOrDeletedNoop()
-            .WithPenumbraModMovedNoop()
-            .WithPenumbraModDirectoryChangedNoop()
-            .WithPenumbraRegisterOrUnregisterSettingsSection(PenumbraApiEc.Success)
+            .WithPluginInterfaceUiBuilderStub()
+            .WithPenumbraApiGetModDirectory(modDirectory)
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiRegisterOrUnregisterSettingsSection(PenumbraApiEc.Success)
             .Build();
 
         Assert.IsNotNull(plugin);

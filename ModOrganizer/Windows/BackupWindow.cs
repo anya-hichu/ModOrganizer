@@ -3,7 +3,6 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using Humanizer;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs;
@@ -176,7 +175,9 @@ public class BackupWindow : Window, IDisposable
 
                 var showedBackupResults = BackupState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order();
 
-                var clipper = ImGui.ImGuiListClipper();
+                using var clipperResource = new ImRaiiListClipper();
+
+                var clipper = clipperResource.Value;
                 clipper.Begin(showedBackupResults.Count(), ImGui.GetTextLineHeightWithSpacing());
                 while (clipper.Step())
                 {

@@ -1,5 +1,4 @@
 using System;
-using System.Xml.Schema;
 
 namespace ModOrganizer.Shared;
 
@@ -14,4 +13,12 @@ public class RaiiGuard : IDisposable
     }
 
     public void Dispose() => Release();
+}
+
+public class RaiiGuard<T>(Func<T> acquire, Action<T> release) : IDisposable
+{
+    private Action<T> Release { get; init; } = release;
+    public T Value { get; init; } = acquire();
+
+    public void Dispose() => Release(Value);
 }

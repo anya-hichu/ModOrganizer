@@ -38,7 +38,7 @@ public class BackupManager : IDisposable
     {
         if (!TryCreate(out var newBackup, auto))
         {
-            var message = $"Failed to create {(auto ? "auto" : "manual")} backup";
+            var message = $"Failed to create {Backup.GetPrettyType(auto)} backup";
             PluginLog.Error(message);
             throw new BackupCreationException(message);
         }
@@ -94,13 +94,13 @@ public class BackupManager : IDisposable
             } 
             else
             {
-                PluginLog.Warning($"Failed to delete backup [{backup.CreatedAt}] file since it does not exists, ignoring");
+                PluginLog.Warning($"Failed to delete {backup.GetPrettyType()} backup [{backup.CreatedAt}] file since it does not exists, ignoring");
             }
             return Unregister(backup);
         }
         catch (Exception e)
         {
-            PluginLog.Error($"Caught exception while try to delete backup [{backup.CreatedAt}] file ({e.Message})");
+            PluginLog.Error($"Caught exception while try to delete {backup.GetPrettyType()} backup [{backup.CreatedAt}] file ({e.Message})");
         }
         return false;
     }
@@ -122,7 +122,7 @@ public class BackupManager : IDisposable
     {
         if (!Config.Backups.Remove(backup))
         {
-            PluginLog.Warning("Failed to unregister backup from config, ignoring");
+            PluginLog.Warning($"Failed to unregister {backup.GetPrettyType()} backup from config, ignoring");
             return true;
         }
 
@@ -162,4 +162,6 @@ public class BackupManager : IDisposable
     public static string GetFileName(DateTimeOffset offset) => string.Concat("sort_order.", offset.ToUnixTimeMilliseconds(), ".json");
 
     private void SaveConfig() => PluginInterface.SavePluginConfig(Config);
+
+
 }

@@ -225,7 +225,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                var clipper = ImGui.ImGuiListClipper();
+                using var clipperResource = new ImRaiiListClipper();
+
+                var clipper = clipperResource.Value;
+
                 var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, StringComparer.OrdinalIgnoreCase).ToList();
                 clipper.Begin(orderedModDirectories.Count, GetItemHeight());
 
@@ -338,7 +341,9 @@ public class MainWindow : Window, IDisposable
 
                 var showedRuleResults = RuleState.GetShowedResults<RuleResult, IShowableRuleResultState>().Order();
 
-                var clipper = ImGui.ImGuiListClipper();
+                using var clipperResource = new ImRaiiListClipper();
+
+                var clipper = clipperResource.Value;
                 clipper.Begin(showedRuleResults.Count(), GetItemHeight());
                 while (clipper.Step())
                 {
@@ -484,8 +489,10 @@ public class MainWindow : Window, IDisposable
             }
 
             var showedEvaluationResults = EvaluationState.GetShowedResults<EvaluationResult, IShowableEvaluationResultState>().Order();
-                
-            var clipper = ImGui.ImGuiListClipper();
+
+            using var clipperResource = new ImRaiiListClipper();
+
+            var clipper = clipperResource.Value;
             clipper.Begin(showedEvaluationResults.Count(), ImGui.GetTextLineHeightWithSpacing());
             while (clipper.Step())
             {

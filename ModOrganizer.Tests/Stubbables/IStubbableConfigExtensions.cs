@@ -1,0 +1,21 @@
+using ModOrganizer.Backups;
+using ModOrganizer.Tests.Backups;
+
+namespace ModOrganizer.Tests.Stubbables;
+
+public static class IStubbableConfigExtensions
+{
+    public static T WithConfigBackups<T>(this T stubbable, HashSet<Backup> backups) where T : IStubbableConfig
+    {
+        stubbable.ConfigStub.BackupsGet = () => backups;
+
+        return stubbable;
+    }
+
+    public static T WithConfigAutoBackupLimit<T>(this T stubbable, ushort value) where T : IStubbableConfig
+    {
+        stubbable.ConfigStub.AutoBackupLimitGet = () => value;
+
+        return stubbable;
+    }
+}

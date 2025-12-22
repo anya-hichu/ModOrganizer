@@ -1,4 +1,6 @@
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Backups;
+using ModOrganizer.Tests.Stubbables;
 
 namespace ModOrganizer.Tests.Backups;
 
@@ -57,6 +59,9 @@ public class TestBackupManager : TestClass
         for (var i = 0; i < 10; i++) backupManager.CreateRecent(auto);
 
         Assert.HasCount(1, configBackups);
+
+        var configBackup = configBackups.ElementAt(0);
+        Assert.AreEqual(auto, configBackup.Auto);
     }
 
     [TestMethod]
@@ -68,9 +73,11 @@ public class TestBackupManager : TestClass
 
         var builder = new BackupManagerBuilder();
         var configBackups = new HashSet<Backup>();
+        var observer = new StubObserver();
 
         var backupManager = builder
             .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
             .WithConfigBackups(configBackups)
             .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithConfigAutoBackupLimit(ushort.MaxValue)
@@ -78,10 +85,10 @@ public class TestBackupManager : TestClass
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
             .Build();
 
-        var message = $"Failed to create {(auto ? "auto" : "manual")} backup";
+        var message = $"Failed to create {Backup.GetPrettyType(auto)} backup";
         Assert.ThrowsExactly<BackupCreationException>(() => backupManager.Create(auto), message);
 
-        var calls = builder.PluginLogObserver.GetCalls();
+        var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
         var firstCall = calls[0];
@@ -96,7 +103,7 @@ public class TestBackupManager : TestClass
 
         var secondArguments = secondCall.GetArguments();
         Assert.HasCount(2, secondArguments);
-        Assert.AreEqual($"Failed to create {(auto ? "auto" : "manual")} backup", secondArguments[0] as string);
+        Assert.AreEqual(message, secondArguments[0] as string);
     }
 
     [TestMethod]
@@ -136,12 +143,14 @@ public class TestBackupManager : TestClass
     public void TestTryCreateWithMissingSortOrderPath(bool auto)
     {
         var tempDirectory = CreateResultsTempDirectory();
-        var builder = new BackupManagerBuilder();
 
+        var builder = new BackupManagerBuilder();
+        var observer = new StubObserver();
         var missingSortOrderPath = Path.Combine(tempDirectory, "sort_order.json");
 
         var backupManager = builder
             .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
             .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithModInteropSortOrderPath(missingSortOrderPath)
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
@@ -152,7 +161,7 @@ public class TestBackupManager : TestClass
         Assert.IsFalse(created);
         Assert.IsNull(backup);
 
-        var calls = builder.PluginLogObserver.GetCalls();
+        var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
         var call = calls[0];
@@ -172,9 +181,11 @@ public class TestBackupManager : TestClass
 
         var builder = new BackupManagerBuilder();
         var configBackup = new Backup() { Auto = auto };
+        var observer = new StubObserver();
 
         var backupManager = builder
             .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
             .WithConfigBackups([configBackup])
             .WithPluginInterfaceSaveConfigNoop()
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
@@ -184,7 +195,7 @@ public class TestBackupManager : TestClass
 
         Assert.IsTrue(deleted);
 
-        var calls = builder.PluginLogObserver.GetCalls();
+        var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
         var call = calls[0];
@@ -192,7 +203,7 @@ public class TestBackupManager : TestClass
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
-        Assert.StartsWith("Failed to delete backup", arguments[0] as string);
+        Assert.StartsWith($"Failed to delete {Backup.GetPrettyType(auto)} backup", arguments[0] as string);
     }
 
     [TestMethod]
@@ -201,22 +212,24 @@ public class TestBackupManager : TestClass
     public void TestTryDeleteWithMissingBackup(bool auto)
     {
         var tempDirectory = CreateResultsTempDirectory();
-        var createdAt = DateTimeOffset.UtcNow;
 
         var builder = new BackupManagerBuilder();
+        var observer = new StubObserver();
 
         var backupManager = builder
-            .WithPluginLogDefaults()
             .WithConfigBackups([])
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
             .WithPluginInterfaceSaveConfigNoop()
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
             .Build();
 
+        var createdAt = DateTimeOffset.UtcNow;
         var deleted = backupManager.TryDelete(new() { CreatedAt = createdAt, Auto = auto });
 
         Assert.IsTrue(deleted);
 
-        var calls = builder.PluginLogObserver.GetCalls();
+        var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
         var firstCall = calls[0];
@@ -224,14 +237,14 @@ public class TestBackupManager : TestClass
 
         var firstArguments = firstCall.GetArguments();
         Assert.HasCount(2, firstArguments);
-        Assert.AreEqual($"Failed to delete backup [{createdAt}] file since it does not exists, ignoring", firstArguments[0] as string);
+        Assert.AreEqual($"Failed to delete {Backup.GetPrettyType(auto)} backup [{createdAt}] file since it does not exists, ignoring", firstArguments[0] as string);
 
         var secondCall = calls[1];
         Assert.AreEqual("Warning", secondCall.StubbedMethod.Name);
 
         var secondArguments = secondCall.GetArguments();
         Assert.HasCount(2, secondArguments);
-        Assert.AreEqual("Failed to unregister backup from config, ignoring", secondArguments[0] as string);
+        Assert.AreEqual($"Failed to unregister {Backup.GetPrettyType(auto)} backup from config, ignoring", secondArguments[0] as string);
     }
 
     [TestMethod]
