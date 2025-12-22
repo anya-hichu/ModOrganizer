@@ -21,37 +21,41 @@ public class PluginBuilder
     public PluginBuilder WithPluginLogDefaults()
     {
         PluginLogStub.BehaveAsDefaultValue();
+
         return this;
     }
 
     public PluginBuilder WithPluginInterfaceConfig(IPluginConfiguration? config)
     {
         PluginInterfaceStub.GetPluginConfig = () => config;
+
         return this;
     }
 
     public PluginBuilder WithPluginInterfaceConfigDirectory(DirectoryInfo configDirectory)
     {
         PluginInterfaceStub.ConfigDirectoryGet = () => configDirectory;
-        return this;
-    }
-
-    public PluginBuilder WithPluginInterfaceInjectObjectFalse()
-    {
-        PluginInterfaceStub.InjectObjectObjectArray = (instance, scopedObjects) => false;
-        return this;
-    }
-
-    public PluginBuilder WithCommandManagerAddHandlerTrue()
-    {
-        CommandManagerStub.AddHandlerStringCommandInfo = (command, info) => true;
 
         return this;
     }
 
-    public PluginBuilder WithCommandManagerRemoveHandlerTrue()
+    public PluginBuilder WithPluginInterfaceInjectObject(bool value)
     {
-        CommandManagerStub.RemoveHandlerString = command => true;
+        PluginInterfaceStub.InjectObjectObjectArray = (instance, scopedObjects) => value;
+
+        return this;
+    }
+
+    public PluginBuilder WithCommandManagerAddHandler(bool value)
+    {
+        CommandManagerStub.AddHandlerStringCommandInfo = (command, info) => value;
+
+        return this;
+    }
+
+    public PluginBuilder WithCommandManagerRemoveHandler(bool value)
+    {
+        CommandManagerStub.RemoveHandlerString = command => value;
 
         return this;
     }
