@@ -176,7 +176,7 @@ public class PluginBuilder
         return this;
     }
 
-    public PluginBuilder WithPenumbraRegisterOrUnregisterSettingSectionNoop()
+    public PluginBuilder WithPenumbraRegisterOrUnregisterSettingSection(PenumbraApiEc exitCode)
     {
         PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<Action, int>()
         {
@@ -184,7 +184,7 @@ public class PluginBuilder
             {
                 return name switch
                 {
-                    RegisterSettingsSection.Label or UnregisterSettingsSection.Label => (int)PenumbraApiEc.Success,
+                    RegisterSettingsSection.Label or UnregisterSettingsSection.Label => (int)exitCode,
                     _ => throw new NotImplementedException(name)
                 };
             }
