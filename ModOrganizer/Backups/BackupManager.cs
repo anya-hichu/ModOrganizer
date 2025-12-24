@@ -159,7 +159,7 @@ public class BackupManager : IBackupManager
     public string GetFolderPath() => PluginInterface.ConfigDirectory.FullName;
 
     public string GetFileName(Backup backup) => GetFileName(backup.CreatedAt);
-    public static string GetFileName(DateTimeOffset offset) => string.Concat("sort_order.", offset.ToUnixTimeMilliseconds(), ".json");
+    private static string GetFileName(DateTimeOffset offset) => string.Concat("sort_order.", offset.ToUnixTimeMilliseconds(), ".json");
 
     private void SaveConfig() => PluginInterface.SavePluginConfig(Config);
 }

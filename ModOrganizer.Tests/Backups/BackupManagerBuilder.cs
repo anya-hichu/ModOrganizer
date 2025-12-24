@@ -9,7 +9,7 @@ using ModOrganizer.Tests.Stubbables;
 
 namespace ModOrganizer.Tests.Backups;
 
-public class BackupManagerBuilder : IBuilder<BackupManager>, IStubbableClock, IStubbableConfig, IStubbableModInterop, IStubbablePluginInterface, IStubbablePluginLog
+public class BackupManagerBuilder : Builder<BackupManager>, IStubbableClock, IStubbableConfig, IStubbableModInterop, IStubbablePluginInterface, IStubbablePluginLog
 {
     public StubIClock ClockStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIConfig ConfigStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
@@ -17,5 +17,5 @@ public class BackupManagerBuilder : IBuilder<BackupManager>, IStubbableClock, IS
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public BackupManager Build() => new(ClockStub, ConfigStub, ModInteropStub, PluginInterfaceStub, PluginLogStub);
+    public override BackupManager Build() => new(ClockStub, ConfigStub, ModInteropStub, PluginInterfaceStub, PluginLogStub);
 }

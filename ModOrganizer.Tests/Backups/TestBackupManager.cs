@@ -10,8 +10,11 @@ public class TestBackupManager : TestClass
     [TestMethod]
     public void TestGetFileName()
     {
-        var offset = new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        Assert.AreEqual("sort_order.1735689600000.json", BackupManager.GetFileName(offset));
+        var backupManager = new BackupManagerBuilder().Build();
+
+        var backup = new Backup() { CreatedAt = new(2025, 1, 1, 0, 0, 0, TimeSpan.Zero) };
+
+        Assert.AreEqual("sort_order.1735689600000.json", backupManager.GetFileName(backup));
     }
 
     [TestMethod]

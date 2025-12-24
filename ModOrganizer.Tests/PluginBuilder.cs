@@ -5,13 +5,13 @@ using ModOrganizer.Tests.Stubbables;
 
 namespace ModOrganizer.Tests;
 
-public class PluginBuilder : IBuilder<Plugin>, IStubbableCommandManager, IStubbablePluginLog, IStubbablePluginInterface, IStubbablePenumbraApi
+public class PluginBuilder : Builder<Plugin>, IStubbableCommandManager, IStubbablePluginLog, IStubbablePluginInterface, IStubbablePenumbraApi
 {
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubICommandManager CommandManagerStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public Plugin Build()
+    public override Plugin Build()
     {
         Plugin.PluginLog = PluginLogStub;
         Plugin.PluginInterface = PluginInterfaceStub;

@@ -27,11 +27,9 @@ public class TestModAutoProcessor : TestClass
 
         Assert.IsEmpty(observer.GetCalls());
 
-        var task = modAutoProcessor.Task;
+        var currentTask = modAutoProcessor.GetCurrentTask();
 
-        await task;
-
-        Assert.IsTrue(task.IsCompletedSuccessfully);
+        Assert.IsTrue(currentTask.IsCompletedSuccessfully);
         Assert.IsEmpty(observer.GetCalls());
     }
 
@@ -44,7 +42,7 @@ public class TestModAutoProcessor : TestClass
 
         var builder = new ModAutoProcessorBuilder();
 
-        ushort delay = 5;
+        ushort delay = 1;
         var modDirectory = "Mod Directory";
         var newModPath = "New Mod Path";
 
@@ -72,11 +70,13 @@ public class TestModAutoProcessor : TestClass
         Assert.HasCount(2, logArguments);
         Assert.AreEqual($"Waiting [{delay}] ms before processing mod [{modDirectory}]", logArguments[0] as string);
 
-        var task = modAutoProcessor.Task;
+        var currentTask = modAutoProcessor.GetCurrentTask();
 
-        await task;
+        Assert.IsFalse(currentTask.IsCompleted);
 
-        Assert.IsTrue(task.IsCompletedSuccessfully);
+        await currentTask;
+
+        Assert.IsTrue(currentTask.IsCompletedSuccessfully);
 
         var processorCalls = processorObserver.GetCalls();
         Assert.HasCount(1, processorCalls);

@@ -7,7 +7,7 @@ using ModOrganizer.Tests.Stubbables;
 
 namespace ModOrganizer.Tests.Mods;
 
-public class ModAutoProcessorBuilder : IBuilder<ModAutoProcessor>, IStubbableConfig, IStubbableNotificationManager, IStubbableModInterop, IStubbableModProcessor, IStubbablePluginLog
+public class ModAutoProcessorBuilder : Builder<ModAutoProcessor>, IStubbableConfig, IStubbableNotificationManager, IStubbableModInterop, IStubbableModProcessor, IStubbablePluginLog
 {
     public StubIConfig ConfigStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubINotificationManager NotificationManagerStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented }; 
@@ -15,5 +15,5 @@ public class ModAutoProcessorBuilder : IBuilder<ModAutoProcessor>, IStubbableCon
     public StubIModProcessor ModProcessorStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public ModAutoProcessor Build() => new(ConfigStub, NotificationManagerStub, ModInteropStub, ModProcessorStub, PluginLogStub);
+    public override ModAutoProcessor Build() => new(ConfigStub, NotificationManagerStub, ModInteropStub, ModProcessorStub, PluginLogStub);
 }

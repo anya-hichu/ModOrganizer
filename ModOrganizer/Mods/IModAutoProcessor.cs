@@ -1,8 +1,9 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ModOrganizer.Mods;
 
 public interface IModAutoProcessor : IDisposable
 {
-    // Empty
+    Task GetCurrentTask();
 }

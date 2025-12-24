@@ -12,8 +12,7 @@ public class ModAutoProcessor : IModAutoProcessor
     private IModInterop ModInterop { get; init; }
     private IModProcessor ModProcessor { get; init; }
     private IPluginLog PluginLog { get; init; }
-
-    public Task Task { get; private set; } = Task.CompletedTask;
+    private Task Task { get; set; } = Task.CompletedTask;
     
     public ModAutoProcessor(IConfig config, INotificationManager notificationManager, IModInterop modInterop, IModProcessor modProcessor, IPluginLog pluginLog)
     {
@@ -27,6 +26,8 @@ public class ModAutoProcessor : IModAutoProcessor
     }
 
     public void Dispose() => ModInterop.OnModAdded -= ProcessIfEnabled;
+
+    public Task GetCurrentTask() => Task;
 
     private void ProcessIfEnabled(string modDirectory)
     {
