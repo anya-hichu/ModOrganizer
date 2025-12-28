@@ -1,4 +1,4 @@
-namespace ModOrganizer.Json.Readers.Penumbra.LocalModDatas;
+namespace ModOrganizer.Json.Penumbra.LocalModDatas;
 
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/local_mod_data-v3.json
 public class LocalModData : Data

@@ -1,14 +1,14 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Penumbra.Groups;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
-using ModOrganizer.Json.Readers.Penumbra.Options.Imcs;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Options.Imcs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Containers;
+namespace ModOrganizer.Json.Penumbra.Containers;
 
 public class ContainerReader(IPluginLog pluginLog) : Reader<Container>(pluginLog)
 {

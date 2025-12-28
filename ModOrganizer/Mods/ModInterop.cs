@@ -8,11 +8,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using ModOrganizer.Json.Readers.Penumbra.DefaultMods;
-using ModOrganizer.Json.Readers.Penumbra.Groups;
-using ModOrganizer.Json.Readers.Penumbra.LocalModDatas;
-using ModOrganizer.Json.Readers.Penumbra.ModMetas;
-using ModOrganizer.Json.Readers.Penumbra.SortOrders;
+using ModOrganizer.Json.Penumbra.DefaultMods;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.LocalModDatas;
+using ModOrganizer.Json.Penumbra.ModMetas;
+using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers.Files;
 
 namespace ModOrganizer.Mods;

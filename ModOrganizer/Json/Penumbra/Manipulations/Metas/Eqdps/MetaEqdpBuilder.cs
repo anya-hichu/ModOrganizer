@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Eqdps;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqdps;
 
 public class MetaEqdpReader(IPluginLog pluginLog) : Reader<MetaEqdp>(pluginLog)
 {

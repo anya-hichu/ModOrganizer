@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Containers;
+namespace ModOrganizer.Json.Penumbra.Containers;
 
 public class NamedContainerReader(IPluginLog pluginLog) : Reader<NamedContainer>(pluginLog)
 {

@@ -1,11 +1,12 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Files;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.SortOrders;
+namespace ModOrganizer.Json.Penumbra.SortOrders;
 
 public class SortOrderReader(IPluginLog pluginLog) : Reader<SortOrder>(pluginLog), IReadableFile<SortOrder>
 {

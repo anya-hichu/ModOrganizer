@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Backups;
 using ModOrganizer.Json.Readers.Files;
-using ModOrganizer.Json.Readers.Penumbra.SortOrders;
+using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Mods;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Backups;

@@ -1,6 +1,6 @@
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Ests;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Ests;
 
 // https://github.com/xivdev/Penumbra/blob/ce54aa5d2559abc8552edfe0b270e61c450226c4/schemas/structs/meta_est.json
 public class MetaEst : Manipulation

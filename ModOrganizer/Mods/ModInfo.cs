@@ -1,7 +1,7 @@
-using ModOrganizer.Json.Readers.Penumbra.DefaultMods;
-using ModOrganizer.Json.Readers.Penumbra.Groups;
-using ModOrganizer.Json.Readers.Penumbra.LocalModDatas;
-using ModOrganizer.Json.Readers.Penumbra.ModMetas;
+using ModOrganizer.Json.Penumbra.DefaultMods;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.LocalModDatas;
+using ModOrganizer.Json.Penumbra.ModMetas;
 using System.Collections.Generic;
 
 namespace ModOrganizer.Mods;

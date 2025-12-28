@@ -1,6 +1,6 @@
-using ModOrganizer.Json.Readers.Penumbra.Options;
+using ModOrganizer.Json.Penumbra.Options;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Options.Imcs;
+namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
 public abstract class OptionImc : Option
 {

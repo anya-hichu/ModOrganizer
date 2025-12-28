@@ -13,7 +13,7 @@ namespace ModOrganizer.Rules;
 
 public class RuleEvaluator(IPluginLog pluginLog) : IRuleEvaluator
 {
-    public bool TryEvaluate(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
+    public bool TryEvaluateMany(IEnumerable<Rule> rules, ModInfo modInfo, [NotNullWhen(true)] out string? path)
     {
         path = null;
         foreach (var rule in rules.OrderDescending())

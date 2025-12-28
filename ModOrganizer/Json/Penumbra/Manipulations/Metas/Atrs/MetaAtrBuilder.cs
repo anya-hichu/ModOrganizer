@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Atrs;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Atrs;
 
 public class MetaAtrReader(IPluginLog pluginLog) : Reader<MetaAtr>(pluginLog)
 {

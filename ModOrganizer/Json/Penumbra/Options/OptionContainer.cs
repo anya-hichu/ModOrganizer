@@ -1,7 +1,7 @@
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations;
 using System.Collections.Generic;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Options;
+namespace ModOrganizer.Json.Penumbra.Options;
 
 // Where is multi-inheritance when you need it?
 public class OptionContainer : Option //, Container

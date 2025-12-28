@@ -1,6 +1,6 @@
-using ModOrganizer.Json.Readers.Penumbra.Containers;
+using ModOrganizer.Json.Penumbra.Containers;
 
-namespace ModOrganizer.Json.Readers.Penumbra.DefaultMods;
+namespace ModOrganizer.Json.Penumbra.DefaultMods;
 
 // https://github.com/xivdev/Penumbra/blob/master/schemas/default_mod.json
 public class DefaultMod : Container

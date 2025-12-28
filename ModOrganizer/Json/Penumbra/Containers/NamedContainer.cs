@@ -1,4 +1,4 @@
-namespace ModOrganizer.Json.Readers.Penumbra.Containers;
+namespace ModOrganizer.Json.Penumbra.Containers;
 
 public class NamedContainer : Container
 {

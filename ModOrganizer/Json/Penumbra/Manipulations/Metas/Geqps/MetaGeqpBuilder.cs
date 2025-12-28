@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Geqps;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Geqps;
 
 public class MetaGeqpReader(IPluginLog pluginLog) : Reader<MetaGeqp>(pluginLog)
 {

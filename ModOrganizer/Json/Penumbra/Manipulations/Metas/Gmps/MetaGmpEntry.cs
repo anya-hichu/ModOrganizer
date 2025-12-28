@@ -1,4 +1,4 @@
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Gmps;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Gmps;
 
 public class MetaGmpEntry : Data
 {

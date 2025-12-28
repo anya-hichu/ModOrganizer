@@ -1,4 +1,4 @@
-using ModOrganizer.Json.Readers.Penumbra.SortOrders;
+using ModOrganizer.Json.Penumbra.SortOrders;
 using Penumbra.Api.Enums;
 using System;
 using System.Collections.Generic;

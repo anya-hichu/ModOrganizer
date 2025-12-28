@@ -1,6 +1,6 @@
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Atchs;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
 
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_atch.json
 public class MetaAtch : Manipulation

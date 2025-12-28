@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Options.Imcs;
+namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
 public class OptionImcFactory(IPluginLog pluginLog) : Factory<OptionImc>(pluginLog)
 {

@@ -1,9 +1,9 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Rsps;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
 
 public class MetaRspWrappedReader(IPluginLog pluginLog) : ManipulationWrapperReader<MetaRsp>(pluginLog, TYPE)
 {

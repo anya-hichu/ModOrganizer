@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Imcs;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 
 public class MetaImcEntryReader(IPluginLog pluginLog) : Reader<MetaImcEntry>(pluginLog)
 {

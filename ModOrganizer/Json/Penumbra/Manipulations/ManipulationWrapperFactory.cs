@@ -1,16 +1,16 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Atchs;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Atrs;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Eqdps;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Eqps;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Ests;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Geqps;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Gmps;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Imcs;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Rsps;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Shps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atrs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqdps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Ests;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Geqps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Gmps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations;
+namespace ModOrganizer.Json.Penumbra.Manipulations;
 
 public class ManipulationWrapperFactory : TypeFactory<ManipulationWrapper>
 {

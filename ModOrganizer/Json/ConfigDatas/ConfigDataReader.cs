@@ -11,7 +11,7 @@ namespace ModOrganizer.Json.ConfigDatas;
 
 public class ConfigDataReader(IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IReadableClipboard<ConfigData>, IReadableFile<ConfigData>
 {
-    private static readonly int SUPPORTED_VERSION = 0;
+    private static readonly uint SUPPORTED_VERSION = 0;
 
     public ClipboardReader ClipboardReader { get; init; } = new(pluginLog);
     public FileReader FileReader { get; init; } = new(pluginLog);

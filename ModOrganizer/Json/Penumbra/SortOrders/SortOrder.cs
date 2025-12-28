@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ModOrganizer.Json.Readers.Penumbra.SortOrders;
+namespace ModOrganizer.Json.Penumbra.SortOrders;
 
 // No schema
 public class SortOrder

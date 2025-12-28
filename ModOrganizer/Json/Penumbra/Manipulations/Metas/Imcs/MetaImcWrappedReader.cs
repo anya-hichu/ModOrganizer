@@ -1,9 +1,9 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Imcs;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 
 public class MetaImcWrappedReader(IPluginLog pluginLog) : ManipulationWrapperReader<MetaImc>(pluginLog, TYPE)
 {

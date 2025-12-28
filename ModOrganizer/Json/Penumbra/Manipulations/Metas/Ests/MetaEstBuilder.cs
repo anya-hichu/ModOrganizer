@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Ests;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Ests;
 
 public class MetaEstReader(IPluginLog pluginLog) : Reader<MetaEst>(pluginLog)
 {

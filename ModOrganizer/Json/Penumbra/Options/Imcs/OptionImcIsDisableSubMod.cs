@@ -1,4 +1,4 @@
-namespace ModOrganizer.Json.Readers.Penumbra.Options.Imcs;
+namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
 public class OptionImcIsDisableSubMod : OptionImc
 {

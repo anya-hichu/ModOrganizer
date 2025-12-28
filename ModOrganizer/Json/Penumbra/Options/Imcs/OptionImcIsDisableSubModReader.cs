@@ -1,10 +1,10 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Penumbra.Options;
+using ModOrganizer.Json.Penumbra.Options;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Options.Imcs;
+namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
 public class OptionImcIsDisableSubModReader(IPluginLog pluginLog) : Reader<OptionImc>(pluginLog)
 {

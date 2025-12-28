@@ -1,4 +1,4 @@
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Atchs;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
 
 public class MetaAtchEntry : Data
 {

@@ -1,11 +1,11 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Penumbra.Options;
+using ModOrganizer.Json.Penumbra.Options;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Groups;
+namespace ModOrganizer.Json.Penumbra.Groups;
 
 public class GroupMultiReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {

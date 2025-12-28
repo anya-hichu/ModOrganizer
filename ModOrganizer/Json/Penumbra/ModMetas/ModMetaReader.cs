@@ -1,14 +1,15 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Files;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.ModMetas;
+namespace ModOrganizer.Json.Penumbra.ModMetas;
 
 public class ModMetaReader(IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), IReadableFile<ModMeta>
 {
-    private static readonly int SUPPORTED_FILE_VERSION = 3;
+    private static readonly uint SUPPORTED_FILE_VERSION = 3;
 
     public FileReader FileReader { get; init; } = new(pluginLog);
 

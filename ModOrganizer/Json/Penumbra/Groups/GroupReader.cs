@@ -1,12 +1,13 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Groups;
+namespace ModOrganizer.Json.Penumbra.Groups;
 
 public class GroupReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
-    private static readonly int SUPPORTED_VERSION = 0;
+    private static readonly uint SUPPORTED_VERSION = 0;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {

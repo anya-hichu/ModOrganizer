@@ -1,7 +1,7 @@
-using ModOrganizer.Json.Readers.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations;
 using System.Collections.Generic;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Containers;
+namespace ModOrganizer.Json.Penumbra.Containers;
 
 // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/container.json
 public class Container : Data

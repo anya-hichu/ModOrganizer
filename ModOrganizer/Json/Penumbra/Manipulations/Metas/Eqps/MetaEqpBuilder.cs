@@ -1,8 +1,9 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Eqps;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqps;
 
 public class MetaEqpReader(IPluginLog pluginLog) : Reader<MetaEqp>(pluginLog)
 {

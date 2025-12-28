@@ -244,11 +244,11 @@
         <member name="M:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.ModOrganizer#Rules#IRuleEvaluator#TryEvaluate(ModOrganizer.Rules.Rule,ModOrganizer.Mods.ModInfo,System.String@)">
             <summary>Sets the Stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>
         </member>
-        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.ModOrganizer#Rules#IRuleEvaluator#TryEvaluate(System.Collections.Generic.IEnumerable{ModOrganizer.Rules.Rule},ModOrganizer.Mods.ModInfo,System.String@)">
-            <summary>Sets the Stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, IEnumerable`1 rules, ModInfo modInfo, String* path)</summary>
+        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.ModOrganizer#Rules#IRuleEvaluator#TryEvaluateMany(System.Collections.Generic.IEnumerable{ModOrganizer.Rules.Rule},ModOrganizer.Mods.ModInfo,System.String@)">
+            <summary>Sets the Stub of IRuleEvaluator.TryEvaluateMany(IRuleEvaluator this, IEnumerable`1 rules, ModInfo modInfo, String* path)</summary>
         </member>
-        <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateIEnumerableOfRuleModInfoStringOut">
-            <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, IEnumerable`1 rules, ModInfo modInfo, String* path)</summary>
+        <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateManyIEnumerableOfRuleModInfoStringOut">
+            <summary>Sets the stub of IRuleEvaluator.TryEvaluateMany(IRuleEvaluator this, IEnumerable`1 rules, ModInfo modInfo, String* path)</summary>
         </member>
         <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateRuleModInfoStringOut">
             <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>

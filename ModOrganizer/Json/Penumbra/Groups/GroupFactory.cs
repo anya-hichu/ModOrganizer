@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers.Files;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Groups;
+namespace ModOrganizer.Json.Penumbra.Groups;
 
 public class GroupFactory : TypeFactory<Group>, IReadableFile<Group>
 {

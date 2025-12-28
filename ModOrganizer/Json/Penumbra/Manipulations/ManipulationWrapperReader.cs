@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations;
+namespace ModOrganizer.Json.Penumbra.Manipulations;
 
 public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string type) : Reader<ManipulationWrapper>(pluginLog) where T : Manipulation
 {

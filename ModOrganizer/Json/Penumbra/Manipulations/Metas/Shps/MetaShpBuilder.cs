@@ -1,10 +1,10 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Atrs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atrs;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Manipulations.Metas.Shps;
+namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
 
 public class MetaShpReader(IPluginLog pluginLog) : Reader<MetaShp>(pluginLog)
 {

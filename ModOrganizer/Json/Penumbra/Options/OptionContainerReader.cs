@@ -1,10 +1,10 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Penumbra.Containers;
+using ModOrganizer.Json.Penumbra.Containers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers.Penumbra.Options;
+namespace ModOrganizer.Json.Penumbra.Options;
 
 public class OptionContainerReader(IPluginLog pluginLog) : Reader<OptionContainer>(pluginLog)
 {
