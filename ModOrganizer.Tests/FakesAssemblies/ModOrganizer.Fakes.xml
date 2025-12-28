@@ -7,6 +7,66 @@
         <member name="T:Microsoft.QualityTools.Testing.Fakes.Delegates.ModOrganizerDelegates">
             <summary>Contains custom delegates used for the stubs and shims of ModOrganizer</summary>
         </member>
+        <member name="T:ModOrganizer.Backups.Fakes.StubIBackupManager">
+            <summary>Stub type of ModOrganizer.Backups.IBackupManager</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.#ctor">
+            <summary>Initializes a new instance of type StubIBackupManager</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.CreateBoolean">
+            <summary>Sets the stub of IBackupManager.Create(IBackupManager this, Boolean auto)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.CreateRecentBoolean">
+            <summary>Sets the stub of IBackupManager.CreateRecent(IBackupManager this, Boolean auto)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.Dispose">
+            <summary>Sets the stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.GetFileNameBackup">
+            <summary>Sets the stub of IBackupManager.GetFileName(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.GetFolderPath">
+            <summary>Sets the stub of IBackupManager.GetFolderPath(IBackupManager this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.GetPathBackup">
+            <summary>Sets the stub of IBackupManager.GetPath(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#Create(System.Boolean)">
+            <summary>Sets the Stub of IBackupManager.Create(IBackupManager this, Boolean auto)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#CreateRecent(System.Boolean)">
+            <summary>Sets the Stub of IBackupManager.CreateRecent(IBackupManager this, Boolean auto)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#GetFileName(ModOrganizer.Backups.Backup)">
+            <summary>Sets the Stub of IBackupManager.GetFileName(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#GetFolderPath">
+            <summary>Sets the Stub of IBackupManager.GetFolderPath(IBackupManager this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#GetPath(ModOrganizer.Backups.Backup)">
+            <summary>Sets the Stub of IBackupManager.GetPath(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#TryCreate(ModOrganizer.Backups.Backup@,System.Boolean)">
+            <summary>Sets the Stub of IBackupManager.TryCreate(IBackupManager this, Backup* backup, Boolean auto)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#TryDelete(ModOrganizer.Backups.Backup)">
+            <summary>Sets the Stub of IBackupManager.TryDelete(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#TryRestore(ModOrganizer.Backups.Backup,System.Boolean)">
+            <summary>Sets the Stub of IBackupManager.TryRestore(IBackupManager this, Backup backup, Boolean reloadPenumbra)</summary>
+        </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.System#IDisposable#Dispose">
+            <summary>Sets the Stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryCreateBackupOutBoolean">
+            <summary>Sets the stub of IBackupManager.TryCreate(IBackupManager this, Backup* backup, Boolean auto)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryDeleteBackup">
+            <summary>Sets the stub of IBackupManager.TryDelete(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryRestoreBackupBoolean">
+            <summary>Sets the stub of IBackupManager.TryRestore(IBackupManager this, Backup backup, Boolean reloadPenumbra)</summary>
+        </member>
         <member name="T:ModOrganizer.Configs.Fakes.StubIConfig">
             <summary>Stub type of ModOrganizer.Configs.IConfig</summary>
         </member>
@@ -174,6 +234,24 @@
         </member>
         <member name="F:ModOrganizer.Mods.Fakes.StubIModProcessor.TryProcessStringStringOutBoolean">
             <summary>Sets the stub of IModProcessor.TryProcess(IModProcessor this, String modDirectory, String* newModPath, Boolean dryRun)</summary>
+        </member>
+        <member name="T:ModOrganizer.Rules.Fakes.StubIRuleEvaluator">
+            <summary>Stub type of ModOrganizer.Rules.IRuleEvaluator</summary>
+        </member>
+        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.#ctor">
+            <summary>Initializes a new instance of type StubIRuleEvaluator</summary>
+        </member>
+        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.ModOrganizer#Rules#IRuleEvaluator#TryEvaluate(ModOrganizer.Rules.Rule,ModOrganizer.Mods.ModInfo,System.String@)">
+            <summary>Sets the Stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>
+        </member>
+        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.ModOrganizer#Rules#IRuleEvaluator#TryEvaluate(System.Collections.Generic.IEnumerable{ModOrganizer.Rules.Rule},ModOrganizer.Mods.ModInfo,System.String@)">
+            <summary>Sets the Stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, IEnumerable`1 rules, ModInfo modInfo, String* path)</summary>
+        </member>
+        <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateIEnumerableOfRuleModInfoStringOut">
+            <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, IEnumerable`1 rules, ModInfo modInfo, String* path)</summary>
+        </member>
+        <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateRuleModInfoStringOut">
+            <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>
         </member>
         <member name="T:ModOrganizer.Shared.Fakes.StubIClock">
             <summary>Stub type of ModOrganizer.Shared.IClock</summary>
