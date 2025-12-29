@@ -22,20 +22,20 @@ public class GroupSingleReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
 
         if (!GroupReader.TryRead(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupSingle)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupSingle)}]: {jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}): {jsonElement}");
             return false;
         }
 
         var options = Array.Empty<OptionContainer>();
         if (jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !OptionContainerReader.TryReadMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupSingle)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupSingle)}]: {optionsProperty}");
             return false;
         }
 

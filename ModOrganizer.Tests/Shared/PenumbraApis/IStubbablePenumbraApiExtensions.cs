@@ -1,4 +1,5 @@
 using Dalamud.Plugin.Ipc.Fakes;
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Shared.PluginInterfaces;
 using Penumbra.Api.Enums;
 using Penumbra.Api.IpcSubscribers;
@@ -83,7 +84,27 @@ public static class IStubbablePenumbraApiExtensions
             {
                 switch (name)
                 {
-                    case ModAdded.Label or ModDeleted.Label: return;
+                    case ModAdded.Label or ModDeleted.Label: break;
+                    default: throw new NotImplementedException(name);
+                }
+            }
+        });
+
+        return stubbable;
+    }
+
+    public static T WithPenumbraApiModAdded<T>(this T stubbable, HashSet<Action<string>> actions) where T : IStubbablePluginInterface
+    {
+        stubbable.PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<string, object?>()
+        {
+            SubscribeActionOfT0 = action =>
+            {
+                switch (name)
+                {
+                    case ModAdded.Label:
+                        actions.Add(action);
+                        break;
+                    case ModDeleted.Label: break;
                     default: throw new NotImplementedException(name);
                 }
             }
@@ -100,7 +121,7 @@ public static class IStubbablePenumbraApiExtensions
             {
                 switch (name)
                 {
-                    case ModMoved.Label: return;
+                    case ModMoved.Label: break;
                     default: throw new NotImplementedException(name);
                 }
                 ;
@@ -118,7 +139,7 @@ public static class IStubbablePenumbraApiExtensions
             {
                 switch (name)
                 {
-                    case ModDirectoryChanged.Label: return;
+                    case ModDirectoryChanged.Label: break;
                     default: throw new NotImplementedException(name);
                 }
             }

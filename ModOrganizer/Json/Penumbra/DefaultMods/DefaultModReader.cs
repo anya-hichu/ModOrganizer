@@ -24,13 +24,13 @@ public class DefaultModReader(IPluginLog pluginLog) : Reader<DefaultMod>(pluginL
         uint? version = jsonElement.TryGetProperty(nameof(DefaultMod.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: [{SUPPORTED_VERSION}]):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: [{SUPPORTED_VERSION}]): {jsonElement}");
             return false;
         }
 
         if (!ContainerReader.TryRead(jsonElement, out var container))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(DefaultMod)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(DefaultMod)}]: {jsonElement}");
             return false;
         }
 

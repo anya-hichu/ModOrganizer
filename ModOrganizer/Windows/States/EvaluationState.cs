@@ -72,7 +72,7 @@ public class EvaluationState(IModInterop modInterop, IPluginLog pluginLog) : Res
             }
             catch (ScriptRuntimeException e)
             {
-                PluginLog.Debug($"Caught exception while evaluating [{template}] for mod [{modInfo.Directory}]:\n\t{e.Message}");
+                PluginLog.Debug($"Caught exception while evaluating [{template}] for mod [{modInfo.Directory}]: {e.Message}");
                 error = new()
                 {
                     Message = "Failed to evaluate template",

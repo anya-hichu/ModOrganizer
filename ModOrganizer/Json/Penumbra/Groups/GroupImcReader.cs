@@ -29,33 +29,33 @@ public class GroupImcReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
         MetaImcIdentifier? identifier = null;
         if (jsonElement.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !ImcIdentifierReader.TryRead(identifierProperty, out identifier))
         {
-            PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]:\n\t{identifierProperty}");
+            PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]: {identifierProperty}");
             return false;
         }
 
         MetaImcEntry? defaultEntry = null;
         if (jsonElement.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !ImcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
         {
-            PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]:\n\t{defaultEntryProperty}");
+            PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]: {defaultEntryProperty}");
             return false;
         }
 
         if (!GroupReader.TryRead(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupImc)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupImc)}]: {jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}): {jsonElement}");
             return false;
         }
 
         var options = Array.Empty<OptionImc>();
         if (jsonElement.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !OptionImcFactory.TryReadMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {optionsProperty}");
             return false;
         }
 

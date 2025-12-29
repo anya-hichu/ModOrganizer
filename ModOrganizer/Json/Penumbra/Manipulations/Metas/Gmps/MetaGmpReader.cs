@@ -18,7 +18,7 @@ public class MetaGmpReader(IPluginLog pluginLog) : Reader<MetaGmp>(pluginLog)
 
         if (!MetaGmpEntryReader.TryRead(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to read [{nameof(MetaGmpEntry)}] for [{nameof(MetaGmp)}]:\n\t{entryProperty}");
+            PluginLog.Debug($"Failed to read [{nameof(MetaGmpEntry)}] for [{nameof(MetaGmp)}]: {entryProperty}");
             return false;
         }
 

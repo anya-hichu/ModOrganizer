@@ -16,7 +16,7 @@ public abstract class DataReader(IPluginLog pluginLog)
 
         if (instance == null)
         {
-            PluginLog.Warning($"Failed to read [{typeof(T).Name}] from data:\n\t{data}");
+            PluginLog.Warning($"Failed to read [{typeof(T).Name}] from data: {data}");
             return false;
         }
 

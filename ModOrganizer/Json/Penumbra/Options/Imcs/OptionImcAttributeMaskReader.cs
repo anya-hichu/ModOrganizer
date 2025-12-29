@@ -18,7 +18,7 @@ public class OptionImcAttributeMaskReader(IPluginLog pluginLog) : Reader<OptionI
 
         if (!OptionReader.TryRead(jsonElement, out var option))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]: {jsonElement}");
             return false;
         }
 

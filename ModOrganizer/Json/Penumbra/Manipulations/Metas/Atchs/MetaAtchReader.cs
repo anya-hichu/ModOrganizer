@@ -23,7 +23,7 @@ public class MetaAtchReader(IPluginLog pluginLog) : Reader<MetaAtch>(pluginLog)
 
         if (!MetaAtchEntryReader.TryRead(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to read [{nameof(MetaAtchEntry)}] for [{nameof(MetaAtch)}]:\n\t{entryProperty}");
+            PluginLog.Debug($"Failed to read [{nameof(MetaAtchEntry)}] for [{nameof(MetaAtch)}]: {entryProperty}");
             return false;
         }
 

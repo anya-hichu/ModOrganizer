@@ -15,7 +15,7 @@ public class NamedContainerReader(IPluginLog pluginLog) : Reader<NamedContainer>
 
         if(!ContainerReader.TryRead(jsonElement, out var container))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(NamedContainer)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(NamedContainer)}]: {jsonElement}");
             return false;
         }
 

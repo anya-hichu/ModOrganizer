@@ -49,7 +49,7 @@ public class RuleState(IConfig config, IBackupManager backupManager, IModInterop
             }
             catch (Exception e)
             {
-                PluginLog.Warning($"Caught exception while evaluating mod [{modDirectory}] path:\n\t{e.Message}");
+                PluginLog.Warning($"Caught exception while evaluating mod [{modDirectory}] path: {e.Message}");
                 return new RuleErrorResult()
                 {
                     Directory = modDirectory,

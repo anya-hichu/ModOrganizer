@@ -69,12 +69,7 @@ public class TestModProcessor : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Warning), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}]", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}]", actualMessage));
     }
 
     [TestMethod]

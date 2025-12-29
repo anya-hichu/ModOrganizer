@@ -18,7 +18,7 @@ public class GroupReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
         uint? version = jsonElement.TryGetProperty(nameof(Group.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{typeof(Group).Name}], unsupported [{nameof(Group.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{typeof(Group).Name}], unsupported [{nameof(Group.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {jsonElement}");
             return false;
         }
 

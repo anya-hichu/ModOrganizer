@@ -20,13 +20,13 @@ public class MetaImcReader(IPluginLog pluginLog) : Reader<MetaImc>(pluginLog)
 
         if (!ImcEntryReader.TryRead(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(MetaImc)}]:\n\t{entryProperty}");
+            PluginLog.Debug($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(MetaImc)}]: {entryProperty}");
             return false;
         }
 
         if (!ImcIdentifierReader.TryRead(jsonElement, out var identifier))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(MetaImcIdentifier)}] for [{nameof(MetaImc)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(MetaImcIdentifier)}] for [{nameof(MetaImc)}]: {jsonElement}");
             return false;
         }
 

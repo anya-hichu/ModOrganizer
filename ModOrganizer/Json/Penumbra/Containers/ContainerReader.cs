@@ -23,21 +23,21 @@ public class ContainerReader(IPluginLog pluginLog) : Reader<Container>(pluginLog
         var files = new Dictionary<string, string>();
         if (jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) && !Assert.IsStringDict(filesProperty, out files))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(Container.Files)}] for [{nameof(GroupImc)}]:\n\t{filesProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(Container.Files)}] for [{nameof(GroupImc)}]: {filesProperty}");
             return false;
         }
 
         var fileSwaps = new Dictionary<string, string>();
         if (jsonElement.TryGetProperty(nameof(Container.FileSwaps), out var fileSwapsProperty) && !Assert.IsStringDict(fileSwapsProperty, out fileSwaps))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(Container.FileSwaps)}] for [{nameof(GroupImc)}]:\n\t{fileSwapsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(Container.FileSwaps)}] for [{nameof(GroupImc)}]: {fileSwapsProperty}");
             return false;
         }
 
         var manipulations = Array.Empty<ManipulationWrapper>();
         if (jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && !ManipulationWrapperFactory.TryReadMany(manipulationsProperty, out manipulations))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]:\n\t{manipulationsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {manipulationsProperty}");
             return false;
         }
 

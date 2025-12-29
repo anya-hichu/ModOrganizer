@@ -113,19 +113,8 @@ public class TestBackupManager : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
-        var firstCall = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Error), firstCall.StubbedMethod.Name);
-
-        var firstArguments = firstCall.GetArguments();
-        Assert.HasCount(2, firstArguments);
-        Assert.StartsWith("Caught exception while try to copy", firstArguments[0] as string);
-
-        var secondCall = calls[1];
-        Assert.AreEqual(nameof(IPluginLog.Error), secondCall.StubbedMethod.Name);
-
-        var secondArguments = secondCall.GetArguments();
-        Assert.HasCount(2, secondArguments);
-        Assert.AreEqual(message, secondArguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), actualMessage => Assert.StartsWith("Caught exception while try to copy", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Error), actualMessage => Assert.AreEqual(message, actualMessage));
     }
 
     [TestMethod]
@@ -186,12 +175,7 @@ public class TestBackupManager : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.StartsWith($"Caught exception while try to copy [{missingSortOrderPath}]", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), value => Assert.StartsWith($"Caught exception while try to copy [{missingSortOrderPath}]", value));
     }
 
     [TestMethod]
@@ -220,12 +204,7 @@ public class TestBackupManager : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Warning), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.StartsWith($"Failed to delete {Backup.GetPrettyType(auto)} backup", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), value => Assert.StartsWith($"Failed to delete {Backup.GetPrettyType(auto)} backup", value));
     }
 
     [TestMethod]
@@ -254,19 +233,11 @@ public class TestBackupManager : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
-        var firstCall = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Warning), firstCall.StubbedMethod.Name);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Failed to delete {Backup.GetPrettyType(auto)} backup [{createdAt}] file since it does not exists, ignoring", actualMessage));
 
-        var firstArguments = firstCall.GetArguments();
-        Assert.HasCount(2, firstArguments);
-        Assert.AreEqual($"Failed to delete {Backup.GetPrettyType(auto)} backup [{createdAt}] file since it does not exists, ignoring", firstArguments[0] as string);
-
-        var secondCall = calls[1];
-        Assert.AreEqual(nameof(IPluginLog.Warning), secondCall.StubbedMethod.Name);
-
-        var secondArguments = secondCall.GetArguments();
-        Assert.HasCount(2, secondArguments);
-        Assert.AreEqual($"Failed to unregister {Backup.GetPrettyType(auto)} backup from config, ignoring", secondArguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Failed to unregister {Backup.GetPrettyType(auto)} backup from config, ignoring", actualMessage));
     }
 
     [TestMethod]

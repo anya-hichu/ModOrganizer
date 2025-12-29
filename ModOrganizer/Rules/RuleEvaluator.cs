@@ -36,7 +36,7 @@ public class RuleEvaluator(IPluginLog pluginLog) : IRuleEvaluator
         var template = Template.Parse(rule.PathTemplate);
         if (template.HasErrors)
         {
-            pluginLog.Error($"Failed to parse path template [{rule.PathTemplate}], ignoring:\n\t{template.Messages}");
+            pluginLog.Error($"Failed to parse path template [{rule.PathTemplate}], ignoring: {template.Messages}");
             return false;
         }
 

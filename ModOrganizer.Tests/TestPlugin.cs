@@ -19,7 +19,7 @@ public sealed class TestPlugin : TestClass
 
         Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
 
-        var modDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "Mods"));
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "Mods"));
 
         using var plugin = new PluginBuilder()
             .WithPluginLogDefaults()
@@ -29,7 +29,7 @@ public sealed class TestPlugin : TestClass
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceUiBuilderStub()
-            .WithPenumbraApiGetModDirectory(modDirectory)
+            .WithPenumbraApiGetModDirectory(modsDirectory)
             .WithPenumbraApiGetModList([])
             .WithPenumbraApiGetChangedItems([])
             .WithPenumbraApiSetModPath(PenumbraApiEc.Success)

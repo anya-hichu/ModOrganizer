@@ -72,12 +72,8 @@ public class TestRuleEvaluator : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.AreEqual($"Caught expression while evaluating match expression [{matchExpression}] (<input>(1,1) : error : The function `Syntax` was not found), ignoring", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.AreEqual($"Caught expression while evaluating match expression [{matchExpression}] (<input>(1,1) : error : The function `Syntax` was not found), ignoring", actualMessage));
     }
 
     [TestMethod]
@@ -106,18 +102,14 @@ public class TestRuleEvaluator : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.AreEqual($"Match expression [{matchExpression}] did not evaluate to a boolean, ignoring", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), actualMessage => Assert.AreEqual($"Match expression [{matchExpression}] did not evaluate to a boolean, ignoring", actualMessage));
     }
 
     [TestMethod]
     public void TestTryEvaluateWithPathTemplateSyntaxError()
     {
         var observer = new StubObserver();
+
         var ruleEvaluator = new RuleEvaluatorBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
@@ -140,12 +132,12 @@ public class TestRuleEvaluator : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.AreEqual($"Failed to parse path template [{pathTemplate}], ignoring:\n\t<input>(1,6) : error : Invalid token found `}}`. Expecting <EOL>/end of line.{Environment.NewLine}<input>(1,6) : error : Unexpected }} while no matching {{{Environment.NewLine}", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.AreEqual($$"""
+            Failed to parse path template [{{pathTemplate}}], ignoring: <input>(1,6) : error : Invalid token found `}`. Expecting <EOL>/end of line.
+            <input>(1,6) : error : Unexpected } while no matching {
+            
+            """.ReplaceLineEndings(Environment.NewLine), actualMessage));
     }
 
     [TestMethod]
@@ -191,12 +183,7 @@ public class TestRuleEvaluator : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Debug), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}] with [0] rules enabled out of [1]", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}] with [0] rules enabled out of [1]", actualMessage));
     }
 
     [TestMethod]
@@ -251,11 +238,7 @@ public class TestRuleEvaluator : TestClass
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        var call = calls[0];
-        Assert.AreEqual(nameof(IPluginLog.Debug), call.StubbedMethod.Name);
-
-        var arguments = call.GetArguments();
-        Assert.HasCount(2, arguments);
-        Assert.AreEqual($"Rule [{matchingRulePath}] matched mod [{TEST_MOD_DIRECTORY}] and evaluated to path [{path}]", arguments[0] as string);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual($"Rule [{matchingRulePath}] matched mod [{TEST_MOD_DIRECTORY}] and evaluated to path [{path}]", actualMessage));
     }
 }

@@ -15,7 +15,7 @@ public class Assert(IPluginLog pluginLog)
     {
         if (jsonElement.ValueKind == kind) return true;
 
-        PluginLog.Warning($"Expected value kind [{kind}] but got [{jsonElement.ValueKind}]:\n\t{jsonElement}");
+        PluginLog.Warning($"Expected value kind [{kind}] but got [{jsonElement.ValueKind}]: {jsonElement}");
         return false;
     }
 
@@ -23,7 +23,7 @@ public class Assert(IPluginLog pluginLog)
     {
         if (jsonElement.TryGetProperty(name, out property)) return true;
 
-        if (warn) PluginLog.Warning($"Expected property [{name}] is missing:\n\t{jsonElement}");
+        if (warn) PluginLog.Warning($"Expected property [{name}] is missing: {jsonElement}");
         return false;
     }
 
@@ -36,7 +36,7 @@ public class Assert(IPluginLog pluginLog)
         value = property.GetString();
         if (value.IsNullOrEmpty())
         {
-            PluginLog.Warning($"Property [{propertyName}] is null or empty:\n\t{jsonElement}");
+            PluginLog.Warning($"Property [{propertyName}] is null or empty: {jsonElement}");
             return false;
         }
 
@@ -53,7 +53,7 @@ public class Assert(IPluginLog pluginLog)
         if (property.ValueKind == JsonValueKind.Number && property.TryGetByte(out value)) return true;
         if (property.ValueKind == JsonValueKind.String && byte.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
 
-        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(byte).Name}]:\n\t{property}");
+        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(byte).Name}]: {property}");
         return false;
     }
 
@@ -67,7 +67,7 @@ public class Assert(IPluginLog pluginLog)
         if (property.ValueKind == JsonValueKind.Number && property.TryGetUInt16(out value)) return true;
         if (property.ValueKind == JsonValueKind.String && ushort.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
 
-        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(ushort).Name}]:\n\t{property}");
+        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(ushort).Name}]: {property}");
         return false;
     }
 

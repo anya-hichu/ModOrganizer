@@ -21,14 +21,14 @@ public class SortOrderReader(IPluginLog pluginLog) : Reader<SortOrder>(pluginLog
         var data = new Dictionary<string, string>();
         if (jsonElement.TryGetProperty(nameof(SortOrder.Data), out var dataProperty) && !Assert.IsStringDict(dataProperty, out data))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(SortOrder.Data)}] for [{nameof(SortOrder)}]:\n\t{dataProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(SortOrder.Data)}] for [{nameof(SortOrder)}]: {dataProperty}");
             return false;
         }
 
         var emptyFolders = Array.Empty<string>();
         if (jsonElement.TryGetProperty(nameof(SortOrder.EmptyFolders), out var emptyFoldersProperty) && !Assert.IsStringArray(emptyFoldersProperty, out emptyFolders))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(SortOrder.EmptyFolders)}] for [{nameof(SortOrder)}]:\n\t{emptyFoldersProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(SortOrder.EmptyFolders)}] for [{nameof(SortOrder)}]: {emptyFoldersProperty}");
             return false;
         }
 

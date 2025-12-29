@@ -19,7 +19,7 @@ public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string 
 
         if (!TryReadWrapped(manipulationProperty, out var wrapped))
         {
-            PluginLog.Debug($"Failed to read wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]:\n\t{manipulationProperty}");
+            PluginLog.Debug($"Failed to read wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]: {manipulationProperty}");
             return false;
         }
 

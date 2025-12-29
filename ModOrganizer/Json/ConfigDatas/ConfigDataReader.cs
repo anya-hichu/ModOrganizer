@@ -27,14 +27,14 @@ public class ConfigDataReader(IPluginLog pluginLog) : Reader<ConfigData>(pluginL
         int? version = jsonElement.TryGetProperty(nameof(ConfigData.Version), out var versionProperty) ? versionProperty.GetInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{nameof(ConfigData)}], unsupported [{nameof(ConfigData.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(ConfigData)}], unsupported [{nameof(ConfigData.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {jsonElement}");
             return false;
         }
 
         RuleData[]? rules = null;
         if (Assert.IsPropertyPresent(jsonElement, nameof(ConfigData.Rules), out var rulesProperty) && !RuleDataReader.TryReadMany(rulesProperty, out rules))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]:\n\t{rulesProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {rulesProperty}");
             return false;
         }
 

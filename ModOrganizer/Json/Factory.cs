@@ -15,13 +15,13 @@ public abstract class Factory<T>(IPluginLog pluginLog) : Reader<T>(pluginLog) wh
 
         if (!TryGetReader(jsonElement, out var reader))
         {
-            PluginLog.Debug($"Failed to get [{typeof(T).Name}] reader:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to get [{typeof(T).Name}] reader: {jsonElement}");
             return false;
         }
 
         if (!reader.TryRead(jsonElement, out instance))
         {
-            PluginLog.Debug($"Failed to read [{typeof(T).Name}] using reader [{reader.GetType().Name}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read [{typeof(T).Name}] using reader [{reader.GetType().Name}]: {jsonElement}");
             return false;
         }
 

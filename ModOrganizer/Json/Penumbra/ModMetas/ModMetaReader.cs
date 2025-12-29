@@ -24,7 +24,7 @@ public class ModMetaReader(IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), I
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}): {jsonElement}");
             return false;
         }
 
@@ -39,21 +39,21 @@ public class ModMetaReader(IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), I
         var modTags = Array.Empty<string>();
         if (jsonElement.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) && !Assert.IsStringArray(modTagsProperty, out modTags))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]:\n\t{modTagsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]: {modTagsProperty}");
             return false;
         }
 
         var defaultPreferredItems = Array.Empty<int>();
         if (jsonElement.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) && !Assert.IsIntArray(defaultPreferredItemsProperty, out defaultPreferredItems))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]:\n\t{defaultPreferredItemsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]: {defaultPreferredItemsProperty}");
             return false;
         }
 
         var requiredFeatures = Array.Empty<string>();
         if (jsonElement.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) && !Assert.IsStringArray(requiredFeaturesProperty, out requiredFeatures))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]:\n\t{requiredFeaturesProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]: {requiredFeaturesProperty}");
             return false;
         }
 

@@ -1,6 +1,7 @@
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using ModOrganizer.Backups;
 using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModProcessors;
@@ -68,12 +69,7 @@ public class TestModAutoProcessor : TestClass
         var logCalls = logObserver.GetCalls();
         Assert.HasCount(1, logCalls);
 
-        var logCall = logCalls[0];
-        Assert.AreEqual(nameof(IPluginLog.Debug), logCall.StubbedMethod.Name);
-
-        var logArguments = logCall.GetArguments();
-        Assert.HasCount(2, logArguments);
-        Assert.AreEqual($"Waiting [{delay}] ms before processing mod [{modDirectory}]", logArguments[0] as string);
+        AssertPluginLog.MatchObservedCall(logCalls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Waiting [{delay}] ms before processing mod [{modDirectory}]", actualMessage));
 
         var currentTask = modAutoProcessor.GetCurrentTask();
 

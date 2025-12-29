@@ -24,27 +24,27 @@ public class GroupCombiningReader(IPluginLog pluginLog) : Reader<Group>(pluginLo
 
         if (!GroupReader.TryRead(jsonElement, out var group))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupCombining)}]:\n\t{jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupCombining)}]: {jsonElement}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupCombining)}], invalid type [{group.Type}] (expected: {TYPE}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupCombining)}], invalid type [{group.Type}] (expected: {TYPE}): {jsonElement}");
             return false;
         }
 
         var options = Array.Empty<Option>();
         if (jsonElement.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) && !OptionReader.TryReadMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]:\n\t{optionsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]: {optionsProperty}");
             return false;
         }
 
         var containers = Array.Empty<NamedContainer>();
         if (jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) && !NamedContainerReader.TryReadMany(containersProperty, out containers))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]:\n\t{containersProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]: {containersProperty}");
             return false;
         }
 

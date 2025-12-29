@@ -3,12 +3,13 @@ using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Tests.Shared.CommandManager;
+using ModOrganizer.Tests.Shared.PenumbraApi;
 using ModOrganizer.Tests.Shared.PluginInterfaces;
 using ModOrganizer.Tests.Shared.PluginLogs;
 
 namespace ModOrganizer.Tests.Mods.ModInterops;
 
-public class ModInteropBuilder : Builder<ModInterop>, IStubbableCommandManager, IStubbablePluginInterface, IStubbablePluginLog
+public class ModInteropBuilder : Builder<ModInterop>, IStubbableCommandManager, IStubbablePluginInterface, IStubbablePenumbraApi, IStubbablePluginLog
 {
     public StubICommandManager CommandManagerStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };

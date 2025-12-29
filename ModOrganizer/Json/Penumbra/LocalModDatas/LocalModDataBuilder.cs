@@ -24,7 +24,7 @@ public class LocalModDataReader(IPluginLog pluginLog) : Reader<LocalModData>(plu
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{nameof(LocalModData)}], unsupported [{nameof(LocalModData.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(LocalModData)}], unsupported [{nameof(LocalModData.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}): {jsonElement}");
             return false;
         }
 
@@ -33,7 +33,7 @@ public class LocalModDataReader(IPluginLog pluginLog) : Reader<LocalModData>(plu
         var localTags = Array.Empty<string>();
         if (jsonElement.TryGetProperty(nameof(LocalModData.LocalTags), out var localTagsProperty) && !Assert.IsStringArray(localTagsProperty, out localTags))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.LocalTags)}] for [{nameof(LocalModData)}]:\n\t{localTagsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.LocalTags)}] for [{nameof(LocalModData)}]: {localTagsProperty}");
             return false;
         }
 
@@ -42,7 +42,7 @@ public class LocalModDataReader(IPluginLog pluginLog) : Reader<LocalModData>(plu
         var preferredChangedItems = Array.Empty<int>();
         if (jsonElement.TryGetProperty(nameof(LocalModData.PreferredChangedItems), out var preferredChangedItemsProperty) && !Assert.IsIntArray(preferredChangedItemsProperty, out preferredChangedItems))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.PreferredChangedItems)}] for [{nameof(LocalModData)}]:\n\t{preferredChangedItems}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.PreferredChangedItems)}] for [{nameof(LocalModData)}]: {preferredChangedItems}");
             return false;
         }
 

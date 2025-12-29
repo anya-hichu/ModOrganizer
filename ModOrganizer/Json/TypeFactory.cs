@@ -22,7 +22,7 @@ public abstract class TypeFactory<T>(IPluginLog pluginLog) : Factory<T>(pluginLo
 
         if (!Readers.TryGetValue(type, out reader))
         {
-            PluginLog.Warning($"Failed to get [{typeof(T).Name}] builder for type [{type}] (registered types: [{string.Join(", ", Readers.Keys)}]):\n\t{jsonElement}");
+            PluginLog.Warning($"Failed to get [{typeof(T).Name}] builder for type [{type}] (registered types: [{string.Join(", ", Readers.Keys)}]): {jsonElement}");
             return false;
         }
 

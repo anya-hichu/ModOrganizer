@@ -22,7 +22,7 @@ public abstract class Reader<T>(IPluginLog pluginLog) : IReader<T> where T : cla
         {
             if (!TryRead(item, out var instance))
             {
-                PluginLog.Debug($"Failed to read [{typeof(T).Name}]:\n\t{item}");
+                PluginLog.Debug($"Failed to read [{typeof(T).Name}]: {item}");
                 return false;
             }
             list.Add(instance);
