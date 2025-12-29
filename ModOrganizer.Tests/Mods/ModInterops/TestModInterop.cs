@@ -60,7 +60,7 @@ public class TestModInterop : TestClass
         Assert.HasCount(5, afterCalls);
         AssertPluginLog.MatchObservedCall(afterCalls[1], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Received mod added event [{modDirectory}]", actualMessage));
         AssertPluginLog.MatchObservedCall(afterCalls[2], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating caches for mod [{modDirectory}]", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating sort order data cache (count: )", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating sort order data cache", actualMessage));
         AssertPluginLog.MatchObservedCall(afterCalls[4], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating mod info cache [{modDirectory}]", actualMessage));
     }
 
@@ -89,8 +89,8 @@ public class TestModInterop : TestClass
             .WithPenumbraApiGetModList([])
             .WithPenumbraApiGetChangedItems([])
             .WithPenumbraApiGetModDirectory(modsDirectory)
-            .WithPluginInterfaceInjectObject(false)
             .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
 
@@ -114,7 +114,7 @@ public class TestModInterop : TestClass
         Assert.HasCount(5, afterCalls);
         AssertPluginLog.MatchObservedCall(afterCalls[1], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Received mod deleted event [{modDirectory}]", actualMessage));
         AssertPluginLog.MatchObservedCall(afterCalls[2], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating caches for mod [{modDirectory}]", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating sort order data cache (count: )", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating sort order data cache", actualMessage));
         AssertPluginLog.MatchObservedCall(afterCalls[4], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating mod info cache [{modDirectory}]", actualMessage));
     }
 
@@ -176,7 +176,7 @@ public class TestModInterop : TestClass
         Assert.HasCount(5, afterCalls);
         AssertPluginLog.MatchObservedCall(afterCalls[1], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Received mod moved event [{modDirectory}] to [{newModDirectory}]", actualMessage));
         AssertPluginLog.MatchObservedCall(afterCalls[2], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating caches for mod [{modDirectory}]", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating sort order data cache (count: )", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating sort order data cache", actualMessage));
         AssertPluginLog.MatchObservedCall(afterCalls[4], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating mod info cache [{modDirectory}]", actualMessage));
     }
 

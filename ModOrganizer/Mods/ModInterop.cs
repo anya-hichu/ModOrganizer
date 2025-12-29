@@ -1,5 +1,11 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Penumbra.DefaultMods;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.LocalModDatas;
+using ModOrganizer.Json.Penumbra.ModMetas;
+using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers.Files;
 using Penumbra.Api.Enums;
 using Penumbra.Api.Helpers;
 using Penumbra.Api.IpcSubscribers;
@@ -8,12 +14,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using ModOrganizer.Json.Penumbra.DefaultMods;
-using ModOrganizer.Json.Penumbra.Groups;
-using ModOrganizer.Json.Penumbra.LocalModDatas;
-using ModOrganizer.Json.Penumbra.ModMetas;
-using ModOrganizer.Json.Penumbra.SortOrders;
-using ModOrganizer.Json.Readers.Files;
 
 namespace ModOrganizer.Mods;
 
@@ -277,7 +277,7 @@ public class ModInterop : IModInterop
 
     private void InvalidateSortOrderDataCache()
     {
-        PluginLog.Debug($"Invalidating sort order data cache (count: {MaybeSortOrderCache?.Data?.Count})");
+        PluginLog.Debug($"Invalidating sort order data cache");
         MaybeSortOrderCache = null;
     }
 
