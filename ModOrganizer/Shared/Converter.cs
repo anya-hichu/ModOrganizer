@@ -10,11 +10,11 @@ public abstract class Converter<I, O>(IPluginLog pluginLog) where I : class wher
 
     public abstract bool TryConvert(I input, [NotNullWhen(true)] out O? output);
 
-    public bool TryConvertMany(IEnumerable<I> inputs, [NotNullWhen(true)] out IEnumerable<O>? outputs)
+    public bool TryConvertMany(IEnumerable<I> inputs, [NotNullWhen(true)] out HashSet<O>? outputs)
     {
         outputs = null;
-        var list = new List<O>();
 
+        var converted = new HashSet<O>();
         foreach (var input in inputs)
         {
             if (!TryConvert(input, out var output))
@@ -22,10 +22,10 @@ public abstract class Converter<I, O>(IPluginLog pluginLog) where I : class wher
                 PluginLog.Debug($"Failed to convert one or more [{typeof(I).Name}] to [{typeof(O).Name}]");
                 return false;
             }
-            list.Add(output);
+            converted.Add(output);
         }
 
-        outputs = list;
+        outputs = converted;
         return true;
     }
 }

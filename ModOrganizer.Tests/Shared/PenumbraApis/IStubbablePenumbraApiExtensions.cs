@@ -1,10 +1,9 @@
 using Dalamud.Plugin.Ipc.Fakes;
-using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Shared.PluginInterfaces;
 using Penumbra.Api.Enums;
 using Penumbra.Api.IpcSubscribers;
 
-namespace ModOrganizer.Tests.Shared.PenumbraApi;
+namespace ModOrganizer.Tests.Shared.PenumbraApis;
 
 public static class IStubbablePenumbraApiExtensions
 {
@@ -113,6 +112,26 @@ public static class IStubbablePenumbraApiExtensions
         return stubbable;
     }
 
+    public static T WithPenumbraApiModDeleted<T>(this T stubbable, HashSet<Action<string>> actions) where T : IStubbablePluginInterface
+    {
+        stubbable.PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<string, object?>()
+        {
+            SubscribeActionOfT0 = action =>
+            {
+                switch (name)
+                {
+                    case ModAdded.Label: break;
+                    case ModDeleted.Label:
+                        actions.Add(action);
+                        break;
+                    default: throw new NotImplementedException(name);
+                }
+            }
+        });
+
+        return stubbable;
+    }
+
     public static T WithPenumbraApiModMovedNoop<T>(this T stubbable) where T : IStubbablePluginInterface
     {
         stubbable.PluginInterfaceStub.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, string, object?>()
@@ -122,6 +141,26 @@ public static class IStubbablePenumbraApiExtensions
                 switch (name)
                 {
                     case ModMoved.Label: break;
+                    default: throw new NotImplementedException(name);
+                }
+                ;
+            }
+        });
+
+        return stubbable;
+    }
+
+    public static T WithPenumbraApiModMoved<T>(this T stubbable, HashSet<Action<string, string>> actions) where T : IStubbablePluginInterface
+    {
+        stubbable.PluginInterfaceStub.GetIpcSubscriberOf3String(name => new StubICallGateSubscriber<string, string, object?>()
+        {
+            SubscribeActionOfT0T1 = action =>
+            {
+                switch (name)
+                {
+                    case ModMoved.Label:
+                        actions.Add(action);
+                        break;
                     default: throw new NotImplementedException(name);
                 }
                 ;

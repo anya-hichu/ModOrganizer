@@ -2,7 +2,7 @@ using Dalamud.Plugin.Fakes;
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Shared.CommandManager;
-using ModOrganizer.Tests.Shared.PenumbraApi;
+using ModOrganizer.Tests.Shared.PenumbraApis;
 using ModOrganizer.Tests.Shared.PluginInterfaces;
 using ModOrganizer.Tests.Shared.PluginLogs;
 

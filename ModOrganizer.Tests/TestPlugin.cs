@@ -1,5 +1,5 @@
 using ModOrganizer.Tests.Shared.CommandManager;
-using ModOrganizer.Tests.Shared.PenumbraApi;
+using ModOrganizer.Tests.Shared.PenumbraApis;
 using ModOrganizer.Tests.Shared.PluginInterfaces;
 using ModOrganizer.Tests.Shared.PluginLogs;
 using Penumbra.Api.Enums;

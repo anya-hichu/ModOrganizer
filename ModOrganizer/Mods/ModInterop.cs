@@ -277,7 +277,7 @@ public class ModInterop : IModInterop
 
     private void InvalidateSortOrderDataCache()
     {
-        PluginLog.Debug($"Invalidating sort order data cache [count: {MaybeSortOrderCache?.Data?.Count}]");
+        PluginLog.Debug($"Invalidating sort order data cache (count: {MaybeSortOrderCache?.Data?.Count})");
         MaybeSortOrderCache = null;
     }
 
