@@ -51,10 +51,18 @@ public class RuleEvaluator(IPluginLog pluginLog) : IRuleEvaluator
     {
         if (rule.MatchExpression.IsNullOrWhitespace()) return false;
 
-        var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
-        if (result is bool validResult) return validResult;
+        try
+        {
+            var result = Template.Evaluate(rule.MatchExpression, modInfo, MemberRenamer.Rename);
+            if (result is bool boolResult) return boolResult;
 
-        pluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
+            pluginLog.Error($"Match expression [{rule.MatchExpression}] did not evaluate to a boolean, ignoring");
+        } 
+        catch (Exception e)
+        {
+            pluginLog.Error($"Caught expression while evaluating match expression [{rule.MatchExpression}] ({e.Message}), ignoring");
+        }
+        
         return false;
     }
 }

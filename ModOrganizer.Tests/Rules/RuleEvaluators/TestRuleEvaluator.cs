@@ -27,7 +27,7 @@ public class TestRuleEvaluator : TestClass
     };
 
     [TestMethod]
-    public void TestTryEvaluateDisabled()
+    public void TestTryEvaluateWithDisabled()
     {
         var observer = new StubObserver();
         var ruleEvaluator = new RuleEvaluatorBuilder()
@@ -46,7 +46,134 @@ public class TestRuleEvaluator : TestClass
     }
 
     [TestMethod]
-    public void TestTryEvaluateManyDisabled()
+    public void TestTryEvaluateWithMatchExpressionSyntaxError()
+    {
+        var observer = new StubObserver();
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var matchExpression = "Syntax Error";
+
+        var rule = new Rule() 
+        {
+            Enabled = true, 
+            MatchExpression = matchExpression, 
+            PathTemplate = "Not Empty" 
+        };
+
+        var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(path);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        var call = calls[0];
+        Assert.AreEqual("Error", call.StubbedMethod.Name);
+
+        var arguments = call.GetArguments();
+        Assert.HasCount(2, arguments);
+        Assert.AreEqual($"Caught expression while evaluating match expression [{matchExpression}] (<input>(1,1) : error : The function `Syntax` was not found), ignoring", arguments[0] as string);
+    }
+
+    [TestMethod]
+    public void TestTryEvaluateWithMatchExpressionInvalidType()
+    {
+        var observer = new StubObserver();
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var matchExpression = "[]";
+
+        var rule = new Rule()
+        {
+            Enabled = true,
+            MatchExpression = matchExpression,
+            PathTemplate = "Not Empty"
+        };
+
+        var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(path);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        var call = calls[0];
+        Assert.AreEqual("Error", call.StubbedMethod.Name);
+
+        var arguments = call.GetArguments();
+        Assert.HasCount(2, arguments);
+        Assert.AreEqual($"Match expression [{matchExpression}] did not evaluate to a boolean, ignoring", arguments[0] as string);
+    }
+
+    [TestMethod]
+    public void TestTryEvaluateWithPathTemplateSyntaxError()
+    {
+        var observer = new StubObserver();
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var rulePath = "Rule Path";
+
+        var rule = new Rule()
+        {
+            Enabled = true,
+            Path = rulePath,
+            MatchExpression = "true",
+            PathTemplate = "{{ O }X}"
+        };
+
+        var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(path);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        var call = calls[0];
+        Assert.AreEqual("Error", call.StubbedMethod.Name);
+
+        var arguments = call.GetArguments();
+        Assert.HasCount(2, arguments);
+        Assert.AreEqual($"Failed to parse rule [{rulePath}] path template, ignoring:\n\t<input>(1,6) : error : Invalid token found `}}`. Expecting <EOL>/end of line.{Environment.NewLine}<input>(1,6) : error : Unexpected }} while no matching {{{Environment.NewLine}", arguments[0] as string);
+    }
+
+    [TestMethod]
+    public void TestTryEvaluateWithMatching()
+    {
+        var observer = new StubObserver();
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var rule = new Rule()
+        {
+            Enabled = true,
+            MatchExpression = "true",
+            PathTemplate = "{{ meta.name }}"
+        };
+
+        var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
+
+        Assert.IsTrue(success);
+        Assert.AreEqual(TEST_META_NAME, path);
+
+        Assert.IsEmpty(observer.GetCalls());
+    }
+
+    [TestMethod]
+    public void TestTryEvaluateManyWithDisabled()
     {
         var observer = new StubObserver();
         var ruleEvaluator = new RuleEvaluatorBuilder()
@@ -73,31 +200,7 @@ public class TestRuleEvaluator : TestClass
     }
 
     [TestMethod]
-    public void TestTryEvaluateMatching()
-    {
-        var observer = new StubObserver();
-        var ruleEvaluator = new RuleEvaluatorBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
-
-        var rule = new Rule()
-        { 
-            Enabled = true,
-            MatchExpression = "true",
-            PathTemplate = "{{ meta.name }}"
-        };
-
-        var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
-
-        Assert.IsTrue(success);
-        Assert.AreEqual(TEST_META_NAME, path);
-
-        Assert.IsEmpty(observer.GetCalls());
-    }
-
-    [TestMethod]
-    public void TestTryEvaluateManyPriority()
+    public void TestTryEvaluateManyWithPriority()
     {
         var observer = new StubObserver();
         var ruleEvaluator = new RuleEvaluatorBuilder()
@@ -137,7 +240,7 @@ public class TestRuleEvaluator : TestClass
                 Path = matchingRulePath,
                 MatchExpression = "true",
                 PathTemplate = "3"
-            },
+            }
         }; 
             
         var success = ruleEvaluator.TryEvaluateMany(rules, TEST_MOD_INFO, out var path);
