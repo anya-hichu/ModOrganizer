@@ -31,7 +31,6 @@ public class TestModProcessor : TestClass
         Groups = []
     };
 
-
     [TestMethod]
     [DataRow(false)]
     [DataRow(true)]
@@ -46,7 +45,6 @@ public class TestModProcessor : TestClass
         Assert.IsFalse(success);
         Assert.IsNull(newModPath);
     }
-
 
     [TestMethod]
     [DataRow(false)]
@@ -78,7 +76,6 @@ public class TestModProcessor : TestClass
         Assert.HasCount(2, arguments);
         Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}]", arguments[0] as string);
     }
-
 
     [TestMethod]
     public void TestTryProcessWithAutoBackup()
@@ -113,7 +110,6 @@ public class TestModProcessor : TestClass
         Assert.IsTrue(arguments[0] is bool auto && auto);
     }
 
-
     [TestMethod]
     public void TestTryProcessWithRenameError()
     {
@@ -135,7 +131,6 @@ public class TestModProcessor : TestClass
         Assert.AreEqual(newModPath, path);
     }
 
-
     [TestMethod]
     public void TestTryProcessWithDryRun()
     {
@@ -152,7 +147,6 @@ public class TestModProcessor : TestClass
         Assert.IsTrue(success);
         Assert.AreEqual(newModPath, path);
     }
-
 
     [TestMethod]
     public void TestTryProcess()
