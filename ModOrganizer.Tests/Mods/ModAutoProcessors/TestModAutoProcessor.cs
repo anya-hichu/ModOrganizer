@@ -1,5 +1,7 @@
 using Dalamud.Interface.ImGuiNotification;
+using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModProcessors;
 using ModOrganizer.Tests.Shared.NotificationManager;
@@ -67,7 +69,7 @@ public class TestModAutoProcessor : TestClass
         Assert.HasCount(1, logCalls);
 
         var logCall = logCalls[0];
-        Assert.AreEqual("Debug", logCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Debug), logCall.StubbedMethod.Name);
 
         var logArguments = logCall.GetArguments();
         Assert.HasCount(2, logArguments);
@@ -85,7 +87,7 @@ public class TestModAutoProcessor : TestClass
         Assert.HasCount(1, processorCalls);
 
         var processorCall = processorCalls[0];
-        Assert.AreEqual("TryProcess", processorCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IModProcessor.TryProcess), processorCall.StubbedMethod.Name);
 
         var processorArguments = processorCall.GetArguments();
         Assert.HasCount(3, processorArguments);
@@ -96,7 +98,7 @@ public class TestModAutoProcessor : TestClass
         Assert.HasCount(1, notificationCalls);
 
         var notificationCall = notificationCalls[0];
-        Assert.AreEqual("AddNotification", notificationCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(INotificationManager.AddNotification), notificationCall.StubbedMethod.Name);
 
         var notificationArguments = notificationCall.GetArguments();
         Assert.HasCount(1, notificationArguments);

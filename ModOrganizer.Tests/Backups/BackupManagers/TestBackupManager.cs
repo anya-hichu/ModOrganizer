@@ -1,3 +1,4 @@
+using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Backups;
 using ModOrganizer.Tests.Configs;
@@ -113,14 +114,14 @@ public class TestBackupManager : TestClass
         Assert.HasCount(2, calls);
 
         var firstCall = calls[0];
-        Assert.AreEqual("Error", firstCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Error), firstCall.StubbedMethod.Name);
 
         var firstArguments = firstCall.GetArguments();
         Assert.HasCount(2, firstArguments);
         Assert.StartsWith("Caught exception while try to copy", firstArguments[0] as string);
 
         var secondCall = calls[1];
-        Assert.AreEqual("Error", secondCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Error), secondCall.StubbedMethod.Name);
 
         var secondArguments = secondCall.GetArguments();
         Assert.HasCount(2, secondArguments);
@@ -186,7 +187,7 @@ public class TestBackupManager : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Error", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
@@ -220,7 +221,7 @@ public class TestBackupManager : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Warning", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Warning), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
@@ -254,14 +255,14 @@ public class TestBackupManager : TestClass
         Assert.HasCount(2, calls);
 
         var firstCall = calls[0];
-        Assert.AreEqual("Warning", firstCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Warning), firstCall.StubbedMethod.Name);
 
         var firstArguments = firstCall.GetArguments();
         Assert.HasCount(2, firstArguments);
         Assert.AreEqual($"Failed to delete {Backup.GetPrettyType(auto)} backup [{createdAt}] file since it does not exists, ignoring", firstArguments[0] as string);
 
         var secondCall = calls[1];
-        Assert.AreEqual("Warning", secondCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Warning), secondCall.StubbedMethod.Name);
 
         var secondArguments = secondCall.GetArguments();
         Assert.HasCount(2, secondArguments);

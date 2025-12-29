@@ -1,21 +1,15 @@
-using Microsoft.QualityTools.Testing.Fakes.Stubs;
-
 namespace ModOrganizer.Tests.Rules.RuleEvaluators;
 
 public static class IStubbableRuleEvaluatorExtensions
 {
-    public static T WithPluginLogDefaults<T>(this T stubbable) where T : IStubbableRuleEvaluator
+    public static T WithRuleEvaluatorTryEvaluateMany<T>(this T stubbable, string? value) where T : IStubbableRuleEvaluator
     {
-        stubbable.RuleEvaluatorStub.BehaveAsDefaultValue();
+        stubbable.RuleEvaluatorStub.TryEvaluateManyIEnumerableOfRuleModInfoStringOut = (rules, modInfo, out path) =>
+        {
+            path = value;
+            return value != null;
+        };
 
         return stubbable;
     }
-
-    public static T WithPluginLogObserver<T>(this T stubbable, IStubObserver observer) where T : IStubbableRuleEvaluator
-    {
-        stubbable.RuleEvaluatorStub.InstanceObserver = observer;
-
-        return stubbable;
-    }
-
 }

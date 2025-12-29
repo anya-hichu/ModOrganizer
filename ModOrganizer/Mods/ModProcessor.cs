@@ -18,7 +18,7 @@ public class ModProcessor(IBackupManager backupManager, IConfig config, IModInte
         {
             if (dryRun) return true;
 
-            if (config.AutoBackupEnabled) backupManager.CreateRecent(auto: false);
+            if (config.AutoBackupEnabled) backupManager.CreateRecent(auto: true);
 
             return modInterop.SetModPath(modInfo.Directory, newModPath) != PenumbraApiEc.PathRenameFailed;
         }

@@ -1,3 +1,4 @@
+using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
@@ -72,7 +73,7 @@ public class TestRuleEvaluator : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Error", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
@@ -88,7 +89,7 @@ public class TestRuleEvaluator : TestClass
             .WithPluginLogObserver(observer)
             .Build();
 
-        var matchExpression = "[]";
+        var matchExpression = "1";
 
         var rule = new Rule()
         {
@@ -106,7 +107,7 @@ public class TestRuleEvaluator : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Error", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
@@ -122,14 +123,13 @@ public class TestRuleEvaluator : TestClass
             .WithPluginLogObserver(observer)
             .Build();
 
-        var rulePath = "Rule Path";
+        var pathTemplate = "{{ O }X}";
 
         var rule = new Rule()
         {
             Enabled = true,
-            Path = rulePath,
             MatchExpression = "true",
-            PathTemplate = "{{ O }X}"
+            PathTemplate = pathTemplate
         };
 
         var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
@@ -141,11 +141,11 @@ public class TestRuleEvaluator : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Error", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Error), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
-        Assert.AreEqual($"Failed to parse rule [{rulePath}] path template, ignoring:\n\t<input>(1,6) : error : Invalid token found `}}`. Expecting <EOL>/end of line.{Environment.NewLine}<input>(1,6) : error : Unexpected }} while no matching {{{Environment.NewLine}", arguments[0] as string);
+        Assert.AreEqual($"Failed to parse path template [{pathTemplate}], ignoring:\n\t<input>(1,6) : error : Invalid token found `}}`. Expecting <EOL>/end of line.{Environment.NewLine}<input>(1,6) : error : Unexpected }} while no matching {{{Environment.NewLine}", arguments[0] as string);
     }
 
     [TestMethod]
@@ -192,7 +192,7 @@ public class TestRuleEvaluator : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Debug", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Debug), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
@@ -252,7 +252,7 @@ public class TestRuleEvaluator : TestClass
         Assert.HasCount(1, calls);
 
         var call = calls[0];
-        Assert.AreEqual("Debug", call.StubbedMethod.Name);
+        Assert.AreEqual(nameof(IPluginLog.Debug), call.StubbedMethod.Name);
 
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);

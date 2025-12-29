@@ -37,6 +37,7 @@ public class RuleState(IConfig config, IBackupManager backupManager, IModInterop
             try
             {
                 if (!modProcessor.TryProcess(modDirectory, out var newModPath, dryRun: true)) return new RuleErrorResult() { Directory = modDirectory, Path = currentModPath, Message = "No rule matched" };
+                
                 if (currentModPath == newModPath) return new RuleSamePathResult() { Directory = modDirectory, Path = currentModPath };
 
                 return new RulePathResult()
@@ -67,10 +68,9 @@ public class RuleState(IConfig config, IBackupManager backupManager, IModInterop
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (result is not RulePathResult rulePathResult) return [result];
-            if (!rulePathResult.Selected) return [result];
+            if (result is not RulePathResult rulePathResult || !rulePathResult.Selected) return [result];
 
-            if (config.AutoBackupEnabled) backupManager.CreateRecent(auto: false);
+            if (config.AutoBackupEnabled) backupManager.CreateRecent(auto: true);
 
             var newModPath = rulePathResult.NewPath;
             if (ModInterop.SetModPath(rulePathResult.Directory, newModPath) == PenumbraApiEc.PathRenameFailed)
