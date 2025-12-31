@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
-        with:
-          submodules: recursive
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
@@ -35,7 +33,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Run Tests
-        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe
+        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6

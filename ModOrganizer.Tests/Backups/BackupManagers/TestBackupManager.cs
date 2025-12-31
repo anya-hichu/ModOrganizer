@@ -68,7 +68,7 @@ public class TestBackupManager : ITestableClassTemp
     public void TestCreateRecent(bool auto)
     {
         var tempDirectory = this.CreateResultsTempDirectory();
-        
+
         var configBackups = new HashSet<Backup>();
 
         var backupManager = new BackupManagerBuilder()
@@ -233,11 +233,17 @@ public class TestBackupManager : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Failed to delete {Backup.GetPrettyType(auto)} backup [{createdAt}] file since it does not exists, ignoring", actualMessage));
 
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Failed to unregister {Backup.GetPrettyType(auto)} backup from config, ignoring", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryRestore()
+    {
+        throw new NotImplementedException();
     }
 
     [TestMethod]

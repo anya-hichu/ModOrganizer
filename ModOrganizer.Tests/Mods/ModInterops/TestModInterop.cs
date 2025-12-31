@@ -438,30 +438,30 @@ public class TestModInterop : ITestableClassTemp
     [TestMethod]
     public void TestGetModList()
     {
-
+        throw new NotImplementedException();
     }
 
     [TestMethod]
     public void TestGetModPath()
     {
-
+        throw new NotImplementedException();
     }
 
     [TestMethod]
     public void TestGetModDirectory()
     {
-
+        throw new NotImplementedException();
     }
 
     [TestMethod]
     public void TestSetModPath()
     {
-
+        throw new NotImplementedException();
     }
 
     [TestMethod]
     public void TestReloadPenumbra()
     {
-
+        throw new NotImplementedException();
     }
 }

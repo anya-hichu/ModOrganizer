@@ -20,6 +20,12 @@
         "resolved": "3.0.1",
         "contentHash": "scB3+KcxNmEjZK5V8rKCW2gIiL8m8KH91w14FuuExyhi9xTyAJ+jr+DDxGdy12mHmioe2uvjxTfMgM7WmSUFlw=="
       },
+      "Penumbra.Api": {
+        "type": "Direct",
+        "requested": "[5.13.1, )",
+        "resolved": "5.13.1",
+        "contentHash": "kmpqhcbnnF+Ib0F9g7+1W17IbZ8Q8G2zn3MJURd/rmQiB3D7cm8YS2JRmvhDzrN5w9OMlfq7MFxVtwG419YkIA=="
+      },
       "Scriban": {
         "type": "Direct",
         "requested": "[6.5.2, )",
@@ -31,9 +37,6 @@
         "requested": "[2.0.1, )",
         "resolved": "2.0.1",
         "contentHash": "6kdd65+HCrSbO80ELfyQJMs/My8tbpqoxS6VDfhQSdTq8y2kLjxpfxnVEeh3Av1Q+XDOxMv/rBXYsgQR3iQswA=="
-      },
-      "penumbra.api": {
-        "type": "Project"
       }
     }
   }

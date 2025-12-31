@@ -19,8 +19,6 @@ jobs:
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: 10.0.x
 
       - name: Download Dalamud Latest
         run: |
@@ -34,7 +32,13 @@ jobs:
         run: dotnet build --configuration Release -p:AssemblyVersion=${{ github.ref_name }}
 
       - name: Run Tests
-        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe
+        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura
+
+      - name: Upload Tests Coverage
+        if: secrets.CODECOV_TOKEN != ''
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Create Release
         uses: actions/create-release@v1

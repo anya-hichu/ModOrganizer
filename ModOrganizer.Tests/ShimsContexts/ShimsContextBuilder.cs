@@ -3,7 +3,7 @@ using Microsoft.QualityTools.Testing.Fakes;
 
 namespace ModOrganizer.Tests.ShimsContexts;
 
-public abstract class ShimsContextBuilder : Builder<IDisposable>
+public abstract class ShimsContextBuilder : Builder<IDisposable>, IShimmableContext
 {
     public event Action? OnShimsContext;
 

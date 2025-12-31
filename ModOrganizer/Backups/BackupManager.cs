@@ -2,7 +2,6 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ModOrganizer.Configs;
 using ModOrganizer.Mods;
-using ModOrganizer.Shared;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
