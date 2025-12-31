@@ -9,6 +9,9 @@ on:
 jobs:
   Build:
     runs-on: windows-2022
+    env:
+      DALAMUD_ARCHIVE_URL: ${{ vars.DALAMUD_ARCHIVE_URL || 'https://goatcorp.github.io/dalamud-distrib/latest.zip' }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
