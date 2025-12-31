@@ -1,25 +1,28 @@
-using ModOrganizer.Tests.Shared.CommandManager;
-using ModOrganizer.Tests.Shared.PenumbraApis;
-using ModOrganizer.Tests.Shared.PluginInterfaces;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.CommandManagers;
+using ModOrganizer.Tests.Dalamuds.PenumbraApis;
+using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Testables;
 using Penumbra.Api.Enums;
 
 namespace ModOrganizer.Tests;
 
 [TestClass]
-public sealed class TestPlugin : TestClass
+public sealed class TestPlugin : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     [TestMethod]
     public void TestBuild()
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
         var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
 
         Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
 
-        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "Mods"));
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
 
         using var plugin = new PluginBuilder()
             .WithPluginLogDefaults()

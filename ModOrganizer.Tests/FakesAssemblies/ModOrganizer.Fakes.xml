@@ -157,6 +157,24 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
+        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions">
+            <summary>Shim type of ModOrganizer.Json.Readers.Files.IReadableFileExtensions</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.#ctor">
+            <summary>Initializes a new shim instance</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.Behavior">
+            <summary>Assigns the behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.TryReadFromFileOf1IReadableFileOfM0StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{ModOrganizer.Json.Readers.Files.IReadableFile{``0},System.String,``0,System.Boolean})">
+            <summary>Sets the Shim of IReadableFileExtensions.TryReadFromFile(IReadableFile`1 readableFile, String path, !!0&amp; instance)</summary>
+        </member>
         <member name="T:ModOrganizer.Mods.Fakes.StubIModInterop">
             <summary>Stub type of ModOrganizer.Mods.IModInterop</summary>
         </member>

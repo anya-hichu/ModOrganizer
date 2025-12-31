@@ -6,8 +6,8 @@ using ModOrganizer.Mods.Fakes;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Mods.ModProcessors;
-using ModOrganizer.Tests.Shared.NotificationManager;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.NotificationManagers;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 
 namespace ModOrganizer.Tests.Mods.ModAutoProcessors;
 

@@ -2,12 +2,12 @@
     <Assembly Name="Dalamud" Version="14.0.0.0"/>
     <StubGeneration>
         <Clear/>
-        <Add FullName="Dalamud.Interface.IUiBuilder"/>
-        <Add FullName="Dalamud.Plugin.IDalamudPluginInterface"/>
+        <Add FullName="Dalamud.Interface.IUiBuilder!"/>
+        <Add FullName="Dalamud.Plugin.IDalamudPluginInterface!"/>
         <Add FullName="Dalamud.Plugin.Ipc.ICallGateSubscriber"/>
-        <Add FullName="Dalamud.Plugin.Services.IPluginLog"/>
-        <Add FullName="Dalamud.Plugin.Services.ICommandManager"/>
-        <Add FullName="Dalamud.Plugin.Services.INotificationManager"/>
+        <Add FullName="Dalamud.Plugin.Services.IPluginLog!"/>
+        <Add FullName="Dalamud.Plugin.Services.ICommandManager!"/>
+        <Add FullName="Dalamud.Plugin.Services.INotificationManager!"/>
     </StubGeneration>
     <ShimGeneration Disable="true"/>
 </Fakes>

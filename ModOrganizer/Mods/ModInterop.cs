@@ -37,7 +37,7 @@ public class ModInterop : IModInterop
     private IPluginLog PluginLog { get; init; }
 
     private DefaultModReader DefaultModReader { get; init; }
-    private GroupFactory GroupFactory { get; init; }
+    private GroupReaderFactory GroupReaderFactory { get; init; }
     private SortOrderReader SortOrderReader { get; init; }
     private LocalModDataReader LocalModDataReader { get; init; }
     
@@ -79,13 +79,13 @@ public class ModInterop : IModInterop
     public ModInterop(ICommandManager commandManager, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
     {
         CommandManager = commandManager;
+        PluginLog = pluginLog;
 
         DefaultModReader = new(pluginLog);
-        GroupFactory = new(pluginLog);
+        GroupReaderFactory = new(pluginLog);
         LocalModDataReader = new(pluginLog);
         ModMetaReader = new(pluginLog);
         SortOrderReader = new(pluginLog);
-        PluginLog = pluginLog;
 
         GetModDirectorySubscriber = new(pluginInterface);
         GetModListSubscriber = new(pluginInterface);
@@ -97,17 +97,11 @@ public class ModInterop : IModInterop
         ModMovedSubscriber = ModMoved.Subscriber(pluginInterface, OnWrappedModMoved);
 
         PenumbraConfigDirectory = Path.Combine(pluginInterface.ConfigDirectory.Parent!.FullName, nameof(Penumbra));
-        SortOrderFileSystemWatcher = new FileSystemWatcher(PenumbraConfigDirectory, SORT_ORDER_FILE_NAME)
-        {
-            InternalBufferSize = INTERNAL_BUFFER_SIZE 
-        };
+        SortOrderFileSystemWatcher = new FileSystemWatcher(PenumbraConfigDirectory, SORT_ORDER_FILE_NAME) { InternalBufferSize = INTERNAL_BUFFER_SIZE };
         AddFsEventHandlers(SortOrderFileSystemWatcher, OnSortOrderFileUpdate);
 
         DataDirectory = Path.Combine(PenumbraConfigDirectory, DATA_FOLDER_NAME);
-        DataFileSystemWatcher = new FileSystemWatcher(DataDirectory, DATA_FILE_NAME_PATTERN) 
-        {
-            InternalBufferSize = INTERNAL_BUFFER_SIZE 
-        };
+        DataFileSystemWatcher = new FileSystemWatcher(DataDirectory, DATA_FILE_NAME_PATTERN) { InternalBufferSize = INTERNAL_BUFFER_SIZE };
         AddFsEventHandlers(DataFileSystemWatcher, OnDataFileUpdate);
 
         ModsDirectoryPath = GetModDirectorySubscriber.Invoke();
@@ -167,7 +161,7 @@ public class ModInterop : IModInterop
     private void OnModDirectoryChanged(string modDirectoryPath, bool valid)
     {
         if (!valid) return;
-        PluginLog.Debug($"Mod directory path changed [{modDirectoryPath}]");
+        PluginLog.Debug($"Received mod directory changed [{modDirectoryPath}]");
         ModsDirectoryPath = modDirectoryPath;
         DisposeModFsWatchers();
         CreateModFsWatchers();
@@ -218,30 +212,30 @@ public class ModInterop : IModInterop
         DefaultFileSystemWatcher!.EnableRaisingEvents = enable;
         GroupsFileSystemWatcher!.EnableRaisingEvents = enable;
         MetaFileSystemWatcher!.EnableRaisingEvents = enable;
-        PluginLog.Debug($"File system watchers {(enable ? "enabled" : "disabled")}");
+        PluginLog.Debug($"{(enable ? "Enabled" : "Disabled")} file system watchers");
     }
 
     private void OnSortOrderFileUpdate(object sender, FileSystemEventArgs e)
     {
-        PluginLog.Debug($"Sort order config file [{e.FullPath}] changed ({e.ChangeType}), invalidating caches");
+        PluginLog.Debug($"Invalidating caches after sort order config file [{e.FullPath}] changed ({e.ChangeType})");
         InvalidateCaches();
     }
 
     private void OnDataFileUpdate(object sender, FileSystemEventArgs e)
     {
         var modDirectory = Path.GetFileNameWithoutExtension(e.FullPath);
-        PluginLog.Debug($"Data config file [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
+        PluginLog.Debug($"Invalidating cache [{modDirectory}] after data config file [{e.FullPath}] changed ({e.ChangeType})");
         InvalidateCaches(modDirectory);
     }
 
     private void OnModFileUpdate(object sender, FileSystemEventArgs e)
     {
         var modDirectory = Directory.GetParent(e.FullPath)!.Name;
-        PluginLog.Debug($"Mod config file [{e.FullPath}] changed ({e.ChangeType}), invalidating cache [{modDirectory}]");
+        PluginLog.Debug($"Invalidating cache [{modDirectory}] after mod config file [{e.FullPath}] changed ({e.ChangeType})");
         InvalidateCaches(modDirectory);
     }
 
-    private void OnFsWatcherError(object sender, ErrorEventArgs e) => PluginLog.Debug($"File system watcher [{sender.GetHashCode()}] returned error ({e.GetException().Message}), ignoring");
+    private void OnFsWatcherError(object sender, ErrorEventArgs e) => PluginLog.Debug($"Ignoring file system watcher [{sender.GetHashCode()}] error ({e.GetException().Message})");
 
     #endregion
 
@@ -309,12 +303,15 @@ public class ModInterop : IModInterop
     {
         if (ModInfoCaches.TryGetValue(modDirectory, out modInfo)) return modInfo != null;
 
-        if (!LocalModDataReader.TryReadFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData)) PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
-        if (!DefaultModReader.TryReadFromFile(Path.Combine(ModsDirectoryPath, modDirectory, DEFAULT_FILE_NAME), out var defaultMod)) PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
-        if (!ModMetaReader.TryReadFromFile(Path.Combine(ModsDirectoryPath, modDirectory, META_FILE_NAME), out var modMeta)) PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
+        var modDirectoryPath = Path.Combine(ModsDirectoryPath, modDirectory);
 
-        var maybeGroups = Directory.GetFiles(Path.Combine(ModsDirectoryPath, modDirectory), GROUP_FILE_NAME_PATTERN).Select(p => {
-            if (!GroupFactory.TryReadFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
+        if (!LocalModDataReader.TryReadFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData)) PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
+        if (!DefaultModReader.TryReadFromFile(Path.Combine(modDirectoryPath, DEFAULT_FILE_NAME), out var defaultMod)) PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
+        if (!ModMetaReader.TryReadFromFile(Path.Combine(modDirectoryPath, META_FILE_NAME), out var modMeta)) PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
+
+        var groupFilePaths = Directory.Exists(modDirectoryPath) ? Directory.GetFiles(modDirectoryPath, GROUP_FILE_NAME_PATTERN) : [];
+        var maybeGroups = groupFilePaths.Select(p => {
+            if (!GroupReaderFactory.TryReadFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
             return group;
         }).ToArray();
 

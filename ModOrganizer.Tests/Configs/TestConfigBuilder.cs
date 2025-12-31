@@ -1,10 +1,13 @@
 using ModOrganizer.Configs;
+using ModOrganizer.Tests.Testables;
 
 namespace ModOrganizer.Tests.Configs;
 
 [TestClass]
-public class TestConfigBuilder : TestClass
+public class TestConfigBuilder : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     [TestMethod]
     public void TestBuildDefault()
     {

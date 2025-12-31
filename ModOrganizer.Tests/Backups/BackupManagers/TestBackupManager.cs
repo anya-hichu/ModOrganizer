@@ -3,15 +3,18 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Backups;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModInterops;
-using ModOrganizer.Tests.Shared.Clock;
-using ModOrganizer.Tests.Shared.PluginInterfaces;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.Systems.DateTimeOffsets;
 
 namespace ModOrganizer.Tests.Backups.BackupManagers;
 
 [TestClass]
-public class TestBackupManager : TestClass
+public class TestBackupManager : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     [TestMethod]
     public void TestGetFileName()
     {
@@ -25,7 +28,7 @@ public class TestBackupManager : TestClass
     [TestMethod]
     public void TestGetFolderPath()
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
 
@@ -41,14 +44,13 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestCreate(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var configBackups = new HashSet<Backup>();
 
         var backupManager = new BackupManagerBuilder()
             .WithConfigBackups(configBackups)
             .WithPluginInterfaceSaveConfigNoop()
-            .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithConfigAutoBackupLimit(ushort.MaxValue)
             .WithModInteropSortOrderPath(Path.Combine(tempDirectory, "sort_order.json"), exists: true)
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
@@ -65,14 +67,13 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestCreateRecent(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
         
         var configBackups = new HashSet<Backup>();
 
         var backupManager = new BackupManagerBuilder()
             .WithConfigBackups(configBackups)
             .WithPluginInterfaceSaveConfigNoop()
-            .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithConfigAutoBackupLimit(ushort.MaxValue)
             .WithModInteropSortOrderPath(Path.Combine(tempDirectory, "sort_order.json"), exists: true)
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
@@ -91,7 +92,7 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestCreateWithMissingSortOrder(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var builder = new BackupManagerBuilder();
         var configBackups = new HashSet<Backup>();
@@ -101,7 +102,6 @@ public class TestBackupManager : TestClass
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithConfigBackups(configBackups)
-            .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithConfigAutoBackupLimit(ushort.MaxValue)
             .WithModInteropSortOrderPath(Path.Combine(tempDirectory, "sort_order.json"))
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
@@ -122,14 +122,15 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestTryCreate(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
-
-        var builder = new BackupManagerBuilder();
-        var nowUtc = DateTimeOffset.UtcNow.AddHours(-1);
+        var tempDirectory = this.CreateResultsTempDirectory();
         var configBackups = new HashSet<Backup>();
 
-        var backupManager = builder
-            .WithClockNewUtc(nowUtc)
+        var nowUtc = DateTimeOffset.UtcNow.AddHours(-1);
+        using var _ = new BackupManagerShimsContextBuilder()
+            .WithDateTimeOffsetUtcNow(nowUtc)
+            .Build();
+
+        var backupManager = new BackupManagerBuilder()
             .WithConfigBackups(configBackups)
             .WithPluginInterfaceSaveConfigNoop()
             .WithConfigAutoBackupLimit(ushort.MaxValue)
@@ -153,7 +154,7 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestTryCreateWithMissingSortOrderPath(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var builder = new BackupManagerBuilder();
         var observer = new StubObserver();
@@ -162,7 +163,6 @@ public class TestBackupManager : TestClass
         var backupManager = builder
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithModInteropSortOrderPath(missingSortOrderPath)
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
             .Build();
@@ -183,7 +183,7 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestTryDeleteWithMissingBackupFile(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var builder = new BackupManagerBuilder();
         var configBackup = new Backup() { Auto = auto };
@@ -212,7 +212,7 @@ public class TestBackupManager : TestClass
     [DataRow(true)]
     public void TestTryDeleteWithMissingBackup(bool auto)
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
 
         var builder = new BackupManagerBuilder();
         var observer = new StubObserver();
@@ -243,13 +243,12 @@ public class TestBackupManager : TestClass
     [TestMethod]
     public void TestEnforceLimit()
     {
-        var tempDirectory = CreateResultsTempDirectory();
+        var tempDirectory = this.CreateResultsTempDirectory();
         var configBackups = new HashSet<Backup>() { new() };
 
         var backupManager = new BackupManagerBuilder()
             .WithConfigAutoBackupLimit(0)
             .WithConfigBackups(configBackups)
-            .WithClockNewUtc(DateTimeOffset.UtcNow)
             .WithModInteropSortOrderPath(Path.Combine(tempDirectory, "sort_order.json"), exists: true)
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
             .WithPluginInterfaceSaveConfigNoop()

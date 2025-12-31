@@ -59,17 +59,17 @@ public class MainWindow : Window, IDisposable
             new(){ 
                 Icon = FontAwesomeIcon.Cog, 
                 ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), 
-                Click = _ => toggleMainUI() 
+                Click = _ => toggleMainUI.Invoke() 
             },
             new() {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
-                Click = _ => toggleBackupUI()
+                Click = _ => toggleBackupUI.Invoke()
             },
             new() {
                 Icon = FontAwesomeIcon.Eye,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"),
-                Click = _ => togglePreviewUI()
+                Click = _ => togglePreviewUI.Invoke()
             }
         ];
 

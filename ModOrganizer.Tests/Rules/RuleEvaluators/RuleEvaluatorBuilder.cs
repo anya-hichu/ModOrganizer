@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Rules;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 
 namespace ModOrganizer.Tests.Rules.RuleEvaluators;
 

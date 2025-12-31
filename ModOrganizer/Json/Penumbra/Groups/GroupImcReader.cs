@@ -17,7 +17,7 @@ public class GroupImcReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
 
     private MetaImcEntryReader ImcEntryReader { get; init; } = new(pluginLog);
     private MetaImcIdentifierReader ImcIdentifierReader { get; init; } = new(pluginLog);
-    private OptionImcFactory OptionImcFactory { get; init; } = new(pluginLog);
+    private OptionImcReaderFactory OptionImcFactory { get; init; } = new(pluginLog);
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {

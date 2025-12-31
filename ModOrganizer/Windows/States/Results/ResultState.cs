@@ -65,5 +65,5 @@ public abstract class ResultState : IDisposable
     }
 
     public IEnumerable<Result> GetResults() => Results;
-    public IEnumerable<T> GetResults<T>() => Results.SelectMany<Result, T>(r => r is T casted ? [casted] : []);
+    public IEnumerable<T> GetResults<T>() => Results.SelectMany<Result, T>(result => result is T castedResult ? [castedResult] : []);
 }

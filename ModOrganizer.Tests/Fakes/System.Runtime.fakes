@@ -1,0 +1,8 @@
+<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/">
+    <Assembly Name="System.Runtime" Version="10.0.0.0"/>
+    <StubGeneration Disable="true"/>
+    <ShimGeneration>
+        <Clear/>
+        <Add FullName="System.DateTimeOffset!"/>
+    </ShimGeneration>
+</Fakes>

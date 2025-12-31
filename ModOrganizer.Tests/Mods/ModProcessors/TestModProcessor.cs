@@ -6,14 +6,17 @@ using ModOrganizer.Tests.Backups.BackupManagers;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Rules.RuleEvaluators;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Testables;
 using Penumbra.Api.Enums;
 
 namespace ModOrganizer.Tests.Mods.ModProcessors;
 
 [TestClass]
-public class TestModProcessor : TestClass
+public class TestModProcessor : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     private static readonly string TEST_MOD_DIRECTORY = "Mod Directory";
 
     private static readonly ModInfo TEST_MOD_INFO = new()

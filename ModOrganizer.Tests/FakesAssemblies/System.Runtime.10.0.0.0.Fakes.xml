@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Runtime.10.0.0.0.Fakes</name>
+    </assembly>
+    <members>
+        <member name="T:System.Fakes.ShimDateTimeOffset">
+            <summary>Shim type of System.DateTimeOffset</summary>
+        </member>
+        <member name="M:System.Fakes.ShimDateTimeOffset.#ctor">
+            <summary>Initializes a new shim instance</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.AdditionOpDateTimeOffsetTimeSpan">
+            <summary>Sets the Shim of DateTimeOffset.op_Addition(DateTimeOffset dateTimeOffset, TimeSpan timeSpan)</summary>
+        </member>
+        <member name="T:System.Fakes.ShimDateTimeOffset.AllInstances">
+            <summary>Define shims for all instances members</summary>
+        </member>
+        <member name="M:System.Fakes.ShimDateTimeOffset.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="M:System.Fakes.ShimDateTimeOffset.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.Behavior">
+            <summary>Assigns the behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.CompareDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.Compare(DateTimeOffset first, DateTimeOffset second)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.EqualityOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_Equality(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.EqualsDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.Equals(DateTimeOffset first, DateTimeOffset second)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.FromFileTimeInt64">
+            <summary>Sets the Shim of DateTimeOffset.FromFileTime(Int64 fileTime)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.FromUnixTimeMillisecondsInt64">
+            <summary>Sets the Shim of DateTimeOffset.FromUnixTimeMilliseconds(Int64 milliseconds)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.FromUnixTimeSecondsInt64">
+            <summary>Sets the Shim of DateTimeOffset.FromUnixTimeSeconds(Int64 seconds)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.GreaterThanOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_GreaterThan(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.GreaterThanOrEqualOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_GreaterThanOrEqual(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ImplicitOpDateTimeDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_Implicit(DateTime dateTime)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.InequalityOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_Inequality(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.LessThanOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_LessThan(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.LessThanOrEqualOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_LessThanOrEqual(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.NowGet">
+            <summary>Sets the Shim of DateTimeOffset.get_Now()</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ParseExactStringStringArrayIFormatProviderDateTimeStyles">
+            <summary>Sets the Shim of DateTimeOffset.ParseExact(String input, String[] formats, IFormatProvider formatProvider, DateTimeStyles styles)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ParseExactStringStringIFormatProvider">
+            <summary>Sets the Shim of DateTimeOffset.ParseExact(String input, String format, IFormatProvider formatProvider)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ParseExactStringStringIFormatProviderDateTimeStyles">
+            <summary>Sets the Shim of DateTimeOffset.ParseExact(String input, String format, IFormatProvider formatProvider, DateTimeStyles styles)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ParseString">
+            <summary>Sets the Shim of DateTimeOffset.Parse(String input)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ParseStringIFormatProvider">
+            <summary>Sets the Shim of DateTimeOffset.Parse(String input, IFormatProvider formatProvider)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.ParseStringIFormatProviderDateTimeStyles">
+            <summary>Sets the Shim of DateTimeOffset.Parse(String input, IFormatProvider formatProvider, DateTimeStyles styles)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.SubtractionOpDateTimeOffsetDateTimeOffset">
+            <summary>Sets the Shim of DateTimeOffset.op_Subtraction(DateTimeOffset left, DateTimeOffset right)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.SubtractionOpDateTimeOffsetTimeSpan">
+            <summary>Sets the Shim of DateTimeOffset.op_Subtraction(DateTimeOffset dateTimeOffset, TimeSpan timeSpan)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.TryParseExactStringStringArrayIFormatProviderDateTimeStylesDateTimeOffsetOut">
+            <summary>Sets the Shim of DateTimeOffset.TryParseExact(String input, String[] formats, IFormatProvider formatProvider, DateTimeStyles styles, DateTimeOffset* result)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.TryParseExactStringStringIFormatProviderDateTimeStylesDateTimeOffsetOut">
+            <summary>Sets the Shim of DateTimeOffset.TryParseExact(String input, String format, IFormatProvider formatProvider, DateTimeStyles styles, DateTimeOffset* result)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.TryParseStringDateTimeOffsetOut">
+            <summary>Sets the Shim of DateTimeOffset.TryParse(String input, DateTimeOffset* result)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.TryParseStringIFormatProviderDateTimeOffsetOut">
+            <summary>Sets the Shim of DateTimeOffset.TryParse(String s, IFormatProvider provider, DateTimeOffset* result)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.TryParseStringIFormatProviderDateTimeStylesDateTimeOffsetOut">
+            <summary>Sets the Shim of DateTimeOffset.TryParse(String input, IFormatProvider formatProvider, DateTimeStyles styles, DateTimeOffset* result)</summary>
+        </member>
+        <member name="P:System.Fakes.ShimDateTimeOffset.UtcNowGet">
+            <summary>Sets the Shim of DateTimeOffset.get_UtcNow()</summary>
+        </member>
+    </members>
+</doc>

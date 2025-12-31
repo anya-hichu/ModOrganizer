@@ -12,7 +12,7 @@ namespace ModOrganizer.Json.Penumbra.Containers;
 
 public class ContainerReader(IPluginLog pluginLog) : Reader<Container>(pluginLog)
 {
-    private ManipulationWrapperFactory ManipulationWrapperFactory { get; init; } = new(pluginLog);
+    private ManipulationWrapperReaderFactory ManipulationWrapperFactory { get; init; } = new(pluginLog);
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Container? instance)
     {

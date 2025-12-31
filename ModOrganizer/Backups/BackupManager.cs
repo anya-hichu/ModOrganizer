@@ -13,7 +13,6 @@ namespace ModOrganizer.Backups;
 
 public class BackupManager : IBackupManager
 {
-    private IClock Clock { get; init; }
     private IConfig Config { get; init; }
     private IModInterop ModInterop { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
@@ -21,9 +20,8 @@ public class BackupManager : IBackupManager
 
     private RateLimitedAction<bool> CreateRecentAction { get; init; }
 
-    public BackupManager(IClock clock, IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
+    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
     {
-        Clock = clock;
         Config = config;
         ModInterop = modInterop;
         PluginInterface = pluginInterface;
@@ -50,7 +48,7 @@ public class BackupManager : IBackupManager
     {
         backup = null;
         
-        var createdAt = Clock.GetNowUtc();
+        var createdAt = DateTimeOffset.UtcNow;
         if (!TryCopyFile(ModInterop.GetSortOrderPath(), GetPath(createdAt))) return false;
 
         backup = new()

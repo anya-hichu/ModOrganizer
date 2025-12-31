@@ -1,10 +1,13 @@
 using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Testables;
 
 namespace ModOrganizer.Tests.Mods.ModFileSystems;
 
 [TestClass]
-public class TestModFileSystem : TestClass
+public class TestModFileSystem : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     [TestMethod]
     public void TestGetRootFolderWithNone()
     {

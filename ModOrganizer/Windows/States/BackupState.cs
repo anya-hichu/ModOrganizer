@@ -7,6 +7,7 @@ using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Backups;
 using ModOrganizer.Windows.States.Results.Showables;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.States;
 
@@ -33,13 +34,13 @@ public class BackupState : ResultState, IShowableBackupResultState
 
         SortOrderReader = new(pluginLog);
 
-        ModInterop.OnSortOrderChanged += Preview;
+        ModInterop.OnSortOrderChanged += OnSortOrderChanged;
     }
 
     public new void Dispose()
     {
         base.Dispose();
-        ModInterop.OnSortOrderChanged -= Preview;
+        ModInterop.OnSortOrderChanged -= OnSortOrderChanged;
     }
 
     public override void Clear()
@@ -61,7 +62,7 @@ public class BackupState : ResultState, IShowableBackupResultState
 
     public void Unselect() => Clear();
 
-    public void Preview() => CancelAndRunTask(cancellationToken =>
+    public Task Preview() => CancelAndRunTask(cancellationToken =>
     {
         if (Selected == null) return;
         if (!SortOrderReader.TryReadFromFile(BackupManager.GetPath(Selected), out var backupSortOrder)) return;
@@ -93,4 +94,6 @@ public class BackupState : ResultState, IShowableBackupResultState
 
         if (!BackupManager.TryRestore(Selected, ReloadPenumbra)) PluginLog.Error($"Failed to restore backup from [{Selected.CreatedAt}]");
     }
+
+    private void OnSortOrderChanged() => Preview();
 }

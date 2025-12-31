@@ -1,10 +1,10 @@
 using Dalamud.Plugin.Fakes;
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Tests.Shared.CommandManager;
-using ModOrganizer.Tests.Shared.PenumbraApis;
-using ModOrganizer.Tests.Shared.PluginInterfaces;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.CommandManagers;
+using ModOrganizer.Tests.Dalamuds.PenumbraApis;
+using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 
 namespace ModOrganizer.Tests;
 

@@ -2,12 +2,16 @@
     <Assembly Name="ModOrganizer"/>
     <StubGeneration>
         <Clear/>
-        <Add FullName="ModOrganizer.Backups.IBackupManager"/>
-        <Add FullName="ModOrganizer.Configs.IConfig"/>
-        <Add FullName="ModOrganizer.Mods.IModInterop"/>
-        <Add FullName="ModOrganizer.Mods.IModProcessor"/>
-        <Add FullName="ModOrganizer.Rules.IRuleEvaluator"/>
-        <Add FullName="ModOrganizer.Shared.IClock"/>
+        <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
+        <Add FullName="ModOrganizer.Configs.IConfig!"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFile!" Interfaces="true"/>
+        <Add FullName="ModOrganizer.Mods.IModInterop!"/>
+        <Add FullName="ModOrganizer.Mods.IModProcessor!"/>
+        <Add FullName="ModOrganizer.Rules.IRuleEvaluator!"/>
+        <Add FullName="ModOrganizer.Shared.IClock!"/>
     </StubGeneration>
-    <ShimGeneration Disable="true"/>
+    <ShimGeneration>
+        <Clear/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFileExtensions!"/>
+    </ShimGeneration>
 </Fakes>

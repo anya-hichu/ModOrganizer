@@ -2,13 +2,16 @@ using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Testables;
 
 namespace ModOrganizer.Tests.Rules.RuleEvaluators;
 
 [TestClass]
-public class TestRuleEvaluator : TestClass
+public class TestRuleEvaluator : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     private static readonly string TEST_MOD_DIRECTORY = "Mod Directory";
     private static readonly string TEST_META_NAME = "Mod Name";
 

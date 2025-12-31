@@ -1,18 +1,20 @@
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Backups;
 using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModProcessors;
-using ModOrganizer.Tests.Shared.NotificationManager;
-using ModOrganizer.Tests.Shared.PluginLogs;
+using ModOrganizer.Tests.Dalamuds.NotificationManagers;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Testables;
 
 namespace ModOrganizer.Tests.Mods.ModAutoProcessors;
 
 [TestClass]
-public class TestModAutoProcessor : TestClass
+public class TestModAutoProcessor : ITestableClassTemp
 {
+    public TestContext TestContext { get; set; }
+
     [TestMethod]
     public async Task TestAutoProcessDisabled()
     {
