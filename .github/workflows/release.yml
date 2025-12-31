@@ -35,10 +35,10 @@ jobs:
         run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura
 
       - name: Upload Tests Coverage
-        if: secrets.CODECOV_TOKEN != ''
+        if: env.CODECOV_TOKEN
         uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Create Release
         uses: actions/create-release@v1
