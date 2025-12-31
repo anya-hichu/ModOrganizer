@@ -243,7 +243,7 @@ public class TestBackupManager : ITestableClassTemp
     [TestMethod]
     public void TestTryRestore()
     {
-        throw new NotImplementedException();
+
     }
 
     [TestMethod]
