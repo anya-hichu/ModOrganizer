@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
-          
+
       - name: Download Dalamud Latest
         run: |
           Invoke-WebRequest -Uri ${{ env.DALAMUD_ARCHIVE_URL }} -OutFile latest.zip
