@@ -33,7 +33,7 @@
         <Reference Include="ModOrganizer.Fakes">
             <HintPath>FakesAssemblies\ModOrganizer.Fakes.dll</HintPath>
         </Reference>
-        <Reference Include="System.Runtime">
+        <Reference Include="System.Runtime.Fakes">
             <HintPath>FakesAssemblies\System.Runtime.10.0.0.0.Fakes.dll</HintPath>
         </Reference>
     </ItemGroup>
