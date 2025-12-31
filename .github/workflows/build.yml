@@ -35,6 +35,12 @@ jobs:
       - name: Run Tests
         run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura
 
+      - name: Upload Tests Coverage
+        if: secrets.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
         with:
