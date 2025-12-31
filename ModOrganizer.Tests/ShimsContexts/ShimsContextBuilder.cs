@@ -5,7 +5,12 @@ namespace ModOrganizer.Tests.ShimsContexts;
 
 public abstract class ShimsContextBuilder : Builder<IDisposable>
 {
-    public IDisposable Context { get; init; } = ShimsContext.Create();
+    public event Action? OnShimsContext;
 
-    public override IDisposable Build() => Context;
+    public override IDisposable Build() 
+    {
+        var shimsContext = ShimsContext.Create();
+        OnShimsContext?.Invoke();
+        return shimsContext;
+    }
 }
