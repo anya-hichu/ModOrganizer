@@ -4,6 +4,8 @@ using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.LocalModDatas;
 using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Mods;
+using ModOrganizer.Tests.Dalamuds.CommandManagers;
 using ModOrganizer.Tests.Dalamuds.PenumbraApis;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
@@ -664,8 +666,41 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
-    public void TestReloadPenumbra()
+    [DataRow(false)]
+    [DataRow(true)]
+    public void TestReloadPenumbra(bool success)
     {
+        var tempDirectory = this.CreateResultsTempDirectory();
 
+        var observer = new StubObserver();
+
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithCommandManagerObserver(observer)
+            .WithCommandManagerProcessCommand(success)
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        Assert.AreEqual(success, modInterop.ReloadPenumbra());
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        Assert.AreEqual(ModInterop.RELOAD_PENUMBRA_COMMAND, calls[0].GetArguments()[0] as string);
     }
 }
