@@ -21,7 +21,7 @@ public class ModInterop : IModInterop
 {
     private static readonly int INTERNAL_BUFFER_SIZE = 1024 * 32;
 
-    private static readonly string SORT_ORDER_FILE_NAME = "sort_order.json";
+    public static readonly string SORT_ORDER_FILE_NAME = "sort_order.json";
 
     private static readonly string DATA_FOLDER_NAME = "mod_data";
     private static readonly string DATA_FILE_NAME_PATTERN = "*.json";
@@ -30,7 +30,6 @@ public class ModInterop : IModInterop
     private static readonly string GROUP_FILE_NAME_PATTERN = "group_*.json";
     private static readonly string META_FILE_NAME = "meta.json";
 
-    // TODO: Display in checkbox hint
     public static readonly string RELOAD_PENUMBRA_COMMAND = "/penumbra reload";
 
     private ICommandManager CommandManager { get; init; }

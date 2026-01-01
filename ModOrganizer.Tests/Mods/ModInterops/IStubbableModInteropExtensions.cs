@@ -1,4 +1,5 @@
 using Microsoft.QualityTools.Testing.Fakes;
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using Penumbra.Api.Enums;
 
@@ -6,6 +7,13 @@ namespace ModOrganizer.Tests.Mods.ModInterops;
 
 public static class IStubbableModInteropExtensions
 {
+    public static T WithModInteropObserver<T>(this T stubbable, IStubObserver observer) where T : IStubbableModInterop
+    {
+        stubbable.ModInteropStub.InstanceObserver = observer;
+
+        return stubbable;
+    }
+
     public static T WithModInteropGetModList<T>(this T stubbable, Dictionary<string, string> value) where T : IStubbableModInterop
     {
         stubbable.ModInteropStub.GetModList = () => value;
@@ -49,6 +57,13 @@ public static class IStubbableModInteropExtensions
             modInfo = value;
             return value != null;
         };
+
+        return stubbable;
+    }
+
+    public static T WithModInteropReloadPenumbra<T>(this T stubbable, bool value) where T : IStubbableModInterop
+    {
+        stubbable.ModInteropStub.ReloadPenumbra = () => value;
 
         return stubbable;
     }
