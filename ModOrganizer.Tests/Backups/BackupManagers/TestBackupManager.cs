@@ -251,6 +251,7 @@ public class TestBackupManager : ITestableClassTemp
         var tempDirectory = this.CreateResultsTempDirectory();
 
         var configBackup = new Backup() { Auto = auto };
+
         var penumbraDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
         var sortOrderPath = Path.Combine(penumbraDirectory.FullName, ModInterop.SORT_ORDER_FILE_NAME);
 
@@ -280,7 +281,7 @@ public class TestBackupManager : ITestableClassTemp
 
         var observer = new StubObserver();
 
-        var configBackup = new Backup() { Auto = auto };
+        var configBackup = new Backup() { CreatedAt = DateTimeOffset.UtcNow.AddHours(-1), Auto = auto };
 
         var penumbraDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
         var sortOrderPath = Path.Combine(penumbraDirectory.FullName, ModInterop.SORT_ORDER_FILE_NAME);
