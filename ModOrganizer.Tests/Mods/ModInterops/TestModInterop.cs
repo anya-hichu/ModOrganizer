@@ -1,14 +1,14 @@
 using Dalamud.Plugin.Services;
-using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.LocalModDatas;
 using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Json.Penumbra.SortOrders;
-using ModOrganizer.Tests.Json.Readers.Files;
 using ModOrganizer.Tests.Dalamuds.PenumbraApis;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Readers.Files;
+using ModOrganizer.Tests.Systems;
 using ModOrganizer.Tests.Testables;
 using Penumbra.Api.Enums;
 
@@ -53,9 +53,9 @@ public class TestModInterop : ITestableClassTemp
         var registeredAction = registeredActions.ElementAt(0);
 
         var modDirectory = "Mod Directory";
-        string? actualModDirectory = null;
 
-        modInterop.OnModAdded += directory => actualModDirectory = directory;
+        var onModAddedObserver = new StubObserver();
+        modInterop.OnModAdded += ActionDecorator.WithObserver<string>(onModAddedObserver, modDirectory => { });
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -64,7 +64,9 @@ public class TestModInterop : ITestableClassTemp
 
         registeredAction.Invoke(modDirectory);
 
-        Assert.AreEqual(modDirectory, actualModDirectory);
+        var onModAddedCalls = onModAddedObserver.GetCalls();
+        Assert.HasCount(1, onModAddedCalls);
+        Assert.AreEqual(modDirectory, onModAddedCalls[0].GetArguments()[0] as string);
 
         var afterCalls = observer.GetCalls();
         Assert.HasCount(5, afterCalls);
@@ -112,9 +114,9 @@ public class TestModInterop : ITestableClassTemp
         var registeredAction = registeredActions.ElementAt(0);
 
         var modDirectory = "Mod Directory";
-        string? actualModDirectory = null;
 
-        modInterop.OnModDeleted += directory => actualModDirectory = directory;
+        var onModDeletedObserver = new StubObserver();
+        modInterop.OnModDeleted += ActionDecorator.WithObserver<string>(onModDeletedObserver, modDirectory => { });
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -123,7 +125,9 @@ public class TestModInterop : ITestableClassTemp
 
         registeredAction.Invoke(modDirectory);
 
-        Assert.AreEqual(modDirectory, actualModDirectory);
+        var onModDeletedCalls = onModDeletedObserver.GetCalls();
+        Assert.HasCount(1, onModDeletedCalls);
+        Assert.AreEqual(modDirectory, onModDeletedCalls[0].GetArguments()[0] as string);
 
         var afterCalls = observer.GetCalls();
         Assert.HasCount(5, afterCalls);
@@ -173,14 +177,8 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
         var newModDirectory = "New Mod Directory";
 
-        string? actualModDirectory = null;
-        string? actualNewModDirectory = null;
-
-        modInterop.OnModMoved += (directory, newDirectory) =>
-        {
-            actualModDirectory = directory;
-            actualNewModDirectory = newDirectory;
-        };
+        var onModMovedObserver = new StubObserver();
+        modInterop.OnModMoved += ActionDecorator.WithObserver(onModMovedObserver, (string modDirectory, string newModDirectory) => { });
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -189,8 +187,12 @@ public class TestModInterop : ITestableClassTemp
 
         registeredAction.Invoke(modDirectory, newModDirectory);
 
-        Assert.AreEqual(modDirectory, actualModDirectory);
-        Assert.AreEqual(newModDirectory, actualNewModDirectory);
+        var onModMovedCalls = onModMovedObserver.GetCalls();
+        Assert.HasCount(1, onModMovedCalls);
+
+        var onModMovedArguments = onModMovedCalls[0].GetArguments();
+        Assert.AreEqual(modDirectory, onModMovedArguments[0] as string);
+        Assert.AreEqual(newModDirectory, onModMovedArguments[1] as string);
 
         var afterCalls = observer.GetCalls();
         Assert.HasCount(5, afterCalls);
@@ -407,8 +409,8 @@ public class TestModInterop : ITestableClassTemp
             .WithPenumbraApiGetModList([])
             .WithPenumbraApiGetChangedItems([])
             .WithPenumbraApiGetModDirectory(modsDirectory)
-            .WithPluginInterfaceInjectObject(false)
             .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
 
@@ -438,25 +440,227 @@ public class TestModInterop : ITestableClassTemp
     [TestMethod]
     public void TestGetModList()
     {
+        var tempDirectory = this.CreateResultsTempDirectory();
 
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var modDirectory = "Mod Directory";
+        var modName = "Mod Name";
+
+        var modList = new Dictionary<string, string>() { { modDirectory, modName } };
+
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList(modList)
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        var actualModList = modInterop.GetModList();
+
+        Assert.HasCount(1, actualModList);
+        Assert.AreEqual(modName, actualModList[modDirectory]);
     }
 
     [TestMethod]
     public void TestGetModPath()
     {
+        var tempDirectory = this.CreateResultsTempDirectory();
 
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var modDirectory = "Mod Directory";
+        var modPath = "Mod Path";
+
+        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
+
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFileTryReadFromFile(sortOrder)
+            .Build();
+
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        Assert.AreEqual(modPath, modInterop.GetModPath(modDirectory));
+    }
+
+    [TestMethod]
+    public void TestGetModPathWithoutSortOrder()
+    {
+        var tempDirectory = this.CreateResultsTempDirectory();
+
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        var modDirectory = "Mod Directory";
+        var modPath = modInterop.GetModPath(modDirectory);
+
+        Assert.AreEqual(modDirectory, modPath);
     }
 
     [TestMethod]
     public void TestGetModDirectory()
     {
+        var tempDirectory = this.CreateResultsTempDirectory();
 
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var modDirectory = "Mod Directory";
+        var modPath = "Mod Path";
+
+        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
+
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFileTryReadFromFile(sortOrder)
+            .Build();
+
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        Assert.AreEqual(modDirectory, modInterop.GetModDirectory(modPath));
+    }
+
+    [TestMethod]
+    public void TestGetModDirectoryWithoutSortOrder()
+    {
+        var tempDirectory = this.CreateResultsTempDirectory();
+
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        var modPath = "Mod Path";
+        Assert.AreEqual(modPath, modInterop.GetModDirectory(modPath));
     }
 
     [TestMethod]
     public void TestSetModPath()
     {
+        var tempDirectory = this.CreateResultsTempDirectory();
 
+        var observer = new StubObserver();
+
+        var configDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer)));
+        var penumbraConfigDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(Penumbra)));
+
+        Directory.CreateDirectory(Path.Combine(penumbraConfigDirectory.FullName, "mod_data"));
+
+        var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
+
+        var setModPathObserver = new StubObserver();
+        var modInterop = new ModInteropBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithPenumbraApiModMovedNoop()
+            .WithPenumbraApiGetModList([])
+            .WithPenumbraApiGetChangedItems([])
+            .WithPenumbraApiModAddedOrDeletedNoop()
+            .WithPenumbraApiModDirectoryChangedNoop()
+            .WithPenumbraApiGetModDirectory(modsDirectory)
+            .WithPenumbraApiSetModPath(FuncDecorator.WithObserver(setModPathObserver, (string modDirectory, string modName, string newModPath) => PenumbraApiEc.Success))
+            .WithPluginInterfaceInjectObject(false)
+            .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        var beforeLogCalls = observer.GetCalls();
+        Assert.HasCount(1, beforeLogCalls);
+
+        AssertPluginLog.MatchObservedCall(beforeLogCalls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual("Created mod file system watchers", actualMessage));
+
+        var modDirectory = "Mod Directory";
+        var newModPath = "New Mod Path";
+        
+        var success = modInterop.SetModPath(modDirectory, newModPath);
+
+        var setModPathCalls = setModPathObserver.GetCalls();
+        Assert.HasCount(1, setModPathCalls);
+
+        var setModPathArguments = setModPathCalls[0].GetArguments();
+        Assert.AreEqual(modDirectory, setModPathArguments[0] as string);
+        Assert.AreEqual(string.Empty, setModPathArguments[1] as string);
+        Assert.AreEqual(newModPath, setModPathArguments[2] as string);
+
+        var afterLogCalls = observer.GetCalls();
+        Assert.HasCount(5, afterLogCalls);
+
+        AssertPluginLog.MatchObservedCall(afterLogCalls[1], nameof(IPluginLog.Info), actualMessage => Assert.AreEqual($"Set mod [{modDirectory}] path to [{newModPath}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[2], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating caches for mod [{modDirectory}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual("Invalidating sort order data cache", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[4], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating mod info cache [{modDirectory}]", actualMessage));
     }
 
     [TestMethod]

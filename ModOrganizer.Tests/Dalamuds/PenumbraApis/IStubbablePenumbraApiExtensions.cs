@@ -75,6 +75,23 @@ public static class IStubbablePenumbraApiExtensions
         return stubbable;
     }
 
+    public static T WithPenumbraApiSetModPath<T>(this T stubbable, Func<string, string, string, PenumbraApiEc> func) where T : IStubbablePluginInterface
+    {
+        stubbable.PluginInterfaceStub.GetIpcSubscriberOf4String(name => new StubICallGateSubscriber<string, string, string, int>()
+        {
+            InvokeFuncT0T1T2 = (modDirectory, newPath, modName) =>
+            {
+                return name switch
+                {
+                    SetModPath.Label => (int)func.Invoke(modDirectory, newPath, modName),
+                    _ => throw new NotImplementedException(name),
+                };
+            }
+        });
+
+        return stubbable;
+    }
+
     public static T WithPenumbraApiModAddedOrDeletedNoop<T>(this T stubbable) where T : IStubbablePluginInterface
     {
         stubbable.PluginInterfaceStub.GetIpcSubscriberOf2String(name => new StubICallGateSubscriber<string, object?>()
@@ -143,7 +160,6 @@ public static class IStubbablePenumbraApiExtensions
                     case ModMoved.Label: break;
                     default: throw new NotImplementedException(name);
                 }
-                ;
             }
         });
 
@@ -163,7 +179,6 @@ public static class IStubbablePenumbraApiExtensions
                         break;
                     default: throw new NotImplementedException(name);
                 }
-                ;
             }
         });
 

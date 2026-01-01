@@ -309,11 +309,11 @@ public class TestBackupManager : ITestableClassTemp
 
         Assert.HasCount(2, backupConfigs);
 
-        var autoBackup = backupConfigs.ElementAt(1);
+        var createdAutoBackup = backupConfigs.ElementAt(1);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Created auto backup [{autoBackup.CreatedAt}] file before restore", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Created auto backup [{createdAutoBackup.CreatedAt}] file before restore", actualMessage));
     }
 
     [TestMethod]
