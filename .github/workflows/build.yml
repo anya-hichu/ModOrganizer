@@ -34,11 +34,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Run Tests
-        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe
+        run: .\ModOrganizer.Tests\bin\Release\net10.0-windows\ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura --coverage-output ${{ github.sha }}.cobertura.xml
 
       - name: Upload Tests Coverage
         if: env.CODECOV_TOKEN
         uses: codecov/codecov-action@v5
+        with:
+          files: ModOrganizer.Tests\bin\Release\net10.0-windows\TestResults\${{ github.sha }}.cobertura.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -47,5 +49,5 @@ jobs:
         with:
           name: ModOrganizer
           path: |
-             ModOrganizer/bin/x64/Release/*
-             !ModOrganizer/bin/x64/Release/ModOrganizer/*
+             ModOrganizer\bin\x64\Release\*
+             !ModOrganizer\bin\x64\Release\ModOrganizer\*
