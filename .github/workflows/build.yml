@@ -34,7 +34,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Run Tests
-        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura
+        run: ./ModOrganizer.Tests/bin/Release/net10.0-windows/ModOrganizer.Tests.exe
 
       - name: Upload Tests Coverage
         if: env.CODECOV_TOKEN
