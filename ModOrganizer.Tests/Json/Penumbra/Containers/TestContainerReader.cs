@@ -23,7 +23,7 @@ public class TestContainerReader
         var data = new Dictionary<string, object?>() {
             { nameof(Container.Files), new Dictionary<string, object?>() { { fileKey, fileValue } } },
             { nameof(Container.FileSwaps), new Dictionary<string, object?>() { { fileSwapKey, fileSwapValue } } },
-            { nameof(Container.Manipulations), null }
+            { nameof(Container.Manipulations), Array.Empty<object?>() }
         };
 
         var containerReader = new ContainerReaderBuilder()
@@ -58,7 +58,8 @@ public class TestContainerReader
         switch (call.GetArguments()[0])
         {
             case JsonElement manipulationsProperty:
-                Assert.AreEqual(JsonValueKind.Null, manipulationsProperty.ValueKind);
+                Assert.AreEqual(JsonValueKind.Array, manipulationsProperty.ValueKind);
+                Assert.AreEqual(0, manipulationsProperty.GetArrayLength());
                 break;
             default:
                 Assert.Fail("Expected first call argument to be a JsonElement");
