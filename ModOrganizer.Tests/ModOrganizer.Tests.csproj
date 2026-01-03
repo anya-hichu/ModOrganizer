@@ -43,6 +43,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Json\SortOrders\" />
+      <Folder Include="Json\ConfigDatas\" />
+      <Folder Include="Json\RuleDatas\" />
     </ItemGroup>
 </Project>

@@ -29,13 +29,10 @@ public static class IClipboardReaderExtensions
                 return false;
             }
 
-            if (!clipboardReader.TryRead(jsonElement, out instance))
-            {
-                clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data");
-                return false;
-            }
+            if (clipboardReader.TryRead(jsonElement, out instance)) return true;
 
-            return true;
+            clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data");
+            return false;
         }
         catch (Exception e)
         {

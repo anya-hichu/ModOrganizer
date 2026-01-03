@@ -16,6 +16,7 @@ public class TestElementReader
     [DataRow(""" "" """, JsonValueKind.String)]
     [DataRow("{}", JsonValueKind.Object)]
     [DataRow("[]", JsonValueKind.Array)]
+    [DataRow("[0,]", JsonValueKind.Array)]
     public void TestTryReadFromData(string data, JsonValueKind expectedKind)
     {
         var elementReader = new ElementReaderBuilder().Build();
