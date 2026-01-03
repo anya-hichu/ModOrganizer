@@ -303,13 +303,13 @@ public class ModInterop : IModInterop
 
         var modDirectoryPath = Path.Combine(ModsDirectoryPath, modDirectory);
 
-        if (!LocalModDataFileReader.TryReadFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData)) PluginLog.Debug($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
-        if (!DefaultModFileReader.TryReadFromFile(Path.Combine(modDirectoryPath, DEFAULT_FILE_NAME), out var defaultMod)) PluginLog.Debug($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
-        if (!ModMetaFileReader.TryReadFromFile(Path.Combine(modDirectoryPath, META_FILE_NAME), out var modMeta)) PluginLog.Debug($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
+        if (!LocalModDataFileReader.TryReadFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData)) PluginLog.Warning($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
+        if (!DefaultModFileReader.TryReadFromFile(Path.Combine(modDirectoryPath, DEFAULT_FILE_NAME), out var defaultMod)) PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
+        if (!ModMetaFileReader.TryReadFromFile(Path.Combine(modDirectoryPath, META_FILE_NAME), out var modMeta)) PluginLog.Warning($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
 
         var groupFilePaths = Directory.Exists(modDirectoryPath) ? Directory.GetFiles(modDirectoryPath, GROUP_FILE_NAME_PATTERN) : [];
         var maybeGroups = groupFilePaths.Select(p => {
-            if (!GroupFileReader.TryReadFromFile(p, out var group)) PluginLog.Debug($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
+            if (!GroupFileReader.TryReadFromFile(p, out var group)) PluginLog.Warning($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
             return group;
         }).ToArray();
 

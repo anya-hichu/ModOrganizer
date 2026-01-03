@@ -170,6 +170,6 @@ public class TestSortOrderReader
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Expected value kind [Object] but got [Null]: ", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Failed to read one or more [Data] for [SortOrder]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[2], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[2], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
     }
 }

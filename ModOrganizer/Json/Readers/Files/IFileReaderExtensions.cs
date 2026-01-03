@@ -1,7 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers.Files;
 
@@ -13,15 +11,11 @@ public static class IFileReaderExtensions
 
         try
         {
-            if (!fileReader.ElementReader.TryReadFromFile(path, out var jsonElement))
-            {
-                fileReader.PluginLog.Warning($"Failed to read [{nameof(JsonElement)}] from json file [{path}]");
-                return false;
-            }
+            if (!fileReader.ElementReader.TryReadFromFile(path, out var jsonElement)) return false;
 
             if (fileReader.TryRead(jsonElement, out instance)) return true;
 
-            fileReader.PluginLog.Debug($"Failed to read instance [{typeof(T).Name}] from json file [{path}]");
+            fileReader.PluginLog.Warning($"Failed to read instance [{typeof(T).Name}] from json file [{path}]");
             return false;
         }
         catch (Exception e)
