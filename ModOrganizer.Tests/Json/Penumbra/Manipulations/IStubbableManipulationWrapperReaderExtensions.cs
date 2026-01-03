@@ -1,0 +1,26 @@
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using ModOrganizer.Json.Penumbra.Manipulations;
+using System.Text.Json;
+
+namespace ModOrganizer.Tests.Json.Penumbra.Manipulations;
+
+public static class IStubbableManipulationWrapperReaderExtensions
+{
+    public static T WithManipulationWrapperReaderObserver<T>(this T stubbable, IStubObserver observer) where T : IStubbableManipulationWrapperReader
+    {
+        stubbable.ManipulationWrapperReaderStub.InstanceObserver = observer;
+
+        return stubbable;
+    }
+
+    public static T WithManipulationWrapperReaderTryReadMany<T>(this T stubbable, ManipulationWrapper[]? values) where T : IStubbableManipulationWrapperReader
+    {
+        stubbable.ManipulationWrapperReaderStub.TryReadManyJsonElementT0ArrayOut = (jsonElement, out instances) => 
+        {
+            instances = values;
+            return values != null;
+        };
+
+        return stubbable;
+    }
+}

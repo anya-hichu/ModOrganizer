@@ -52,9 +52,9 @@ public static class IStubbableModInteropExtensions
 
     public static T WithModInteropTryGetModInfo<T>(this T stubbable, ModInfo? value) where T : IStubbableModInterop
     {
-        stubbable.ModInteropStub.TryGetModInfoStringModInfoOut = (modDirectory, out modInfo) =>
+        stubbable.ModInteropStub.TryGetModInfoStringModInfoOut = (modDirectory, out instance) =>
         {
-            modInfo = value;
+            instance = value;
             return value != null;
         };
 

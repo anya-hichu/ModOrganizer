@@ -14,9 +14,9 @@ public static class IStubbableElementReaderExtensions
 
     public static T WithElementReaderTryReadFromFile<T>(this T stubbable, JsonElement? value) where T : IStubbableElementReader
     {
-        stubbable.ElementReaderStub.TryReadFromFileStringJsonElementOut = (path, out jsonElement) =>
+        stubbable.ElementReaderStub.TryReadFromFileStringJsonElementOut = (path, out instance) =>
         {
-            jsonElement = value.GetValueOrDefault();
+            instance = value.GetValueOrDefault();
             return value.HasValue;
         };
 
