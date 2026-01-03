@@ -17,17 +17,19 @@ public class TestSortOrderReader
         var modDirectory = "Mod Directory";
         var modPath = "Mod Path";
 
-        var jsonElement = JsonSerializer.SerializeToElement(new SortOrder() { Data = new() { { modDirectory, modPath } } });
+        var data = new Dictionary<string, object?>() { { nameof(SortOrder.Data), new Dictionary<string, object?>() { { modDirectory, modPath } } } };
 
-        var success = sortOrderReader.TryRead(jsonElement, out var actualSortOrder);
+        var jsonElement = JsonSerializer.SerializeToElement(data);
+
+        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
         Assert.IsTrue(success);
-        Assert.IsNotNull(actualSortOrder);
+        Assert.IsNotNull(sortOrder);
 
-        Assert.HasCount(1, actualSortOrder.Data);
-        Assert.AreEqual(modPath, actualSortOrder.Data[modDirectory]);
+        Assert.HasCount(1, sortOrder.Data);
+        Assert.AreEqual(modPath, sortOrder.Data[modDirectory]);
 
-        Assert.IsEmpty(actualSortOrder.EmptyFolders);
+        Assert.IsEmpty(sortOrder.EmptyFolders);
     }
 
     [TestMethod]
@@ -42,10 +44,10 @@ public class TestSortOrderReader
 
         var jsonElement = JsonSerializer.SerializeToElement(null as object);
 
-        var success = sortOrderReader.TryRead(jsonElement, out var actualSortOrder);
+        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
         Assert.IsFalse(success);
-        Assert.IsNull(actualSortOrder);
+        Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
@@ -64,10 +66,10 @@ public class TestSortOrderReader
 
         var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?> { { nameof(SortOrder.Data), null } });
 
-        var success = sortOrderReader.TryRead(jsonElement, out var actualSortOrder);
+        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
         Assert.IsFalse(success);
-        Assert.IsNull(actualSortOrder);
+        Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
@@ -87,10 +89,10 @@ public class TestSortOrderReader
 
         var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?> { { nameof(SortOrder.EmptyFolders), null } });
 
-        var success = sortOrderReader.TryRead(jsonElement, out var actualSortOrder);
+        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
         Assert.IsFalse(success);
-        Assert.IsNull(actualSortOrder);
+        Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
