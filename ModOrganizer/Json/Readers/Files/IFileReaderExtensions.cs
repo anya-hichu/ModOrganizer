@@ -13,9 +13,7 @@ public static class IFileReaderExtensions
 
         try
         {
-            var data = File.ReadAllText(path);
-
-            if (!fileReader.ElementReader.TryReadFromData(File.ReadAllText(path), out var jsonElement))
+            if (!fileReader.ElementReader.TryReadFromFile(path, out var jsonElement))
             {
                 fileReader.PluginLog.Warning($"Failed to read [{nameof(JsonElement)}] from json file [{path}]");
                 return false;

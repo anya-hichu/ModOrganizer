@@ -172,8 +172,32 @@
         <member name="M:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.ModOrganizer#Json#Readers#Elements#IElementReader#TryReadFromData(System.String,System.Text.Json.JsonElement@)">
             <summary>Sets the Stub of IElementReader.TryReadFromData(IElementReader this, String data, JsonElement* instance)</summary>
         </member>
+        <member name="M:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.ModOrganizer#Json#Readers#Elements#IElementReader#TryReadFromFile(System.String,System.Text.Json.JsonElement@)">
+            <summary>Sets the Stub of IElementReader.TryReadFromFile(IElementReader this, String path, JsonElement* instance)</summary>
+        </member>
         <member name="F:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.TryReadFromDataStringJsonElementOut">
             <summary>Sets the stub of IElementReader.TryReadFromData(IElementReader this, String data, JsonElement* instance)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.TryReadFromFileStringJsonElementOut">
+            <summary>Sets the stub of IElementReader.TryReadFromFile(IElementReader this, String path, JsonElement* instance)</summary>
+        </member>
+        <member name="T:ModOrganizer.Json.Readers.Fakes.StubIReader`1">
+            <summary>Stub type of ModOrganizer.Json.Readers.IReader&lt;T&gt;</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReader`1.#ctor">
+            <summary>Initializes a new instance of type StubIReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReader`1.ModOrganizer#Json#Readers#IReader{T}#TryRead(System.Text.Json.JsonElement,`0@)">
+            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReader`1.ModOrganizer#Json#Readers#IReader{T}#TryReadMany(System.Text.Json.JsonElement,`0[]@)">
+            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Fakes.StubIReader`1.TryReadJsonElementT0Out">
+            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Fakes.StubIReader`1.TryReadManyJsonElementT0ArrayOut">
+            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
         </member>
         <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions">
             <summary>Shim type of ModOrganizer.Json.Readers.Files.IFileReaderExtensions</summary>
