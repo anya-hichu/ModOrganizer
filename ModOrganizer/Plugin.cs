@@ -56,12 +56,12 @@ public sealed class Plugin : IDalamudPlugin
 
         ReaderProvider = new(PluginLog);
 
-        var sortOrderFileReader = ReaderProvider.Get<ISortOrderReader>();
+        var sortOrderReader = ReaderProvider.Get<ISortOrderReader>();
         ModInterop = new(CommandManager, ReaderProvider.Get<IDefaultModReader>(), ReaderProvider.Get<IGroupReaderFactory>(),
-            ReaderProvider.Get<ILocalModDataReader>(), ReaderProvider.Get<IModMetaReader>(), PluginInterface, PluginLog, sortOrderFileReader);
+            ReaderProvider.Get<ILocalModDataReader>(), ReaderProvider.Get<IModMetaReader>(), PluginInterface, PluginLog, sortOrderReader);
 
         RuleEvaluator = new(PluginLog);
-        BackupManager = new(Config, ModInterop, PluginInterface, PluginLog, sortOrderFileReader);
+        BackupManager = new(Config, ModInterop, PluginInterface, PluginLog, sortOrderReader);
         ModProcessor = new(BackupManager, Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(Config, NotificationManager, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);

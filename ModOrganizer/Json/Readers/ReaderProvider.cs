@@ -52,8 +52,6 @@ public class ReaderProvider : IDisposable
 
     public T Get<T>() where T : notnull => ServiceProvider.GetRequiredService<T>();
 
-    public T GetKeyed<T>(string key) where T : notnull => ServiceProvider.GetRequiredKeyedService<T>(key);
-
     private static void AddContainerSingletons(ServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<IReader<Container>, ContainerReader>(p => new(p.GetRequiredService<IManipulationWrapperReaderFactory>(), p.GetRequiredService<IPluginLog>()));
