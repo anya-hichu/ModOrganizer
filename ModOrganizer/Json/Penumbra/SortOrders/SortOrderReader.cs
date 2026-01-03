@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Files;
+using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -8,9 +8,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.SortOrders;
 
-public class SortOrderReader(IFileReader fileReader, IPluginLog pluginLog) : Reader<SortOrder>(pluginLog), ISortOrderReader
+public class SortOrderReader(IElementReader fileReader, IPluginLog pluginLog) : Reader<SortOrder>(pluginLog), ISortOrderReader
 {
-    public IFileReader FileReader { get; init; } = fileReader;
+    public IElementReader ElementReader { get; init; } = fileReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out SortOrder? instance)
     {

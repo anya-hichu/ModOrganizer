@@ -21,11 +21,11 @@ public class ModInteropBuilder : Builder<ModInterop>, IStubbableCommandManager, 
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public StubIReadableFromFile<DefaultMod> DefaultModFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIReadableFromFile<Group> GroupFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIReadableFromFile<LocalModData> LocalModDataFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIReadableFromFile<ModMeta> ModMetaFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIReadableFromFile<SortOrder> SortOrderFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIFileReader<DefaultMod> DefaultModFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIFileReader<Group> GroupFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIFileReader<LocalModData> LocalModDataFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIFileReader<ModMeta> ModMetaFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIFileReader<SortOrder> SortOrderFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
     public override ModInterop Build() => new(CommandManagerStub, DefaultModFileReaderStub, GroupFileReaderStub, LocalModDataFileReaderStub, ModMetaFileReaderStub, PluginInterfaceStub, PluginLogStub, SortOrderFileReaderStub);
 }

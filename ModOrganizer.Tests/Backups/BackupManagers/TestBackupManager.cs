@@ -394,7 +394,7 @@ public class TestBackupManager : ITestableClassTemp
             .Build();
 
         using var _ = new BackupManagerShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(sortOrder)
+            .WithFileReaderTryReadFromFile(sortOrder)
             .Build();
 
         var success = backupManager.TryRead(backup, out var actualSortOrder);

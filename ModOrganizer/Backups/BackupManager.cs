@@ -18,11 +18,11 @@ public class BackupManager : IBackupManager
     private IModInterop ModInterop { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
     private IPluginLog PluginLog { get; init; }
-    private IReadableFromFile<SortOrder> SortOrderFileReader { get; init; }
+    private IFileReader<SortOrder> SortOrderFileReader { get; init; }
 
     private RateLimitedAction<bool> CreateRecentAction { get; init; }
 
-    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IReadableFromFile<SortOrder> sortOrderFileReader)
+    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IFileReader<SortOrder> sortOrderFileReader)
     {
         Config = config;
         ModInterop = modInterop;

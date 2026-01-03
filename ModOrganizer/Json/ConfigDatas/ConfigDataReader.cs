@@ -1,6 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Clipboards;
+using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Json.RuleDatas;
 using System.Diagnostics.CodeAnalysis;
@@ -8,12 +9,11 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataReader(IClipboardReader clipboardReader, IFileReader fileReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IReadableFromClipboard<ConfigData>, IReadableFromFile<ConfigData>
+public class ConfigDataReader(IElementReader fileReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IClipboardReader<ConfigData>, IFileReader<ConfigData>
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
-    public IFileReader FileReader { get; init; } = fileReader;
-    public IClipboardReader ClipboardReader { get; init; } = clipboardReader;
+    public IElementReader ElementReader { get; init; } = fileReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out ConfigData? instance)
     {

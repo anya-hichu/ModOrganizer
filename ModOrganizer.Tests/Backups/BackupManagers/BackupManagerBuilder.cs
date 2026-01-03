@@ -19,7 +19,7 @@ public class BackupManagerBuilder : Builder<BackupManager>, IStubbableConfig, IS
     public StubIModInterop ModInteropStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIReadableFromFile<SortOrder> SortOrderFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIFileReader<SortOrder> SortOrderFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
     public override BackupManager Build() => new(ConfigStub, ModInteropStub, PluginInterfaceStub, PluginLogStub, SortOrderFileReaderStub);
 }

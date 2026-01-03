@@ -19,7 +19,7 @@ using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.SortOrders;
-using ModOrganizer.Json.Readers.Files;
+using ModOrganizer.Json.Readers.Elements;
 using System;
 
 namespace ModOrganizer.Json.Readers;
@@ -33,17 +33,17 @@ public class ReaderProvider : IDisposable
         var serviceCollection = new ServiceCollection();
 
         serviceCollection.AddSingleton(pluginLog);
-        serviceCollection.AddSingleton<IFileReader, FileReader>(p => new(p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<IElementReader, ElementReader>(p => new(p.GetRequiredService<IPluginLog>()));
 
         AddContainerSingletons(serviceCollection);
         AddGroupSingletons(serviceCollection);
         AddManipulationSingletons(serviceCollection);
         AddOptionSingletons(serviceCollection);
 
-        serviceCollection.AddSingleton<IDefaultModReader, DefaultModReader>(p => new(p.GetRequiredService<IReader<Container>>(), p.GetRequiredService<IFileReader>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<ILocalModDataReader, LocalModDataReader>(p => new(p.GetRequiredService<IFileReader>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IModMetaReader, ModMetaReader>(p => new(p.GetRequiredService<IFileReader>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<ISortOrderReader, SortOrderReader>(p => new(p.GetRequiredService<IFileReader>(), p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<IDefaultModReader, DefaultModReader>(p => new(p.GetRequiredService<IReader<Container>>(), p.GetRequiredService<IElementReader>(), p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<ILocalModDataReader, LocalModDataReader>(p => new(p.GetRequiredService<IElementReader>(), p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<IModMetaReader, ModMetaReader>(p => new(p.GetRequiredService<IElementReader>(), p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<ISortOrderReader, SortOrderReader>(p => new(p.GetRequiredService<IElementReader>(), p.GetRequiredService<IPluginLog>()));
 
         ServiceProvider = serviceCollection.BuildServiceProvider();
     }
@@ -98,7 +98,7 @@ public class ReaderProvider : IDisposable
             p.GetRequiredKeyedService<IReader<Group>>(GroupImcReader.TYPE),
             p.GetRequiredKeyedService<IReader<Group>>(GroupMultiReader.TYPE),
             p.GetRequiredKeyedService<IReader<Group>>(GroupSingleReader.TYPE),
-            p.GetRequiredService<IFileReader>(),
+            p.GetRequiredService<IElementReader>(),
             p.GetRequiredService<IPluginLog>()
         ));
     }
@@ -183,6 +183,5 @@ public class ReaderProvider : IDisposable
             p.GetRequiredService<IOptionImcIsDisableSubModReader>(),
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<OptionImc>, IOptionImcReaderFactory>(p => p.GetRequiredService<IOptionImcReaderFactory>());
     }
 }

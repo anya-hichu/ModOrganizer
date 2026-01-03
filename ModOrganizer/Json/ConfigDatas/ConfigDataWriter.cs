@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataWriter(IPluginLog pluginLog) : Writer<ConfigData>(pluginLog), IWritableFile<ConfigData>
+public class ConfigDataWriter(IPluginLog pluginLog) : Writer<ConfigData>(pluginLog), IFileWriter<ConfigData>
 {
     private RuleDataWriter RuleDataWriter { get; init; } = new(pluginLog);
 

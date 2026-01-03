@@ -35,11 +35,11 @@ public class ModInterop : IModInterop
     private ICommandManager CommandManager { get; init; }
     private IPluginLog PluginLog { get; init; }
 
-    private IReadableFromFile<DefaultMod> DefaultModFileReader { get; init; }
-    private IReadableFromFile<Group> GroupFileReader { get; init; }
-    private IReadableFromFile<ModMeta> ModMetaFileReader { get; init; }
-    private IReadableFromFile<LocalModData> LocalModDataFileReader { get; init; }
-    private IReadableFromFile<SortOrder> SortOrderFileReader { get; init; }
+    private IFileReader<DefaultMod> DefaultModFileReader { get; init; }
+    private IFileReader<Group> GroupFileReader { get; init; }
+    private IFileReader<ModMeta> ModMetaFileReader { get; init; }
+    private IFileReader<LocalModData> LocalModDataFileReader { get; init; }
+    private IFileReader<SortOrder> SortOrderFileReader { get; init; }
 
     public event Action<string>? OnModAdded;
     public event Action<string>? OnModDeleted;
@@ -73,8 +73,8 @@ public class ModInterop : IModInterop
     private FileSystemWatcher? GroupsFileSystemWatcher { get; set; }
     private FileSystemWatcher? MetaFileSystemWatcher { get; set; }
 
-    public ModInterop(ICommandManager commandManager, IReadableFromFile<DefaultMod> defaultModFileReader, IReadableFromFile<Group> groupFileReader, IReadableFromFile<LocalModData> localModDataFileReader, 
-        IReadableFromFile<ModMeta> modMetaFileReader, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IReadableFromFile<SortOrder> sortOrderFileReader)
+    public ModInterop(ICommandManager commandManager, IFileReader<DefaultMod> defaultModFileReader, IFileReader<Group> groupFileReader, IFileReader<LocalModData> localModDataFileReader, 
+        IFileReader<ModMeta> modMetaFileReader, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IFileReader<SortOrder> sortOrderFileReader)
     {
         CommandManager = commandManager;
         DefaultModFileReader = defaultModFileReader;

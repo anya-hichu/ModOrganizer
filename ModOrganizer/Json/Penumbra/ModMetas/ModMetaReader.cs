@@ -1,17 +1,17 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Files;
+using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.ModMetas;
 
-public class ModMetaReader(IFileReader fileReader, IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), IModMetaReader
+public class ModMetaReader(IElementReader fileReader, IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), IModMetaReader
 {
     private static readonly uint SUPPORTED_FILE_VERSION = 3;
 
-    public IFileReader FileReader { get; init; } = fileReader;
+    public IElementReader ElementReader { get; init; } = fileReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out ModMeta? instance)
     {

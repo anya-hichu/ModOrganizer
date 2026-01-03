@@ -1,16 +1,15 @@
-using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers.Datas;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers.Clipboards;
 
-public class ClipboardReader(IPluginLog pluginLog) : DataReader(pluginLog), IClipboardReader
+public static class IClipboardReaderExtensions
 {
-    public bool TryReadClipboard<T>(string data, [NotNullWhen(true)] out T? instance) where T : class
+    public static bool TryReadFromClipboard<T>(this IClipboardReader<T> clipboardReader, string data, [NotNullWhen(true)] out T? instance) where T : class
     {
         instance = null;
 
@@ -24,9 +23,15 @@ public class ClipboardReader(IPluginLog pluginLog) : DataReader(pluginLog), ICli
             }
             var decompressedData = Encoding.UTF8.GetString(decompressedStream.ToArray());
 
-            if (!TryReadData(decompressedData, out instance))
+            if (!clipboardReader.ElementReader.TryReadFromData(decompressedData, out var jsonElement))
             {
-                PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data");
+                clipboardReader.PluginLog.Error($"Failed to read [{nameof(JsonElement)}] from clipboard data: {decompressedData}");
+                return false;
+            }
+
+            if (!clipboardReader.TryRead(jsonElement, out instance))
+            {
+                clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data");
                 return false;
             }
 
@@ -34,7 +39,7 @@ public class ClipboardReader(IPluginLog pluginLog) : DataReader(pluginLog), ICli
         }
         catch (Exception e)
         {
-            PluginLog.Error($"Caught exception while reading [{typeof(T).Name}] from clipboard data ({e.Message})");
+            clipboardReader.PluginLog.Error($"Caught exception while reading [{typeof(T).Name}] from clipboard data ({e.Message})");
         }
 
         return false;

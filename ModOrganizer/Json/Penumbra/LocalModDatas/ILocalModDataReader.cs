@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers.Files;
 
 namespace ModOrganizer.Json.Penumbra.LocalModDatas;
 
-public interface ILocalModDataReader : IReader<LocalModData>, IReadableFromFile<LocalModData>
+public interface ILocalModDataReader : IReader<LocalModData>, IFileReader<LocalModData>
 {
     // Empty
 }

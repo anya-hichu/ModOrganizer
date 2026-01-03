@@ -4,14 +4,14 @@
         <Clear/>
         <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
-        <Add FullName="ModOrganizer.Json.Readers.Files.IFileReader!"/>
-        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFromFile" Interfaces="true"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IElementReader!"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IFileReader" Interfaces="true"/>
         <Add FullName="ModOrganizer.Mods.IModInterop!"/>
         <Add FullName="ModOrganizer.Mods.IModProcessor!"/>
         <Add FullName="ModOrganizer.Rules.IRuleEvaluator!"/>
     </StubGeneration>
     <ShimGeneration>
         <Clear/>
-        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFromFileExtensions!"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IFileReaderExtensions!"/>
     </ShimGeneration>
 </Fakes>

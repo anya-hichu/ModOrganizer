@@ -163,64 +163,52 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
-        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions">
-            <summary>Shim type of ModOrganizer.Json.Readers.Files.IReadableFromFileExtensions</summary>
+        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions">
+            <summary>Shim type of ModOrganizer.Json.Readers.Files.IFileReaderExtensions</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.#ctor">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions.#ctor">
             <summary>Initializes a new shim instance</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.BehaveAsCurrent">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions.BehaveAsCurrent">
             <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.BehaveAsNotImplemented">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions.BehaveAsNotImplemented">
             <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
         </member>
-        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.Behavior">
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions.Behavior">
             <summary>Assigns the behavior for all methods of the shimmed type</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.TryReadFromFileOf1IReadableFromFileOfM0StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{ModOrganizer.Json.Readers.Files.IReadableFromFile{``0},System.String,``0,System.Boolean})">
-            <summary>Sets the Shim of IReadableFromFileExtensions.TryReadFromFile(IReadableFromFile`1 readableFile, String path, !!0&amp; instance)</summary>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions.TryReadFromFileOf1IFileReaderOfM0StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{ModOrganizer.Json.Readers.Files.IFileReader{``0},System.String,``0,System.Boolean})">
+            <summary>Sets the Shim of IFileReaderExtensions.TryReadFromFile(IFileReader`1 fileReader, String path, !!0&amp; instance)</summary>
         </member>
-        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader">
-            <summary>Stub type of ModOrganizer.Json.Readers.Files.IFileReader</summary>
+        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1">
+            <summary>Stub type of ModOrganizer.Json.Readers.Files.IFileReader&lt;T&gt;</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader.#ctor">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.#ctor">
             <summary>Initializes a new instance of type StubIFileReader</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader.ModOrganizer#Json#Readers#Files#IFileReader#TryReadFile``1(System.String,``0@)">
-            <summary>Sets the Stub of IFileReader.TryReadFile(IFileReader this, String path, !!0&amp; instance)</summary>
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#Files#IFileReader{T}#ElementReader">
+            <summary>Sets the stub of IFileReader`1.get_ElementReader(IFileReader`1 this)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader.TryReadFileOf1StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{System.String,``0,System.Boolean})">
-            <summary>Sets stubs of TryReadFile(IFileReader this, String path, !!0&amp; instance)</summary>
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ElementReaderGet">
+            <summary>Sets the stub of IFileReader`1.get_ElementReader(IFileReader`1 this)</summary>
         </member>
-        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1">
-            <summary>Stub type of ModOrganizer.Json.Readers.Files.IReadableFromFile&lt;T&gt;</summary>
-        </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.#ctor">
-            <summary>Initializes a new instance of type StubIReadableFromFile</summary>
-        </member>
-        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#Files#IReadableFromFile{T}#FileReader">
-            <summary>Sets the stub of IReadableFromFile`1.get_FileReader(IReadableFromFile`1 this)</summary>
-        </member>
-        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.FileReaderGet">
-            <summary>Sets the stub of IReadableFromFile`1.get_FileReader(IReadableFromFile`1 this)</summary>
-        </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#IReader{T}#TryRead(System.Text.Json.JsonElement,`0@)">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#IReader{T}#TryRead(System.Text.Json.JsonElement,`0@)">
             <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#IReader{T}#TryReadMany(System.Text.Json.JsonElement,`0[]@)">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#IReader{T}#TryReadMany(System.Text.Json.JsonElement,`0[]@)">
             <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
         </member>
-        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#Files#IReadableFromFile{T}#PluginLog">
-            <summary>Sets the stub of IReadableFromFile`1.get_PluginLog(IReadableFromFile`1 this)</summary>
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#Files#IFileReader{T}#PluginLog">
+            <summary>Sets the stub of IFileReader`1.get_PluginLog(IFileReader`1 this)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.PluginLogGet">
-            <summary>Sets the stub of IReadableFromFile`1.get_PluginLog(IReadableFromFile`1 this)</summary>
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.PluginLogGet">
+            <summary>Sets the stub of IFileReader`1.get_PluginLog(IFileReader`1 this)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.TryReadJsonElementT0Out">
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.TryReadJsonElementT0Out">
             <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.TryReadManyJsonElementT0ArrayOut">
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.TryReadManyJsonElementT0ArrayOut">
             <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
         </member>
         <member name="T:ModOrganizer.Mods.Fakes.StubIModInterop">

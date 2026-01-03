@@ -293,7 +293,7 @@ public class TestModInterop : ITestableClassTemp
             .Build();
 
         using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(null as SortOrder)
+            .WithFileReaderTryReadFromFile(null as SortOrder)
             .Build();
 
         modInterop.OnSortOrderChanged += ActionDecorator.WithObserver(observer, () => { });
@@ -397,10 +397,10 @@ public class TestModInterop : ITestableClassTemp
             .Build();
 
         using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(sortOrder)
-            .WithIReadableFromFileTryReadFromFile(localModData)
-            .WithIReadableFromFileTryReadFromFile(defaultMod)
-            .WithIReadableFromFileTryReadFromFile(modMeta)
+            .WithFileReaderTryReadFromFile(sortOrder)
+            .WithFileReaderTryReadFromFile(localModData)
+            .WithFileReaderTryReadFromFile(defaultMod)
+            .WithFileReaderTryReadFromFile(modMeta)
             .Build();
 
         var beforeCalls = observer.GetCalls();
@@ -493,7 +493,7 @@ public class TestModInterop : ITestableClassTemp
             .Build();
 
         using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(sortOrder)
+            .WithFileReaderTryReadFromFile(sortOrder)
             .Build();
 
         Assert.AreEqual(modPath, modInterop.GetModPath(modDirectory));
@@ -525,7 +525,7 @@ public class TestModInterop : ITestableClassTemp
             .Build();
 
         using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(null as SortOrder)
+            .WithFileReaderTryReadFromFile(null as SortOrder)
             .Build();
 
         var modDirectory = "Mod Directory";
@@ -565,7 +565,7 @@ public class TestModInterop : ITestableClassTemp
             .Build();
 
         using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(sortOrder)
+            .WithFileReaderTryReadFromFile(sortOrder)
             .Build();
 
         Assert.AreEqual(modDirectory, modInterop.GetModDirectory(modPath));
@@ -597,7 +597,7 @@ public class TestModInterop : ITestableClassTemp
             .Build();
 
         using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFromFileTryReadFromFile(null as SortOrder)
+            .WithFileReaderTryReadFromFile(null as SortOrder)
             .Build();
 
         var modPath = "Mod Path";

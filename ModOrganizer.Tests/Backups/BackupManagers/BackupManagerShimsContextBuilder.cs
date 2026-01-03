@@ -4,7 +4,7 @@ using ModOrganizer.Tests.Systems.DateTimeOffsets;
 
 namespace ModOrganizer.Tests.Backups.BackupManagers;
 
-public class BackupManagerShimsContextBuilder : ShimsContextBuilder, IShimmableDateTimeOffset, IShimmableIReadableFromFile
+public class BackupManagerShimsContextBuilder : ShimsContextBuilder, IShimmableDateTimeOffset, IShimmableFileReader
 {
     // Empty
 }

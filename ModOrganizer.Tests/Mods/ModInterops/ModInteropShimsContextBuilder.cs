@@ -3,7 +3,7 @@ using ModOrganizer.Tests.ShimsContexts;
 
 namespace ModOrganizer.Tests.Mods.ModInterops;
 
-public class ModInteropShimsContextBuilder : ShimsContextBuilder, IShimmableIReadableFromFile
+public class ModInteropShimsContextBuilder : ShimsContextBuilder, IShimmableFileReader
 {
     // Empty
 }

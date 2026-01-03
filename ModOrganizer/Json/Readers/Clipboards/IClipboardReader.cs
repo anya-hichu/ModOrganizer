@@ -1,8 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
+using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Readers.Elements;
 
 namespace ModOrganizer.Json.Readers.Clipboards;
 
-public interface IClipboardReader
+public interface IClipboardReader<T> : IReader<T> where T : class
 {
-    bool TryReadClipboard<T>(string data, [NotNullWhen(true)] out T? instance) where T : class;
+    IElementReader ElementReader { get; }
+    IPluginLog PluginLog { get; }
 }
