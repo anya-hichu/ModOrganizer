@@ -6,7 +6,7 @@ using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Evaluations;
 using ModOrganizer.Windows.States.Results.Showables;
 using Scriban.Parsing;
-using Scriban.Syntax;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -70,7 +70,7 @@ public class EvaluationState(IModInterop modInterop, IPluginLog pluginLog) : Res
                 value = parsedTemplate.Render(modInfo, MemberRenamer.Rename);
                 return true;
             }
-            catch (ScriptRuntimeException e)
+            catch (Exception e)
             {
                 PluginLog.Debug($"Caught exception while evaluating [{template}] for mod [{modInfo.Directory}]: {e.Message}");
                 error = new()

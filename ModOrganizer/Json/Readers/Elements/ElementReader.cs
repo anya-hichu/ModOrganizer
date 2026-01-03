@@ -19,7 +19,7 @@ public class ElementReader(IPluginLog pluginLog) : IElementReader
         }
         catch (Exception e)
         {
-            pluginLog.Error($"Caught exception while converting data to json element  ({e.Message}): [{data}]");
+            pluginLog.Error($"Caught exception while serializing [{nameof(JsonElement)}] from data ({e.Message}): {data}");
         }
 
         return false;

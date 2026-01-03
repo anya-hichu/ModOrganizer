@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
@@ -10,18 +11,26 @@ public static class IFileReaderExtensions
     {
         instance = null;
 
-        if (!fileReader.ElementReader.TryReadFromData(File.ReadAllText(path), out var jsonElement))
+        try
         {
-            fileReader.PluginLog.Warning($"Failed to read [{nameof(JsonElement)}] from json file [{path}]");
-            return false;
-        }
+            var data = File.ReadAllText(path);
 
-        if (!fileReader.TryRead(jsonElement, out instance))
-        {
+            if (!fileReader.ElementReader.TryReadFromData(File.ReadAllText(path), out var jsonElement))
+            {
+                fileReader.PluginLog.Warning($"Failed to read [{nameof(JsonElement)}] from json file [{path}]");
+                return false;
+            }
+
+            if (fileReader.TryRead(jsonElement, out instance)) return true;
+
             fileReader.PluginLog.Debug($"Failed to read instance [{typeof(T).Name}] from json file [{path}]");
             return false;
         }
+        catch (Exception e)
+        {
+            fileReader.PluginLog.Error($"Caught exception while reading [{typeof(T).Name}] from json file [{path}] ({e.Message})");
+        }
 
-        return true;
+        return false;
     }
 }

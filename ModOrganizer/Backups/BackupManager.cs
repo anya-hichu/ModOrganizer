@@ -101,7 +101,7 @@ public class BackupManager : IBackupManager
         }
         catch (Exception e)
         {
-            PluginLog.Error($"Caught exception while try to delete {backup.GetPrettyType()} backup [{backup.CreatedAt}] file ({e.Message})");
+            PluginLog.Error($"Caught exception while trying to delete {backup.GetPrettyType()} backup [{backup.CreatedAt}] file ({e.Message})");
         }
         return false;
     }
@@ -140,7 +140,7 @@ public class BackupManager : IBackupManager
         }
         catch (Exception e)
         {
-            PluginLog.Error($"Caught exception while try to copy [{sourcePath}] to [{destinationPath}] with overwrite [{overwrite}] ({e.Message})");
+            PluginLog.Error($"Caught exception while trying to copy [{sourcePath}] to [{destinationPath}] with overwrite [{overwrite}] ({e.Message})");
         }
         return false;
     }
