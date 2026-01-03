@@ -1,7 +1,6 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using System;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json;

@@ -14,12 +14,12 @@ public class ElementReader(IPluginLog pluginLog) : IElementReader
 
         try
         {
-            instance = JsonSerializer.SerializeToElement(data, Options);
+            instance = JsonSerializer.Deserialize<JsonElement>(data, Options);
             return true;
         }
         catch (Exception e)
         {
-            pluginLog.Error($"Caught exception while serializing [{nameof(JsonElement)}] from data ({e.Message}): {data}");
+            pluginLog.Error($"Caught exception while reading [{nameof(JsonElement)}] from data ({e.Message}): {data}");
         }
 
         return false;

@@ -163,6 +163,18 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
+        <member name="T:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader">
+            <summary>Stub type of ModOrganizer.Json.Readers.Elements.IElementReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.#ctor">
+            <summary>Initializes a new instance of type StubIElementReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.ModOrganizer#Json#Readers#Elements#IElementReader#TryReadFromData(System.String,System.Text.Json.JsonElement@)">
+            <summary>Sets the Stub of IElementReader.TryReadFromData(IElementReader this, String data, JsonElement* instance)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader.TryReadFromDataStringJsonElementOut">
+            <summary>Sets the stub of IElementReader.TryReadFromData(IElementReader this, String data, JsonElement* instance)</summary>
+        </member>
         <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions">
             <summary>Shim type of ModOrganizer.Json.Readers.Files.IFileReaderExtensions</summary>
         </member>
