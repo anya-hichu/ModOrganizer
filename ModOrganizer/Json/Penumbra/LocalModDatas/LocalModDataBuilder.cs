@@ -7,11 +7,11 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.LocalModDatas;
 
-public class LocalModDataReader(IElementReader fileReader, IPluginLog pluginLog) : Reader<LocalModData>(pluginLog), ILocalModDataReader
+public class LocalModDataReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<LocalModData>(pluginLog), ILocalModDataReader
 {
     private static readonly uint SUPPORTED_FILE_VERSION = 3;
 
-    public IElementReader ElementReader { get; init; } = fileReader;
+    public IElementReader ElementReader { get; init; } = elementReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out LocalModData? instance)
     {

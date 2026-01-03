@@ -9,11 +9,11 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataReader(IElementReader fileReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IClipboardReader<ConfigData>, IFileReader<ConfigData>
+public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IClipboardReader<ConfigData>, IFileReader<ConfigData>
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
-    public IElementReader ElementReader { get; init; } = fileReader;
+    public IElementReader ElementReader { get; init; } = elementReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out ConfigData? instance)
     {

@@ -7,11 +7,11 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.ModMetas;
 
-public class ModMetaReader(IElementReader fileReader, IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), IModMetaReader
+public class ModMetaReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), IModMetaReader
 {
     private static readonly uint SUPPORTED_FILE_VERSION = 3;
 
-    public IElementReader ElementReader { get; init; } = fileReader;
+    public IElementReader ElementReader { get; init; } = elementReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out ModMeta? instance)
     {

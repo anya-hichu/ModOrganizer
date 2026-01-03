@@ -8,13 +8,13 @@ public class GroupReaderFactory : TypeReaderFactory<Group>, IGroupReaderFactory
 {
     public IElementReader ElementReader { get; init; }
 
-    public GroupReaderFactory(IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, IReader<Group> groupSingleReader, IElementReader fileReader, IPluginLog pluginLog) : base(pluginLog)
+    public GroupReaderFactory(IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, IReader<Group> groupSingleReader, IElementReader elementReader, IPluginLog pluginLog) : base(pluginLog)
     {
         Readers.Add(GroupCombiningReader.TYPE, groupCombiningReader);
         Readers.Add(GroupImcReader.TYPE, groupImcReader);
         Readers.Add(GroupMultiReader.TYPE, groupMultiReader);
         Readers.Add(GroupSingleReader.TYPE, groupSingleReader);
         
-        ElementReader = fileReader;
+        ElementReader = elementReader;
     }
 }
