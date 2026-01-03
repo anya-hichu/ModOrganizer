@@ -377,10 +377,6 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
         var modPath = "Mod Path";
 
-        var localModData = new LocalModData() { FileVersion = 0 };
-        var defaultMod = new DefaultMod();
-        var modMeta = new ModMeta() { FileVersion = 0, Name = "Mod Name" };
-        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
@@ -395,6 +391,11 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
+
+        var localModData = new LocalModData() { FileVersion = 0 };
+        var defaultMod = new DefaultMod();
+        var modMeta = new ModMeta() { FileVersion = 0, Name = "Mod Name" };
+        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
         using var _ = new ModInteropShimsContextBuilder()
             .WithFileReaderTryReadFromFile(sortOrder)
@@ -474,11 +475,6 @@ public class TestModInterop : ITestableClassTemp
 
         var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
 
-        var modDirectory = "Mod Directory";
-        var modPath = "Mod Path";
-
-        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
-
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
             .WithPenumbraApiModMovedNoop()
@@ -491,6 +487,11 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
+
+        var modDirectory = "Mod Directory";
+        var modPath = "Mod Path";
+
+        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
         using var _ = new ModInteropShimsContextBuilder()
             .WithFileReaderTryReadFromFile(sortOrder)
@@ -546,11 +547,6 @@ public class TestModInterop : ITestableClassTemp
 
         var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
 
-        var modDirectory = "Mod Directory";
-        var modPath = "Mod Path";
-
-        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
-
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
             .WithPenumbraApiModMovedNoop()
@@ -563,6 +559,11 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
+
+        var modDirectory = "Mod Directory";
+        var modPath = "Mod Path";
+
+        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
         using var _ = new ModInteropShimsContextBuilder()
             .WithFileReaderTryReadFromFile(sortOrder)
