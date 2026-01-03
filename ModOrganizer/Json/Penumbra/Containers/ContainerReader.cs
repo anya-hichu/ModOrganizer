@@ -10,10 +10,8 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Containers;
 
-public class ContainerReader(IPluginLog pluginLog) : Reader<Container>(pluginLog)
+public class ContainerReader(IReader<ManipulationWrapper> manipulationWrapperReader, IPluginLog pluginLog) : Reader<Container>(pluginLog)
 {
-    private ManipulationWrapperReaderFactory ManipulationWrapperFactory { get; init; } = new(pluginLog);
-
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Container? instance)
     {
         instance = null;
@@ -35,7 +33,7 @@ public class ContainerReader(IPluginLog pluginLog) : Reader<Container>(pluginLog
         }
 
         var manipulations = Array.Empty<ManipulationWrapper>();
-        if (jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && !ManipulationWrapperFactory.TryReadMany(manipulationsProperty, out manipulations))
+        if (jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && !manipulationWrapperReader.TryReadMany(manipulationsProperty, out manipulations))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {manipulationsProperty}");
             return false;

@@ -1,17 +1,17 @@
-<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/">
+<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
     <Assembly Name="ModOrganizer"/>
     <StubGeneration>
         <Clear/>
         <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
-        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFile!" Interfaces="true"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IFileReader!"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFromFile" Interfaces="true"/>
         <Add FullName="ModOrganizer.Mods.IModInterop!"/>
         <Add FullName="ModOrganizer.Mods.IModProcessor!"/>
         <Add FullName="ModOrganizer.Rules.IRuleEvaluator!"/>
-        <Add FullName="ModOrganizer.Shared.IClock!"/>
     </StubGeneration>
     <ShimGeneration>
         <Clear/>
-        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFileExtensions!"/>
+        <Add FullName="ModOrganizer.Json.Readers.Files.IReadableFromFileExtensions!"/>
     </ShimGeneration>
 </Fakes>

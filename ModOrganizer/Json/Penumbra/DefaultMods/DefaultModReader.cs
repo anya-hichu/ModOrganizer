@@ -7,13 +7,11 @@ using ModOrganizer.Json.Readers;
 
 namespace ModOrganizer.Json.Penumbra.DefaultMods;
 
-public class DefaultModReader(IPluginLog pluginLog) : Reader<DefaultMod>(pluginLog), IReadableFile<DefaultMod>
+public class DefaultModReader(IReader<Container> containerReader, IFileReader fileReader, IPluginLog pluginLog) : Reader<DefaultMod>(pluginLog), IDefaultModReader
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
-    public FileReader FileReader { get; init; } = new(pluginLog);
-
-    private ContainerReader ContainerReader { get; init; } = new(pluginLog);
+    public IFileReader FileReader { get; init; } = fileReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out DefaultMod? instance)
     {
@@ -28,7 +26,7 @@ public class DefaultModReader(IPluginLog pluginLog) : Reader<DefaultMod>(pluginL
             return false;
         }
 
-        if (!ContainerReader.TryRead(jsonElement, out var container))
+        if (!containerReader.TryRead(jsonElement, out var container))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(DefaultMod)}]: {jsonElement}");
             return false;

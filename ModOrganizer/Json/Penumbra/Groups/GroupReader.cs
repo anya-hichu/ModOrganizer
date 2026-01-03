@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
+public class GroupReader(IPluginLog pluginLog) : Reader<Group>(pluginLog), IBaseGroupReader
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 

@@ -281,7 +281,6 @@ public class TestModInterop : ITestableClassTemp
 
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
             .WithPenumbraApiModMovedNoop()
             .WithPenumbraApiModAddedOrDeletedNoop()
             .WithPenumbraApiModDirectoryChangedNoop()
@@ -293,27 +292,16 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
 
-        var sortOrderChanged = false;
-        modInterop.OnSortOrderChanged += () => sortOrderChanged = true;
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(null as SortOrder)
+            .Build();
 
-        var beforeCalls = observer.GetCalls();
-        Assert.HasCount(1, beforeCalls);
-        AssertPluginLog.MatchObservedCall(beforeCalls[0], nameof(IPluginLog.Debug),
-            actualMessage => Assert.AreEqual("Created mod file system watchers", actualMessage));
+        modInterop.OnSortOrderChanged += ActionDecorator.WithObserver(observer, () => { });
 
         var sortOrder = modInterop.GetSortOrder();
 
-        Assert.IsTrue(sortOrderChanged);
-
-        var afterCalls = observer.GetCalls();
-        Assert.HasCount(4, afterCalls);
-
-        AssertPluginLog.MatchObservedCall(afterCalls[1], nameof(IPluginLog.Error),
-            actualMessage => Assert.StartsWith("Caught exception while reading [JsonElement]", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterCalls[2], nameof(IPluginLog.Warning),
-            actualMessage => Assert.StartsWith("Failed to read [JsonElement] from json file", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterCalls[3], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Failed to parse [SortOrder], cached empty until next file system update or reload", actualMessage));
+        Assert.IsEmpty(sortOrder.Data);
+        Assert.HasCount(1, observer.GetCalls());
     }
 
     [TestMethod]
@@ -389,18 +377,10 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
         var modPath = "Mod Path";
 
-        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
-
         var localModData = new LocalModData() { FileVersion = 0 };
         var defaultMod = new DefaultMod();
         var modMeta = new ModMeta() { FileVersion = 0, Name = "Mod Name" };
-
-        using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFileTryReadFromFile(sortOrder)
-            .WithIReadableFileTryReadFromFile(localModData)
-            .WithIReadableFileTryReadFromFile(defaultMod)
-            .WithIReadableFileTryReadFromFile(modMeta)
-            .Build();
+        var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
@@ -414,6 +394,13 @@ public class TestModInterop : ITestableClassTemp
             .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(sortOrder)
+            .WithIReadableFromFileTryReadFromFile(localModData)
+            .WithIReadableFromFileTryReadFromFile(defaultMod)
+            .WithIReadableFromFileTryReadFromFile(modMeta)
             .Build();
 
         var beforeCalls = observer.GetCalls();
@@ -492,10 +479,6 @@ public class TestModInterop : ITestableClassTemp
 
         var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
-        using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFileTryReadFromFile(sortOrder)
-            .Build();
-
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
             .WithPenumbraApiModMovedNoop()
@@ -507,6 +490,10 @@ public class TestModInterop : ITestableClassTemp
             .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(sortOrder)
             .Build();
 
         Assert.AreEqual(modPath, modInterop.GetModPath(modDirectory));
@@ -537,6 +524,10 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
 
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(null as SortOrder)
+            .Build();
+
         var modDirectory = "Mod Directory";
         var modPath = modInterop.GetModPath(modDirectory);
 
@@ -560,10 +551,6 @@ public class TestModInterop : ITestableClassTemp
 
         var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
 
-        using var _ = new ModInteropShimsContextBuilder()
-            .WithIReadableFileTryReadFromFile(sortOrder)
-            .Build();
-
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
             .WithPenumbraApiModMovedNoop()
@@ -575,6 +562,10 @@ public class TestModInterop : ITestableClassTemp
             .WithPenumbraApiSetModPath(PenumbraApiEc.Success)
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
+            .Build();
+
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(sortOrder)
             .Build();
 
         Assert.AreEqual(modDirectory, modInterop.GetModDirectory(modPath));
@@ -605,8 +596,14 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
 
+        using var _ = new ModInteropShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(null as SortOrder)
+            .Build();
+
         var modPath = "Mod Path";
-        Assert.AreEqual(modPath, modInterop.GetModDirectory(modPath));
+        var actualModPath = modInterop.GetModDirectory(modPath);
+
+        Assert.AreEqual(modPath, actualModPath);
     }
 
     [TestMethod]

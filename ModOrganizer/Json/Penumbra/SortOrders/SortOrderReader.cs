@@ -8,9 +8,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.SortOrders;
 
-public class SortOrderReader(IPluginLog pluginLog) : Reader<SortOrder>(pluginLog), IReadableFile<SortOrder>
+public class SortOrderReader(IFileReader fileReader, IPluginLog pluginLog) : Reader<SortOrder>(pluginLog), ISortOrderReader
 {
-    public FileReader FileReader { get; init; } = new(pluginLog);
+    public IFileReader FileReader { get; init; } = fileReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out SortOrder? instance)
     {

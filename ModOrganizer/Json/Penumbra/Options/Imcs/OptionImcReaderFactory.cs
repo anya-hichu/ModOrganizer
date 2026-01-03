@@ -5,11 +5,8 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
-public class OptionImcReaderFactory(IPluginLog pluginLog) : ReaderFactory<OptionImc>(pluginLog)
+public class OptionImcReaderFactory(IReader<OptionImc> optionImcAttributeMaskReader, IReader<OptionImc> optionImcIsDisabledSubModReader, IPluginLog pluginLog) : ReaderFactory<OptionImc>(pluginLog), IOptionImcReaderFactory
 {
-    private OptionImcAttributeMaskReader OptionImcAttributeMaskReader { get; init; } = new(pluginLog);
-    private OptionImcIsDisableSubModReader OptionImcIsDisableSubModReader { get; init; } = new(pluginLog);
-
     protected override bool TryGetReader(JsonElement jsonElement, [NotNullWhen(true)] out IReader<OptionImc>? builder)
     {
         builder = null;
@@ -25,13 +22,13 @@ public class OptionImcReaderFactory(IPluginLog pluginLog) : ReaderFactory<Option
 
         if (hasAttributeMaskProperty)
         {
-            builder = OptionImcAttributeMaskReader;
+            builder = optionImcAttributeMaskReader;
             return true;
         }
 
         if (hasIsDisableSubModProperty)
         {
-            builder = OptionImcIsDisableSubModReader;
+            builder = optionImcIsDisabledSubModReader;
             return true;
         }
 

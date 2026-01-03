@@ -9,13 +9,11 @@ namespace ModOrganizer.Json;
 
 public class Assert(IPluginLog pluginLog)
 {
-    private IPluginLog PluginLog { get; init; } = pluginLog;
-
     public bool IsValue(JsonElement jsonElement, JsonValueKind kind)
     {
         if (jsonElement.ValueKind == kind) return true;
 
-        PluginLog.Warning($"Expected value kind [{kind}] but got [{jsonElement.ValueKind}]: {jsonElement}");
+        pluginLog.Warning($"Expected value kind [{kind}] but got [{jsonElement.ValueKind}]: {jsonElement}");
         return false;
     }
 
@@ -23,7 +21,7 @@ public class Assert(IPluginLog pluginLog)
     {
         if (jsonElement.TryGetProperty(name, out property)) return true;
 
-        if (warn) PluginLog.Warning($"Expected property [{name}] is missing: {jsonElement}");
+        if (warn) pluginLog.Warning($"Expected property [{name}] is missing: {jsonElement}");
         return false;
     }
 
@@ -36,14 +34,14 @@ public class Assert(IPluginLog pluginLog)
         value = property.GetString();
         if (value.IsNullOrEmpty())
         {
-            PluginLog.Warning($"Property [{propertyName}] is null or empty: {jsonElement}");
+            pluginLog.Warning($"Property [{propertyName}] is null or empty: {jsonElement}");
             return false;
         }
 
         return true;
     }
 
-    // https://github.com/xivdev/Penumbra/blob/master/schemas/structs/meta_enums.json#U8
+    // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_enums.json#U8
     public bool IsU8Value(JsonElement jsonElement, string propertyName, out byte value, bool required = true)
     {
         value = default;
@@ -53,11 +51,11 @@ public class Assert(IPluginLog pluginLog)
         if (property.ValueKind == JsonValueKind.Number && property.TryGetByte(out value)) return true;
         if (property.ValueKind == JsonValueKind.String && byte.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
 
-        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(byte).Name}]: {property}");
+        pluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(byte).Name}]: {jsonElement}");
         return false;
     }
 
-    // https://github.com/xivdev/Penumbra/blob/master/schemas/structs/meta_enums.json#U16
+    // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_enums.json#U16
     public bool IsU16Value(JsonElement jsonElement, string propertyName, out ushort value, bool required = true)
     {
         value = default;
@@ -67,7 +65,7 @@ public class Assert(IPluginLog pluginLog)
         if (property.ValueKind == JsonValueKind.Number && property.TryGetUInt16(out value)) return true;
         if (property.ValueKind == JsonValueKind.String && ushort.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
 
-        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(ushort).Name}]: {property}");
+        pluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(ushort).Name}]: {jsonElement}");
         return false;
     }
 
@@ -114,6 +112,7 @@ public class Assert(IPluginLog pluginLog)
         var list = new List<int>();
         foreach (var item in jsonElement.EnumerateArray())
         {
+            if (!IsValue(item, JsonValueKind.Number)) return false;
             if (!item.TryGetInt32(out var parsed)) return false;
             list.Add(parsed);
         }

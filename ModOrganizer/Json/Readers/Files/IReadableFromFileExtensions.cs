@@ -3,9 +3,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers.Files;
 
-public static class IReadableFileExtensions
+public static class IReadableFromFileExtensions
 {
-    public static bool TryReadFromFile<T>(this IReadableFile<T> readableFile, string path, [NotNullWhen(true)] out T? instance) where T : class
+    public static bool TryReadFromFile<T>(this IReadableFromFile<T> readableFile, string path, [NotNullWhen(true)] out T? instance) where T : class
     {
         instance = null;
 

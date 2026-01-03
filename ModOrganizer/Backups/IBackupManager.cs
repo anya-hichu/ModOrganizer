@@ -1,3 +1,4 @@
+using ModOrganizer.Json.Penumbra.SortOrders;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -12,6 +13,8 @@ public interface IBackupManager : IDisposable
     
     bool TryRestore(Backup backup, bool reloadPenumbra = false);
     bool TryDelete(Backup backup);
+
+    bool TryRead(Backup backup, [NotNullWhen(true)] out SortOrder? sortOrder);
 
     string GetPath(Backup backup);
     string GetFileName(Backup backup);

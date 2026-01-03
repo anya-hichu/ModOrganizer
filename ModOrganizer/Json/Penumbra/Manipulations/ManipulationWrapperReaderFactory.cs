@@ -13,19 +13,22 @@ using ModOrganizer.Json.Readers;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations;
 
-public class ManipulationWrapperReaderFactory : TypeReaderFactory<ManipulationWrapper>
+public class ManipulationWrapperReaderFactory : TypeReaderFactory<ManipulationWrapper>, IManipulationWrapperReaderFactory
 {
-    public ManipulationWrapperReaderFactory(IPluginLog pluginLog) : base(pluginLog)
+    public ManipulationWrapperReaderFactory(IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
+        IReader<ManipulationWrapper> metaEqdpWrapperReader, IReader<ManipulationWrapper> metaEqpWrapperReader, IReader<ManipulationWrapper> metaEstWrapperReader, 
+        IReader<ManipulationWrapper> metaGeqpWrapperReader, IReader<ManipulationWrapper> metaGmpWrapperReader, IReader<ManipulationWrapper> metaImcWrapperReader, 
+        IReader<ManipulationWrapper> metaRspWrapperReader, IReader<ManipulationWrapper> metaShpWrapperReader, IPluginLog pluginLog) : base(pluginLog)
     {
-        Readers.Add(MetaImcWrappedReader.TYPE, new MetaImcWrappedReader(pluginLog));
-        Readers.Add(MetaAtchWrappedReader.TYPE, new MetaAtchWrappedReader(pluginLog));
-        Readers.Add(MetaAtrWrappedReader.TYPE, new MetaAtrWrappedReader(pluginLog));
-        Readers.Add(MetaEqdpWrappedReader.TYPE, new MetaEqdpWrappedReader(pluginLog));
-        Readers.Add(MetaEqpWrappedReader.TYPE, new MetaEqpWrappedReader(pluginLog));
-        Readers.Add(MetaEstWrappedReader.TYPE, new MetaEstWrappedReader(pluginLog));
-        Readers.Add(MetaGeqpWrappedReader.TYPE, new MetaGeqpWrappedReader(pluginLog));
-        Readers.Add(MetaGmpWrapperReader.TYPE, new MetaGmpWrapperReader(pluginLog));
-        Readers.Add(MetaRspWrappedReader.TYPE, new MetaRspWrappedReader(pluginLog));
-        Readers.Add(MetaShpWrappedReader.TYPE, new MetaShpWrappedReader(pluginLog));
+        Readers.Add(MetaAtchWrapperReader.TYPE, metaAtchWrapperReader);
+        Readers.Add(MetaAtrWrapperReader.TYPE, metaAtrWrapperReader);
+        Readers.Add(MetaEqdpWrapperReader.TYPE, metaEqdpWrapperReader);
+        Readers.Add(MetaEqpWrapperReader.TYPE, metaEqpWrapperReader);
+        Readers.Add(MetaEstWrapperReader.TYPE, metaEstWrapperReader);
+        Readers.Add(MetaGeqpWrapperReader.TYPE, metaGeqpWrapperReader);
+        Readers.Add(MetaGmpWrapperReader.TYPE, metaGmpWrapperReader);
+        Readers.Add(MetaImcWrapperReader.TYPE, metaImcWrapperReader);
+        Readers.Add(MetaRspWrapperReader.TYPE, metaRspWrapperReader);
+        Readers.Add(MetaShpWrapperReader.TYPE, metaShpWrapperReader);
     }
 }

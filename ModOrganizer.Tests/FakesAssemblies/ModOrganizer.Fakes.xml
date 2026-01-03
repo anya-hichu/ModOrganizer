@@ -52,6 +52,9 @@
         <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#TryDelete(ModOrganizer.Backups.Backup)">
             <summary>Sets the Stub of IBackupManager.TryDelete(IBackupManager this, Backup backup)</summary>
         </member>
+        <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#TryRead(ModOrganizer.Backups.Backup,ModOrganizer.Json.Penumbra.SortOrders.SortOrder@)">
+            <summary>Sets the Stub of IBackupManager.TryRead(IBackupManager this, Backup backup, SortOrder* sortOrder)</summary>
+        </member>
         <member name="M:ModOrganizer.Backups.Fakes.StubIBackupManager.ModOrganizer#Backups#IBackupManager#TryRestore(ModOrganizer.Backups.Backup,System.Boolean)">
             <summary>Sets the Stub of IBackupManager.TryRestore(IBackupManager this, Backup backup, Boolean reloadPenumbra)</summary>
         </member>
@@ -63,6 +66,9 @@
         </member>
         <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryDeleteBackup">
             <summary>Sets the stub of IBackupManager.TryDelete(IBackupManager this, Backup backup)</summary>
+        </member>
+        <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryReadBackupSortOrderOut">
+            <summary>Sets the stub of IBackupManager.TryRead(IBackupManager this, Backup backup, SortOrder* sortOrder)</summary>
         </member>
         <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryRestoreBackupBoolean">
             <summary>Sets the stub of IBackupManager.TryRestore(IBackupManager this, Backup backup, Boolean reloadPenumbra)</summary>
@@ -157,23 +163,65 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
-        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions">
-            <summary>Shim type of ModOrganizer.Json.Readers.Files.IReadableFileExtensions</summary>
+        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions">
+            <summary>Shim type of ModOrganizer.Json.Readers.Files.IReadableFromFileExtensions</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.#ctor">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.#ctor">
             <summary>Initializes a new shim instance</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.BehaveAsCurrent">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.BehaveAsCurrent">
             <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.BehaveAsNotImplemented">
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.BehaveAsNotImplemented">
             <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
         </member>
-        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.Behavior">
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.Behavior">
             <summary>Assigns the behavior for all methods of the shimmed type</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFileExtensions.TryReadFromFileOf1IReadableFileOfM0StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{ModOrganizer.Json.Readers.Files.IReadableFile{``0},System.String,``0,System.Boolean})">
-            <summary>Sets the Shim of IReadableFileExtensions.TryReadFromFile(IReadableFile`1 readableFile, String path, !!0&amp; instance)</summary>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.ShimIReadableFromFileExtensions.TryReadFromFileOf1IReadableFromFileOfM0StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{ModOrganizer.Json.Readers.Files.IReadableFromFile{``0},System.String,``0,System.Boolean})">
+            <summary>Sets the Shim of IReadableFromFileExtensions.TryReadFromFile(IReadableFromFile`1 readableFile, String path, !!0&amp; instance)</summary>
+        </member>
+        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader">
+            <summary>Stub type of ModOrganizer.Json.Readers.Files.IFileReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader.#ctor">
+            <summary>Initializes a new instance of type StubIFileReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader.ModOrganizer#Json#Readers#Files#IFileReader#TryReadFile``1(System.String,``0@)">
+            <summary>Sets the Stub of IFileReader.TryReadFile(IFileReader this, String path, !!0&amp; instance)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader.TryReadFileOf1StringM0Out``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.OutFunc{System.String,``0,System.Boolean})">
+            <summary>Sets stubs of TryReadFile(IFileReader this, String path, !!0&amp; instance)</summary>
+        </member>
+        <member name="T:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1">
+            <summary>Stub type of ModOrganizer.Json.Readers.Files.IReadableFromFile&lt;T&gt;</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.#ctor">
+            <summary>Initializes a new instance of type StubIReadableFromFile</summary>
+        </member>
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#Files#IReadableFromFile{T}#FileReader">
+            <summary>Sets the stub of IReadableFromFile`1.get_FileReader(IReadableFromFile`1 this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.FileReaderGet">
+            <summary>Sets the stub of IReadableFromFile`1.get_FileReader(IReadableFromFile`1 this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#IReader{T}#TryRead(System.Text.Json.JsonElement,`0@)">
+            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#IReader{T}#TryReadMany(System.Text.Json.JsonElement,`0[]@)">
+            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
+        </member>
+        <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.ModOrganizer#Json#Readers#Files#IReadableFromFile{T}#PluginLog">
+            <summary>Sets the stub of IReadableFromFile`1.get_PluginLog(IReadableFromFile`1 this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.PluginLogGet">
+            <summary>Sets the stub of IReadableFromFile`1.get_PluginLog(IReadableFromFile`1 this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.TryReadJsonElementT0Out">
+            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIReadableFromFile`1.TryReadManyJsonElementT0ArrayOut">
+            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
         </member>
         <member name="T:ModOrganizer.Mods.Fakes.StubIModInterop">
             <summary>Stub type of ModOrganizer.Mods.IModInterop</summary>
@@ -270,18 +318,6 @@
         </member>
         <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateRuleModInfoStringOut">
             <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>
-        </member>
-        <member name="T:ModOrganizer.Shared.Fakes.StubIClock">
-            <summary>Stub type of ModOrganizer.Shared.IClock</summary>
-        </member>
-        <member name="M:ModOrganizer.Shared.Fakes.StubIClock.#ctor">
-            <summary>Initializes a new instance of type StubIClock</summary>
-        </member>
-        <member name="F:ModOrganizer.Shared.Fakes.StubIClock.GetNowUtc">
-            <summary>Sets the stub of IClock.GetNowUtc(IClock this)</summary>
-        </member>
-        <member name="M:ModOrganizer.Shared.Fakes.StubIClock.ModOrganizer#Shared#IClock#GetNowUtc">
-            <summary>Sets the Stub of IClock.GetNowUtc(IClock this)</summary>
         </member>
     </members>
 </doc>

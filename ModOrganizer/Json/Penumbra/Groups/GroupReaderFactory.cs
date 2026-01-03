@@ -4,17 +4,17 @@ using ModOrganizer.Json.Readers.Files;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupReaderFactory : TypeReaderFactory<Group>, IReadableFile<Group>
+public class GroupReaderFactory : TypeReaderFactory<Group>, IGroupReaderFactory
 {
-    public FileReader FileReader { get; init; }
+    public IFileReader FileReader { get; init; }
 
-    public GroupReaderFactory(IPluginLog pluginLog) : base(pluginLog)
+    public GroupReaderFactory(IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, IReader<Group> groupSingleReader, IFileReader fileReader, IPluginLog pluginLog) : base(pluginLog)
     {
-        FileReader = new(pluginLog);
-
-        Readers.Add(GroupCombiningReader.TYPE, new GroupCombiningReader(pluginLog));
-        Readers.Add(GroupMultiReader.TYPE, new GroupMultiReader(pluginLog));
-        Readers.Add(GroupSingleReader.TYPE, new GroupSingleReader(pluginLog));
-        Readers.Add(GroupImcReader.TYPE, new GroupImcReader(pluginLog));
+        Readers.Add(GroupCombiningReader.TYPE, groupCombiningReader);
+        Readers.Add(GroupImcReader.TYPE, groupImcReader);
+        Readers.Add(GroupMultiReader.TYPE, groupMultiReader);
+        Readers.Add(GroupSingleReader.TYPE, groupSingleReader);
+        
+        FileReader = fileReader;
     }
 }

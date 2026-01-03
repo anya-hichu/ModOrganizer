@@ -1,10 +1,12 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Backups;
+using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Readers.Files;
 using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Systems.DateTimeOffsets;
 using ModOrganizer.Tests.Testables;
@@ -19,9 +21,9 @@ public class TestBackupManager : ITestableClassTemp
     [TestMethod]
     public void TestGetFileName()
     {
-        var backupManager = new BackupManagerBuilder().Build();
-
         var backup = new Backup() { CreatedAt = new(2025, 1, 1, 0, 0, 0, TimeSpan.Zero) };
+
+        var backupManager = new BackupManagerBuilder().Build();
 
         Assert.AreEqual("sort_order.1735689600000.json", backupManager.GetFileName(backup));
     }
@@ -126,17 +128,17 @@ public class TestBackupManager : ITestableClassTemp
         var tempDirectory = this.CreateResultsTempDirectory();
         var configBackups = new HashSet<Backup>();
 
-        var nowUtc = DateTimeOffset.UtcNow.AddHours(-1);
-        using var _ = new BackupManagerShimsContextBuilder()
-            .WithDateTimeOffsetUtcNow(nowUtc)
-            .Build();
-
         var backupManager = new BackupManagerBuilder()
             .WithConfigBackups(configBackups)
             .WithPluginInterfaceSaveConfigNoop()
             .WithConfigAutoBackupLimit(ushort.MaxValue)
             .WithModInteropSortOrderPath(Path.Combine(tempDirectory, ModInterop.SORT_ORDER_FILE_NAME), exists: true)
             .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
+            .Build();
+
+        var nowUtc = DateTimeOffset.UtcNow.AddHours(-1);
+        using var _ = new BackupManagerShimsContextBuilder()
+            .WithDateTimeOffsetUtcNow(nowUtc)
             .Build();
 
         var created = backupManager.TryCreate(out var backup, auto);
@@ -377,5 +379,27 @@ public class TestBackupManager : ITestableClassTemp
         Assert.IsTrue(created);
         Assert.IsNotNull(backup);
         Assert.HasCount(1, configBackups);
+    }
+
+    [TestMethod]
+    public void TestTryRead()
+    {
+        var tempDirectory = this.CreateResultsTempDirectory();
+
+        var backup = new Backup();
+        var sortOrder = new SortOrder();
+
+        var backupManager = new BackupManagerBuilder()
+            .WithPluginInterfaceConfigDirectory(Directory.CreateDirectory(Path.Combine(tempDirectory, nameof(ModOrganizer))))
+            .Build();
+
+        using var _ = new BackupManagerShimsContextBuilder()
+            .WithIReadableFromFileTryReadFromFile(sortOrder)
+            .Build();
+
+        var success = backupManager.TryRead(backup, out var actualSortOrder);
+
+        Assert.IsTrue(success);
+        Assert.AreSame(sortOrder, actualSortOrder);
     }
 }

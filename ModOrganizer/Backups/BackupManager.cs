@@ -1,6 +1,8 @@
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ModOrganizer.Configs;
+using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Mods;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -16,15 +18,17 @@ public class BackupManager : IBackupManager
     private IModInterop ModInterop { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
     private IPluginLog PluginLog { get; init; }
+    private IReadableFromFile<SortOrder> SortOrderFileReader { get; init; }
 
     private RateLimitedAction<bool> CreateRecentAction { get; init; }
 
-    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog)
+    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IReadableFromFile<SortOrder> sortOrderFileReader)
     {
         Config = config;
         ModInterop = modInterop;
         PluginInterface = pluginInterface;
         PluginLog = pluginLog;
+        SortOrderFileReader = sortOrderFileReader;
 
         CreateRecentAction = Debouncer.Debounce<bool>(auto => Create(auto), TimeSpan.FromSeconds(5), leading: true, trailing: false);
     }
@@ -149,6 +153,8 @@ public class BackupManager : IBackupManager
             if (!TryDelete(oldAutoBackup)) PluginLog.Debug("Failed to properly delete auto backup to enforce limit, ignoring");
         }
     }
+
+    public bool TryRead(Backup backup, [NotNullWhen(true)] out SortOrder? sortOrder) => SortOrderFileReader.TryReadFromFile(GetPath(backup), out sortOrder);
 
     public string GetPath(Backup backup) => GetPath(backup.CreatedAt);
     private string GetPath(DateTimeOffset offset) => Path.Combine(GetFolderPath(), GetFileName(offset));

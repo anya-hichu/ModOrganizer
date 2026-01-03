@@ -6,7 +6,7 @@ using System.IO;
 
 namespace ModOrganizer.Json.Readers.Files;
 
-public class FileReader(IPluginLog pluginLog) : DataReader(pluginLog)
+public class FileReader(IPluginLog pluginLog) : DataReader(pluginLog), IFileReader
 {
     public bool TryReadFile<T>(string path, [NotNullWhen(true)] out T? instance)
     {

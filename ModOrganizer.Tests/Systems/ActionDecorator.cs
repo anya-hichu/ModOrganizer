@@ -4,6 +4,12 @@ namespace ModOrganizer.Tests.Systems;
 
 public static class ActionDecorator
 {
+    public static Action WithObserver(IStubObserver observer, Action action) => () =>
+    {
+        observer.Enter(action.GetType(), action);
+        action.Invoke();
+    };
+
     public static Action<T1> WithObserver<T1>(IStubObserver observer, Action<T1> action) => (T1 arg1) =>
     {
         observer.Enter(action.GetType(), action, arg1);

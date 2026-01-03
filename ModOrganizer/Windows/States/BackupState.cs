@@ -1,7 +1,5 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Backups;
-using ModOrganizer.Json.Readers.Files;
-using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Mods;
 using ModOrganizer.Windows.States.Results;
 using ModOrganizer.Windows.States.Results.Backups;
@@ -14,7 +12,6 @@ namespace ModOrganizer.Windows.States;
 public class BackupState : ResultState, IShowableBackupResultState
 {
     private IBackupManager BackupManager { get; init; }
-    private SortOrderReader SortOrderReader { get; init; }
 
     public bool ShowSamePaths { get; set; } = false;
 
@@ -31,8 +28,6 @@ public class BackupState : ResultState, IShowableBackupResultState
         BackupManager = backupManager;
         ModInterop = modInterop;
         PluginLog = pluginLog;
-
-        SortOrderReader = new(pluginLog);
 
         ModInterop.OnSortOrderChanged += OnSortOrderChanged;
     }
@@ -65,7 +60,7 @@ public class BackupState : ResultState, IShowableBackupResultState
     public Task Preview() => CancelAndRunTask(cancellationToken =>
     {
         if (Selected == null) return;
-        if (!SortOrderReader.TryReadFromFile(BackupManager.GetPath(Selected), out var backupSortOrder)) return;
+        if (!BackupManager.TryRead(Selected, out var backupSortOrder)) return;
 
         var sortOrder = ModInterop.GetSortOrder();
         var allModDirectories = sortOrder.Data.Keys.Union(backupSortOrder.Data.Keys);

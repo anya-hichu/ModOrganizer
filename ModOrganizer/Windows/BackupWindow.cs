@@ -6,6 +6,8 @@ using Dalamud.Plugin.Services;
 using Humanizer;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs;
+using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Mods;
 using ModOrganizer.Shared;
 using ModOrganizer.Windows.States;
@@ -28,7 +30,7 @@ public class BackupWindow : Window, IDisposable
     private TemplateContext ViewTemplateContext { get; init; } = new();
 
 
-    public BackupWindow(IBackupManager backupManager, IConfig config, IModInterop ModInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
+    public BackupWindow(IBackupManager backupManager, IConfig config, IModInterop modInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
     {
         SizeConstraints = new()
         {
@@ -39,7 +41,7 @@ public class BackupWindow : Window, IDisposable
         BackupManager = backupManager;
         Config = config;
 
-        BackupState = new(BackupManager, ModInterop, pluginLog);
+        BackupState = new(BackupManager, modInterop, pluginLog);
     }
 
     public void Dispose() => BackupState.Dispose();

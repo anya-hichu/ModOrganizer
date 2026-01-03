@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ModOrganizer.Json.Readers.Clipboards;
 
-public class ClipboardReader(IPluginLog pluginLog) : DataReader(pluginLog)
+public class ClipboardReader(IPluginLog pluginLog) : DataReader(pluginLog), IClipboardReader
 {
     public bool TryReadClipboard<T>(string data, [NotNullWhen(true)] out T? instance) where T : class
     {

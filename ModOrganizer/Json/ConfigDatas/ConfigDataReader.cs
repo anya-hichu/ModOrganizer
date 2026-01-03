@@ -3,20 +3,17 @@ using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Clipboards;
 using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Json.RuleDatas;
-using ModOrganizer.Json.RuleExports;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataReader(IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IReadableClipboard<ConfigData>, IReadableFile<ConfigData>
+public class ConfigDataReader(IClipboardReader clipboardReader, IFileReader fileReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IReadableFromClipboard<ConfigData>, IReadableFromFile<ConfigData>
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
-    public ClipboardReader ClipboardReader { get; init; } = new(pluginLog);
-    public FileReader FileReader { get; init; } = new(pluginLog);
-
-    public RuleDataReader RuleDataReader { get; init; } = new(pluginLog);
+    public IFileReader FileReader { get; init; } = fileReader;
+    public IClipboardReader ClipboardReader { get; init; } = clipboardReader;
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out ConfigData? instance)
     {
@@ -32,7 +29,7 @@ public class ConfigDataReader(IPluginLog pluginLog) : Reader<ConfigData>(pluginL
         }
 
         RuleData[]? rules = null;
-        if (Assert.IsPropertyPresent(jsonElement, nameof(ConfigData.Rules), out var rulesProperty) && !RuleDataReader.TryReadMany(rulesProperty, out rules))
+        if (Assert.IsPropertyPresent(jsonElement, nameof(ConfigData.Rules), out var rulesProperty) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {rulesProperty}");
             return false;

@@ -7,12 +7,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupMultiReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
+public class GroupMultiReader(IReader<Group> groupReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
     public static readonly string TYPE = "Multi";
-
-    private GroupReader GroupReader { get; init; } = new(pluginLog);
-    private OptionContainerReader OptionContainerReader { get; init; } = new(pluginLog);
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {
@@ -20,7 +17,7 @@ public class GroupMultiReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
 
         if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        if (!GroupReader.TryRead(jsonElement, out var group))
+        if (!groupReader.TryRead(jsonElement, out var group))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupMulti)}]: {jsonElement}");
             return false;
@@ -33,7 +30,7 @@ public class GroupMultiReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
         }
 
         var options = Array.Empty<OptionContainer>();
-        if (jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !OptionContainerReader.TryReadMany(optionsProperty, out options))
+        if (jsonElement.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !optionContainerReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]: {optionsProperty}");
             return false;

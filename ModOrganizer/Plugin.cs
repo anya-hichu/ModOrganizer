@@ -3,8 +3,16 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using Microsoft.Extensions.DependencyInjection;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs;
+using ModOrganizer.Json.Penumbra.DefaultMods;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.LocalModDatas;
+using ModOrganizer.Json.Penumbra.ModMetas;
+using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
@@ -25,6 +33,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] public static IPluginLog PluginLog { get; set; } = null!;
 
     private Config Config { get; init; }
+    private ReaderProvider ReaderProvider { get; init; }
     private ModInterop ModInterop { get; init; }
     private RuleEvaluator RuleEvaluator { get; init; }
     private ModProcessor ModProcessor { get; init; }
@@ -40,16 +49,19 @@ public sealed class Plugin : IDalamudPlugin
     private PreviewWindow PreviewWindow { get; init; }
     private BackupWindow BackupWindow { get; init; }
 
+
     public Plugin()
     {
         Config = PluginInterface.GetPluginConfig() as Config ?? ConfigBuilder.BuildDefault();
 
-        ModInterop = new(CommandManager, PluginInterface, PluginLog);
+        ReaderProvider = new(PluginLog);
+
+        var sortOrderFileReader = ReaderProvider.Get<ISortOrderReader>();
+        ModInterop = new(CommandManager, ReaderProvider.Get<IDefaultModReader>(), ReaderProvider.Get<IGroupReaderFactory>(),
+            ReaderProvider.Get<ILocalModDataReader>(), ReaderProvider.Get<IModMetaReader>(), PluginInterface, PluginLog, sortOrderFileReader);
 
         RuleEvaluator = new(PluginLog);
-
-        BackupManager = new(Config, ModInterop, PluginInterface, PluginLog);
-
+        BackupManager = new(Config, ModInterop, PluginInterface, PluginLog, sortOrderFileReader);
         ModProcessor = new(BackupManager, Config, ModInterop, PluginLog, RuleEvaluator);
         ModAutoProcessor = new(Config, NotificationManager, ModInterop, ModProcessor, PluginLog);
         ModFileSystem = new(ModInterop);
@@ -67,10 +79,7 @@ public sealed class Plugin : IDalamudPlugin
         WindowSystem.AddWindow(MainWindow);
         WindowSystem.AddWindow(PreviewWindow);
 
-        CommandManager.AddHandler(COMMAND_NAME, new CommandInfo(OnCommand)
-        {
-            HelpMessage = COMMAND_HELP_MESSAGE
-        });
+        CommandManager.AddHandler(COMMAND_NAME, new CommandInfo(OnCommand) { HelpMessage = COMMAND_HELP_MESSAGE });
 
         PluginInterface.UiBuilder.Draw += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
@@ -94,6 +103,8 @@ public sealed class Plugin : IDalamudPlugin
 
         RuleState.Dispose();
         BackupManager.Dispose();
+
+        ReaderProvider.Dispose();
     }
 
     private void OnCommand(string command, string subcommand)

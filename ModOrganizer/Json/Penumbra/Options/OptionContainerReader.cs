@@ -6,24 +6,21 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options;
 
-public class OptionContainerReader(IPluginLog pluginLog) : Reader<OptionContainer>(pluginLog)
+public class OptionContainerReader(IReader<Container> containerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<OptionContainer>(pluginLog)
 {
-    private ContainerReader ContainerReader { get; init; } = new(pluginLog);
-    private OptionReader OptionReader { get; init; } = new(pluginLog);
-
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out OptionContainer? instance)
     {
         instance = null;
 
         if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        if (!ContainerReader.TryRead(jsonElement, out var container))
+        if (!containerReader.TryRead(jsonElement, out var container))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(OptionContainer)}]");
             return false;
         }
 
-        if (!OptionReader.TryRead(jsonElement, out var option))
+        if (!optionReader.TryRead(jsonElement, out var option))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionContainer)}]");
             return false;

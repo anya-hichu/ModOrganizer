@@ -8,13 +8,9 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupCombiningReader(IPluginLog pluginLog) : Reader<Group>(pluginLog)
+public class GroupCombiningReader(IReader<Group> groupReader, IReader<NamedContainer> namedContainerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
     public static readonly string TYPE = "Combining";
-
-    private GroupReader GroupReader { get; init; } = new(pluginLog);
-    private NamedContainerReader NamedContainerReader { get; init; } = new(pluginLog);
-    private OptionReader OptionReader { get; init; } = new(pluginLog);
 
     public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
     {
@@ -22,7 +18,7 @@ public class GroupCombiningReader(IPluginLog pluginLog) : Reader<Group>(pluginLo
 
         if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
-        if (!GroupReader.TryRead(jsonElement, out var group))
+        if (!groupReader.TryRead(jsonElement, out var group))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupCombining)}]: {jsonElement}");
             return false;
@@ -35,14 +31,14 @@ public class GroupCombiningReader(IPluginLog pluginLog) : Reader<Group>(pluginLo
         }
 
         var options = Array.Empty<Option>();
-        if (jsonElement.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) && !OptionReader.TryReadMany(optionsProperty, out options))
+        if (jsonElement.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) && !optionReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]: {optionsProperty}");
             return false;
         }
 
         var containers = Array.Empty<NamedContainer>();
-        if (jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) && !NamedContainerReader.TryReadMany(containersProperty, out containers))
+        if (jsonElement.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) && !namedContainerReader.TryReadMany(containersProperty, out containers))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]: {containersProperty}");
             return false;
