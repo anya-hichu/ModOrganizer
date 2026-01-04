@@ -151,7 +151,7 @@ public class TestContainerReader
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithAssertIsValue(true)
-            .WithAssertIsStringDict([])
+            .WithAssertIsStringDictSuccessfulOnTrue()
             .WithManipulationWrapperReaderTryReadManySuccessfulOnTrue()
             .Build();
 
