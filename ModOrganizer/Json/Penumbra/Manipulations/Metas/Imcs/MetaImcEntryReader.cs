@@ -1,24 +1,25 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 
-public class MetaImcEntryReader(IPluginLog pluginLog) : Reader<MetaImcEntry>(pluginLog)
+public class MetaImcEntryReader(IAssert assert, IPluginLog pluginLog) : Reader<MetaImcEntry>(assert, pluginLog)
 {
-    public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out MetaImcEntry? instance)
+    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out MetaImcEntry? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
+        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsU8Value(jsonElement, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
-        if (!Assert.IsU8Value(jsonElement, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
-        if (!Assert.IsU8Value(jsonElement, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
-        if (!Assert.IsU8Value(jsonElement, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
-        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
-        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
+        if (!Assert.IsU8Value(element, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
+        if (!Assert.IsU8Value(element, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
+        if (!Assert.IsU8Value(element, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
+        if (!Assert.IsU8Value(element, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
+        if (!Assert.IsPropertyPresent(element, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
+        if (!Assert.IsPropertyPresent(element, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
 
         instance = new()
         {

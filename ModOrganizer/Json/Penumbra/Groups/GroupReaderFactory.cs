@@ -1,4 +1,5 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Elements;
 
@@ -8,7 +9,8 @@ public class GroupReaderFactory : TypeReaderFactory<Group>, IGroupReaderFactory
 {
     public IElementReader ElementReader { get; init; }
 
-    public GroupReaderFactory(IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, IReader<Group> groupSingleReader, IElementReader elementReader, IPluginLog pluginLog) : base(pluginLog)
+    public GroupReaderFactory(IAssert assert, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, 
+        IReader<Group> groupSingleReader, IElementReader elementReader, IPluginLog pluginLog) : base(assert, pluginLog)
     {
         Readers.Add(GroupCombiningReader.TYPE, groupCombiningReader);
         Readers.Add(GroupImcReader.TYPE, groupImcReader);

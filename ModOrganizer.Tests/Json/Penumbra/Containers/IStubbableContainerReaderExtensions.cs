@@ -12,12 +12,12 @@ public static class IStubbableContainerReaderExtensions
         return stubbable;
     }
 
-    public static T WithContainerReaderTryRead<T>(this T stubbable, Container? value) where T : IStubbableContainerReader
+    public static T WithContainerReaderTryRead<T>(this T stubbable, Container? stubValue) where T : IStubbableContainerReader
     {
-        stubbable.ContainerReaderStub.TryReadJsonElementT0Out = (jsonElement, out instance) =>
+        stubbable.ContainerReaderStub.TryReadJsonElementT0Out = (element, out instance) =>
         {
-            instance = value!;
-            return value != null;
+            instance = stubValue!;
+            return stubValue != null;
         };
 
         return stubbable;

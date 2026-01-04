@@ -5,7 +5,7 @@ namespace ModOrganizer.Json.Readers;
 
 public interface IReader<T> where T : class
 {
-    bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out T? instance);
+    bool TryRead(JsonElement element, [NotNullWhen(true)] out T? instance);
 
-    bool TryReadMany(JsonElement jsonElement, [NotNullWhen(true)] out T[]? instances);
+    bool TryReadMany(JsonElement element, [NotNullWhen(true)] out T[]? instances);
 }

@@ -1,18 +1,19 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
-public class OptionImcReaderFactory(IReader<OptionImc> optionImcAttributeMaskReader, IReader<OptionImc> optionImcIsDisabledSubModReader, IPluginLog pluginLog) : ReaderFactory<OptionImc>(pluginLog), IOptionImcReaderFactory
+public class OptionImcReaderFactory(IAssert assert, IReader<OptionImc> optionImcAttributeMaskReader, IReader<OptionImc> optionImcIsDisabledSubModReader, IPluginLog pluginLog) : ReaderFactory<OptionImc>(assert, pluginLog), IOptionImcReaderFactory
 {
-    protected override bool TryGetReader(JsonElement jsonElement, [NotNullWhen(true)] out IReader<OptionImc>? builder)
+    protected override bool TryGetReader(JsonElement element, [NotNullWhen(true)] out IReader<OptionImc>? builder)
     {
         builder = null;
 
-        var hasAttributeMaskProperty = jsonElement.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var _);
-        var hasIsDisableSubModProperty = jsonElement.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var _);
+        var hasAttributeMaskProperty = element.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var _);
+        var hasIsDisableSubModProperty = element.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var _);
 
         if (hasAttributeMaskProperty && hasIsDisableSubModProperty)
         {

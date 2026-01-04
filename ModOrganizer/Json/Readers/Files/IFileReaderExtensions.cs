@@ -11,9 +11,9 @@ public static class IFileReaderExtensions
 
         try
         {
-            if (!fileReader.ElementReader.TryReadFromFile(path, out var jsonElement)) return false;
+            if (!fileReader.ElementReader.TryReadFromFile(path, out var element)) return false;
 
-            if (fileReader.TryRead(jsonElement, out instance)) return true;
+            if (fileReader.TryRead(element, out instance)) return true;
 
             fileReader.PluginLog.Warning($"Failed to read instance [{typeof(T).Name}] from json file [{path}]");
             return false;

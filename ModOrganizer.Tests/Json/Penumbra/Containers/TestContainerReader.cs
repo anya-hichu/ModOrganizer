@@ -1,8 +1,9 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
-using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Asserts;
 using ModOrganizer.Tests.Json.Penumbra.Manipulations;
 using System.Text.Json;
 
@@ -14,75 +15,50 @@ public class TestContainerReader
     [TestMethod]
     public void TestTryRead()
     {
-        var observer = new StubObserver();
-
-        var fileKey = "File Key";
-        var fileValue = "File Value";
-
-        var fileSwapKey = "File Swap Key";
-        var fileSwapValue = "File Swap Value";
+        var filesOrFileSwaps = new Dictionary<string, string>();
+        var manipulations = Array.Empty<ManipulationWrapper>();
 
         var value = new Dictionary<string, object?>()
         {
-            { nameof(Container.Files), new Dictionary<string, object?>() { { fileKey, fileValue } } },
-            { nameof(Container.FileSwaps), new Dictionary<string, object?>() { { fileSwapKey, fileSwapValue } } },
-            { nameof(Container.Manipulations), Array.Empty<object?>() }
+            { nameof(Container.Files), filesOrFileSwaps },
+            { nameof(Container.FileSwaps), filesOrFileSwaps },
+            { nameof(Container.Manipulations), manipulations }
         };
 
-        var jsonElement = JsonSerializer.SerializeToElement(value);
+        var element = JsonSerializer.SerializeToElement(value);
 
         var containerReader = new ContainerReaderBuilder()
-            .WithManipulationWrapperReaderObserver(observer)
-            .WithManipulationWrapperReaderTryReadMany([])
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDict(filesOrFileSwaps)
+            .WithManipulationWrapperReaderTryReadMany(manipulations)
             .Build();
 
-        var success = containerReader.TryRead(jsonElement, out var container);
+        var success = containerReader.TryRead(element, out var container);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(container);
 
-        Assert.IsNotNull(container.Files);
-        Assert.HasCount(1, container.Files);
-        Assert.AreEqual(fileValue, container.Files[fileKey]);
+        Assert.AreSame(filesOrFileSwaps, container.Files);
+        Assert.AreSame(filesOrFileSwaps, container.FileSwaps);
 
-        Assert.IsNotNull(container.FileSwaps);
-        Assert.HasCount(1, container.FileSwaps);
-        Assert.AreEqual(fileSwapValue, container.FileSwaps[fileSwapKey]);
-
-        Assert.IsNotNull(container.Manipulations);
-        Assert.IsEmpty(container.Manipulations);
-
-        var calls = observer.GetCalls();
-        Assert.HasCount(1, calls);
-
-        var call = calls[0];
-        Assert.AreEqual(nameof(IReader<>.TryReadMany), call.StubbedMethod.Name);
-
-        switch (call.GetArguments()[0])
-        {
-            case JsonElement manipulationsProperty:
-                Assert.AreEqual(JsonValueKind.Array, manipulationsProperty.ValueKind);
-                Assert.AreEqual(0, manipulationsProperty.GetArrayLength());
-                break;
-            default:
-                Assert.Fail("Expected first call argument to be a JsonElement");
-                break;
-        }
+        Assert.AreSame(manipulations, container.Manipulations);
     }
 
     [TestMethod]
     public void TestTryReadWithDefaults()
     {
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
             { nameof(Container.Files), null },
             { nameof(Container.FileSwaps), null },
             { nameof(Container.Manipulations), null }
         });
 
-        var success = new ContainerReaderBuilder()
-            .Build()
-            .TryRead(jsonElement, out var container);
+        var containerReader = new ContainerReaderBuilder()
+            .WithAssertIsValue(true)
+            .Build();
+
+        var success = containerReader.TryRead(element, out var container);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(container);
@@ -102,72 +78,22 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { nameof(Container.Files), string.Empty }
+            { nameof(Container.Files), false },
+            { nameof(Container.FileSwaps), true },
+            { nameof(Container.Manipulations), true }
         });
 
         var containerReader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDictSuccessOnTrue()
+            .WithManipulationWrapperReaderTryReadManyNullOnFalse()
             .Build();
 
-        var success = containerReader.TryRead(jsonElement, out var container);
-
-        Assert.IsFalse(success);
-        Assert.IsNull(container);
-
-        var calls = observer.GetCalls();
-
-        Assert.HasCount(2, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Expected value kind [Object] but got [String]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Failed to read one or more [Files] for [Container]: ", actualMessage));
-    }
-
-    [TestMethod]
-    public void TestTryReadWithInvalidFileSwaps()
-    {
-        var observer = new StubObserver();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
-        {
-            { nameof(Container.FileSwaps), string.Empty }
-        });
-
-        var containerReader = new ContainerReaderBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
-
-        var success = containerReader.TryRead(jsonElement, out var container);
-
-        Assert.IsFalse(success);
-        Assert.IsNull(container);
-
-        var calls = observer.GetCalls();
-
-        Assert.HasCount(2, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Expected value kind [Object] but got [String]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Failed to read one or more [FileSwaps] for [Container]: ", actualMessage));
-    }
-
-    [TestMethod]
-    public void TestTryReadWithInvalidManipulations()
-    {
-        var observer = new StubObserver();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
-        {
-            { nameof(Container.Manipulations), string.Empty }
-        });
-
-        var containerReader = new ContainerReaderBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .WithManipulationWrapperReaderTryReadMany(null)
-            .Build();
-
-        var success = containerReader.TryRead(jsonElement, out var container);
+        var success = containerReader.TryRead(element, out var container);
 
         Assert.IsFalse(success);
         Assert.IsNull(container);
@@ -175,6 +101,68 @@ public class TestContainerReader
         var calls = observer.GetCalls();
 
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Failed to read one or more [Manipulations] for [Container]: ", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [Files] for [Container]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidFileSwaps()
+    {
+        var observer = new StubObserver();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(Container.Files), true },
+            { nameof(Container.FileSwaps), false },
+            { nameof(Container.Manipulations), true }
+        });
+
+        var containerReader = new ContainerReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDictSuccessOnTrue()
+            .WithManipulationWrapperReaderTryReadManyNullOnFalse()
+            .Build();
+
+        var success = containerReader.TryRead(element, out var container);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(container);
+
+        var calls = observer.GetCalls();
+
+        Assert.HasCount(1, calls);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [FileSwaps] for [Container]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidManipulations()
+    {
+        var observer = new StubObserver();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        {
+            { nameof(Container.Files), true },
+            { nameof(Container.FileSwaps), true },
+            { nameof(Container.Manipulations), false }
+        });
+
+        var containerReader = new ContainerReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDict([])
+            .WithManipulationWrapperReaderTryReadManyNullOnFalse()
+            .Build();
+
+        var success = containerReader.TryRead(element, out var container);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(container);
+
+        var calls = observer.GetCalls();
+
+        Assert.HasCount(1, calls);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [Manipulations] for [Container]: {element}", actualMessage));
     }
 }

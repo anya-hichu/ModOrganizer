@@ -5,49 +5,50 @@ using ModOrganizer.Json.Penumbra.Options.Imcs;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using ModOrganizer.Json.Asserts;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
 
-public class GroupImcReader(IReader<Group> groupReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IReader<OptionImc> optionImcReader,  IPluginLog pluginLog) : Reader<Group>(pluginLog)
+public class GroupImcReader(IAssert assert, IReader<Group> groupReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IReader<OptionImc> optionImcReader,  IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
 {
     public static readonly string TYPE = "Imc";
 
-    public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out Group? instance)
+    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out Group? instance)
     {
         instance = null;
 
-        var allVariants = jsonElement.TryGetProperty(nameof(GroupImc.AllVariants), out var allVariantsProperty) && allVariantsProperty.GetBoolean();
-        var allAttributes = jsonElement.TryGetProperty(nameof(GroupImc.AllAttributes), out var allAttributesProperty) && allAttributesProperty.GetBoolean();
+        var allVariants = element.TryGetProperty(nameof(GroupImc.AllVariants), out var allVariantsProperty) && allVariantsProperty.GetBoolean();
+        var allAttributes = element.TryGetProperty(nameof(GroupImc.AllAttributes), out var allAttributesProperty) && allAttributesProperty.GetBoolean();
 
         MetaImcEntry? defaultEntry = null;
-        if (jsonElement.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
+        if (element.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
         {
             PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]: {defaultEntryProperty}");
             return false;
         }
 
         MetaImcIdentifier? identifier = null;
-        if (jsonElement.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
+        if (element.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
         {
             PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]: {identifierProperty}");
             return false;
         }
 
-        if (!groupReader.TryRead(jsonElement, out var group))
+        if (!groupReader.TryRead(element, out var group))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupImc)}]: {jsonElement}");
+            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 
         if (group.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}): {jsonElement}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}): {element}");
             return false;
         }
 
         var options = Array.Empty<OptionImc>();
-        if (jsonElement.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !optionImcReader.TryReadMany(optionsProperty, out options))
+        if (element.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !optionImcReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {optionsProperty}");
             return false;

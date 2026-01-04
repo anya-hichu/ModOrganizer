@@ -1,13 +1,14 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 
-public class MetaImcWrapperReader(IReader<MetaImc> metaImcReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaImc>(pluginLog, TYPE)
+public class MetaImcWrapperReader(IAssert assert, IReader<MetaImc> metaImcReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaImc>(assert, pluginLog, TYPE)
 {
     public static readonly string TYPE = "Imc";
 
-    protected override bool TryReadWrapped(JsonElement jsonElement, [NotNullWhen(true)] out MetaImc? instance) => metaImcReader.TryRead(jsonElement, out instance);
+    protected override bool TryReadWrapped(JsonElement element, [NotNullWhen(true)] out MetaImc? instance) => metaImcReader.TryRead(element, out instance);
 }

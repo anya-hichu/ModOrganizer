@@ -23,13 +23,13 @@ public static class IClipboardReaderExtensions
             }
             var decompressedData = Encoding.UTF8.GetString(decompressedStream.ToArray());
 
-            if (!clipboardReader.ElementReader.TryReadFromData(decompressedData, out var jsonElement))
+            if (!clipboardReader.ElementReader.TryReadFromData(decompressedData, out var element))
             {
                 clipboardReader.PluginLog.Error($"Failed to read [{nameof(JsonElement)}] from clipboard data: {decompressedData}");
                 return false;
             }
 
-            if (clipboardReader.TryRead(jsonElement, out instance)) return true;
+            if (clipboardReader.TryRead(element, out instance)) return true;
 
             clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data");
             return false;

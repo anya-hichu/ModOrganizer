@@ -14,16 +14,16 @@ public static class IStubbableModInteropExtensions
         return stubbable;
     }
 
-    public static T WithModInteropGetModList<T>(this T stubbable, Dictionary<string, string> value) where T : IStubbableModInterop
+    public static T WithModInteropGetModList<T>(this T stubbable, Dictionary<string, string> stubValue) where T : IStubbableModInterop
     {
-        stubbable.ModInteropStub.GetModList = () => value;
+        stubbable.ModInteropStub.GetModList = () => stubValue;
 
         return stubbable;
     }
 
-    public static T WithModInteropGetModPath<T>(this T stubbable, string value) where T : IStubbableModInterop
+    public static T WithModInteropGetModPath<T>(this T stubbable, string stubValue) where T : IStubbableModInterop
     {
-        stubbable.ModInteropStub.GetModPathString = modDirectory => value;
+        stubbable.ModInteropStub.GetModPathString = modDirectory => stubValue;
 
         return stubbable;
     }
@@ -50,20 +50,20 @@ public static class IStubbableModInteropExtensions
         return stubbable;
     }
 
-    public static T WithModInteropTryGetModInfo<T>(this T stubbable, ModInfo? value) where T : IStubbableModInterop
+    public static T WithModInteropTryGetModInfo<T>(this T stubbable, ModInfo? stubValue) where T : IStubbableModInterop
     {
         stubbable.ModInteropStub.TryGetModInfoStringModInfoOut = (modDirectory, out instance) =>
         {
-            instance = value;
-            return value != null;
+            instance = stubValue;
+            return stubValue != null;
         };
 
         return stubbable;
     }
 
-    public static T WithModInteropReloadPenumbra<T>(this T stubbable, bool value) where T : IStubbableModInterop
+    public static T WithModInteropReloadPenumbra<T>(this T stubbable, bool stubValue) where T : IStubbableModInterop
     {
-        stubbable.ModInteropStub.ReloadPenumbra = () => value;
+        stubbable.ModInteropStub.ReloadPenumbra = () => stubValue;
 
         return stubbable;
     }

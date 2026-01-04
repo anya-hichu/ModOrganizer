@@ -163,6 +163,66 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
+        <member name="T:ModOrganizer.Json.Asserts.Fakes.StubIAssert">
+            <summary>Stub type of ModOrganizer.Json.Asserts.IAssert</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.#ctor">
+            <summary>Initializes a new instance of type StubIAssert</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsIntArrayJsonElementInt32ArrayOut">
+            <summary>Sets the stub of IAssert.IsIntArray(IAssert this, JsonElement element, Int32[]* value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsOptionalValueJsonElementStringStringOut">
+            <summary>Sets the stub of IAssert.IsOptionalValue(IAssert this, JsonElement element, String propertyName, String* value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsPropertyPresentJsonElementStringJsonElementOutBoolean">
+            <summary>Sets the stub of IAssert.IsPropertyPresent(IAssert this, JsonElement element, String name, JsonElement* property, Boolean warn)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsStringArrayJsonElementStringArrayOut">
+            <summary>Sets the stub of IAssert.IsStringArray(IAssert this, JsonElement element, String[]* value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsStringDictJsonElementDictionaryOfStringStringOut">
+            <summary>Sets the stub of IAssert.IsStringDict(IAssert this, JsonElement element, Dictionary`2* value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsU16ValueJsonElementStringUInt16OutBoolean">
+            <summary>Sets the stub of IAssert.IsU16Value(IAssert this, JsonElement element, String propertyName, UInt16* value, Boolean required)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsU8ValueJsonElementStringByteOutBoolean">
+            <summary>Sets the stub of IAssert.IsU8Value(IAssert this, JsonElement element, String propertyName, Byte* value, Boolean required)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsValueJsonElementJsonValueKind">
+            <summary>Sets the stub of IAssert.IsValue(IAssert this, JsonElement element, JsonValueKind kind)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsValuePresentJsonElementStringStringOutBoolean">
+            <summary>Sets the stub of IAssert.IsValuePresent(IAssert this, JsonElement element, String propertyName, String* value, Boolean required)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsIntArray(System.Text.Json.JsonElement,System.Int32[]@)">
+            <summary>Sets the Stub of IAssert.IsIntArray(IAssert this, JsonElement element, Int32[]* value)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsOptionalValue(System.Text.Json.JsonElement,System.String,System.String@)">
+            <summary>Sets the Stub of IAssert.IsOptionalValue(IAssert this, JsonElement element, String propertyName, String* value)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsPropertyPresent(System.Text.Json.JsonElement,System.String,System.Text.Json.JsonElement@,System.Boolean)">
+            <summary>Sets the Stub of IAssert.IsPropertyPresent(IAssert this, JsonElement element, String name, JsonElement* property, Boolean warn)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsStringArray(System.Text.Json.JsonElement,System.String[]@)">
+            <summary>Sets the Stub of IAssert.IsStringArray(IAssert this, JsonElement element, String[]* value)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsStringDict(System.Text.Json.JsonElement,System.Collections.Generic.Dictionary{System.String,System.String}@)">
+            <summary>Sets the Stub of IAssert.IsStringDict(IAssert this, JsonElement element, Dictionary`2* value)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsU16Value(System.Text.Json.JsonElement,System.String,System.UInt16@,System.Boolean)">
+            <summary>Sets the Stub of IAssert.IsU16Value(IAssert this, JsonElement element, String propertyName, UInt16* value, Boolean required)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsU8Value(System.Text.Json.JsonElement,System.String,System.Byte@,System.Boolean)">
+            <summary>Sets the Stub of IAssert.IsU8Value(IAssert this, JsonElement element, String propertyName, Byte* value, Boolean required)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsValue(System.Text.Json.JsonElement,System.Text.Json.JsonValueKind)">
+            <summary>Sets the Stub of IAssert.IsValue(IAssert this, JsonElement element, JsonValueKind kind)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsValuePresent(System.Text.Json.JsonElement,System.String,System.String@,System.Boolean)">
+            <summary>Sets the Stub of IAssert.IsValuePresent(IAssert this, JsonElement element, String propertyName, String* value, Boolean required)</summary>
+        </member>
         <member name="T:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader">
             <summary>Stub type of ModOrganizer.Json.Readers.Elements.IElementReader</summary>
         </member>
@@ -188,16 +248,16 @@
             <summary>Initializes a new instance of type StubIReader</summary>
         </member>
         <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReader`1.ModOrganizer#Json#Readers#IReader{T}#TryRead(System.Text.Json.JsonElement,`0@)">
-            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement element, !0&amp; instance)</summary>
         </member>
         <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReader`1.ModOrganizer#Json#Readers#IReader{T}#TryReadMany(System.Text.Json.JsonElement,`0[]@)">
-            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
+            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, !0[]&amp; instances)</summary>
         </member>
         <member name="F:ModOrganizer.Json.Readers.Fakes.StubIReader`1.TryReadJsonElementT0Out">
-            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement element, !0&amp; instance)</summary>
         </member>
         <member name="F:ModOrganizer.Json.Readers.Fakes.StubIReader`1.TryReadManyJsonElementT0ArrayOut">
-            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
+            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, !0[]&amp; instances)</summary>
         </member>
         <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions">
             <summary>Shim type of ModOrganizer.Json.Readers.Files.IFileReaderExtensions</summary>
@@ -230,10 +290,10 @@
             <summary>Sets the stub of IFileReader`1.get_ElementReader(IFileReader`1 this)</summary>
         </member>
         <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#IReader{T}#TryRead(System.Text.Json.JsonElement,`0@)">
-            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement element, !0&amp; instance)</summary>
         </member>
         <member name="M:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#IReader{T}#TryReadMany(System.Text.Json.JsonElement,`0[]@)">
-            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
+            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, !0[]&amp; instances)</summary>
         </member>
         <member name="P:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.ModOrganizer#Json#Readers#Files#IFileReader{T}#PluginLog">
             <summary>Sets the stub of IFileReader`1.get_PluginLog(IFileReader`1 this)</summary>
@@ -242,10 +302,10 @@
             <summary>Sets the stub of IFileReader`1.get_PluginLog(IFileReader`1 this)</summary>
         </member>
         <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.TryReadJsonElementT0Out">
-            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement jsonElement, !0&amp; instance)</summary>
+            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement element, !0&amp; instance)</summary>
         </member>
         <member name="F:ModOrganizer.Json.Readers.Files.Fakes.StubIFileReader`1.TryReadManyJsonElementT0ArrayOut">
-            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement jsonElement, !0[]&amp; instances)</summary>
+            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, !0[]&amp; instances)</summary>
         </member>
         <member name="T:ModOrganizer.Mods.Fakes.StubIModInterop">
             <summary>Stub type of ModOrganizer.Mods.IModInterop</summary>

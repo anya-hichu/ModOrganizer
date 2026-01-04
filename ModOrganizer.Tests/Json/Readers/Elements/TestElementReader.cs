@@ -43,10 +43,10 @@ public class TestElementReader : ITestableClassTemp
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = elementReader.TryReadFromData(data, out var jsonElement);
+        var success = elementReader.TryReadFromData(data, out var element);
 
         Assert.IsFalse(success);
-        Assert.AreEqual(default, jsonElement);
+        Assert.AreEqual(default, element);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
@@ -72,10 +72,10 @@ public class TestElementReader : ITestableClassTemp
 
         var success = new ElementReaderBuilder()
             .Build()
-            .TryReadFromFile(filePath, out var jsonElement);
+            .TryReadFromFile(filePath, out var element);
 
         Assert.IsTrue(success);
-        Assert.AreEqual(expectedKind, jsonElement.ValueKind);
+        Assert.AreEqual(expectedKind, element.ValueKind);
     }
 
     [TestMethod]
@@ -96,10 +96,10 @@ public class TestElementReader : ITestableClassTemp
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = elementReader.TryReadFromFile(filePath, out var jsonElement);
+        var success = elementReader.TryReadFromFile(filePath, out var element);
 
         Assert.IsFalse(success);
-        Assert.AreEqual(default, jsonElement);
+        Assert.AreEqual(default, element);
 
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
@@ -124,10 +124,10 @@ public class TestElementReader : ITestableClassTemp
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = elementReader.TryReadFromFile(filePath, out var jsonElement);
+        var success = elementReader.TryReadFromFile(filePath, out var element);
 
         Assert.IsFalse(success);
-        Assert.AreEqual(default, jsonElement);
+        Assert.AreEqual(default, element);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);

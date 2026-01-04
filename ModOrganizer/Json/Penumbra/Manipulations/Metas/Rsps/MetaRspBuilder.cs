@@ -1,21 +1,22 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
 
-public class MetaRspReader(IPluginLog pluginLog) : Reader<MetaRsp>(pluginLog)
+public class MetaRspReader(IAssert assert, IPluginLog pluginLog) : Reader<MetaRsp>(assert, pluginLog)
 {
-    public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out MetaRsp? instance)
+    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out MetaRsp? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
+        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyPresent(jsonElement, nameof(MetaRsp.Entry), out var entryProperty)) return false;
-        if (!Assert.IsValuePresent(jsonElement, nameof(MetaRsp.SubRace), out var subRace)) return false;
-        if (!Assert.IsValuePresent(jsonElement, nameof(MetaRsp.Attribute), out var attribute)) return false;
+        if (!Assert.IsPropertyPresent(element, nameof(MetaRsp.Entry), out var entryProperty)) return false;
+        if (!Assert.IsValuePresent(element, nameof(MetaRsp.SubRace), out var subRace)) return false;
+        if (!Assert.IsValuePresent(element, nameof(MetaRsp.Attribute), out var attribute)) return false;
 
         instance = new()
         {

@@ -1,4 +1,5 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atrs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqdps;
@@ -15,10 +16,10 @@ namespace ModOrganizer.Json.Penumbra.Manipulations;
 
 public class ManipulationWrapperReaderFactory : TypeReaderFactory<ManipulationWrapper>, IManipulationWrapperReaderFactory
 {
-    public ManipulationWrapperReaderFactory(IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
+    public ManipulationWrapperReaderFactory(IAssert assert, IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
         IReader<ManipulationWrapper> metaEqdpWrapperReader, IReader<ManipulationWrapper> metaEqpWrapperReader, IReader<ManipulationWrapper> metaEstWrapperReader, 
         IReader<ManipulationWrapper> metaGeqpWrapperReader, IReader<ManipulationWrapper> metaGmpWrapperReader, IReader<ManipulationWrapper> metaImcWrapperReader, 
-        IReader<ManipulationWrapper> metaRspWrapperReader, IReader<ManipulationWrapper> metaShpWrapperReader, IPluginLog pluginLog) : base(pluginLog)
+        IReader<ManipulationWrapper> metaRspWrapperReader, IReader<ManipulationWrapper> metaShpWrapperReader, IPluginLog pluginLog) : base(assert, pluginLog)
     {
         Readers.Add(MetaAtchWrapperReader.TYPE, metaAtchWrapperReader);
         Readers.Add(MetaAtrWrapperReader.TYPE, metaAtrWrapperReader);

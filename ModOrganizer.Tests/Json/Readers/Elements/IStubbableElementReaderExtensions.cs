@@ -12,12 +12,12 @@ public static class IStubbableElementReaderExtensions
         return stubbable;
     }
 
-    public static T WithElementReaderTryReadFromFile<T>(this T stubbable, JsonElement? value) where T : IStubbableElementReader
+    public static T WithElementReaderTryReadFromFile<T>(this T stubbable, JsonElement? stubValue) where T : IStubbableElementReader
     {
         stubbable.ElementReaderStub.TryReadFromFileStringJsonElementOut = (path, out instance) =>
         {
-            instance = value.GetValueOrDefault();
-            return value.HasValue;
+            instance = stubValue.GetValueOrDefault();
+            return stubValue.HasValue;
         };
 
         return stubbable;

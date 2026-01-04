@@ -4,8 +4,11 @@ using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Asserts;
 using ModOrganizer.Tests.Json.Readers.Elements;
 using System.Text.Json;
+
+using IAssert = ModOrganizer.Json.Asserts.IAssert;
 
 namespace ModOrganizer.Tests.Json.Penumbra.SortOrders;
 
@@ -15,30 +18,28 @@ public class TestSortOrderReader
     [TestMethod]
     public void TestTryRead()
     {
-        var modDirectory = "Mod Directory";
-        var modPath = "Mod Path";
+        var data = new Dictionary<string, string>();
+        var emptyFolders = Array.Empty<string>();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
-            {
-                nameof(SortOrder.Data), new Dictionary<string, object?>() 
-                { 
-                    { modDirectory, modPath } 
-                } 
-            }
+            { nameof(SortOrder.Data), data },
+            { nameof(SortOrder.EmptyFolders), emptyFolders }
         });
 
-        var success = new SortOrderReaderBuilder()
-            .Build()
-            .TryRead(jsonElement, out var sortOrder);
+        var sortOrderReader = new SortOrderReaderBuilder()
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDict(data)
+            .WithAssertIsStringArray(emptyFolders)
+            .Build();
+
+        var success = sortOrderReader.TryRead(element, out var sortOrder);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(sortOrder);
 
-        Assert.HasCount(1, sortOrder.Data);
-        Assert.AreEqual(modPath, sortOrder.Data[modDirectory]);
-
-        Assert.IsEmpty(sortOrder.EmptyFolders);
+        Assert.AreSame(data, sortOrder.Data);
+        Assert.AreSame(emptyFolders, sortOrder.EmptyFolders);
     }
 
     [TestMethod]
@@ -46,22 +47,34 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(null as object);
+        var element = JsonSerializer.SerializeToElement(null as object);
 
         var sortOrderReader = new SortOrderReaderBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
+            .WithAssertObserver(observer)
+            .WithAssertIsValue(false)
             .Build();
 
-        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
+        var success = sortOrderReader.TryRead(element, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected value kind [Object] but got [Null]: ", actualMessage));
+
+        var call = calls[0];
+        Assert.AreEqual(nameof(IAssert.IsValue), call.StubbedMethod.Name);
+
+
+        switch (call.GetArguments()[0])
+        {
+            case JsonElement actualElement:
+                Assert.AreEqual(element, actualElement);
+                break;
+            default:
+                Assert.Fail("Expected first call argument to be a JsonElement");
+                break;
+        }
     }
 
     [TestMethod]
@@ -69,27 +82,29 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>
+        Dictionary<string, string>? data = null;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>
         { 
-            { nameof(SortOrder.Data), null } 
+            { nameof(SortOrder.Data), data } 
         });
 
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDict(data)
             .Build();
 
-        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
+        var success = sortOrderReader.TryRead(element, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(2, calls);
+        Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected value kind [Object] but got [Null]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Failed to read one or more [Data] for [SortOrder]: ", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read one or more [Data] for [SortOrder]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -97,27 +112,29 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?> 
+        string[]? emptyFolders = null;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?> 
         { 
-            { nameof(SortOrder.EmptyFolders), null } 
+            { nameof(SortOrder.EmptyFolders), emptyFolders } 
         });
 
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
+            .WithAssertIsValue(true)
+            .WithAssertIsStringArray(emptyFolders)
             .Build();
 
-        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
+        var success = sortOrderReader.TryRead(element, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(2, calls);
+        Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected value kind [Array] but got [Null]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Failed to read one or more [EmptyFolders] for [SortOrder]: ", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read one or more [EmptyFolders] for [SortOrder]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -125,22 +142,21 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var modDirectory = "Mod Directory";
-        var modPath = "Mod Path";
+        var data = new Dictionary<string, string>();
+        var emptyFolders = Array.Empty<string>();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
-        { 
-            { 
-                nameof(SortOrder.Data), new Dictionary<string, object?>() 
-                { 
-                    { modDirectory, modPath } 
-                } 
-            } 
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(SortOrder.Data), data },
+            { nameof(SortOrder.EmptyFolders), emptyFolders }
         });
 
         var sortOrderReader = new SortOrderReaderBuilder()
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDict(data)
+            .WithAssertIsStringArray(emptyFolders)
             .WithElementReaderObserver(observer)
-            .WithElementReaderTryReadFromFile(jsonElement)
+            .WithElementReaderTryReadFromFile(element)
             .Build();
 
         var filePath = "File Path";
@@ -156,10 +172,8 @@ public class TestSortOrderReader
         Assert.AreEqual(nameof(IElementReader.TryReadFromFile), call.StubbedMethod.Name);
         Assert.AreEqual(filePath, call.GetArguments()[0] as string);
 
-        Assert.HasCount(1, sortOrder.Data);
-        Assert.AreEqual(modPath, sortOrder.Data[modDirectory]);
-
-        Assert.IsEmpty(sortOrder.EmptyFolders);
+        Assert.AreSame(data, sortOrder.Data);
+        Assert.AreSame(emptyFolders, sortOrder.EmptyFolders);
     }
 
     [TestMethod]
@@ -167,15 +181,19 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        var data = Array.Empty<string>();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         { 
-            { nameof(SortOrder.Data), null } 
+            { nameof(SortOrder.Data), data } 
         });
 
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithElementReaderTryReadFromFile(jsonElement)
+            .WithAssertIsValue(true)
+            .WithAssertIsStringDict(null as Dictionary<string, string>)
+            .WithElementReaderTryReadFromFile(element)
             .Build();
 
         var filePath = "File Path";
@@ -185,10 +203,9 @@ public class TestSortOrderReader
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(3, calls);
+        Assert.HasCount(2, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Expected value kind [Object] but got [Null]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual("Failed to read one or more [Data] for [SortOrder]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[2], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [Data] for [SortOrder]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
     }
 }

@@ -11,23 +11,23 @@ public static class IStubbableCommandManagerExtensions
         return stubbable;
     }
 
-    public static T WithCommandManagerAddHandler<T>(this T stubbable, bool value) where T : IStubbableCommandManager
+    public static T WithCommandManagerAddHandler<T>(this T stubbable, bool stubValue) where T : IStubbableCommandManager
     {
-        stubbable.CommandManagerStub.AddHandlerStringCommandInfo = (command, info) => value;
+        stubbable.CommandManagerStub.AddHandlerStringCommandInfo = (command, info) => stubValue;
 
         return stubbable;
     }
 
-    public static T WithCommandManagerRemoveHandler<T>(this T stubbable, bool value) where T : IStubbableCommandManager
+    public static T WithCommandManagerRemoveHandler<T>(this T stubbable, bool stubValue) where T : IStubbableCommandManager
     {
-        stubbable.CommandManagerStub.RemoveHandlerString = command => value;
+        stubbable.CommandManagerStub.RemoveHandlerString = command => stubValue;
 
         return stubbable;
     }
 
-    public static T WithCommandManagerProcessCommand<T>(this T stubbable, bool value) where T : IStubbableCommandManager
+    public static T WithCommandManagerProcessCommand<T>(this T stubbable, bool stubValue) where T : IStubbableCommandManager
     {
-        stubbable.CommandManagerStub.ProcessCommandString = command => value;
+        stubbable.CommandManagerStub.ProcessCommandString = command => stubValue;
 
         return stubbable;
     }

@@ -1,7 +1,8 @@
-using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
+using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Asserts;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Containers;
@@ -16,38 +17,38 @@ public class TestNamedContainerReader
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
             { nameof(NamedContainer.Name), name }
         });
 
+        var filesOrFileSwap = new Dictionary<string, string>();
+        var manipulations = Array.Empty<ManipulationWrapper>();
+
         var container = new Container()
         {
-            Files = [],
-            FileSwaps = [],
-            Manipulations = []
+            Files = filesOrFileSwap,
+            FileSwaps = filesOrFileSwap,
+            Manipulations = manipulations
         };
 
         var namedContainerReader = new NamedContainerReaderBuilder()
+            .WithAssertIsValue(true)
+            .WithAssertIsOptionalValue(name, true)
+            .WithAssertIsStringDict(filesOrFileSwap)
             .WithContainerReaderObserver(observer)
             .WithContainerReaderTryRead(container)
             .Build();
 
-        var success = namedContainerReader.TryRead(jsonElement, out var namedContainer);
+        var success = namedContainerReader.TryRead(element, out var namedContainer);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(namedContainer);
 
-        Assert.AreEqual(name, namedContainer.Name);
-
-        Assert.IsNotNull(namedContainer.Files);
-        Assert.IsEmpty(namedContainer.Files);
-
-        Assert.IsNotNull(namedContainer.FileSwaps);
-        Assert.IsEmpty(namedContainer.FileSwaps);
-
-        Assert.IsNotNull(namedContainer.Manipulations);
-        Assert.IsEmpty(namedContainer.Manipulations);
+        Assert.AreSame(name, namedContainer.Name);
+        Assert.AreSame(filesOrFileSwap, namedContainer.Files);
+        Assert.AreSame(filesOrFileSwap, namedContainer.FileSwaps);
+        Assert.AreSame(manipulations, namedContainer.Manipulations);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
@@ -58,7 +59,7 @@ public class TestNamedContainerReader
         switch (call.GetArguments()[0])
         {
             case JsonElement containerProperty:
-                Assert.AreEqual(jsonElement, containerProperty);
+                Assert.AreEqual(element, containerProperty);
                 break;
             default:
                 Assert.Fail("Expected first call argument to be a JsonElement");
@@ -66,34 +67,26 @@ public class TestNamedContainerReader
         }
     }
 
-
     [TestMethod]
-    [DataRow(0, JsonValueKind.Number)]
-    [DataRow(false, JsonValueKind.False)]
-    public void TestTryReadWithInvalidName(object? name, JsonValueKind kind)
+    public void TestTryReadWithInvalidName()
     {
         var observer = new StubObserver();
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { nameof(NamedContainer.Name), name }
+            { nameof(NamedContainer.Name), false }
         });
 
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
+            .WithAssertIsOptionalValueSuccessOnTrue()
             .WithContainerReaderTryRead(new())
             .Build();
 
-        var success = namedContainerReader.TryRead(jsonElement, out var namedContainer);
+        var success = namedContainerReader.TryRead(element, out var namedContainer);
 
         Assert.IsFalse(success);
         Assert.IsNull(namedContainer);
-
-        var calls = observer.GetCalls();
-        Assert.HasCount(1, calls);
-
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected property [Name] kind for [NamedContainer] to be [String] or [Null] but found [{kind}]: {jsonElement}", actualMessage));
     }
 }

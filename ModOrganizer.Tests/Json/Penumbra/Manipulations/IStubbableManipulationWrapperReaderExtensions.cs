@@ -15,10 +15,21 @@ public static class IStubbableManipulationWrapperReaderExtensions
 
     public static T WithManipulationWrapperReaderTryReadMany<T>(this T stubbable, ManipulationWrapper[]? values) where T : IStubbableManipulationWrapperReader
     {
-        stubbable.ManipulationWrapperReaderStub.TryReadManyJsonElementT0ArrayOut = (jsonElement, out instances) => 
+        stubbable.ManipulationWrapperReaderStub.TryReadManyJsonElementT0ArrayOut = (element, out instances) => 
         {
             instances = values;
             return values != null;
+        };
+
+        return stubbable;
+    }
+
+    public static T WithManipulationWrapperReaderTryReadManyNullOnFalse<T>(this T stubbable) where T : IStubbableManipulationWrapperReader
+    {
+        stubbable.ManipulationWrapperReaderStub.TryReadManyJsonElementT0ArrayOut = (element, out instances) =>
+        {
+            instances = element.GetBoolean() ? [] : null;
+            return instances != null;
         };
 
         return stubbable;

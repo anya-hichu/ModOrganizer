@@ -1,21 +1,22 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations;
 
-public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string type) : Reader<ManipulationWrapper>(pluginLog) where T : Manipulation
+public abstract class ManipulationWrapperReader<T>(IAssert assert, IPluginLog pluginLog, string type) : Reader<ManipulationWrapper>(assert, pluginLog) where T : Manipulation
 {
     private string Type { get; init; } = type;
 
-    public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out ManipulationWrapper? instance)
+    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out ManipulationWrapper? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
+        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyPresent(jsonElement, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+        if (!Assert.IsPropertyPresent(element, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
 
         if (!TryReadWrapped(manipulationProperty, out var wrapped))
         {
@@ -32,5 +33,5 @@ public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string 
         return true;
     }
 
-    protected abstract bool TryReadWrapped(JsonElement jsonElement, [NotNullWhen(true)] out T? instance);
+    protected abstract bool TryReadWrapped(JsonElement element, [NotNullWhen(true)] out T? instance);
 }

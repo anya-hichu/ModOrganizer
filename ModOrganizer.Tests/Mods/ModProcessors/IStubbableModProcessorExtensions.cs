@@ -18,12 +18,12 @@ public static class IStubbableModProcessorExtensions
         return stubbable;
     }
 
-    public static T WithModProcessorTryProcess<T>(this T stubbable, string? value) where T : IStubbableModProcessor
+    public static T WithModProcessorTryProcess<T>(this T stubbable, string? stubValue) where T : IStubbableModProcessor
     {
         stubbable.ModProcessorStub.TryProcessStringStringOutBoolean = (modDirectory, out newModPath, dryRun) =>
         {
-            newModPath = value;
-            return value != null;
+            newModPath = stubValue;
+            return stubValue != null;
         };
 
         return stubbable;

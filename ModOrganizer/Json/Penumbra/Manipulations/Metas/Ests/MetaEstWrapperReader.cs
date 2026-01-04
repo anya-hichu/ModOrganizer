@@ -1,13 +1,14 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Ests;
 
-public class MetaEstWrapperReader(IReader<MetaEst> metaEstReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaEst>(pluginLog, TYPE)
+public class MetaEstWrapperReader(IAssert assert, IReader<MetaEst> metaEstReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaEst>(assert, pluginLog, TYPE)
 {
     public static readonly string TYPE = "Est";
 
-    protected override bool TryReadWrapped(JsonElement jsonElement, [NotNullWhen(true)] out MetaEst? instance) => metaEstReader.TryRead(jsonElement, out instance);
+    protected override bool TryReadWrapped(JsonElement element, [NotNullWhen(true)] out MetaEst? instance) => metaEstReader.TryRead(element, out instance);
 }

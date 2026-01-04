@@ -34,9 +34,9 @@ public static class IStubbablePluginInterfaceExtensions
         return stubbable;
     }
 
-    public static T WithPluginInterfaceInjectObject<T>(this T stubbable, bool value) where T : IStubbablePluginInterface
+    public static T WithPluginInterfaceInjectObject<T>(this T stubbable, bool stubValue) where T : IStubbablePluginInterface
     {
-        stubbable.PluginInterfaceStub.InjectObjectObjectArray = (instance, scopedObjects) => value;
+        stubbable.PluginInterfaceStub.InjectObjectObjectArray = (instance, scopedObjects) => stubValue;
 
         return stubbable;
     }

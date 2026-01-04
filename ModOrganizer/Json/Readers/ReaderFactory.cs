@@ -1,26 +1,27 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Asserts;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers;
 
-public abstract class ReaderFactory<T>(IPluginLog pluginLog) : Reader<T>(pluginLog) where T : class
+public abstract class ReaderFactory<T>(IAssert assert, IPluginLog pluginLog) : Reader<T>(assert, pluginLog) where T : class
 {
-    protected abstract bool TryGetReader(JsonElement jsonElement, [NotNullWhen(true)] out IReader<T>? reader);
+    protected abstract bool TryGetReader(JsonElement element, [NotNullWhen(true)] out IReader<T>? reader);
 
-    public override bool TryRead(JsonElement jsonElement, [NotNullWhen(true)] out T? instance)
+    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out T? instance)
     {
         instance = null;
 
-        if (!TryGetReader(jsonElement, out var reader))
+        if (!TryGetReader(element, out var reader))
         {
-            PluginLog.Debug($"Failed to get [{typeof(T).Name}] reader: {jsonElement}");
+            PluginLog.Debug($"Failed to get [{typeof(T).Name}] reader: {element}");
             return false;
         }
 
-        if (!reader.TryRead(jsonElement, out instance))
+        if (!reader.TryRead(element, out instance))
         {
-            PluginLog.Debug($"Failed to read [{typeof(T).Name}] using reader [{reader.GetType().Name}]: {jsonElement}");
+            PluginLog.Debug($"Failed to read [{typeof(T).Name}] using reader [{reader.GetType().Name}]: {element}");
             return false;
         }
 

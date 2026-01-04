@@ -19,30 +19,30 @@ public static class IStubbableConfigExtensions
         return stubbable;
     }
 
-    public static T WithConfigAutoProcessEnabled<T>(this T stubbable, bool value) where T : IStubbableConfig
+    public static T WithConfigAutoProcessEnabled<T>(this T stubbable, bool stubValue) where T : IStubbableConfig
     {
-        stubbable.ConfigStub.AutoProcessEnabledGet = () => value;
+        stubbable.ConfigStub.AutoProcessEnabledGet = () => stubValue;
 
         return stubbable;
     }
 
-    public static T WithConfigAutoProcessDelay<T>(this T stubbable, ushort value) where T : IStubbableConfig
+    public static T WithConfigAutoProcessDelay<T>(this T stubbable, ushort stubValue) where T : IStubbableConfig
     {
-        stubbable.ConfigStub.AutoProcessDelayMsGet = () => value;
+        stubbable.ConfigStub.AutoProcessDelayMsGet = () => stubValue;
 
         return stubbable;
     }
 
-    public static T WithConfigAutoBackupLimit<T>(this T stubbable, ushort value) where T : IStubbableConfig
+    public static T WithConfigAutoBackupLimit<T>(this T stubbable, ushort stubValue) where T : IStubbableConfig
     {
-        stubbable.ConfigStub.AutoBackupLimitGet = () => value;
+        stubbable.ConfigStub.AutoBackupLimitGet = () => stubValue;
 
         return stubbable;
     }
 
-    public static T WithConfigAutoBackupEnabled<T>(this T stubbable, bool value) where T : IStubbableConfig
+    public static T WithConfigAutoBackupEnabled<T>(this T stubbable, bool stubValue) where T : IStubbableConfig
     {
-        stubbable.ConfigStub.AutoBackupEnabledGet = () => value;
+        stubbable.ConfigStub.AutoBackupEnabledGet = () => stubValue;
 
         return stubbable;
     }
