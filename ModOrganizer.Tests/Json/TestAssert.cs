@@ -18,11 +18,11 @@ public class TestAssert
     [DataRow("true", JsonValueKind.True)]
     public void TestIsValue(string data, JsonValueKind kind)
     {
-        var assert = new AssertBuilder().Build();
-
         var jsonElement = JsonSerializer.Deserialize<JsonElement>(data);
 
-        var success = assert.IsValue(jsonElement, kind);
+        var success = new AssertBuilder()
+            .Build()
+            .IsValue(jsonElement, kind);
 
         Assert.IsTrue(success);
     }
@@ -62,11 +62,14 @@ public class TestAssert
     [DataRow("Property Name", "value")]
     public void TestIsPropertyPresent(string propertyName, string value)
     {
-        var assert = new AssertBuilder().Build();
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>() 
+        { 
+            { propertyName, value } 
+        });
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>() { { propertyName, value } });
-
-        var success = assert.IsPropertyPresent(jsonElement, propertyName, out var property);
+        var success = new AssertBuilder()
+            .Build()
+            .IsPropertyPresent(jsonElement, propertyName, out var property);
 
         Assert.IsTrue(success);
         Assert.AreEqual(value, property.GetString());
@@ -80,14 +83,14 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>());
+
+        var propertyName = "Property Name";
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>());
-
-        var propertyName = "Property Name";
 
         var success = assert.IsPropertyPresent(jsonElement, propertyName, out var _, warn);
 
@@ -111,11 +114,14 @@ public class TestAssert
     [DataRow("Property Name", "value")]
     public void TestIsValuePresent(string propertyName, string value)
     {
-        var assert = new AssertBuilder().Build();
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>()
+        { 
+            { propertyName, value } 
+        });
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>() { { propertyName, value } });
-
-        var success = assert.IsValuePresent(jsonElement, propertyName, out var actualValue);
+        var success = new AssertBuilder()
+            .Build()
+            .IsValuePresent(jsonElement, propertyName, out var actualValue);
 
         Assert.IsTrue(success);
         Assert.AreEqual(value, actualValue);
@@ -128,12 +134,15 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>() 
+        { 
+            { propertyName, value } 
+        });
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, string>() { { propertyName, value } });
 
         var success = assert.IsValuePresent(jsonElement, propertyName, out var _);
 
@@ -195,11 +204,11 @@ public class TestAssert
     [DataRow("Property Name", "255", 255)]
     public void TestIsU8ValueWithSuccess(string propertyName, object value, int expectedValue)
     {
-        var assert = new AssertBuilder().Build();
-
         var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>() { { propertyName, value } });
 
-        var success = assert.IsU8Value(jsonElement, propertyName, out var actualValue);
+        var success = new AssertBuilder()
+            .Build()
+            .IsU8Value(jsonElement, propertyName, out var actualValue);
 
         Assert.IsTrue(success);
         Assert.AreEqual(expectedValue, actualValue);
@@ -214,12 +223,15 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>() 
+        { 
+            { propertyName, value } 
+        });
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>() { { propertyName, value } });
 
         var success = assert.IsU8Value(jsonElement, propertyName, out var _);
 
@@ -236,14 +248,14 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
+
+        var propertyName = "Property Name";
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
-
-        var propertyName = "Property Name";
 
         var success = assert.IsU8Value(jsonElement, propertyName, out var _);
 
@@ -260,12 +272,12 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
 
         var success = assert.IsU8Value(jsonElement, "Property Name", out var _, required: false);
 
@@ -280,11 +292,11 @@ public class TestAssert
     [DataRow("Property Name", "65535", 65535)]
     public void TestIsU16ValueWithSuccess(string propertyName, object value, int expectedValue)
     {
-        var assert = new AssertBuilder().Build();
-
         var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>() { { propertyName, value } });
 
-        var success = assert.IsU16Value(jsonElement, propertyName, out var actualValue);
+        var success = new AssertBuilder()
+            .Build()
+            .IsU16Value(jsonElement, propertyName, out var actualValue);
 
         Assert.IsTrue(success);
         Assert.AreEqual(expectedValue, actualValue);
@@ -299,12 +311,12 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>() { { propertyName, value } });
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>() { { propertyName, value } });
 
         var success = assert.IsU16Value(jsonElement, propertyName, out var _);
 
@@ -321,14 +333,14 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
+
+        var propertyName = "Property Name";
+        
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
-
-        var propertyName = "Property Name";
 
         var success = assert.IsU16Value(jsonElement, propertyName, out var _);
 
@@ -345,12 +357,12 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object>());
 
         var success = assert.IsU16Value(jsonElement, "Property Name", out var _, required: false);
 
@@ -361,14 +373,17 @@ public class TestAssert
     [TestMethod]
     public void TestIsStringDict()
     {
-        var assert = new AssertBuilder().Build();
-
         var propertyName = "Property Name";
         var value = "Value";
 
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, value } });
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { propertyName, value } 
+        });
 
-        var success = assert.IsStringDict(jsonElement, out var actualDict);
+        var success = new AssertBuilder()
+            .Build()
+            .IsStringDict(jsonElement, out var actualDict);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(actualDict);
@@ -378,11 +393,11 @@ public class TestAssert
     [TestMethod]
     public void TestIsStringDictWithEmpty()
     {
-        var assert = new AssertBuilder().Build();
-
         var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
-        var success = assert.IsStringDict(jsonElement, out var actualDict);
+        var success = new AssertBuilder()
+            .Build()
+            .IsStringDict(jsonElement, out var actualDict);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(actualDict);
@@ -394,14 +409,17 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var propertyName = "Property Name";
+
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { propertyName, null } 
+        });
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var propertyName = "Property Name";
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, null } });
 
         var success = assert.IsStringDict(jsonElement, out var actualDict);
 
@@ -416,12 +434,12 @@ public class TestAssert
     [TestMethod]
     public void TestIsStringArray()
     {
-        var assert = new AssertBuilder().Build();
-
         var value = "value";
         var jsonElement = JsonSerializer.SerializeToElement(new List<object?>() { value });
 
-        var success = assert.IsStringArray(jsonElement, out var actualArray);
+        var success = new AssertBuilder()
+            .Build()
+            .IsStringArray(jsonElement, out var actualArray);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(actualArray);
@@ -432,11 +450,11 @@ public class TestAssert
     [TestMethod]
     public void TestIsStringArrayWithEmpty()
     {
-        var assert = new AssertBuilder().Build();
-
         var jsonElement = JsonSerializer.SerializeToElement(Array.Empty<object?>());
 
-        var success = assert.IsStringArray(jsonElement, out var actualArray);
+        var success = new AssertBuilder()
+            .Build()
+            .IsStringArray(jsonElement, out var actualArray);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(actualArray);
@@ -448,12 +466,12 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new List<object?>() { null });
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new List<object?>() { null });
 
         var success = assert.IsStringArray(jsonElement, out var actualArray);
 
@@ -470,29 +488,30 @@ public class TestAssert
     [DataRow(int.MaxValue)]
     public void TestIsIntArray(int value)
     {
-        var assert = new AssertBuilder().Build();;
         var jsonElement = JsonSerializer.SerializeToElement(new List<object?>() { value });
 
-        var success = assert.IsIntArray(jsonElement, out var actualArray);
+        var success = new AssertBuilder()
+            .Build()
+            .IsIntArray(jsonElement, out var array);
 
         Assert.IsTrue(success);
-        Assert.IsNotNull(actualArray);
-        Assert.HasCount(1, actualArray);
-        Assert.AreEqual(value, actualArray[0]);
+        Assert.IsNotNull(array);
+        Assert.HasCount(1, array);
+        Assert.AreEqual(value, array[0]);
     }
 
     [TestMethod]
     public void TestIsIntArrayWithEmpty()
     {
-        var assert = new AssertBuilder().Build();
-
         var jsonElement = JsonSerializer.SerializeToElement(Array.Empty<object?>());
 
-        var success = assert.IsIntArray(jsonElement, out var actualArray);
+        var success = new AssertBuilder()
+            .Build()
+            .IsIntArray(jsonElement, out var array);
 
         Assert.IsTrue(success);
-        Assert.IsNotNull(actualArray);
-        Assert.IsEmpty(actualArray);
+        Assert.IsNotNull(array);
+        Assert.IsEmpty(array);
     }
 
     [TestMethod]
@@ -500,12 +519,12 @@ public class TestAssert
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new List<object?>() { null });
+
         var assert = new AssertBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new List<object?>() { null });
 
         var success = assert.IsIntArray(jsonElement, out var actualArray);
 

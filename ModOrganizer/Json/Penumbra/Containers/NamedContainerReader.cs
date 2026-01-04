@@ -17,7 +17,20 @@ public class NamedContainerReader(IReader<Container> containerReader, IPluginLog
             return false;
         }
 
-        var name = jsonElement.TryGetProperty(nameof(NamedContainer.Name), out var nameProperty) ? nameProperty.GetString() : null;
+        string? name;
+        switch (jsonElement.TryGetProperty(nameof(NamedContainer.Name), out var nameProperty))
+        {
+            case true when nameProperty.ValueKind == JsonValueKind.String:
+                name = nameProperty.GetString();
+                break;
+            case true when nameProperty.ValueKind == JsonValueKind.Null:
+            case false:
+                name = null;
+                break;
+            default:
+                PluginLog.Warning($"Expected property [{nameof(NamedContainer.Name)}] kind for [{nameof(NamedContainer)}] to be [{JsonValueKind.String}] or [{JsonValueKind.Null}] but found [{nameProperty.ValueKind}]: {jsonElement}");
+                return false;
+        };
 
         instance = new()
         {

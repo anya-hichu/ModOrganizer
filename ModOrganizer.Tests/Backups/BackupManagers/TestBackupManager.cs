@@ -23,9 +23,11 @@ public class TestBackupManager : ITestableClassTemp
     {
         var backup = new Backup() { CreatedAt = new(2025, 1, 1, 0, 0, 0, TimeSpan.Zero) };
 
-        var backupManager = new BackupManagerBuilder().Build();
+        var fileName = new BackupManagerBuilder()
+            .Build()
+            .GetFileName(backup);
 
-        Assert.AreEqual("sort_order.1735689600000.json", backupManager.GetFileName(backup));
+        Assert.AreEqual("sort_order.1735689600000.json", fileName);
     }
 
     [TestMethod]

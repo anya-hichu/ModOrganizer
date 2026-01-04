@@ -15,16 +15,22 @@ public class TestSortOrderReader
     [TestMethod]
     public void TestTryRead()
     {
-        var sortOrderReader = new SortOrderReaderBuilder().Build();
-
         var modDirectory = "Mod Directory";
         var modPath = "Mod Path";
 
-        var data = new Dictionary<string, object?>() { { nameof(SortOrder.Data), new Dictionary<string, object?>() { { modDirectory, modPath } } } };
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        {
+            {
+                nameof(SortOrder.Data), new Dictionary<string, object?>() 
+                { 
+                    { modDirectory, modPath } 
+                } 
+            }
+        });
 
-        var jsonElement = JsonSerializer.SerializeToElement(data);
-
-        var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
+        var success = new SortOrderReaderBuilder()
+            .Build()
+            .TryRead(jsonElement, out var sortOrder);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(sortOrder);
@@ -40,12 +46,12 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(null as object);
+
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(null as object);
 
         var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
@@ -63,12 +69,15 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>
+        { 
+            { nameof(SortOrder.Data), null } 
+        });
+
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?> { { nameof(SortOrder.Data), null } });
 
         var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
@@ -88,12 +97,15 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?> 
+        { 
+            { nameof(SortOrder.EmptyFolders), null } 
+        });
+
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?> { { nameof(SortOrder.EmptyFolders), null } });
 
         var success = sortOrderReader.TryRead(jsonElement, out var sortOrder);
 
@@ -116,9 +128,15 @@ public class TestSortOrderReader
         var modDirectory = "Mod Directory";
         var modPath = "Mod Path";
 
-        var data = new Dictionary<string, object?>() { { nameof(SortOrder.Data), new Dictionary<string, object?>() { { modDirectory, modPath } } } };
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { 
+                nameof(SortOrder.Data), new Dictionary<string, object?>() 
+                { 
+                    { modDirectory, modPath } 
+                } 
+            } 
+        });
 
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithElementReaderObserver(observer)
@@ -149,9 +167,10 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var data = new Dictionary<string, object?>() { { nameof(SortOrder.Data), null } };
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(SortOrder.Data), null } 
+        });
 
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()

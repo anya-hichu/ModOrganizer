@@ -22,19 +22,19 @@ public class TestContainerReader
         var fileSwapKey = "File Swap Key";
         var fileSwapValue = "File Swap Value";
 
-        var data = new Dictionary<string, object?>()
+        var value = new Dictionary<string, object?>()
         {
             { nameof(Container.Files), new Dictionary<string, object?>() { { fileKey, fileValue } } },
             { nameof(Container.FileSwaps), new Dictionary<string, object?>() { { fileSwapKey, fileSwapValue } } },
             { nameof(Container.Manipulations), Array.Empty<object?>() }
         };
 
+        var jsonElement = JsonSerializer.SerializeToElement(value);
+
         var containerReader = new ContainerReaderBuilder()
             .WithManipulationWrapperReaderObserver(observer)
             .WithManipulationWrapperReaderTryReadMany([])
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
 
         var success = containerReader.TryRead(jsonElement, out var container);
 
@@ -73,18 +73,16 @@ public class TestContainerReader
     [TestMethod]
     public void TestTryReadWithDefaults()
     {
-        var data = new Dictionary<string, object?>()
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
             { nameof(Container.Files), null },
             { nameof(Container.FileSwaps), null },
             { nameof(Container.Manipulations), null }
-        };
+        });
 
-        var containerReader = new ContainerReaderBuilder().Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
-
-        var success = containerReader.TryRead(jsonElement, out var container);
+        var success = new ContainerReaderBuilder()
+            .Build()
+            .TryRead(jsonElement, out var container);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(container);
@@ -104,17 +102,15 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var data = new Dictionary<string, object?>()
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
             { nameof(Container.Files), string.Empty }
-        };
+        });
 
         var containerReader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
 
         var success = containerReader.TryRead(jsonElement, out var container);
 
@@ -133,17 +129,15 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var data = new Dictionary<string, object?>()
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
             { nameof(Container.FileSwaps), string.Empty }
-        };
+        });
 
         var containerReader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
 
         var success = containerReader.TryRead(jsonElement, out var container);
 
@@ -162,18 +156,16 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var data = new Dictionary<string, object?>()
+        var jsonElement = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
             { nameof(Container.Manipulations), string.Empty }
-        };
+        });
 
         var containerReader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithManipulationWrapperReaderTryReadMany(null)
             .Build();
-
-        var jsonElement = JsonSerializer.SerializeToElement(data);
 
         var success = containerReader.TryRead(jsonElement, out var container);
 

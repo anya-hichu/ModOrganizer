@@ -34,12 +34,13 @@ public class TestRuleEvaluator : ITestableClassTemp
     public void TestTryEvaluateWithDisabled()
     {
         var observer = new StubObserver();
+
+        var rule = new Rule() { Enabled = false };
+
         var ruleEvaluator = new RuleEvaluatorBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var rule = new Rule() { Enabled = false };
 
         var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
 
@@ -53,10 +54,6 @@ public class TestRuleEvaluator : ITestableClassTemp
     public void TestTryEvaluateWithMatchExpressionSyntaxError()
     {
         var observer = new StubObserver();
-        var ruleEvaluator = new RuleEvaluatorBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
 
         var matchExpression = "Syntax Error";
 
@@ -66,6 +63,11 @@ public class TestRuleEvaluator : ITestableClassTemp
             MatchExpression = matchExpression, 
             PathTemplate = "Not Empty" 
         };
+
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
 
         var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
 
@@ -83,10 +85,6 @@ public class TestRuleEvaluator : ITestableClassTemp
     public void TestTryEvaluateWithMatchExpressionInvalidType()
     {
         var observer = new StubObserver();
-        var ruleEvaluator = new RuleEvaluatorBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
 
         var matchExpression = "1";
 
@@ -96,6 +94,11 @@ public class TestRuleEvaluator : ITestableClassTemp
             MatchExpression = matchExpression,
             PathTemplate = "Not Empty"
         };
+
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
 
         var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
 
@@ -113,11 +116,6 @@ public class TestRuleEvaluator : ITestableClassTemp
     {
         var observer = new StubObserver();
 
-        var ruleEvaluator = new RuleEvaluatorBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
-
         var pathTemplate = "{{ O }X}";
 
         var rule = new Rule()
@@ -126,6 +124,11 @@ public class TestRuleEvaluator : ITestableClassTemp
             MatchExpression = "true",
             PathTemplate = pathTemplate
         };
+
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
 
         var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
 
@@ -147,10 +150,6 @@ public class TestRuleEvaluator : ITestableClassTemp
     public void TestTryEvaluateWithMatching()
     {
         var observer = new StubObserver();
-        var ruleEvaluator = new RuleEvaluatorBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
 
         var rule = new Rule()
         {
@@ -158,6 +157,11 @@ public class TestRuleEvaluator : ITestableClassTemp
             MatchExpression = "true",
             PathTemplate = "{{ meta.name }}"
         };
+
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
 
         var success = ruleEvaluator.TryEvaluate(rule, TEST_MOD_INFO, out var path);
 
@@ -171,12 +175,13 @@ public class TestRuleEvaluator : ITestableClassTemp
     public void TestTryEvaluateManyWithDisabled()
     {
         var observer = new StubObserver();
+
+        var rule = new Rule() { Enabled = false };
+
         var ruleEvaluator = new RuleEvaluatorBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
-
-        var rule = new Rule() { Enabled = false };
 
         var success = ruleEvaluator.TryEvaluateMany([rule], TEST_MOD_INFO, out var path);
 
@@ -193,10 +198,6 @@ public class TestRuleEvaluator : ITestableClassTemp
     public void TestTryEvaluateManyWithPriority()
     {
         var observer = new StubObserver();
-        var ruleEvaluator = new RuleEvaluatorBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
 
         var matchingRulePath = "Rule Path";
 
@@ -231,8 +232,13 @@ public class TestRuleEvaluator : ITestableClassTemp
                 MatchExpression = "true",
                 PathTemplate = "3"
             }
-        }; 
-            
+        };
+
+        var ruleEvaluator = new RuleEvaluatorBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
         var success = ruleEvaluator.TryEvaluateMany(rules, TEST_MOD_INFO, out var path);
 
         Assert.IsTrue(success);

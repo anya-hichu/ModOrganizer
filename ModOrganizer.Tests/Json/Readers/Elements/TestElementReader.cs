@@ -22,9 +22,9 @@ public class TestElementReader : ITestableClassTemp
     [DataRow("[0,]", JsonValueKind.Array)]
     public void TestTryReadFromData(string data, JsonValueKind expectedKind)
     {
-        var elementReader = new ElementReaderBuilder().Build();
-
-        var success = elementReader.TryReadFromData(data, out var element);
+        var success = new ElementReaderBuilder()
+            .Build()
+            .TryReadFromData(data, out var element);
 
         Assert.IsTrue(success);
         Assert.AreEqual(expectedKind, element.ValueKind);
@@ -67,12 +67,12 @@ public class TestElementReader : ITestableClassTemp
     {
         var tempDirectory = this.CreateResultsTempDirectory();
 
-        var filePath = Path.Combine(tempDirectory, "FilePath.json");
+        var filePath = Path.Combine(tempDirectory, "File Path");
         File.WriteAllText(filePath, data);
 
-        var elementReader = new ElementReaderBuilder().Build();
-
-        var success = elementReader.TryReadFromFile(filePath, out var jsonElement);
+        var success = new ElementReaderBuilder()
+            .Build()
+            .TryReadFromFile(filePath, out var jsonElement);
 
         Assert.IsTrue(success);
         Assert.AreEqual(expectedKind, jsonElement.ValueKind);
@@ -88,7 +88,7 @@ public class TestElementReader : ITestableClassTemp
 
         var tempDirectory = this.CreateResultsTempDirectory();
 
-        var filePath = Path.Combine(tempDirectory, "FilePath.json");
+        var filePath = Path.Combine(tempDirectory, "File Path");
         File.WriteAllText(filePath, data);
 
         var elementReader = new ElementReaderBuilder()
@@ -117,7 +117,7 @@ public class TestElementReader : ITestableClassTemp
 
         var tempDirectory = this.CreateResultsTempDirectory();
 
-        var filePath = Path.Combine(tempDirectory, "FilePath.json");
+        var filePath = Path.Combine(tempDirectory, "File Path");
 
         var elementReader = new ElementReaderBuilder()
             .WithPluginLogDefaults()
