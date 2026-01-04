@@ -89,8 +89,8 @@ public class TestContainerReader
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithAssertIsValue(true)
-            .WithAssertIsStringDictSuccessOnTrue()
-            .WithManipulationWrapperReaderTryReadManyNullOnFalse()
+            .WithAssertIsStringDictSuccessfulOnTrue()
+            .WithManipulationWrapperReaderTryReadManySuccessfulOnTrue()
             .Build();
 
         var success = containerReader.TryRead(element, out var container);
@@ -120,8 +120,8 @@ public class TestContainerReader
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithAssertIsValue(true)
-            .WithAssertIsStringDictSuccessOnTrue()
-            .WithManipulationWrapperReaderTryReadManyNullOnFalse()
+            .WithAssertIsStringDictSuccessfulOnTrue()
+            .WithManipulationWrapperReaderTryReadManySuccessfulOnTrue()
             .Build();
 
         var success = containerReader.TryRead(element, out var container);
@@ -152,7 +152,7 @@ public class TestContainerReader
             .WithPluginLogObserver(observer)
             .WithAssertIsValue(true)
             .WithAssertIsStringDict([])
-            .WithManipulationWrapperReaderTryReadManyNullOnFalse()
+            .WithManipulationWrapperReaderTryReadManySuccessfulOnTrue()
             .Build();
 
         var success = containerReader.TryRead(element, out var container);

@@ -31,7 +31,7 @@ public static class IStubbableAssertExtensions
         return stubbable;
     }
 
-    public static T WithAssertIsOptionalValueSuccessOnTrue<T>(this T stubbable) where T : IStubbableAssert
+    public static T WithAssertIsOptionalValueSuccessfulOnTrue<T>(this T stubbable) where T : IStubbableAssert
     {
         stubbable.AssertStub.IsOptionalValueJsonElementStringStringOut = (element, propertyName, out value) =>
         {
@@ -53,7 +53,7 @@ public static class IStubbableAssertExtensions
         return stubbable;
     }
 
-    public static T WithAssertIsStringDictSuccessOnTrue<T>(this T stubbable) where T : IStubbableAssert
+    public static T WithAssertIsStringDictSuccessfulOnTrue<T>(this T stubbable) where T : IStubbableAssert
     {
         stubbable.AssertStub.IsStringDictJsonElementDictionaryOfStringStringOut = (element, out value) =>
         {

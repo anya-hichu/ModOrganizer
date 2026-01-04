@@ -80,7 +80,7 @@ public class TestNamedContainerReader
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsOptionalValueSuccessOnTrue()
+            .WithAssertIsOptionalValueSuccessfulOnTrue()
             .WithContainerReaderTryRead(new())
             .Build();
 

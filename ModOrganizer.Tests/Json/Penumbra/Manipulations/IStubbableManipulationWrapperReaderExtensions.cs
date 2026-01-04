@@ -24,7 +24,7 @@ public static class IStubbableManipulationWrapperReaderExtensions
         return stubbable;
     }
 
-    public static T WithManipulationWrapperReaderTryReadManyNullOnFalse<T>(this T stubbable) where T : IStubbableManipulationWrapperReader
+    public static T WithManipulationWrapperReaderTryReadManySuccessfulOnTrue<T>(this T stubbable) where T : IStubbableManipulationWrapperReader
     {
         stubbable.ManipulationWrapperReaderStub.TryReadManyJsonElementT0ArrayOut = (element, out instances) =>
         {
