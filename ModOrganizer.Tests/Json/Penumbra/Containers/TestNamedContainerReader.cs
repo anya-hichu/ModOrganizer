@@ -22,20 +22,20 @@ public class TestNamedContainerReader
             { nameof(NamedContainer.Name), name }
         });
 
-        var filesOrFileSwap = new Dictionary<string, string>();
+        var filesOrFileSwaps = new Dictionary<string, string>();
         var manipulations = Array.Empty<ManipulationWrapper>();
 
         var container = new Container()
         {
-            Files = filesOrFileSwap,
-            FileSwaps = filesOrFileSwap,
+            Files = filesOrFileSwaps,
+            FileSwaps = filesOrFileSwaps,
             Manipulations = manipulations
         };
 
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithAssertIsValue(true)
             .WithAssertIsOptionalValue(name, true)
-            .WithAssertIsStringDict(filesOrFileSwap)
+            .WithAssertIsStringDict(filesOrFileSwaps)
             .WithContainerReaderObserver(observer)
             .WithContainerReaderTryRead(container)
             .Build();
@@ -46,8 +46,8 @@ public class TestNamedContainerReader
         Assert.IsNotNull(namedContainer);
 
         Assert.AreSame(name, namedContainer.Name);
-        Assert.AreSame(filesOrFileSwap, namedContainer.Files);
-        Assert.AreSame(filesOrFileSwap, namedContainer.FileSwaps);
+        Assert.AreSame(filesOrFileSwaps, namedContainer.Files);
+        Assert.AreSame(filesOrFileSwaps, namedContainer.FileSwaps);
         Assert.AreSame(manipulations, namedContainer.Manipulations);
 
         var calls = observer.GetCalls();
