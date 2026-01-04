@@ -16,7 +16,7 @@ public class TestModAutoProcessor : ITestableClassTemp
     public TestContext TestContext { get; set; }
 
     [TestMethod]
-    public async Task TestAutoProcessDisabled()
+    public void TestAutoProcessDisabled()
     {
         var observer = new StubObserver();
         var builder = new ModAutoProcessorBuilder();
@@ -42,6 +42,7 @@ public class TestModAutoProcessor : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public async Task TestAutoProcessEnabled()
     {
         var logObserver = new StubObserver();

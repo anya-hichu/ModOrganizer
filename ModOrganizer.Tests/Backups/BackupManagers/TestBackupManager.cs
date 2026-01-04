@@ -121,6 +121,7 @@ public class TestBackupManager : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     [DataRow(false)]
     [DataRow(true)]
     public void TestTryCreate(bool auto)
@@ -382,6 +383,7 @@ public class TestBackupManager : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestTryRead()
     {
         var tempDirectory = this.CreateResultsTempDirectory();

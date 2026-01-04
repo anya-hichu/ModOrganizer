@@ -266,6 +266,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestOnSortOrderChanged()
     {
         var observer = new StubObserver();
@@ -305,6 +306,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public async Task TestToggleFsWatchers()
     {
         var observer = new StubObserver();
@@ -361,6 +363,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestTryGetModInfo()
     {
         var observer = new StubObserver();
@@ -464,6 +467,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestGetModPath()
     {
         var tempDirectory = this.CreateResultsTempDirectory();
@@ -501,6 +505,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestGetModPathWithoutSortOrder()
     {
         var tempDirectory = this.CreateResultsTempDirectory();
@@ -536,6 +541,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestGetModDirectory()
     {
         var tempDirectory = this.CreateResultsTempDirectory();
@@ -573,6 +579,7 @@ public class TestModInterop : ITestableClassTemp
     }
 
     [TestMethod]
+    [DoNotParallelize]
     public void TestGetModDirectoryWithoutSortOrder()
     {
         var tempDirectory = this.CreateResultsTempDirectory();
