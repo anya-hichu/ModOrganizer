@@ -56,7 +56,6 @@ jobs:
         if: env.CODECOV_TOKEN
         uses: codecov/codecov-action@v5
         with:
-          
           files: ModOrganizer.Tests\bin\Release\net10.0-windows\TestResults\${{ github.sha }}.cobertura.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
