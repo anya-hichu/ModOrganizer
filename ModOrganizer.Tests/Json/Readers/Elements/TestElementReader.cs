@@ -51,23 +51,63 @@ public class TestElementReader : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
-            actualMessage => Assert.StartsWith($"Caught exception while reading [JsonElement] from data", actualMessage));
+            actualMessage => Assert.StartsWith("Caught exception while reading [JsonElement] from data", actualMessage));
     }
 
     [TestMethod]
-    public void TestTryReadFromFile()
+    [DataRow("null", JsonValueKind.Null)]
+    [DataRow("true", JsonValueKind.True)]
+    [DataRow("false", JsonValueKind.False)]
+    [DataRow("0", JsonValueKind.Number)]
+    [DataRow(""" "" """, JsonValueKind.String)]
+    [DataRow("{}", JsonValueKind.Object)]
+    [DataRow("[]", JsonValueKind.Array)]
+    [DataRow("[0,]", JsonValueKind.Array)]
+    public void TestTryReadFromFile(string data, JsonValueKind expectedKind)
     {
         var tempDirectory = this.CreateResultsTempDirectory();
 
         var filePath = Path.Combine(tempDirectory, "FilePath.json");
-        File.WriteAllText(filePath, "{}");
+        File.WriteAllText(filePath, data);
 
         var elementReader = new ElementReaderBuilder().Build();
 
         var success = elementReader.TryReadFromFile(filePath, out var jsonElement);
 
         Assert.IsTrue(success);
-        Assert.AreEqual(JsonValueKind.Object, jsonElement.ValueKind);
+        Assert.AreEqual(expectedKind, jsonElement.ValueKind);
+    }
+
+    [TestMethod]
+    [DataRow("")]
+    [DataRow("{")]
+    [DataRow("[")]
+    public void TestTryReadFromFileWithInvalid(string data)
+    {
+        var observer = new StubObserver();
+
+        var tempDirectory = this.CreateResultsTempDirectory();
+
+        var filePath = Path.Combine(tempDirectory, "FilePath.json");
+        File.WriteAllText(filePath, data);
+
+        var elementReader = new ElementReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var success = elementReader.TryReadFromFile(filePath, out var jsonElement);
+
+        Assert.IsFalse(success);
+        Assert.AreEqual(default, jsonElement);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(2, calls);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error),
+            actualMessage => Assert.StartsWith("Caught exception while reading [JsonElement] from data", actualMessage));
+
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
+            actualMessage => Assert.StartsWith($"Failed to read [JsonElement] from json file [{filePath}]", actualMessage));
     }
 
     [TestMethod]
@@ -91,6 +131,7 @@ public class TestElementReader : ITestableClassTemp
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), actualMessage => Assert.AreEqual($"Caught exception while reading [JsonElement] from json file [{filePath}] (Could not find file '{filePath}'.)", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.AreEqual($"Caught exception while reading [JsonElement] from json file [{filePath}] (Could not find file '{filePath}'.)", actualMessage));
     }
 }
