@@ -1,10 +1,10 @@
 using Dalamud.Interface.Windowing;
 
-namespace ModOrganizer.Windows.Configs;
+namespace ModOrganizer.Windows;
 
-public class ConfigExportWindow : Window
+public class AboutWindow : Window
 {
-    public ConfigExportWindow() : base("ModOrganizer - Config Export##configExportWindow")
+    public AboutWindow() : base("ModOrganizer - About##aboutWindow")
     {
         SizeConstraints = new()
         {

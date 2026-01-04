@@ -3,7 +3,6 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using Microsoft.Extensions.DependencyInjection;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs;
 using ModOrganizer.Json.Penumbra.DefaultMods;
@@ -12,7 +11,6 @@ using ModOrganizer.Json.Penumbra.LocalModDatas;
 using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
@@ -24,7 +22,7 @@ namespace ModOrganizer;
 public sealed class Plugin : IDalamudPlugin
 {
     private static readonly string COMMAND_NAME = "/modorganizer";
-    private static readonly string COMMAND_HELP_MESSAGE = $"Available subcommands for {COMMAND_NAME} are main, config, preview and backup";
+    private static readonly string COMMAND_HELP_MESSAGE = $"Available subcommands for [{COMMAND_NAME}] are about, backup, config (export|import)?, main and preview";
 
     [PluginService] public static IChatGui ChatGui { get; set; } = null!;
     [PluginService] public static ICommandManager CommandManager { get; set; } = null!;
@@ -44,10 +42,15 @@ public sealed class Plugin : IDalamudPlugin
     private RuleState RuleState { get; init; }
 
     private WindowSystem WindowSystem { get; init; }
+
+    private AboutWindow AboutWindow { get; init; }
+    private BackupWindow BackupWindow { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
+    private ConfigExportWindow ConfigExportWindow { get; init; }
+    private ConfigImportWindow ConfigImportWindow { get; init; }
     private MainWindow MainWindow { get; init; }
     private PreviewWindow PreviewWindow { get; init; }
-    private BackupWindow BackupWindow { get; init; }
+    
 
 
     public Plugin()
@@ -69,17 +72,27 @@ public sealed class Plugin : IDalamudPlugin
         RuleState = new(Config, BackupManager, ModInterop, ModProcessor, PluginLog);
 
         WindowSystem = new(nameof(ModOrganizer));
+
+        AboutWindow = new();
+        BackupWindow = new(BackupManager, Config, ModInterop, PluginLog);
         ConfigWindow = new(Config, PluginInterface, ToggleBackupUI, ToggleMainUI);
+        ConfigExportWindow = new();
+        ConfigImportWindow = new();
         MainWindow = new(Config, ModInterop, ModFileSystem, PluginLog, RuleState, ToggleBackupUI, ToggleConfigUI, TogglePreviewUI);
         PreviewWindow = new(RuleState);
-        BackupWindow = new(BackupManager, Config, ModInterop, PluginLog);
 
+        WindowSystem.AddWindow(AboutWindow);
         WindowSystem.AddWindow(BackupWindow);
         WindowSystem.AddWindow(ConfigWindow);
+        WindowSystem.AddWindow(ConfigExportWindow);
+        WindowSystem.AddWindow(ConfigImportWindow);
         WindowSystem.AddWindow(MainWindow);
         WindowSystem.AddWindow(PreviewWindow);
 
-        CommandManager.AddHandler(COMMAND_NAME, new CommandInfo(OnCommand) { HelpMessage = COMMAND_HELP_MESSAGE });
+        CommandManager.AddHandler(COMMAND_NAME, new CommandInfo(OnCommand)
+        { 
+            HelpMessage = COMMAND_HELP_MESSAGE 
+        });
 
         PluginInterface.UiBuilder.Draw += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUI;
@@ -107,21 +120,30 @@ public sealed class Plugin : IDalamudPlugin
         ReaderProvider.Dispose();
     }
 
-    private void OnCommand(string command, string subcommand)
+    private void OnCommand(string _, string subcommand)
     {
-        switch (subcommand)
+        switch (subcommand.Trim())
         {
-            case "main":
-                ToggleMainUI();
+            case "auto":
+                ToggleAboutUI();
+                break;
+            case "backup":
+                ToggleBackupUI();
                 break;
             case "config":
                 ToggleConfigUI();
                 break;
+            case "config export":
+                ToggleConfigExportUI();
+                break;
+            case "config import":
+                ToggleConfigImportUI();
+                break;
+            case "main":
+                ToggleMainUI();
+                break;
             case "preview":
                 TogglePreviewUI();
-                break;
-            case "backup":
-                ToggleBackupUI();
                 break;
             default:
                 ChatGui.Print(COMMAND_HELP_MESSAGE);
@@ -131,9 +153,11 @@ public sealed class Plugin : IDalamudPlugin
 
     private void DrawUI() => WindowSystem.Draw();
 
-
-    private void ToggleMainUI() => MainWindow.Toggle();
-    private void ToggleConfigUI() => ConfigWindow.Toggle();
-    private void TogglePreviewUI() => PreviewWindow.Toggle();
+    private void ToggleAboutUI() => AboutWindow.Toggle();
     private void ToggleBackupUI() => BackupWindow.Toggle();
+    private void ToggleConfigUI() => ConfigWindow.Toggle();
+    private void ToggleConfigExportUI() => ConfigExportWindow.Toggle();
+    private void ToggleConfigImportUI() => ConfigImportWindow.Toggle();
+    private void ToggleMainUI() => MainWindow.Toggle();
+    private void TogglePreviewUI() => PreviewWindow.Toggle();
 }
