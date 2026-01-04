@@ -31,7 +31,7 @@ jobs:
         run: dotnet restore --locked-mode
 
       - name: Build Project
-        run: dotnet build --configuration Release -p:AssemblyVersion=${{ github.ref_name }}
+        run: dotnet build --no-restore --configuration Release -p:AssemblyVersion=${{ github.ref_name }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6

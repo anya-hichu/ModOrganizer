@@ -33,7 +33,7 @@ jobs:
         run: dotnet restore --locked-mode
 
       - name: Build Project
-        run: dotnet build --configuration Release
+        run: dotnet build --no-restore --configuration Release
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
