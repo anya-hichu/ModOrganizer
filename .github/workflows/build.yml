@@ -19,6 +19,8 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: "**/packages.lock.json"
 
       - name: Download Dalamud Latest
         run: |
@@ -28,7 +30,7 @@ jobs:
           DALAMUD_ARCHIVE_URL: ${{ vars.DALAMUD_ARCHIVE_URL || 'https://goatcorp.github.io/dalamud-distrib/latest.zip' }}
 
       - name: Restore Project
-        run: dotnet restore
+        run: dotnet restore --locked-mode
 
       - name: Build Project
         run: dotnet build --configuration Release
@@ -54,6 +56,7 @@ jobs:
         if: env.CODECOV_TOKEN
         uses: codecov/codecov-action@v5
         with:
+          
           files: ModOrganizer.Tests\bin\Release\net10.0-windows\TestResults\${{ github.sha }}.cobertura.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
