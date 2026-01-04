@@ -19,23 +19,23 @@ public class ContainerReader(IReader<ManipulationWrapper> manipulationWrapperRea
         if (!Assert.IsValue(jsonElement, JsonValueKind.Object)) return false;
 
         var files = new Dictionary<string, string>();
-        if (jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) && !Assert.IsStringDict(filesProperty, out files))
+        if (jsonElement.TryGetProperty(nameof(Container.Files), out var filesProperty) && filesProperty.ValueKind != JsonValueKind.Null && !Assert.IsStringDict(filesProperty, out files))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(Container.Files)}] for [{nameof(GroupImc)}]: {filesProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(Container.Files)}] for [{nameof(Container)}]: {filesProperty}");
             return false;
         }
 
         var fileSwaps = new Dictionary<string, string>();
-        if (jsonElement.TryGetProperty(nameof(Container.FileSwaps), out var fileSwapsProperty) && !Assert.IsStringDict(fileSwapsProperty, out fileSwaps))
+        if (jsonElement.TryGetProperty(nameof(Container.FileSwaps), out var fileSwapsProperty) && fileSwapsProperty.ValueKind != JsonValueKind.Null && !Assert.IsStringDict(fileSwapsProperty, out fileSwaps))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(Container.FileSwaps)}] for [{nameof(GroupImc)}]: {fileSwapsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(Container.FileSwaps)}] for [{nameof(Container)}]: {fileSwapsProperty}");
             return false;
         }
 
         var manipulations = Array.Empty<ManipulationWrapper>();
-        if (jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && !manipulationWrapperReader.TryReadMany(manipulationsProperty, out manipulations))
+        if (jsonElement.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && manipulationsProperty.ValueKind != JsonValueKind.Null && !manipulationWrapperReader.TryReadMany(manipulationsProperty, out manipulations))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {manipulationsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(Container.Manipulations)}] for [{nameof(Container)}]: {manipulationsProperty}");
             return false;
         }
 
