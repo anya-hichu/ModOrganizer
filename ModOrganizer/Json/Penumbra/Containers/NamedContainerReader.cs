@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 

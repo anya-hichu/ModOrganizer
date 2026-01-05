@@ -16,27 +16,21 @@ public static class IClipboardReaderExtensions
         try
         {
             var decodedData = Convert.FromBase64String(data);
+
             using MemoryStream compressedStream = new(decodedData), decompressedStream = new();
-            using (var decompressor = new DeflateStream(compressedStream, CompressionMode.Decompress))
-            {
-                decompressor.CopyTo(decompressedStream);
-            }
+            using (var decompressor = new DeflateStream(compressedStream, CompressionMode.Decompress)) decompressor.CopyTo(decompressedStream);
+
             var decompressedData = Encoding.UTF8.GetString(decompressedStream.ToArray());
 
-            if (!clipboardReader.ElementReader.TryReadFromData(decompressedData, out var element))
-            {
-                clipboardReader.PluginLog.Error($"Failed to read [{nameof(JsonElement)}] from clipboard data: {decompressedData}");
-                return false;
-            }
+            if (!clipboardReader.ElementReader.TryReadFromData(decompressedData, out var element)) return false;
 
             if (clipboardReader.TryRead(element, out instance)) return true;
 
-            clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data");
-            return false;
+            clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data: {decompressedData}");
         }
         catch (Exception e)
         {
-            clipboardReader.PluginLog.Error($"Caught exception while reading [{typeof(T).Name}] from clipboard data ({e.Message})");
+            clipboardReader.PluginLog.Error($"Caught exception while reading [{typeof(T).Name}] from clipboard data ({e.Message}): {data}");
         }
 
         return false;

@@ -5,14 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Json.RuleDatas;
 
-public class RuleDataConverter(IPluginLog pluginLog) : Converter<RuleData, Rule>(pluginLog)
+public class RuleDataConverter(IPluginLog pluginLog) : Converter<RuleData, Rule>(pluginLog), IConverter<RuleData, Rule>
 {
     public override bool TryConvert(RuleData ruleData, [NotNullWhen(true)] out Rule? rule)
     {
-        rule = new Rule()
-        {
-            Path = ruleData.Path
-        };
+        rule = new() { Path = ruleData.Path };
 
         if (ruleData.Enabled.HasValue) rule.Enabled = ruleData.Enabled.Value;
         if (ruleData.Priority.HasValue) rule.Priority = ruleData.Priority.Value;

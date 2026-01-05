@@ -5,11 +5,11 @@ using ModOrganizer.Configs.Fakes;
 using ModOrganizer.Mods;
 using ModOrganizer.Mods.Fakes;
 using ModOrganizer.Rules.Fakes;
-using ModOrganizer.Tests.Backups.BackupManagers;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Rules.RuleEvaluators;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Backups;
 
 namespace ModOrganizer.Tests.Mods.ModProcessors;
 

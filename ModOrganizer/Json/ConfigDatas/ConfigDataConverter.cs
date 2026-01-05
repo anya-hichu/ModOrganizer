@@ -8,10 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataConverter(IPluginLog pluginLog) : Converter<ConfigData, Config>(pluginLog)
+public class ConfigDataConverter(IPluginLog pluginLog, IConverter<RuleData, Rule> ruleDataConverter) : Converter<ConfigData, Config>(pluginLog), IConverter<ConfigData, Config>
 {
-    private RuleDataConverter RuleDataConverter { get; init; } = new(pluginLog);
-
     public override bool TryConvert(ConfigData configData, [NotNullWhen(true)] out Config? config)
     {
         config = null;
@@ -20,9 +18,9 @@ public class ConfigDataConverter(IPluginLog pluginLog) : Converter<ConfigData, C
         if (configData.Version.HasValue) convertedConfig.Version = configData.Version.Value;
 
         var rules = new HashSet<Rule>();
-        if (configData.Rules != null && !RuleDataConverter.TryConvertMany(configData.Rules, out rules))
+        if (configData.Rules != null && !ruleDataConverter.TryConvertMany(configData.Rules, out rules))
         {
-            PluginLog.Error($"Failed to convert [{nameof(ConfigData)}] to [{nameof(Config)}]");
+            PluginLog.Error($"Failed to convert one or many [{nameof(RuleData)}] to [{nameof(Rule)}]");
             return false;
         }
         convertedConfig.Rules = rules;

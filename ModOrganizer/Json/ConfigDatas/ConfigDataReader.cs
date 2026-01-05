@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 using ModOrganizer.Json.Readers.Clipboards;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
@@ -32,7 +32,7 @@ public class ConfigDataReader(IAssert assert, IElementReader elementReader, IRea
         RuleData[]? rules = null;
         if (Assert.IsPropertyPresent(element, nameof(ConfigData.Rules), out var rulesProperty) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {rulesProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {element}");
             return false;
         }
 

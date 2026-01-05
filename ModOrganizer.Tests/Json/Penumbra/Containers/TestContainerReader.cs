@@ -3,8 +3,8 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Json.Asserts;
 using ModOrganizer.Tests.Json.Penumbra.Manipulations;
+using ModOrganizer.Tests.Json.Readers.Asserts;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Containers;

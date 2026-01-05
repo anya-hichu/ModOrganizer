@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupReader(IAssert assert, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog), IBaseGroupReader
+public class GroupReader(IAssert assert, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog), IGroupReader
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 

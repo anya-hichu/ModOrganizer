@@ -1,6 +1,5 @@
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Groups;
@@ -20,6 +19,7 @@ using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers.Asserts;
 using ModOrganizer.Json.Readers.Elements;
 using System;
 
@@ -90,11 +90,11 @@ public class ReaderProvider : IDisposable
 
     private static void AddGroupSingletons(ServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IBaseGroupReader, GroupReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<IGroupReader, GroupReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
 
         serviceCollection.AddSingleton<IReader<Group>, GroupCombiningReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IBaseGroupReader>(),
+            p.GetRequiredService<IGroupReader>(),
             p.GetRequiredService<IReader<NamedContainer>>(),
             p.GetRequiredService<IReader<Option>>(),
             p.GetRequiredService<IPluginLog>()
@@ -103,7 +103,7 @@ public class ReaderProvider : IDisposable
 
         serviceCollection.AddSingleton<IReader<Group>, GroupImcReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IBaseGroupReader>(),
+            p.GetRequiredService<IGroupReader>(),
             p.GetRequiredService<IReader<MetaImcEntry>>(),
             p.GetRequiredService<IReader<MetaImcIdentifier>>(),
             p.GetRequiredService<IOptionImcReaderFactory>(),
@@ -113,7 +113,7 @@ public class ReaderProvider : IDisposable
 
         serviceCollection.AddSingleton<IReader<Group>, GroupMultiReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IBaseGroupReader>(),
+            p.GetRequiredService<IGroupReader>(),
             p.GetRequiredService<IReader<OptionContainer>>(),
             p.GetRequiredService<IPluginLog>()
         ));
@@ -121,7 +121,7 @@ public class ReaderProvider : IDisposable
 
         serviceCollection.AddSingleton<IReader<Group>, GroupSingleReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IBaseGroupReader>(),
+            p.GetRequiredService<IGroupReader>(),
             p.GetRequiredService<IReader<OptionContainer>>(),
             p.GetRequiredService<IPluginLog>()
         ));

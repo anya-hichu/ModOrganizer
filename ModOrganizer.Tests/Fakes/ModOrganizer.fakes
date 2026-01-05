@@ -4,7 +4,7 @@
         <Clear/>
         <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
-        <Add FullName="ModOrganizer.Json.Asserts.IAssert"/>
+        <Add FullName="ModOrganizer.Json.Readers.Asserts.IAssert"/>
         <Add FullName="ModOrganizer.Json.Readers.Elements.IElementReader!"/>
         <Add FullName="ModOrganizer.Json.Readers.Files.IFileReader" Interfaces="true"/>
         <Add FullName="ModOrganizer.Json.Readers.IReader"/>

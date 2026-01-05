@@ -11,7 +11,7 @@ using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Mods.ModInterops;
 
-namespace ModOrganizer.Tests.Backups.BackupManagers;
+namespace ModOrganizer.Tests.Backups;
 
 public class BackupManagerBuilder : Builder<BackupManager>, IStubbableConfig, IStubbableModInterop, IStubbablePluginInterface, IStubbablePluginLog
 {

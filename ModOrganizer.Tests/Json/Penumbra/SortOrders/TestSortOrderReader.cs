@@ -4,11 +4,11 @@ using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Json.Asserts;
+using ModOrganizer.Tests.Json.Readers.Asserts;
 using ModOrganizer.Tests.Json.Readers.Elements;
 using System.Text.Json;
 
-using IAssert = ModOrganizer.Json.Asserts.IAssert;
+using IAssert = ModOrganizer.Json.Readers.Asserts.IAssert;
 
 namespace ModOrganizer.Tests.Json.Penumbra.SortOrders;
 

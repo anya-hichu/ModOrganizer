@@ -1,8 +1,8 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;

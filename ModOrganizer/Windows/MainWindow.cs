@@ -225,12 +225,10 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
 
-                using var clipperResource = new ImRaiiListClipper();
-
-                var clipper = clipperResource.Value;
-
                 var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, StringComparer.OrdinalIgnoreCase).ToList();
-                clipper.Begin(orderedModDirectories.Count, GetItemHeight());
+
+                using var clipperResource = new ImRaiiListClipper(orderedModDirectories.Count, GetItemHeight());
+                var clipper = clipperResource.Value;
 
                 while (clipper.Step())
                 {
@@ -341,10 +339,9 @@ public class MainWindow : Window, IDisposable
 
                 var showedRuleResults = RuleState.GetShowedResults<RuleResult, IShowableRuleResultState>().Order();
 
-                using var clipperResource = new ImRaiiListClipper();
-
+                using var clipperResource = new ImRaiiListClipper(showedRuleResults.Count(), GetItemHeight());
                 var clipper = clipperResource.Value;
-                clipper.Begin(showedRuleResults.Count(), GetItemHeight());
+
                 while (clipper.Step())
                 {
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -490,10 +487,9 @@ public class MainWindow : Window, IDisposable
 
             var showedEvaluationResults = EvaluationState.GetShowedResults<EvaluationResult, IShowableEvaluationResultState>().Order();
 
-            using var clipperResource = new ImRaiiListClipper();
-
+            using var clipperResource = new ImRaiiListClipper(showedEvaluationResults.Count(), ImGui.GetTextLineHeightWithSpacing());
             var clipper = clipperResource.Value;
-            clipper.Begin(showedEvaluationResults.Count(), ImGui.GetTextLineHeightWithSpacing());
+
             while (clipper.Step())
             {
                 for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)

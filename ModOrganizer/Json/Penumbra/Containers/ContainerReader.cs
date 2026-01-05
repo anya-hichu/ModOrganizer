@@ -1,9 +1,9 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Penumbra.Groups;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

@@ -177,10 +177,9 @@ public class BackupWindow : Window, IDisposable
 
                 var showedBackupResults = BackupState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order();
 
-                using var clipperResource = new ImRaiiListClipper();
-
+                using var clipperResource = new ImRaiiListClipper(showedBackupResults.Count(), ImGui.GetTextLineHeightWithSpacing());
                 var clipper = clipperResource.Value;
-                clipper.Begin(showedBackupResults.Count(), ImGui.GetTextLineHeightWithSpacing());
+
                 while (clipper.Step())
                 {
                     for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
@@ -211,6 +210,7 @@ public class BackupWindow : Window, IDisposable
                         }
                     }
                 }
+                clipper.End();
             }
         }
     }

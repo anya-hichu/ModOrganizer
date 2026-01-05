@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Asserts;
+namespace ModOrganizer.Json.Readers.Asserts;
 
 public interface IAssert
 {

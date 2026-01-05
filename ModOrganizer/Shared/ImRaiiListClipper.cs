@@ -1,11 +1,20 @@
 using Dalamud.Bindings.ImGui;
+using System;
 
 namespace ModOrganizer.Shared;
 
-public class ImRaiiListClipper : RaiiGuard<ImGuiListClipperPtr>
+public class ImRaiiListClipper(int itemsCount, float itemsHeight) : RaiiGuard<ImGuiListClipperPtr>(BuildAcquire(itemsCount, itemsHeight), Release)
 {
-    public ImRaiiListClipper() : base(ImGui.ImGuiListClipper, clipper => clipper.Destroy())
+    private static Func<ImGuiListClipperPtr> BuildAcquire(int itemsCount, float itemsHeight) => () => 
     {
-        // Empty
+        var clipper = ImGui.ImGuiListClipper();
+        clipper.Begin(itemsCount, itemsHeight);
+        return clipper;
+    }; 
+
+    private static void Release(ImGuiListClipperPtr clipper)
+    {
+        clipper.End();
+        clipper.Destroy();
     }
 }

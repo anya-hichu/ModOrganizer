@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Collections.Generic;

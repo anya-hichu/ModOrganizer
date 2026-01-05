@@ -1,6 +1,6 @@
 using ModOrganizer.Backups.Fakes;
 
-namespace ModOrganizer.Tests.Backups.BackupManagers;
+namespace ModOrganizer.Tests.Backups;
 
 public interface IStubbableBackupManager
 {

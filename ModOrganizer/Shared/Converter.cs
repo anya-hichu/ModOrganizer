@@ -1,10 +1,11 @@
 using Dalamud.Plugin.Services;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace ModOrganizer.Shared;
 
-public abstract class Converter<I, O>(IPluginLog pluginLog) where I : class where O : class
+public abstract class Converter<I, O>(IPluginLog pluginLog) : IConverter<I, O> where I : class where O : class
 {
     protected IPluginLog PluginLog { get; init; } = pluginLog;
 
@@ -24,6 +25,9 @@ public abstract class Converter<I, O>(IPluginLog pluginLog) where I : class wher
             }
             converted.Add(output);
         }
+
+        var countDiff = inputs.Count() - converted.Count;
+        if (countDiff > 0) PluginLog.Warning($"Found {countDiff} duplication(s) while converting, ignoring");
 
         outputs = converted;
         return true;

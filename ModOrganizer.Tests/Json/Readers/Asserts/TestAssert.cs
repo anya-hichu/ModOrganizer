@@ -3,7 +3,7 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using System.Text.Json;
 
-namespace ModOrganizer.Tests.Json.Asserts;
+namespace ModOrganizer.Tests.Json.Readers.Asserts;
 
 [TestClass]
 public class TestAssert

@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Asserts;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atrs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqdps;
@@ -11,6 +10,7 @@ using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations;
 

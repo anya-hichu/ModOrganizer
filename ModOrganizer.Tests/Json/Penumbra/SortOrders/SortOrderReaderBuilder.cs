@@ -1,10 +1,10 @@
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Json.Asserts.Fakes;
 using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers.Asserts.Fakes;
 using ModOrganizer.Json.Readers.Elements.Fakes;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Json.Asserts;
+using ModOrganizer.Tests.Json.Readers.Asserts;
 using ModOrganizer.Tests.Json.Readers.Elements;
 
 namespace ModOrganizer.Tests.Json.Penumbra.SortOrders;

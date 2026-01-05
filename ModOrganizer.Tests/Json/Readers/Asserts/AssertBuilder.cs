@@ -1,9 +1,10 @@
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using Assert = ModOrganizer.Json.Asserts.Assert;
 
-namespace ModOrganizer.Tests.Json.Asserts;
+using Assert = ModOrganizer.Json.Readers.Asserts.Assert;
+
+namespace ModOrganizer.Tests.Json.Readers.Asserts;
 
 public class AssertBuilder : Builder<Assert>, IStubbablePluginLog
 {

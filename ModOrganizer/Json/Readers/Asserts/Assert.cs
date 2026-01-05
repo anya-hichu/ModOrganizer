@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Asserts;
+namespace ModOrganizer.Json.Readers.Asserts;
 
 public class Assert(IPluginLog pluginLog) : IAssert
 {

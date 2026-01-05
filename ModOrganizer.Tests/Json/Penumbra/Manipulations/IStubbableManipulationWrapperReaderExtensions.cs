@@ -1,6 +1,5 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Manipulations;
-using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Manipulations;
 

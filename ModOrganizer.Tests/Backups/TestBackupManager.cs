@@ -11,7 +11,7 @@ using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Systems.DateTimeOffsets;
 using ModOrganizer.Tests.Testables;
 
-namespace ModOrganizer.Tests.Backups.BackupManagers;
+namespace ModOrganizer.Tests.Backups;
 
 [TestClass]
 public class TestBackupManager : ITestableClassTemp

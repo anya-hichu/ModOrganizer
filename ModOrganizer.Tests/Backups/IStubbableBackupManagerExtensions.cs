@@ -1,6 +1,6 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 
-namespace ModOrganizer.Tests.Backups.BackupManagers;
+namespace ModOrganizer.Tests.Backups;
 
 public static class IStubbableBackupManagerExtensions
 {

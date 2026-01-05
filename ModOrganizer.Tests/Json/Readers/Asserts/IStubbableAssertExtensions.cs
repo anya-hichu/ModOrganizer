@@ -1,8 +1,6 @@
-using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using System.Text.Json;
 
-namespace ModOrganizer.Tests.Json.Asserts;
+namespace ModOrganizer.Tests.Json.Readers.Asserts;
 
 public static class IStubbableAssertExtensions
 {

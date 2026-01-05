@@ -163,64 +163,64 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
-        <member name="T:ModOrganizer.Json.Asserts.Fakes.StubIAssert">
-            <summary>Stub type of ModOrganizer.Json.Asserts.IAssert</summary>
+        <member name="T:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert">
+            <summary>Stub type of ModOrganizer.Json.Readers.Asserts.IAssert</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.#ctor">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.#ctor">
             <summary>Initializes a new instance of type StubIAssert</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsIntArrayJsonElementInt32ArrayOut">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsIntArrayJsonElementInt32ArrayOut">
             <summary>Sets the stub of IAssert.IsIntArray(IAssert this, JsonElement element, Int32[]* value)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsOptionalValueJsonElementStringStringOut">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsOptionalValueJsonElementStringStringOut">
             <summary>Sets the stub of IAssert.IsOptionalValue(IAssert this, JsonElement element, String propertyName, String* value)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsPropertyPresentJsonElementStringJsonElementOutBoolean">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsPropertyPresentJsonElementStringJsonElementOutBoolean">
             <summary>Sets the stub of IAssert.IsPropertyPresent(IAssert this, JsonElement element, String name, JsonElement* property, Boolean warn)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsStringArrayJsonElementStringArrayOut">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsStringArrayJsonElementStringArrayOut">
             <summary>Sets the stub of IAssert.IsStringArray(IAssert this, JsonElement element, String[]* value)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsStringDictJsonElementDictionaryOfStringStringOut">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsStringDictJsonElementDictionaryOfStringStringOut">
             <summary>Sets the stub of IAssert.IsStringDict(IAssert this, JsonElement element, Dictionary`2* value)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsU16ValueJsonElementStringUInt16OutBoolean">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsU16ValueJsonElementStringUInt16OutBoolean">
             <summary>Sets the stub of IAssert.IsU16Value(IAssert this, JsonElement element, String propertyName, UInt16* value, Boolean required)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsU8ValueJsonElementStringByteOutBoolean">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsU8ValueJsonElementStringByteOutBoolean">
             <summary>Sets the stub of IAssert.IsU8Value(IAssert this, JsonElement element, String propertyName, Byte* value, Boolean required)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsValueJsonElementJsonValueKind">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsValueJsonElementJsonValueKind">
             <summary>Sets the stub of IAssert.IsValue(IAssert this, JsonElement element, JsonValueKind kind)</summary>
         </member>
-        <member name="F:ModOrganizer.Json.Asserts.Fakes.StubIAssert.IsValuePresentJsonElementStringStringOutBoolean">
+        <member name="F:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.IsValuePresentJsonElementStringStringOutBoolean">
             <summary>Sets the stub of IAssert.IsValuePresent(IAssert this, JsonElement element, String propertyName, String* value, Boolean required)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsIntArray(System.Text.Json.JsonElement,System.Int32[]@)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsIntArray(System.Text.Json.JsonElement,System.Int32[]@)">
             <summary>Sets the Stub of IAssert.IsIntArray(IAssert this, JsonElement element, Int32[]* value)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsOptionalValue(System.Text.Json.JsonElement,System.String,System.String@)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsOptionalValue(System.Text.Json.JsonElement,System.String,System.String@)">
             <summary>Sets the Stub of IAssert.IsOptionalValue(IAssert this, JsonElement element, String propertyName, String* value)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsPropertyPresent(System.Text.Json.JsonElement,System.String,System.Text.Json.JsonElement@,System.Boolean)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsPropertyPresent(System.Text.Json.JsonElement,System.String,System.Text.Json.JsonElement@,System.Boolean)">
             <summary>Sets the Stub of IAssert.IsPropertyPresent(IAssert this, JsonElement element, String name, JsonElement* property, Boolean warn)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsStringArray(System.Text.Json.JsonElement,System.String[]@)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsStringArray(System.Text.Json.JsonElement,System.String[]@)">
             <summary>Sets the Stub of IAssert.IsStringArray(IAssert this, JsonElement element, String[]* value)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsStringDict(System.Text.Json.JsonElement,System.Collections.Generic.Dictionary{System.String,System.String}@)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsStringDict(System.Text.Json.JsonElement,System.Collections.Generic.Dictionary{System.String,System.String}@)">
             <summary>Sets the Stub of IAssert.IsStringDict(IAssert this, JsonElement element, Dictionary`2* value)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsU16Value(System.Text.Json.JsonElement,System.String,System.UInt16@,System.Boolean)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsU16Value(System.Text.Json.JsonElement,System.String,System.UInt16@,System.Boolean)">
             <summary>Sets the Stub of IAssert.IsU16Value(IAssert this, JsonElement element, String propertyName, UInt16* value, Boolean required)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsU8Value(System.Text.Json.JsonElement,System.String,System.Byte@,System.Boolean)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsU8Value(System.Text.Json.JsonElement,System.String,System.Byte@,System.Boolean)">
             <summary>Sets the Stub of IAssert.IsU8Value(IAssert this, JsonElement element, String propertyName, Byte* value, Boolean required)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsValue(System.Text.Json.JsonElement,System.Text.Json.JsonValueKind)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsValue(System.Text.Json.JsonElement,System.Text.Json.JsonValueKind)">
             <summary>Sets the Stub of IAssert.IsValue(IAssert this, JsonElement element, JsonValueKind kind)</summary>
         </member>
-        <member name="M:ModOrganizer.Json.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Asserts#IAssert#IsValuePresent(System.Text.Json.JsonElement,System.String,System.String@,System.Boolean)">
+        <member name="M:ModOrganizer.Json.Readers.Asserts.Fakes.StubIAssert.ModOrganizer#Json#Readers#Asserts#IAssert#IsValuePresent(System.Text.Json.JsonElement,System.String,System.String@,System.Boolean)">
             <summary>Sets the Stub of IAssert.IsValuePresent(IAssert this, JsonElement element, String propertyName, String* value, Boolean required)</summary>
         </member>
         <member name="T:ModOrganizer.Json.Readers.Elements.Fakes.StubIElementReader">

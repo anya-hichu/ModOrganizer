@@ -5,7 +5,7 @@ using ModOrganizer.Json.Penumbra.Options.Imcs;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using ModOrganizer.Json.Asserts;
+using ModOrganizer.Json.Readers.Asserts;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
