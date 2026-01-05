@@ -2,7 +2,7 @@ using ModOrganizer.Json.Readers;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public interface IGroupReader : IReader<Group>
+public interface IGroupBaseReader : IReader<Group>
 {
     // Empty
 }

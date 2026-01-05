@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupMultiReader(IAssert assert, IReader<Group> groupReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupMultiReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
 {
     public static readonly string TYPE = "Multi";
 
@@ -18,7 +18,7 @@ public class GroupMultiReader(IAssert assert, IReader<Group> groupReader, IReade
 
         if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!groupReader.TryRead(element, out var group))
+        if (!groupBaseReader.TryRead(element, out var group))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupMulti)}]: {element}");
             return false;

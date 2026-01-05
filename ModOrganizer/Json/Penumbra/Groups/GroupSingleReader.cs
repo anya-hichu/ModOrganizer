@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupSingleReader(IAssert assert, IReader<Group> groupReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupSingleReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
 {
     public static readonly string TYPE = "Single";
 
@@ -18,7 +18,7 @@ public class GroupSingleReader(IAssert assert, IReader<Group> groupReader, IRead
 
         if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!groupReader.TryRead(element, out var group))
+        if (!groupBaseReader.TryRead(element, out var group))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupSingle)}]: {element}");
             return false;

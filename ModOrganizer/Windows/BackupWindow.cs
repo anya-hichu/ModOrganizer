@@ -210,7 +210,6 @@ public class BackupWindow : Window, IDisposable
                         }
                     }
                 }
-                clipper.End();
             }
         }
     }

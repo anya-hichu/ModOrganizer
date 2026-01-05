@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupReader(IAssert assert, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog), IGroupReader
+public class GroupBaseReader(IAssert assert, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog), IGroupBaseReader
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 

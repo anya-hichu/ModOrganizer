@@ -90,11 +90,11 @@ public class ReaderProvider : IDisposable
 
     private static void AddGroupSingletons(ServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<IGroupReader, GroupReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        serviceCollection.AddSingleton<IGroupBaseReader, GroupBaseReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
 
         serviceCollection.AddSingleton<IReader<Group>, GroupCombiningReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IGroupReader>(),
+            p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<NamedContainer>>(),
             p.GetRequiredService<IReader<Option>>(),
             p.GetRequiredService<IPluginLog>()
@@ -103,7 +103,7 @@ public class ReaderProvider : IDisposable
 
         serviceCollection.AddSingleton<IReader<Group>, GroupImcReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IGroupReader>(),
+            p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<MetaImcEntry>>(),
             p.GetRequiredService<IReader<MetaImcIdentifier>>(),
             p.GetRequiredService<IOptionImcReaderFactory>(),
@@ -113,7 +113,7 @@ public class ReaderProvider : IDisposable
 
         serviceCollection.AddSingleton<IReader<Group>, GroupMultiReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IGroupReader>(),
+            p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<OptionContainer>>(),
             p.GetRequiredService<IPluginLog>()
         ));
@@ -121,7 +121,7 @@ public class ReaderProvider : IDisposable
 
         serviceCollection.AddSingleton<IReader<Group>, GroupSingleReader>(p => new(
             p.GetRequiredService<IAssert>(),
-            p.GetRequiredService<IGroupReader>(),
+            p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<OptionContainer>>(),
             p.GetRequiredService<IPluginLog>()
         ));

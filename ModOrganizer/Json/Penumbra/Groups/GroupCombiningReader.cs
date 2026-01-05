@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupCombiningReader(IAssert assert, IReader<Group> groupReader, IReader<NamedContainer> namedContainerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupCombiningReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<NamedContainer> namedContainerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
 {
     public static readonly string TYPE = "Combining";
 
@@ -19,7 +19,7 @@ public class GroupCombiningReader(IAssert assert, IReader<Group> groupReader, IR
 
         if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!groupReader.TryRead(element, out var group))
+        if (!groupBaseReader.TryRead(element, out var group))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupCombining)}]: {element}");
             return false;
