@@ -42,20 +42,20 @@ jobs:
              !ModOrganizer\bin\x64\Release\ModOrganizer\*
 
       - name: Run Tests
-        run: .\ModOrganizer.Tests\bin\Release\net10.0-windows\ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura --coverage-output ${{ github.sha }}.cobertura.xml
+        run: .\ModOrganizer.Tests\bin\Release\ModOrganizer.Tests.exe --coverage --coverage-output-format cobertura --coverage-output ${{ github.sha }}.cobertura.xml
 
       - name: Upload Tests Artifacts
         uses: actions/upload-artifact@v6
         with:
           name: ModOrganizer.Tests
-          path: ModOrganizer.Tests\bin\Release\net10.0-windows\TestResults\${{ github.sha }}.cobertura.xml
+          path: ModOrganizer.Tests\bin\Release\TestResults\${{ github.sha }}.cobertura.xml
 
       - name: Upload Tests Coverage
         if: env.CODECOV_TOKEN
         uses: codecov/codecov-action@v5
         with:
           name: ${{ github.ref_name }}
-          files: ModOrganizer.Tests\bin\Release\net10.0-windows\TestResults\${{ github.sha }}.cobertura.xml
+          files: ModOrganizer.Tests\bin\Release\TestResults\${{ github.sha }}.cobertura.xml
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 

@@ -9,6 +9,8 @@
         <TestingExtensionsProfile>AllMicrosoft</TestingExtensionsProfile>
         
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
     
     <ItemGroup>
