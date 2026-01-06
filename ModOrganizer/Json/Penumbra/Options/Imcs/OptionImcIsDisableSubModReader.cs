@@ -16,7 +16,7 @@ public class OptionImcIsDisableSubModReader(IAssert assert, IReader<Option> opti
 
         if (!optionReader.TryRead(element, out var option))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionImcIsDisableSubMod)}]");
+            PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionImcIsDisableSubMod)}]: {element}");
             return false;
         }
 

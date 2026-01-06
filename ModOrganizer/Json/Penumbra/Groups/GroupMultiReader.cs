@@ -33,7 +33,7 @@ public class GroupMultiReader(IAssert assert, IGroupBaseReader groupBaseReader, 
         var options = Array.Empty<OptionContainer>();
         if (element.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !optionContainerReader.TryReadMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]: {optionsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]: {element}");
             return false;
         }
 

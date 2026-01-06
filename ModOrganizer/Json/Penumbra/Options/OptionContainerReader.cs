@@ -17,13 +17,13 @@ public class OptionContainerReader(IAssert assert, IReader<Container> containerR
 
         if (!containerReader.TryRead(element, out var container))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(OptionContainer)}]");
+            PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(OptionContainer)}]: {element}");
             return false;
         }
 
         if (!optionReader.TryRead(element, out var option))
         {
-            PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionContainer)}]");
+            PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionContainer)}]: {element}");
             return false;
         }
 

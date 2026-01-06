@@ -26,8 +26,8 @@ public abstract class Converter<I, O>(IPluginLog pluginLog) : IConverter<I, O> w
             converted.Add(output);
         }
 
-        var countDiff = inputs.Count() - converted.Count;
-        if (countDiff > 0) PluginLog.Warning($"Found {countDiff} duplication(s) while converting, ignoring");
+        var delta = inputs.Count() - converted.Count;
+        if (delta > 0) PluginLog.Warning($"Found {delta} duplication(s) while converting, ignoring");
 
         outputs = converted;
         return true;

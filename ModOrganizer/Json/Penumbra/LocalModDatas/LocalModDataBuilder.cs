@@ -34,7 +34,7 @@ public class LocalModDataReader(IAssert assert, IElementReader elementReader, IP
         var localTags = Array.Empty<string>();
         if (element.TryGetProperty(nameof(LocalModData.LocalTags), out var localTagsProperty) && !Assert.IsStringArray(localTagsProperty, out localTags))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.LocalTags)}] for [{nameof(LocalModData)}]: {localTagsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.LocalTags)}] for [{nameof(LocalModData)}]: {element}");
             return false;
         }
 
@@ -43,7 +43,7 @@ public class LocalModDataReader(IAssert assert, IElementReader elementReader, IP
         var preferredChangedItems = Array.Empty<int>();
         if (element.TryGetProperty(nameof(LocalModData.PreferredChangedItems), out var preferredChangedItemsProperty) && !Assert.IsIntArray(preferredChangedItemsProperty, out preferredChangedItems))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.PreferredChangedItems)}] for [{nameof(LocalModData)}]: {preferredChangedItems}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(LocalModData.PreferredChangedItems)}] for [{nameof(LocalModData)}]: {element}");
             return false;
         }
 

@@ -24,14 +24,14 @@ public class GroupImcReader(IAssert assert, IGroupBaseReader groupBaseReader, IR
         MetaImcEntry? defaultEntry = null;
         if (element.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
         {
-            PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]: {defaultEntryProperty}");
+            PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 
         MetaImcIdentifier? identifier = null;
         if (element.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
         {
-            PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]: {identifierProperty}");
+            PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 
@@ -50,7 +50,7 @@ public class GroupImcReader(IAssert assert, IGroupBaseReader groupBaseReader, IR
         var options = Array.Empty<OptionImc>();
         if (element.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !optionImcReader.TryReadMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {optionsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 

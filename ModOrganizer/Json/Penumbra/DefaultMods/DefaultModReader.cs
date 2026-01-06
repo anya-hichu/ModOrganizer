@@ -23,7 +23,7 @@ public class DefaultModReader(IAssert assert, IReader<Container> containerReader
         uint? version = element.TryGetProperty(nameof(DefaultMod.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: [{SUPPORTED_VERSION}]): {element}");
+            PluginLog.Warning($"Failed to read [{nameof(DefaultMod)}], unsupported [{nameof(DefaultMod.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {element}");
             return false;
         }
 

@@ -20,7 +20,7 @@ public abstract class ManipulationWrapperReader<T>(IAssert assert, IPluginLog pl
 
         if (!TryReadWrapped(manipulationProperty, out var wrapped))
         {
-            PluginLog.Debug($"Failed to read wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]: {manipulationProperty}");
+            PluginLog.Debug($"Failed to read wrapped [{typeof(T).Name}] for [{nameof(ManipulationWrapper)}]: {element}");
             return false;
         }
 

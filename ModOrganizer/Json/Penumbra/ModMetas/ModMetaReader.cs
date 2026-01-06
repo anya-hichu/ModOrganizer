@@ -40,21 +40,21 @@ public class ModMetaReader(IAssert assert, IElementReader elementReader, IPlugin
         var modTags = Array.Empty<string>();
         if (element.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) && !Assert.IsStringArray(modTagsProperty, out modTags))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]: {modTagsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]: {element}");
             return false;
         }
 
         var defaultPreferredItems = Array.Empty<int>();
         if (element.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) && !Assert.IsIntArray(defaultPreferredItemsProperty, out defaultPreferredItems))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]: {defaultPreferredItemsProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]: {element}");
             return false;
         }
 
         var requiredFeatures = Array.Empty<string>();
         if (element.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) && !Assert.IsStringArray(requiredFeaturesProperty, out requiredFeatures))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]: {requiredFeaturesProperty}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]: {element}");
             return false;
         }
 
