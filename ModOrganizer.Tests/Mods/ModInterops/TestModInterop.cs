@@ -13,6 +13,8 @@ using ModOrganizer.Tests.Json.Readers.Files;
 using ModOrganizer.Tests.Systems;
 using ModOrganizer.Tests.Testables;
 using Penumbra.Api.Enums;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ModOrganizer.Tests.Mods.ModInterops;
 
@@ -309,6 +311,8 @@ public class TestModInterop : ITestableClassTemp
     [DoNotParallelize]
     public async Task TestToggleFsWatchers()
     {
+        // Idea: Maybe shim fs watchers to be able to properly "wait" on them
+
         var observer = new StubObserver();
 
         var tempDirectory = this.CreateResultsTempDirectory();
@@ -357,9 +361,24 @@ public class TestModInterop : ITestableClassTemp
 
         File.WriteAllText(modInterop.GetSortOrderPath(), "{ }");
 
-        await Task.Delay(50, TestContext.CancellationToken);
+        try
+        {
+            var expectedCount = 11;
 
-        Assert.HasCount(11, observer.GetCalls());
+            var task = Task.Run(() => 
+            {
+                while (observer.GetCalls().Length < expectedCount) Thread.Sleep(1);
+            }, 
+            TestContext.CancellationToken);
+            
+            await task.WaitAsync(TimeSpan.FromMilliseconds(50), TestContext.CancellationToken);
+
+            Assert.HasCount(expectedCount, observer.GetCalls());
+        }
+        catch (TimeoutException)
+        {
+            Assert.Fail("Timed out while waiting for file system watchers");
+        }
     }
 
     [TestMethod]

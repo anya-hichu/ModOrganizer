@@ -1,15 +1,16 @@
 using ModOrganizer.GameData;
+using ModOrganizer.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Rules;
 
-public static class RuleBuilder
+public class RuleDefaults : IBuilder<HashSet<Rule>>
 {
     public static readonly int DEFAULT_VERSION = 0;
 
-    public static HashSet<Rule> BuildDefaults() => [
+    public HashSet<Rule> Build() => [
         // Equipments
         Build(FullEquipType.Head),
         Build(FullEquipType.Body),

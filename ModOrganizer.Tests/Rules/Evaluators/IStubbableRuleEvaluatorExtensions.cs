@@ -1,4 +1,4 @@
-namespace ModOrganizer.Tests.Rules.RuleEvaluators;
+namespace ModOrganizer.Tests.Rules.Evaluators;
 
 public static class IStubbableRuleEvaluatorExtensions
 {

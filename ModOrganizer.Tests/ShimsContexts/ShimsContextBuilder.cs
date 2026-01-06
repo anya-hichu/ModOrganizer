@@ -1,13 +1,14 @@
 
 using Microsoft.QualityTools.Testing.Fakes;
+using ModOrganizer.Shared;
 
 namespace ModOrganizer.Tests.ShimsContexts;
 
-public abstract class ShimsContextBuilder : Builder<IDisposable>, IShimmableContext
+public abstract class ShimsContextBuilder : IBuilder<IDisposable>, IShimmableContext
 {
     public event Action? OnShimsContext;
 
-    public override IDisposable Build() 
+    public IDisposable Build() 
     {
         var shimsContext = ShimsContext.Create();
         OnShimsContext?.Invoke();

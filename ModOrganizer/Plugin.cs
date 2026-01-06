@@ -51,11 +51,9 @@ public sealed class Plugin : IDalamudPlugin
     private MainWindow MainWindow { get; init; }
     private PreviewWindow PreviewWindow { get; init; }
     
-
-
     public Plugin()
     {
-        Config = PluginInterface.GetPluginConfig() as Config ?? ConfigBuilder.BuildDefault();
+        Config = new ConfigLoader(PluginInterface).GetOrDefault();
 
         ReaderProvider = new(PluginLog);
 

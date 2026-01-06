@@ -4,10 +4,11 @@ using ModOrganizer.Json.Penumbra.Groups;
 using ModOrganizer.Json.Readers.Asserts.Fakes;
 using ModOrganizer.Json.Readers.Elements.Fakes;
 using ModOrganizer.Json.Readers.Fakes;
+using ModOrganizer.Shared;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups;
 
-public class GroupReaderFactoryBuilder : Builder<GroupReaderFactory>
+public class GroupReaderFactoryBuilder : IBuilder<GroupReaderFactory>
 {
     public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
@@ -19,5 +20,5 @@ public class GroupReaderFactoryBuilder : Builder<GroupReaderFactory>
     public StubIElementReader ElementReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public override GroupReaderFactory Build() => new(AssertStub, GroupCombiningReaderStub, GroupImcReaderStub, GroupMultiReaderStub, GroupSingleReaderStub, ElementReaderStub, PluginLogStub);
+    public GroupReaderFactory Build() => new(AssertStub, GroupCombiningReaderStub, GroupImcReaderStub, GroupMultiReaderStub, GroupSingleReaderStub, ElementReaderStub, PluginLogStub);
 }

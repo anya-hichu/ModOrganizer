@@ -5,7 +5,7 @@ using ModOrganizer.Rules;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Testables;
 
-namespace ModOrganizer.Tests.Rules.RuleEvaluators;
+namespace ModOrganizer.Tests.Rules.Evaluators;
 
 [TestClass]
 public class TestRuleEvaluator : ITestableClassTemp
