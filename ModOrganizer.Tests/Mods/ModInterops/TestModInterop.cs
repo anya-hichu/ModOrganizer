@@ -357,7 +357,7 @@ public class TestModInterop : ITestableClassTemp
 
         File.WriteAllText(modInterop.GetSortOrderPath(), "{ }");
 
-        await Task.Delay(10, TestContext.CancellationToken);
+        await Task.Delay(50, TestContext.CancellationToken);
 
         Assert.HasCount(11, observer.GetCalls());
     }
