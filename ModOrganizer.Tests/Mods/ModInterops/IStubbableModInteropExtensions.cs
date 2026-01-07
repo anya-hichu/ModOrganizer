@@ -28,9 +28,9 @@ public static class IStubbableModInteropExtensions
         return stubbable;
     }
 
-    public static T WithModInteropGetModPath<T>(this T stubbable, FakesDelegates.Func<string, string> func) where T : IStubbableModInterop
+    public static T WithModInteropGetModPath<T>(this T stubbable, FakesDelegates.Func<string, string> stubFunc) where T : IStubbableModInterop
     {
-        stubbable.ModInteropStub.GetModPathString = func;
+        stubbable.ModInteropStub.GetModPathString = stubFunc;
 
         return stubbable;
     }

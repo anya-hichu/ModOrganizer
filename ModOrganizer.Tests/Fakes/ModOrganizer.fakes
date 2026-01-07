@@ -3,6 +3,7 @@
     <StubGeneration>
         <Clear/>
         <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
+        <Add FullName="ModOrganizer.Commands.ICommandPrinter!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
         <Add FullName="ModOrganizer.Json.Readers.Asserts.IAssert"/>
         <Add FullName="ModOrganizer.Json.Readers.Elements.IElementReader!"/>

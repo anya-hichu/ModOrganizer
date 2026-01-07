@@ -1,5 +1,3 @@
-
-using Dalamud.Game.Text;
 using Dalamud.Plugin.Services;
 using System;
 
@@ -8,9 +6,10 @@ namespace ModOrganizer.Commands;
 public class Command : ICommand
 {
     private static readonly string COMMAND_NAME = "/modorganizer";
-    private static readonly string COMMAND_HELP_MESSAGE = $"Available subcommands for [{COMMAND_NAME}] are about, backup, config (export|import)?, main and preview";
+    private static readonly string COMMAND_HELP_MESSAGE = $"Available subcommands for {COMMAND_NAME} are about, backup, config (export|import)?, main and preview";
 
     private ICommandManager CommandManager { get; init; }
+    private ICommandPrinter CommandPrinter { get; init; }
     private Action ToggleAboutWindow { get; init; }
     private Action ToggleBackupWindow { get; init; }
     private Action ToggleConfigWindow { get; init; }
@@ -18,12 +17,13 @@ public class Command : ICommand
     private Action ToggleConfigImportWindow { get; init; }
     private Action ToggleMainWindow { get; init; }
     private Action TogglePreviewWindow { get; init; }
-    private Action<XivChatEntry> Print { get; init; }
 
-    public Command(ICommandManager commandManager, Action toggleAboutWindow, Action toggleBackupWindow, Action toggleConfigWindow, Action toggleConfigExportWindow, 
-        Action toggleConfigImportWindow, Action toggleMainWindow, Action togglePreviewWindow, Action<XivChatEntry> print)
+    public Command(ICommandManager commandManager, ICommandPrinter commandPrinter, Action toggleAboutWindow, Action toggleBackupWindow, Action toggleConfigWindow, Action toggleConfigExportWindow, 
+        Action toggleConfigImportWindow, Action toggleMainWindow, Action togglePreviewWindow)
     {
         CommandManager = commandManager;
+        CommandPrinter = commandPrinter;
+
         ToggleAboutWindow = toggleAboutWindow;
         ToggleBackupWindow = toggleBackupWindow;
         ToggleConfigWindow = toggleConfigWindow;
@@ -31,7 +31,6 @@ public class Command : ICommand
         ToggleConfigImportWindow = toggleConfigImportWindow;
         ToggleMainWindow = toggleMainWindow;
         TogglePreviewWindow = togglePreviewWindow;
-        Print = print;
 
         CommandManager.AddHandler(COMMAND_NAME, new(Handler)
         {
@@ -67,11 +66,7 @@ public class Command : ICommand
                 TogglePreviewWindow.Invoke();
                 break;
             default:
-                Print.Invoke(new()
-                {
-                    Type = XivChatType.ErrorMessage,
-                    Message = COMMAND_HELP_MESSAGE
-                });
+                CommandPrinter.PrintError(COMMAND_HELP_MESSAGE);
                 break;
         }
     }

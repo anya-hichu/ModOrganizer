@@ -73,6 +73,18 @@
         <member name="F:ModOrganizer.Backups.Fakes.StubIBackupManager.TryRestoreBackupBoolean">
             <summary>Sets the stub of IBackupManager.TryRestore(IBackupManager this, Backup backup, Boolean reloadPenumbra)</summary>
         </member>
+        <member name="T:ModOrganizer.Commands.Fakes.StubICommandPrinter">
+            <summary>Stub type of ModOrganizer.Commands.ICommandPrinter</summary>
+        </member>
+        <member name="M:ModOrganizer.Commands.Fakes.StubICommandPrinter.#ctor">
+            <summary>Initializes a new instance of type StubICommandPrinter</summary>
+        </member>
+        <member name="M:ModOrganizer.Commands.Fakes.StubICommandPrinter.ModOrganizer#Commands#ICommandPrinter#PrintError(System.String)">
+            <summary>Sets the Stub of ICommandPrinter.PrintError(ICommandPrinter this, String message)</summary>
+        </member>
+        <member name="F:ModOrganizer.Commands.Fakes.StubICommandPrinter.PrintErrorString">
+            <summary>Sets the stub of ICommandPrinter.PrintError(ICommandPrinter this, String message)</summary>
+        </member>
         <member name="T:ModOrganizer.Configs.Fakes.StubIConfig">
             <summary>Stub type of ModOrganizer.Configs.IConfig</summary>
         </member>

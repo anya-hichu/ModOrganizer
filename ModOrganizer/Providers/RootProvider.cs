@@ -17,6 +17,7 @@ using ModOrganizer.Rules;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.States;
+using System;
 
 namespace ModOrganizer.Providers;
 
@@ -35,9 +36,10 @@ public class RootProvider : CachedProvider
         AddAbstractSingletons(collection);
         AddConcreteSingletons(collection);
 
-        collection.AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), 
-            p.GetRequiredService<AboutWindow>().Toggle, p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, 
-            p.GetRequiredService<ConfigExportWindow>().Toggle, p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle, p.GetRequiredService<IChatGui>().Print));
+
+
+        
+
 
         return collection.BuildServiceProvider();
     }
@@ -77,6 +79,12 @@ public class RootProvider : CachedProvider
             p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()));
 
         collection.AddSingleton<IModFileSystem, ModFileSystem>(p => new(p.GetRequiredService<IModInterop>()));
+
+        collection.AddSingleton<ICommandPrinter, CommandPrinter>(p => new(p.GetService<IChatGui>()));
+
+        collection.AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(), p.GetRequiredService<AboutWindow>().Toggle, 
+            p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<ConfigExportWindow>().Toggle, 
+            p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle));
     }
 
     private void AddConcreteSingletons(ServiceCollection collection)
