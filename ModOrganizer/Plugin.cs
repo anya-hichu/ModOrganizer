@@ -1,6 +1,5 @@
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
-using Dalamud.Plugin.Services;
 using ModOrganizer.Commands;
 using ModOrganizer.Mods;
 using ModOrganizer.Providers;

@@ -1,5 +1,6 @@
 using Dalamud.Game.Text;
 using Dalamud.Interface.Windowing;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,17 +18,16 @@ using ModOrganizer.Rules;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.States;
-using System;
 
 namespace ModOrganizer.Providers;
 
 public class RootProvider : CachedProvider
 {
-    public IChatGui? ChatGui { get; set; }
-    public ICommandManager? CommandManager { get; set; }
-    public INotificationManager? NotificationManager { get; set; }
-    public IDalamudPluginInterface? PluginInterface { get; set; }
-    public IPluginLog? PluginLog { get; set; }
+    [PluginService] public IChatGui? ChatGui { get; set; }
+    [PluginService] public ICommandManager? CommandManager { get; set; }
+    [PluginService] public INotificationManager? NotificationManager { get; set; }
+    [PluginService] public IDalamudPluginInterface? PluginInterface { get; set; }
+    [PluginService] public IPluginLog? PluginLog { get; set; }
 
     protected override ServiceProvider BuildServiceProvider()
     {
