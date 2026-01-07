@@ -29,7 +29,7 @@ using System.Numerics;
 
 namespace ModOrganizer.Windows;
 
-public class MainWindow : Window, IDisposable
+public class MainWindow : Window
 {
     private IConfig Config { get; init; }
     private IModInterop ModInterop { get; init; }
@@ -47,7 +47,8 @@ public class MainWindow : Window, IDisposable
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(IConfig config, IModInterop modInterop, IModFileSystem modFileSystem, IPluginLog pluginLog, RuleState ruleState, Action toggleBackupUI, Action toggleMainUI, Action togglePreviewUI) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(IConfig config, IModInterop modInterop, IModFileSystem modFileSystem, IPluginLog pluginLog, RuleState ruleState, 
+        Action toggleBackupWindow, Action toggleConfigWindow, Action togglePreviewWindow) : base("ModOrganizer - Main##mainWindow")
     {
         SizeConstraints = new()
         {
@@ -59,17 +60,17 @@ public class MainWindow : Window, IDisposable
             new(){ 
                 Icon = FontAwesomeIcon.Cog, 
                 ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), 
-                Click = _ => toggleMainUI.Invoke() 
+                Click = _ => toggleConfigWindow.Invoke() 
             },
             new() {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
-                Click = _ => toggleBackupUI.Invoke()
+                Click = _ => toggleBackupWindow.Invoke()
             },
             new() {
                 Icon = FontAwesomeIcon.Eye,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"),
-                Click = _ => togglePreviewUI.Invoke()
+                Click = _ => togglePreviewWindow.Invoke()
             }
         ];
 
@@ -78,8 +79,8 @@ public class MainWindow : Window, IDisposable
         ModFileSystem = modFileSystem;
         PluginLog = pluginLog;
         RuleState = ruleState;
-        TogglePreviewUI = togglePreviewUI;
-        ToggleBackupUI = toggleBackupUI;
+        TogglePreviewUI = togglePreviewWindow;
+        ToggleBackupUI = toggleBackupWindow;
 
         EvaluationState = new(ModInterop, PluginLog);
 

@@ -1,12 +1,11 @@
 using ModOrganizer.GameData;
-using ModOrganizer.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
 namespace ModOrganizer.Rules;
 
-public class RuleDefaults : IBuilder<HashSet<Rule>>
+public class RuleDefaults : IRuleDefaults
 {
     public static readonly int DEFAULT_VERSION = 0;
 

@@ -21,87 +21,86 @@ using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers.Asserts;
 using ModOrganizer.Json.Readers.Elements;
-using System;
+using ModOrganizer.Providers;
 
 namespace ModOrganizer.Json.Readers;
 
-public class ReaderProvider : IDisposable
+public class ReaderProvider(IPluginLog pluginLog) : CachedProvider, IReaderProvider
 {
-    private ServiceProvider ServiceProvider { get; init; }
-
-    public ReaderProvider(IPluginLog pluginLog)
+    protected override ServiceProvider BuildServiceProvider()
     {
         var serviceCollection = new ServiceCollection();
 
         serviceCollection.AddSingleton(pluginLog);
-        serviceCollection.AddSingleton<IAssert, Assert>(p => new(p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IElementReader, ElementReader>(p => new(p.GetRequiredService<IPluginLog>()));
 
+        AddRootSingletons(serviceCollection);
         AddContainerSingletons(serviceCollection);
         AddGroupSingletons(serviceCollection);
         AddManipulationSingletons(serviceCollection);
         AddOptionSingletons(serviceCollection);
 
-        serviceCollection.AddSingleton<IDefaultModReader, DefaultModReader>(p => new(
-            p.GetRequiredService<IAssert>(), 
-            p.GetRequiredService<IReader<Container>>(), 
-            p.GetRequiredService<IElementReader>(), 
-            p.GetRequiredService<IPluginLog>()
-        ));
-
-        serviceCollection.AddSingleton<ILocalModDataReader, LocalModDataReader>(p => new(
-            p.GetRequiredService<IAssert>(), 
-            p.GetRequiredService<IElementReader>(), 
-            p.GetRequiredService<IPluginLog>()
-        ));
-
-        serviceCollection.AddSingleton<IModMetaReader, ModMetaReader>(p => new(
-            p.GetRequiredService<IAssert>(), 
-            p.GetRequiredService<IElementReader>(), 
-            p.GetRequiredService<IPluginLog>()
-        ));
-
-        serviceCollection.AddSingleton<ISortOrderReader, SortOrderReader>(p => new(
-            p.GetRequiredService<IAssert>(), 
-            p.GetRequiredService<IElementReader>(), 
-            p.GetRequiredService<IPluginLog>()
-        ));
-
-        ServiceProvider = serviceCollection.BuildServiceProvider();
+        return serviceCollection.BuildServiceProvider();
     }
 
-    public void Dispose() => ServiceProvider.Dispose();
-
-    public T Get<T>() where T : notnull => ServiceProvider.GetRequiredService<T>();
-
-    private static void AddContainerSingletons(ServiceCollection serviceCollection)
+    private static void AddRootSingletons(ServiceCollection collection)
     {
-        serviceCollection.AddSingleton<IReader<Container>, ContainerReader>(p => new(
+        collection.AddSingleton<IAssert, Assert>(p => new(p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IElementReader, ElementReader>(p => new(p.GetRequiredService<IPluginLog>()));
+
+        collection.AddSingleton<IDefaultModReader, DefaultModReader>(p => new(
+            p.GetRequiredService<IAssert>(),
+            p.GetRequiredService<IReader<Container>>(),
+            p.GetRequiredService<IElementReader>(),
+            p.GetRequiredService<IPluginLog>()
+        ));
+
+        collection.AddSingleton<ILocalModDataReader, LocalModDataReader>(p => new(
+            p.GetRequiredService<IAssert>(),
+            p.GetRequiredService<IElementReader>(),
+            p.GetRequiredService<IPluginLog>()
+        ));
+
+        collection.AddSingleton<IModMetaReader, ModMetaReader>(p => new(
+            p.GetRequiredService<IAssert>(),
+            p.GetRequiredService<IElementReader>(),
+            p.GetRequiredService<IPluginLog>()
+        ));
+
+        collection.AddSingleton<ISortOrderReader, SortOrderReader>(p => new(
+            p.GetRequiredService<IAssert>(),
+            p.GetRequiredService<IElementReader>(),
+            p.GetRequiredService<IPluginLog>()
+        ));
+    }
+
+    private static void AddContainerSingletons(ServiceCollection collection)
+    {
+        collection.AddSingleton<IReader<Container>, ContainerReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IManipulationWrapperReaderFactory>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<NamedContainer>, NamedContainerReader>(p => new(
+        collection.AddSingleton<IReader<NamedContainer>, NamedContainerReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<Container>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
     }
 
-    private static void AddGroupSingletons(ServiceCollection serviceCollection)
+    private static void AddGroupSingletons(ServiceCollection collection)
     {
-        serviceCollection.AddSingleton<IGroupBaseReader, GroupBaseReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IGroupBaseReader, GroupBaseReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
 
-        serviceCollection.AddSingleton<IReader<Group>, GroupCombiningReader>(p => new(
+        collection.AddSingleton<IReader<Group>, GroupCombiningReader>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<NamedContainer>>(),
             p.GetRequiredService<IReader<Option>>(),
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<Group>, GroupCombiningReader>(GroupCombiningReader.TYPE);
+        collection.AddKeyedSingleton<IReader<Group>, GroupCombiningReader>(GroupCombiningReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<Group>, GroupImcReader>(p => new(
+        collection.AddSingleton<IReader<Group>, GroupImcReader>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<MetaImcEntry>>(),
@@ -109,25 +108,25 @@ public class ReaderProvider : IDisposable
             p.GetRequiredService<IOptionImcReaderFactory>(),
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<Group>, GroupImcReader>(GroupImcReader.TYPE);
+        collection.AddKeyedSingleton<IReader<Group>, GroupImcReader>(GroupImcReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<Group>, GroupMultiReader>(p => new(
+        collection.AddSingleton<IReader<Group>, GroupMultiReader>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<OptionContainer>>(),
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<Group>, GroupMultiReader>(GroupMultiReader.TYPE);
+        collection.AddKeyedSingleton<IReader<Group>, GroupMultiReader>(GroupMultiReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<Group>, GroupSingleReader>(p => new(
+        collection.AddSingleton<IReader<Group>, GroupSingleReader>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredService<IGroupBaseReader>(),
             p.GetRequiredService<IReader<OptionContainer>>(),
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<Group>, GroupSingleReader>(GroupSingleReader.TYPE);
+        collection.AddKeyedSingleton<IReader<Group>, GroupSingleReader>(GroupSingleReader.TYPE);
 
-        serviceCollection.AddSingleton<IGroupReaderFactory, GroupReaderFactory>(p => new(
+        collection.AddSingleton<IGroupReaderFactory, GroupReaderFactory>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredKeyedService<IReader<Group>>(GroupCombiningReader.TYPE),
             p.GetRequiredKeyedService<IReader<Group>>(GroupImcReader.TYPE),
@@ -138,107 +137,107 @@ public class ReaderProvider : IDisposable
         ));
     }
 
-    private static void AddManipulationSingletons(ServiceCollection serviceCollection)
+    private static void AddManipulationSingletons(ServiceCollection collection)
     {
-        serviceCollection.AddSingleton<IReader<MetaImcEntry>, MetaImcEntryReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<MetaImcIdentifier>, MetaImcIdentifierReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<MetaImcEntry>, MetaImcEntryReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<MetaImcIdentifier>, MetaImcIdentifierReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
 
-        serviceCollection.AddSingleton<IReader<MetaAtchEntry>, MetaAtchEntryReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<MetaAtch>, MetaAtchReader>(p => new(
+        collection.AddSingleton<IReader<MetaAtchEntry>, MetaAtchEntryReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<MetaAtch>, MetaAtchReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaAtchEntry>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaAtchWrapperReader>(p => new(
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaAtchWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaAtch>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtchWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtchWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaAtr>, MetaAtrReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaAtr>, MetaAtrReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaAtr>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtrWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtrWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaEqdp>, MetaEqdpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaEqdp>, MetaEqdpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaEqdp>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>(MetaEqdpWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>(MetaEqdpWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaEqp>, MetaEqpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaEqp>, MetaEqpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaEqp>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>(MetaEqpWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>(MetaEqpWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaEst>, MetaEstReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaEst>, MetaEstReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaEst>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>(MetaEstWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>(MetaEstWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaGeqp>, MetaGeqpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaGeqp>, MetaGeqpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaGeqp>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>(MetaGeqpWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>(MetaGeqpWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaGmpEntry>, MetaGmpEntryReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<MetaGmp>, MetaGmpReader>(p => new(
+        collection.AddSingleton<IReader<MetaGmpEntry>, MetaGmpEntryReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<MetaGmp>, MetaGmpReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaGmpEntry>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>(p => new(
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaGmp>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>(MetaGmpWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>(MetaGmpWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaImc>, MetaImcReader>(p => new(
+        collection.AddSingleton<IReader<MetaImc>, MetaImcReader>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredService<IReader<MetaImcEntry>>(),
             p.GetRequiredService<IReader<MetaImcIdentifier>>(),
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>(p => new(
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaImc>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>(MetaImcWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>(MetaImcWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaRsp>, MetaRspReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaRsp>, MetaRspReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaRsp>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>(MetaRspWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>(MetaRspWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IReader<MetaShp>, MetaShpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(p => new(
+        collection.AddSingleton<IReader<MetaShp>, MetaShpReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<MetaShp>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(MetaShpWrapperReader.TYPE);
+        collection.AddKeyedSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(MetaShpWrapperReader.TYPE);
 
-        serviceCollection.AddSingleton<IManipulationWrapperReaderFactory, ManipulationWrapperReaderFactory>(p => new(
+        collection.AddSingleton<IManipulationWrapperReaderFactory, ManipulationWrapperReaderFactory>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaAtchWrapperReader.TYPE),
             p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaAtrWrapperReader.TYPE),
@@ -254,31 +253,31 @@ public class ReaderProvider : IDisposable
         ));
     }
 
-    private static void AddOptionSingletons(ServiceCollection serviceCollection)
+    private static void AddOptionSingletons(ServiceCollection collection)
     {
-        serviceCollection.AddSingleton<IReader<Option>, OptionReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
-        serviceCollection.AddSingleton<IReader<OptionContainer>, OptionContainerReader>(p => new(
+        collection.AddSingleton<IReader<Option>, OptionReader>(p => new(p.GetRequiredService<IAssert>(), p.GetRequiredService<IPluginLog>()));
+        collection.AddSingleton<IReader<OptionContainer>, OptionContainerReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<Container>>(), 
             p.GetRequiredService<IReader<Option>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
 
-        serviceCollection.AddSingleton<IOptionImcAttributeMaskReader, OptionImcAttributeMaskReader>(p => new(
+        collection.AddSingleton<IOptionImcAttributeMaskReader, OptionImcAttributeMaskReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<Option>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<OptionImc>, IOptionImcAttributeMaskReader>(p => p.GetRequiredService<IOptionImcAttributeMaskReader>());
+        collection.AddSingleton<IReader<OptionImc>, IOptionImcAttributeMaskReader>(p => p.GetRequiredService<IOptionImcAttributeMaskReader>());
 
-        serviceCollection.AddSingleton<IOptionImcIsDisableSubModReader, OptionImcIsDisableSubModReader>(p => new(
+        collection.AddSingleton<IOptionImcIsDisableSubModReader, OptionImcIsDisableSubModReader>(p => new(
             p.GetRequiredService<IAssert>(), 
             p.GetRequiredService<IReader<Option>>(), 
             p.GetRequiredService<IPluginLog>()
         ));
-        serviceCollection.AddSingleton<IReader<OptionImc>, IOptionImcIsDisableSubModReader>(p => p.GetRequiredService<IOptionImcIsDisableSubModReader>());
+        collection.AddSingleton<IReader<OptionImc>, IOptionImcIsDisableSubModReader>(p => p.GetRequiredService<IOptionImcIsDisableSubModReader>());
 
-        serviceCollection.AddSingleton<IOptionImcReaderFactory, OptionImcReaderFactory>(p => new(
+        collection.AddSingleton<IOptionImcReaderFactory, OptionImcReaderFactory>(p => new(
             p.GetRequiredService<IAssert>(),
             p.GetRequiredService<IOptionImcAttributeMaskReader>(), 
             p.GetRequiredService<IOptionImcIsDisableSubModReader>(),

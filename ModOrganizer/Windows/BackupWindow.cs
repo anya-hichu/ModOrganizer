@@ -6,8 +6,6 @@ using Dalamud.Plugin.Services;
 using Humanizer;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs;
-using ModOrganizer.Json.Penumbra.SortOrders;
-using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Mods;
 using ModOrganizer.Shared;
 using ModOrganizer.Windows.States;

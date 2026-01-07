@@ -33,11 +33,7 @@ public class TestModAutoProcessor : ITestableClassTemp
 
         builder.ModInteropStub.OnModAddedEvent("Mod Directory");
 
-        Assert.IsEmpty(observer.GetCalls());
-
-        var currentTask = modAutoProcessor.GetCurrentTask();
-
-        Assert.IsTrue(currentTask.IsCompletedSuccessfully);
+        Assert.IsEmpty(modAutoProcessor.GetRunningTasks());
         Assert.IsEmpty(observer.GetCalls());
     }
 
@@ -69,18 +65,16 @@ public class TestModAutoProcessor : ITestableClassTemp
 
         builder.ModInteropStub.OnModAddedEvent(modDirectory);
 
+        var runningTasks = modAutoProcessor.GetRunningTasks();
+        Assert.HasCount(1, runningTasks);
+        var task = runningTasks.ElementAt(0);
+
+        Task.WaitAll(runningTasks, TestContext.CancellationToken);
+        Assert.IsTrue(task.IsCompletedSuccessfully);
+
         var logCalls = logObserver.GetCalls();
         Assert.HasCount(1, logCalls);
-
-        AssertPluginLog.MatchObservedCall(logCalls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Waiting [{delay}] ms before processing mod [{modDirectory}]", actualMessage));
-
-        var currentTask = modAutoProcessor.GetCurrentTask();
-
-        Assert.IsFalse(currentTask.IsCompleted);
-
-        await currentTask;
-
-        Assert.IsTrue(currentTask.IsCompletedSuccessfully);
+        AssertPluginLog.MatchObservedCall(logCalls[0], nameof(IPluginLog.Debug), actualMessage => Assert.StartsWith($"Waiting [{delay}] ms before processing mod [{modDirectory}] inside task", actualMessage));
 
         var processorCalls = processorObserver.GetCalls();
         Assert.HasCount(1, processorCalls);

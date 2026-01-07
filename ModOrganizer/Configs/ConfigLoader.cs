@@ -1,8 +1,9 @@
 using Dalamud.Plugin;
+using ModOrganizer.Shared;
 
 namespace ModOrganizer.Configs;
 
-public class ConfigLoader(IDalamudPluginInterface pluginInterface)
+public class ConfigLoader(IConfigDefault configDefault, IDalamudPluginInterface pluginInterface) : IConfigLoader
 {
-    public Config GetOrDefault() => pluginInterface.GetPluginConfig() as Config ?? new ConfigDefault(new()).Build();
+    public IConfig GetOrDefault() => pluginInterface.GetPluginConfig() as IConfig ?? configDefault.Build();
 }

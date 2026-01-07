@@ -11,7 +11,7 @@ using ThrottleDebounce;
 
 namespace ModOrganizer.Windows.Configs;
 
-public class ConfigWindow : Window, IDisposable
+public class ConfigWindow : Window
 {
     private IConfig Config { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
@@ -22,7 +22,7 @@ public class ConfigWindow : Window, IDisposable
     private RegisterSettingsSection RegisterSettingsSection { get; init; }
     private UnregisterSettingsSection UnregisterSettingsSection { get; init; }
 
-    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, Action toggleBackupUI, Action toggleMainUI) : base("ModOrganizer - Config##configWindow")
+    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, Action toggleBackupWindow) : base("ModOrganizer - Config##configWindow")
     {
         SizeConstraints = new()
         {
@@ -31,16 +31,10 @@ public class ConfigWindow : Window, IDisposable
         };
 
         TitleBarButtons = [
-            new() 
-            { 
-                Icon = FontAwesomeIcon.ListAlt, 
-                ShowTooltip = () => ImGui.SetTooltip("Toggle main window"), 
-                Click = _ => toggleMainUI() 
-            },
             new() {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
-                Click = _ => toggleBackupUI()
+                Click = _ => toggleBackupWindow.Invoke()
             }
         ];
 

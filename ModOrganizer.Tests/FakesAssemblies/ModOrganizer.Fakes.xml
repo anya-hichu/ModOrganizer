@@ -259,6 +259,18 @@
         <member name="F:ModOrganizer.Json.Readers.Fakes.StubIReader`1.TryReadManyJsonElementT0ArrayOut">
             <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, !0[]&amp; instances)</summary>
         </member>
+        <member name="T:ModOrganizer.Json.Readers.Fakes.StubIReaderProvider">
+            <summary>Stub type of ModOrganizer.Json.Readers.IReaderProvider</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReaderProvider.#ctor">
+            <summary>Initializes a new instance of type StubIReaderProvider</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReaderProvider.GetOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{``0})">
+            <summary>Sets stubs of Get(IProvider this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Readers.Fakes.StubIReaderProvider.ModOrganizer#Providers#IProvider#Get``1">
+            <summary>Sets the Stub of IProvider.Get(IProvider this)</summary>
+        </member>
         <member name="T:ModOrganizer.Json.Readers.Files.Fakes.ShimIFileReaderExtensions">
             <summary>Shim type of ModOrganizer.Json.Readers.Files.IFileReaderExtensions</summary>
         </member>

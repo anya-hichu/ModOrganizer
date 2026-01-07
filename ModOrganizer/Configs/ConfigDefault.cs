@@ -1,9 +1,8 @@
 using ModOrganizer.Rules;
-using ModOrganizer.Shared;
 
 namespace ModOrganizer.Configs;
 
-public class ConfigDefault(RuleDefaults ruleDefaults) : IBuilder<Config>
+public class ConfigDefault(IRuleDefaults ruleDefaults) : IConfigDefault
 {
     public Config Build() => new() { Rules = ruleDefaults.Build() };
 }
