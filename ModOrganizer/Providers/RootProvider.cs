@@ -28,7 +28,6 @@ public class RootProvider : CachedProvider
     [PluginService] public IChatGui? ChatGui { get; set; }
     [PluginService] public ICommandManager? CommandManager { get; set; }
     [PluginService] public INotificationManager? NotificationManager { get; set; }
-    
     [PluginService] public IPluginLog? PluginLog { get; set; }
 
     public RootProvider(IDalamudPluginInterface pluginInterface)
@@ -42,13 +41,13 @@ public class RootProvider : CachedProvider
     {
         var collection = new ServiceCollection();
 
-        AddAbstractSingletons(collection);
-        AddConcreteSingletons(collection);
+        AddISingletons(collection);
+        AddSingletons(collection);
 
         return collection.BuildServiceProvider();
     }
 
-    private void AddAbstractSingletons(ServiceCollection collection)
+    private void AddISingletons(IServiceCollection collection)
     {
         if (ChatGui != null) collection.AddSingleton(ChatGui);
         if (CommandManager != null) collection.AddSingleton(CommandManager);
@@ -56,68 +55,69 @@ public class RootProvider : CachedProvider
         if (PluginInterface != null) collection.AddSingleton(PluginInterface);
         if (PluginLog != null) collection.AddSingleton(PluginLog);
 
-        collection.AddSingleton<IRuleDefaults, RuleDefaults>(p => new());
-        collection.AddSingleton<IConfigDefault, ConfigDefault>(p => new(p.GetRequiredService<IRuleDefaults>()));
-        collection.AddSingleton<IConfigLoader, ConfigLoader>(p => new(p.GetRequiredService<IConfigDefault>(), p.GetRequiredService<IDalamudPluginInterface>()));
+        collection
+            .AddSingleton<IRuleDefaults, RuleDefaults>(p => new())
+            .AddSingleton<IConfigDefault, ConfigDefault>(p => new(p.GetRequiredService<IRuleDefaults>()))
+            .AddSingleton<IConfigLoader, ConfigLoader>(p => new(p.GetRequiredService<IConfigDefault>(), p.GetRequiredService<IDalamudPluginInterface>()))
+            .AddSingleton(p => p.GetRequiredService<IConfigLoader>().GetOrDefault())
 
-        collection.AddSingleton(p => p.GetRequiredService<IConfigLoader>().GetOrDefault());
+            .AddSingleton<IReaderProvider, ReaderProvider>(p => new(p.GetRequiredService<IPluginLog>()))
 
-        collection.AddSingleton<IReaderProvider, ReaderProvider>(p => new(p.GetRequiredService<IPluginLog>()));
-        collection.AddSingleton<IModInterop, ModInterop>(rootProvider =>
-        {
-            var readerProvider = rootProvider.GetRequiredService<IReaderProvider>();
+            .AddSingleton<IModInterop, ModInterop>(rootProvider =>
+            {
+                var readerProvider = rootProvider.GetRequiredService<IReaderProvider>();
 
-            return new(rootProvider.GetRequiredService<ICommandManager>(), readerProvider.Get<IDefaultModReader>(),
-                readerProvider.Get<IGroupReaderFactory>(), readerProvider.Get<ILocalModDataReader>(), readerProvider.Get<IModMetaReader>(),
-                rootProvider.GetRequiredService<IDalamudPluginInterface>(), rootProvider.GetRequiredService<IPluginLog>(), readerProvider.Get<ISortOrderReader>());
-        });
+                return new(rootProvider.GetRequiredService<ICommandManager>(), readerProvider.Get<IDefaultModReader>(),
+                    readerProvider.Get<IGroupReaderFactory>(), readerProvider.Get<ILocalModDataReader>(), readerProvider.Get<IModMetaReader>(),
+                    rootProvider.GetRequiredService<IDalamudPluginInterface>(), rootProvider.GetRequiredService<IPluginLog>(), readerProvider.Get<ISortOrderReader>());
+            })
 
-        collection.AddSingleton<IRuleEvaluator, RuleEvaluator>(p => new(p.GetRequiredService<IPluginLog>()));
+            .AddSingleton<IRuleEvaluator, RuleEvaluator>(p => new(p.GetRequiredService<IPluginLog>()))
 
-        collection.AddSingleton<IBackupManager, BackupManager>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(),
-            p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<IReaderProvider>().Get<ISortOrderReader>()));
+            .AddSingleton<IBackupManager, BackupManager>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(),
+                p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<IReaderProvider>().Get<ISortOrderReader>()))
 
-        collection.AddSingleton<IModProcessor, ModProcessor>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(),
-            p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<IRuleEvaluator>()));
+            .AddSingleton<IModProcessor, ModProcessor>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(),
+                p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<IRuleEvaluator>()))
 
-        collection.AddSingleton<IModAutoProcessor, ModAutoProcessor>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<INotificationManager>(),
-            p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()));
+            .AddSingleton<IModAutoProcessor, ModAutoProcessor>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<INotificationManager>(),
+                p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()))
 
-        collection.AddSingleton<IModFileSystem, ModFileSystem>(p => new(p.GetRequiredService<IModInterop>()));
-
-        collection.AddSingleton<ICommandPrinter, CommandPrinter>(p => new(p.GetService<IChatGui>()));
-
-        collection.AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(), p.GetRequiredService<AboutWindow>().Toggle, 
-            p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<ConfigExportWindow>().Toggle, 
-            p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle));
+            .AddSingleton<IModFileSystem, ModFileSystem>(p => new(p.GetRequiredService<IModInterop>()))
+            .AddSingleton<ICommandPrinter, CommandPrinter>(p => new(p.GetService<IChatGui>()))
+            .AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(), p.GetRequiredService<AboutWindow>().Toggle,
+                p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<ConfigExportWindow>().Toggle,
+                p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle));
     }
 
-    private void AddConcreteSingletons(ServiceCollection collection)
+    private static void AddSingletons(IServiceCollection collection)
     {
-        collection.AddSingleton<AboutWindow>(p => new());
-        collection.AddSingleton<BackupWindow>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>()));
-        collection.AddSingleton<ConfigWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<BackupWindow>().Toggle));
-        collection.AddSingleton<ConfigExportWindow>(p => new());
-        collection.AddSingleton<ConfigImportWindow>(p => new());
+        collection
+            .AddSingleton<AboutWindow>(p => new())
+            .AddSingleton<BackupWindow>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>()))
+            .AddSingleton<ConfigWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<BackupWindow>().Toggle))
+            .AddSingleton<ConfigExportWindow>(p => new())
+            .AddSingleton<ConfigImportWindow>(p => new())
+            
+            .AddSingleton<RuleState>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()))
+            
+            .AddSingleton<MainWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModFileSystem>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<RuleState>(),
+                p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle))
+            .AddSingleton<PreviewWindow>(p => new(p.GetRequiredService<RuleState>()))
+            
+            .AddSingleton(p =>
+            {
+                var windowSystem = new WindowSystem(nameof(ModOrganizer));
 
-        collection.AddSingleton<RuleState>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()));
-        collection.AddSingleton<MainWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModFileSystem>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<RuleState>(),
-            p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle));
-        collection.AddSingleton<PreviewWindow>(p => new(p.GetRequiredService<RuleState>()));
+                windowSystem.AddWindow(p.GetRequiredService<AboutWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<BackupWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<ConfigWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<ConfigExportWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<ConfigImportWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<MainWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<PreviewWindow>());
 
-        collection.AddSingleton(p =>
-        {
-            var windowSystem = new WindowSystem(nameof(ModOrganizer));
-
-            windowSystem.AddWindow(p.GetRequiredService<AboutWindow>());
-            windowSystem.AddWindow(p.GetRequiredService<BackupWindow>());
-            windowSystem.AddWindow(p.GetRequiredService<ConfigWindow>());
-            windowSystem.AddWindow(p.GetRequiredService<ConfigExportWindow>());
-            windowSystem.AddWindow(p.GetRequiredService<ConfigImportWindow>());
-            windowSystem.AddWindow(p.GetRequiredService<MainWindow>());
-            windowSystem.AddWindow(p.GetRequiredService<PreviewWindow>());
-
-            return windowSystem;
-        });
+                return windowSystem;
+            });
     }
 }
