@@ -4,9 +4,7 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
-using ModOrganizer.Windows.Results;
 using ModOrganizer.Windows.Results.Rules;
-using System;
 using System.Linq;
 
 namespace ModOrganizer.Windows;

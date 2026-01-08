@@ -201,9 +201,9 @@ public class MainWindow : Window
     {
         if (SelectedModDirectories.Count > 1)
         {
-            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, RuleResultState.IsRunning() ? CustomColors.LightBlack : CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
             {
-                if (ImGui.Button("Preview All##evaluateModDirectories")) RuleResultState.Preview(SelectedModDirectories);
+                if (ImGui.Button($"Preview All##evaluateModDirectories")) RuleResultState.Preview(SelectedModDirectories);
             } 
 
             ImGui.SameLine();
@@ -337,9 +337,9 @@ public class MainWindow : Window
             if (ImGui.Button("X##clearRuleResultNewPathFilter")) RuleResultState.NewPathFilter = string.Empty;
         }
 
-        var showedRuleResults = RuleResultState.GetShowedResults<RuleResult, IShowableRuleResultState>().Order();
+        var showedRuleResults = RuleResultState.GetShowedResults<RuleResult, IShowableRuleResultState>().Order().ToList();
 
-        using var resultClipperResource = new ImRaiiListClipper(showedRuleResults.Count(), GetItemHeight());
+        using var resultClipperResource = new ImRaiiListClipper(showedRuleResults.Count, GetItemHeight());
         var resultClipper = resultClipperResource.Value;
 
         while (resultClipper.Step())
@@ -414,7 +414,7 @@ public class MainWindow : Window
         using var bottomRightPanel = ImRaii.Child("mainBottomRightPanel");
 
         ImGui.SameLine();
-        using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+        using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, EvaluationResultState.IsRunning() ? CustomColors.LightBlack : CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
         {
             if (ImGui.Button("Evaluate##evaluateEvaluationState")) EvaluationResultState.Evaluate(SelectedModDirectories);
         }   
@@ -426,7 +426,9 @@ public class MainWindow : Window
             && selectedRuleItemIndex > 0) EvaluationResultState.Load(orderedRules.ElementAt(selectedRuleItemIndex - 1));
 
         ImGui.SameLine(rightRegion.X - 70);
-        using (ImRaii.Disabled(!EvaluationResultState.GetResults().Any()))
+
+        var hasResults = EvaluationResultState.GetResults().Any();
+        using (ImRaii.Disabled(!hasResults))
         {
             using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
             {
@@ -444,7 +446,7 @@ public class MainWindow : Window
             if (ImGui.InputTextMultiline("##evaluationStateTemplate", ref template, ushort.MaxValue, bottomWidgetSize)) EvaluationResultState.Template = template;
         }
 
-        if (!EvaluationResultState.GetResults().Any()) return;
+        if (!hasResults) return;
 
         using var evaluationStateResultsTable = ImRaii.Table("evaluationStateResultsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, ImGui.GetContentRegionAvail());
 
@@ -484,9 +486,9 @@ public class MainWindow : Window
             if (ImGui.Button("X##clearEvaluationStateTemplateFilter")) EvaluationResultState.TemplateFilter = string.Empty;
         }
 
-        var showedEvaluationResults = EvaluationResultState.GetShowedResults<EvaluationResult, IShowableEvaluationResultState>().Order();
+        var showedEvaluationResults = EvaluationResultState.GetShowedResults<EvaluationResult, IShowableEvaluationResultState>().Order().ToList();
 
-        using var clipperResource = new ImRaiiListClipper(showedEvaluationResults.Count(), ImGui.GetTextLineHeightWithSpacing());
+        using var clipperResource = new ImRaiiListClipper(showedEvaluationResults.Count, ImGui.GetTextLineHeightWithSpacing());
         var clipper = clipperResource.Value;
 
         while (clipper.Step())

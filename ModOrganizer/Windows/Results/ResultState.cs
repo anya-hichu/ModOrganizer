@@ -13,7 +13,7 @@ public abstract class ResultState : IDisposable
     protected IModInterop ModInterop { get; init; }
     protected IPluginLog PluginLog { get; init; }
 
-    private Task Task { get; set; } = Task.CompletedTask;
+    private Task CurrentTask { get; set; } = Task.CompletedTask;
     private CancellationTokenSource CancellationTokenSource { get; set; } = new();
 
     protected HashSet<Result> Results { get; set; } = [];
@@ -61,8 +61,10 @@ public abstract class ResultState : IDisposable
         CancelTask();
         CancellationTokenSource = new();
         var cancellationToken = CancellationTokenSource.Token;
-        return Task = Task.ContinueWith(_ => action(cancellationToken), cancellationToken);
+        return CurrentTask = CurrentTask.ContinueWith(_ => action(cancellationToken), cancellationToken);
     }
+
+    public bool IsRunning() => !CurrentTask.IsCompleted;
 
     public IEnumerable<Result> GetResults() => Results;
     public IEnumerable<T> GetResults<T>() => Results.SelectMany<Result, T>(result => result is T castedResult ? [castedResult] : []);
