@@ -11,10 +11,10 @@ public class TestRaiiGuard
     public void Test()
     {
         var acquireObserver = new StubObserver();
-        var acquire = StubAction.WithObserver(acquireObserver, () => { });
+        var acquire = StubAction.WithObserver(acquireObserver);
 
         var releaseObserver = new StubObserver();
-        var release = StubAction.WithObserver(releaseObserver, () => { });
+        var release = StubAction.WithObserver(releaseObserver);
 
         Assert.IsEmpty(acquireObserver.GetCalls());
         Assert.IsEmpty(releaseObserver.GetCalls());
@@ -38,7 +38,7 @@ public class TestRaiiGuard
         var acquire = StubFunc.WithObserver(acquireObserver, () => value);
 
         var releaseObserver = new StubObserver();
-        var release = StubAction.WithObserver<int>(releaseObserver, _ => { });
+        var release = StubAction.WithObserver<int>(releaseObserver);
 
         Assert.IsEmpty(acquireObserver.GetCalls());
         Assert.IsEmpty(releaseObserver.GetCalls());

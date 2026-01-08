@@ -57,7 +57,7 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
 
         var onModAddedObserver = new StubObserver();
-        modInterop.OnModAdded += StubAction.WithObserver<string>(onModAddedObserver, modDirectory => { });
+        modInterop.OnModAdded += StubAction.WithObserver<string>(onModAddedObserver);
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -118,7 +118,7 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
 
         var onModDeletedObserver = new StubObserver();
-        modInterop.OnModDeleted += StubAction.WithObserver<string>(onModDeletedObserver, modDirectory => { });
+        modInterop.OnModDeleted += StubAction.WithObserver<string>(onModDeletedObserver);
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -180,7 +180,7 @@ public class TestModInterop : ITestableClassTemp
         var newModDirectory = "New Mod Directory";
 
         var onModMovedObserver = new StubObserver();
-        modInterop.OnModMoved += StubAction.WithObserver(onModMovedObserver, (string modDirectory, string newModDirectory) => { });
+        modInterop.OnModMoved += StubAction.WithObserver<string, string>(onModMovedObserver);
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -297,7 +297,7 @@ public class TestModInterop : ITestableClassTemp
             .WithFileReaderTryReadFromFile(null as SortOrder)
             .Build();
 
-        modInterop.OnSortOrderChanged += StubAction.WithObserver(observer, () => { });
+        modInterop.OnSortOrderChanged += StubAction.WithObserver(observer);
 
         var sortOrder = modInterop.GetSortOrder();
 

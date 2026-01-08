@@ -83,7 +83,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleAboutWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithToggleAboutWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
@@ -107,7 +107,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleBackupWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithToggleBackupWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
@@ -131,7 +131,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleConfigWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithToggleConfigWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
@@ -155,7 +155,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleConfigExportWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithToggleConfigExportWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
@@ -179,7 +179,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleConfigImportWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithToggleConfigImportWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
@@ -203,7 +203,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleMainWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithToggleMainWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
@@ -227,7 +227,7 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithTogglePreviewWindow(StubAction.WithObserver(toggleObserver, () => { }))
+            .WithTogglePreviewWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
         var beforeCalls = managerObserver.GetCalls();
