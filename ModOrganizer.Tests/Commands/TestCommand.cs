@@ -57,20 +57,20 @@ public class TestCommand
             .WithCommandPrinterObserver(printerObserver)
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, string.Empty);
 
-        var afterCalls = printerObserver.GetCalls();
-        Assert.HasCount(1, afterCalls);
+        var printerCalls = printerObserver.GetCalls();
+        Assert.HasCount(1, printerCalls);
 
-        var beforeCall = afterCalls[0];
-        Assert.AreEqual(nameof(ICommandPrinter.PrintError), beforeCall.StubbedMethod.Name);
-        Assert.AreEqual(Command.HELP_MESSAGE, beforeCall.GetArguments()[0] as string);
+        var printerCall = printerCalls[0];
+        Assert.AreEqual(nameof(ICommandPrinter.PrintError), printerCall.StubbedMethod.Name);
+        Assert.AreEqual(Command.HELP_MESSAGE, printerCall.GetArguments()[0] as string);
     }
 
     [TestMethod]
@@ -86,10 +86,10 @@ public class TestCommand
             .WithToggleAboutWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "about");
@@ -110,10 +110,10 @@ public class TestCommand
             .WithToggleBackupWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "backup");
@@ -134,10 +134,10 @@ public class TestCommand
             .WithToggleConfigWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "config");
@@ -158,10 +158,10 @@ public class TestCommand
             .WithToggleConfigExportWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "config export");
@@ -182,10 +182,10 @@ public class TestCommand
             .WithToggleConfigImportWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "config import");
@@ -206,10 +206,10 @@ public class TestCommand
             .WithToggleMainWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "main");
@@ -230,10 +230,10 @@ public class TestCommand
             .WithTogglePreviewWindow(StubAction.WithObserver(toggleObserver))
             .Build();
 
-        var beforeCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, beforeCalls);
+        var managerCalls = managerObserver.GetCalls();
+        Assert.HasCount(1, managerCalls);
 
-        var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
+        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, "preview");
