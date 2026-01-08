@@ -8,12 +8,20 @@
 
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
-    
+
     <ItemGroup>
-      <PackageReference Include="Humanizer.Core" Version="3.0.1" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
-      <PackageReference Include="Penumbra.Api" Version="5.13.1" />
-      <PackageReference Include="Scriban" Version="6.5.2" />
-      <PackageReference Include="ThrottleDebounce" Version="2.0.1" />
+        <PackageReference Include="Humanizer.Core" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+        <PackageReference Include="Penumbra.Api" Version="5.13.1" />
+        <PackageReference Include="Scriban" Version="6.5.2" />
+        <PackageReference Include="ThrottleDebounce" Version="2.0.1" />
     </ItemGroup>
+
+    <PropertyGroup>
+        <Use_Dalamud_FFXIVClientStructs>false</Use_Dalamud_FFXIVClientStructs>
+        <Use_Dalamud_Newtonsoft_Json>false</Use_Dalamud_Newtonsoft_Json>
+        <Use_Dalamud_Lumina_Excel>false</Use_Dalamud_Lumina_Excel>
+        <Use_Dalamud_Serilog>false</Use_Dalamud_Serilog>
+        <Use_Dalamud_MSObjectPool>false</Use_Dalamud_MSObjectPool> 
+    </PropertyGroup>
 </Project>
