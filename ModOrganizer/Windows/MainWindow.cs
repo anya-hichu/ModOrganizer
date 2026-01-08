@@ -32,8 +32,8 @@ public class MainWindow : Window
     private IConfig Config { get; init; }
     private IModInterop ModInterop { get; init; }
     private IModFileSystem ModFileSystem { get; init; }
-    private Action TogglePreviewUI { get; init; }
-    private Action ToggleBackupUI { get; init; }
+    private Action TogglePreviewWindow { get; init; }
+    private Action ToggleBackupWindow { get; init; }
 
     private RuleResultState RuleResultState { get; init; }
     private EvaluationResultState EvaluationResultState { get; init; }
@@ -76,8 +76,8 @@ public class MainWindow : Window
         ModInterop = modInterop;
         ModFileSystem = modFileSystem;
         RuleResultState = ruleResultState;
-        TogglePreviewUI = togglePreviewWindow;
-        ToggleBackupUI = toggleBackupWindow;
+        TogglePreviewWindow = togglePreviewWindow;
+        ToggleBackupWindow = toggleBackupWindow;
 
         ModInterop.OnModDeleted += OnModDeleted;
         ModInterop.OnModMoved += OnModMoved;
@@ -199,10 +199,13 @@ public class MainWindow : Window
 
     private void DrawOrganizerTab()
     {
+        var hasCompletedTask = RuleResultState.HasCompletedTask();
+
         if (SelectedModDirectories.Count > 1)
         {
-            using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, RuleResultState.IsRunning() ? CustomColors.LightBlack : CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+            using (ImRaii.Disabled(!hasCompletedTask))
             {
+                using ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black);
                 if (ImGui.Button($"Preview All##evaluateModDirectories")) RuleResultState.Preview(SelectedModDirectories);
             } 
 
@@ -244,6 +247,8 @@ public class MainWindow : Window
                         {
                             if (ImGui.Button($"Deselect###deselectModDirectory{i}")) SelectedModDirectories.Remove(modDirectory);
                             ImGui.SameLine();
+
+                            using var _ = ImRaii.Disabled(!hasCompletedTask);
                             if (ImGui.Button($"Preview###evaluateModDirectory{i}")) RuleResultState.Preview([modDirectory]);
                         }
                     }
@@ -256,7 +261,7 @@ public class MainWindow : Window
         var isConfirmPressed = ImGui.GetIO().KeyCtrl;
         var selectedCount = RuleResultState.GetSelectedResults().Count();
 
-        using (ImRaii.Disabled(!isConfirmPressed))
+        using (ImRaii.Disabled(!hasCompletedTask || !isConfirmPressed))
         {
             using ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black);
             if (ImGui.Button($"Apply Selected ({selectedCount})##applyRuleState")) RuleResultState.Apply();
@@ -284,10 +289,10 @@ public class MainWindow : Window
         if (ImGui.Checkbox("Show Same Paths##showRuleStateSameRule", ref showSamePaths)) RuleResultState.ShowSamePaths = showSamePaths;
 
         ImGui.SameLine(availableRegion.X - 300);
-        if (ImGui.Button("Backup##toggleBackupUI")) ToggleBackupUI();
+        if (ImGui.Button("Show Backups##toggleBackupWindow")) ToggleBackupWindow();
 
         ImGui.SameLine();
-        if (ImGui.Button("Preview##togglePreviewUI")) TogglePreviewUI();
+        if (ImGui.Button("Preview Tree##togglePreviewWindow")) TogglePreviewWindow();
 
         ImGui.SameLine();
         using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))
@@ -414,12 +419,15 @@ public class MainWindow : Window
         using var bottomRightPanel = ImRaii.Child("mainBottomRightPanel");
 
         ImGui.SameLine();
-        using (ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, EvaluationResultState.IsRunning() ? CustomColors.LightBlack : CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black))
+
+        using (ImRaii.Disabled(!EvaluationResultState.HasCompletedTask()))
         {
+            using ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black);
             if (ImGui.Button("Evaluate##evaluateEvaluationState")) EvaluationResultState.Evaluate(SelectedModDirectories);
         }   
-        ImGuiComponents.HelpMarker("Scriban syntax, check documentation for usage");
-        var orderedRules = Config.Rules.OrderByDescending(r => r.Priority);
+        ImGuiComponents.HelpMarker("Scriban syntax, check online documentation for usage");
+
+        var orderedRules = Config.Rules.OrderByDescending(r => r.Priority).ToList();
         var selectedRuleItemIndex = 0;
         ImGui.SameLine();
         if (ImGui.Combo("##loadEvaluationStateRule", ref selectedRuleItemIndex, orderedRules.Select(r => $"{r.Path} ({r.Priority})").Prepend("Load Rule...").ToArray()) 
