@@ -173,9 +173,9 @@ public class BackupWindow : Window
                 if (ImGui.Button("X##clearBackupStateOldPathFilter")) BackupResultState.OldPathFilter = string.Empty;
             }
 
-            var showedBackupResults = BackupResultState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order();
+            var showedBackupResults = BackupResultState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order().ToList();
 
-            using var clipperResource = new ImRaiiListClipper(showedBackupResults.Count(), ImGui.GetTextLineHeightWithSpacing());
+            using var clipperResource = new ImRaiiListClipper(showedBackupResults.Count, ImGui.GetTextLineHeightWithSpacing());
             var clipper = clipperResource.Value;
 
             while (clipper.Step())
