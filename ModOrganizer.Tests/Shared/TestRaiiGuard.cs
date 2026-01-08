@@ -11,9 +11,9 @@ public class TestRaiiGuard
     public void Test()
     {
         var acquireObserver = new StubObserver();
-        var releaseObserver = new StubObserver();
-
         var acquire = ActionDecorator.WithObserver(acquireObserver, () => { });
+
+        var releaseObserver = new StubObserver();
         var release = ActionDecorator.WithObserver(releaseObserver, () => { });
 
         Assert.IsEmpty(acquireObserver.GetCalls());
@@ -32,11 +32,12 @@ public class TestRaiiGuard
     [TestMethod]
     public void TestWithValue()
     {
-        var acquireObserver = new StubObserver();
-        var releaseObserver = new StubObserver();
-
         var value = 1;
+
+        var acquireObserver = new StubObserver();
         var acquire = FuncDecorator.WithObserver(acquireObserver, () => value);
+
+        var releaseObserver = new StubObserver();
         var release = ActionDecorator.WithObserver<int>(releaseObserver, _ => { });
 
         Assert.IsEmpty(acquireObserver.GetCalls());

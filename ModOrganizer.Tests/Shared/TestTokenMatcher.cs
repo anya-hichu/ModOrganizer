@@ -32,7 +32,7 @@ public class TestTokenMatcher
     [TestMethod]
     public void TestMatchesWithEmptyFilter()
     {
-        var success = TokenMatcher.Matches(string.Empty, "anything");
+        var success = TokenMatcher.Matches(string.Empty, null);
 
         Assert.IsTrue(success);
     }
@@ -52,7 +52,7 @@ public class TestTokenMatcher
     [DataRow(" match THIS should ")]
     public void TestMatchesMany(string filter)
     {
-        var success = TokenMatcher.MatchesMany(filter, ["this", "should", "match", null]);
+        var success = TokenMatcher.MatchesMany(filter, ["this", "should", "match"]);
 
         Assert.IsTrue(success);
     }
@@ -64,7 +64,7 @@ public class TestTokenMatcher
     [DataRow(" match THIS should't ")]
     public void TestMatchesManyWithoutSuccess(string filter)
     {
-        var success = TokenMatcher.MatchesMany(filter, ["this", "should not", "match", null]);
+        var success = TokenMatcher.MatchesMany(filter, ["this", "should not", "match"]);
 
         Assert.IsFalse(success);
     }
@@ -75,5 +75,13 @@ public class TestTokenMatcher
         var success = TokenMatcher.MatchesMany(string.Empty, []);
 
         Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public void TestMatchesManyWithNullTexts()
+    {
+        var success = TokenMatcher.MatchesMany("Filter", [null, null]);
+
+        Assert.IsFalse(success);
     }
 }
