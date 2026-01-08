@@ -10,11 +10,8 @@ namespace ModOrganizer.Tests.Commands;
 [TestClass]
 public class TestCommand
 {
-    private static readonly string EXPECTED_COMMAND_NAME = "/modorganizer";
-    private static readonly string EXPECTED_HELP_MESSAGE = "Available subcommands for /modorganizer are about, backup, config (export|import)?, main and preview";
-
     [TestMethod]
-    public void TestHandler()
+    public void TestHandle()
     {
         var observer = new StubObserver();
 
@@ -29,11 +26,11 @@ public class TestCommand
 
         var beforeCall = beforeCalls[0];
         Assert.AreEqual(nameof(ICommandManager.AddHandler), beforeCall.StubbedMethod.Name);
-        Assert.AreEqual(EXPECTED_COMMAND_NAME, beforeCall.GetArguments()[0] as string);
+        Assert.AreEqual(Command.NAME, beforeCall.GetArguments()[0] as string);
 
         var commandInfo = beforeCall.GetArguments()[1] as CommandInfo;
         Assert.IsNotNull(commandInfo);
-        Assert.AreEqual(EXPECTED_HELP_MESSAGE, commandInfo.HelpMessage);
+        Assert.AreEqual(Command.HELP_MESSAGE, commandInfo.HelpMessage);
 
         command.Dispose();
 
@@ -42,11 +39,11 @@ public class TestCommand
 
         var afterCall = afterCalls[1];
         Assert.AreEqual(nameof(ICommandManager.RemoveHandler), afterCall.StubbedMethod.Name);
-        Assert.AreEqual(EXPECTED_COMMAND_NAME, afterCall.GetArguments()[0] as string);
+        Assert.AreEqual(Command.NAME, afterCall.GetArguments()[0] as string);
     }
 
     [TestMethod]
-    public void TestHelp()
+    public void TestHandleError()
     {
         var managerObserver = new StubObserver();
 
@@ -66,18 +63,18 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, string.Empty);
+        commandInfo.Handler.Invoke(Command.NAME, string.Empty);
 
         var afterCalls = printerObserver.GetCalls();
         Assert.HasCount(1, afterCalls);
 
         var beforeCall = afterCalls[0];
         Assert.AreEqual(nameof(ICommandPrinter.PrintError), beforeCall.StubbedMethod.Name);
-        Assert.AreEqual(EXPECTED_HELP_MESSAGE, beforeCall.GetArguments()[0] as string);
+        Assert.AreEqual(Command.HELP_MESSAGE, beforeCall.GetArguments()[0] as string);
     }
 
     [TestMethod]
-    public void TestToggleAboutWindow()
+    public void TestHandleToggleAboutWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -95,13 +92,13 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "about");
+        commandInfo.Handler.Invoke(Command.NAME, "about");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }
 
     [TestMethod]
-    public void TestToggleBackupWindow()
+    public void TestHandleToggleBackupWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -119,13 +116,13 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "backup");
+        commandInfo.Handler.Invoke(Command.NAME, "backup");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }
 
     [TestMethod]
-    public void TestToggleConfigWindow()
+    public void TestHandleToggleConfigWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -143,13 +140,13 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "config");
+        commandInfo.Handler.Invoke(Command.NAME, "config");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }
 
     [TestMethod]
-    public void TestToggleConfigExportWindow()
+    public void TestHandleToggleConfigExportWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -167,13 +164,13 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "config export");
+        commandInfo.Handler.Invoke(Command.NAME, "config export");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }
 
     [TestMethod]
-    public void TestToggleConfigImportWindow()
+    public void TestHandleToggleConfigImportWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -191,13 +188,13 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "config import");
+        commandInfo.Handler.Invoke(Command.NAME, "config import");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }
 
     [TestMethod]
-    public void TestToggleMainWindow()
+    public void TestHandleToggleMainWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -215,13 +212,13 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "main");
+        commandInfo.Handler.Invoke(Command.NAME, "main");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }
 
     [TestMethod]
-    public void TestTogglePreviewWindow()
+    public void TestHandleTogglePreviewWindow()
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -239,7 +236,7 @@ public class TestCommand
         var commandInfo = beforeCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(EXPECTED_COMMAND_NAME, "preview");
+        commandInfo.Handler.Invoke(Command.NAME, "preview");
 
         Assert.HasCount(1, toggleObserver.GetCalls());
     }

@@ -23,9 +23,9 @@ public class PluginBuilder : IBuilder<Plugin>, IStubbableCommandManager, IStubba
         {
             if (instance is not RootProvider rootProvider) return false;
 
-            rootProvider.CommandManager = CommandManagerStub;
-            rootProvider.NotificationManager = NotificationManagerStub;
-            rootProvider.PluginLog = PluginLogStub;
+            rootProvider.MaybeCommandManager = CommandManagerStub;
+            rootProvider.MaybeNotificationManager = NotificationManagerStub;
+            rootProvider.MaybePluginLog = PluginLogStub;
 
             return true;
         };

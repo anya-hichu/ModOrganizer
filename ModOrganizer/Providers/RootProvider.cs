@@ -25,10 +25,10 @@ public class RootProvider : CachedProvider
 {
     private IDalamudPluginInterface PluginInterface { get; init; }
 
-    [PluginService] public IChatGui? ChatGui { get; set; }
-    [PluginService] public ICommandManager? CommandManager { get; set; }
-    [PluginService] public INotificationManager? NotificationManager { get; set; }
-    [PluginService] public IPluginLog? PluginLog { get; set; }
+    [PluginService] public IChatGui? MaybeChatGui { get; set; }
+    [PluginService] public ICommandManager? MaybeCommandManager { get; set; }
+    [PluginService] public INotificationManager? MaybeNotificationManager { get; set; }
+    [PluginService] public IPluginLog? MaybePluginLog { get; set; }
 
     public RootProvider(IDalamudPluginInterface pluginInterface)
     {
@@ -49,11 +49,13 @@ public class RootProvider : CachedProvider
 
     private void AddISingletons(IServiceCollection collection)
     {
-        if (ChatGui != null) collection.AddSingleton(ChatGui);
-        if (CommandManager != null) collection.AddSingleton(CommandManager);
-        if (NotificationManager != null) collection.AddSingleton(NotificationManager);
-        if (PluginInterface != null) collection.AddSingleton(PluginInterface);
-        if (PluginLog != null) collection.AddSingleton(PluginLog);
+        collection.AddSingleton(PluginInterface);
+
+        // Will throw later if not injected properly
+        if (MaybeChatGui != null) collection.AddSingleton(MaybeChatGui);
+        if (MaybeCommandManager != null) collection.AddSingleton(MaybeCommandManager);
+        if (MaybeNotificationManager != null) collection.AddSingleton(MaybeNotificationManager);
+        if (MaybePluginLog != null) collection.AddSingleton(MaybePluginLog);
 
         collection
             .AddSingleton<IRuleDefaults, RuleDefaults>(p => new())

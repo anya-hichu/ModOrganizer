@@ -5,8 +5,8 @@ namespace ModOrganizer.Commands;
 
 public class Command : ICommand
 {
-    private static readonly string COMMAND_NAME = "/modorganizer";
-    private static readonly string COMMAND_HELP_MESSAGE = $"Available subcommands for {COMMAND_NAME} are about, backup, config (export|import)?, main and preview";
+    public static readonly string NAME = "/modorganizer";
+    public static readonly string HELP_MESSAGE = $"Available subcommands for {NAME} are about, backup, config (export|import)?, main and preview";
 
     private ICommandManager CommandManager { get; init; }
     private ICommandPrinter CommandPrinter { get; init; }
@@ -32,13 +32,13 @@ public class Command : ICommand
         ToggleMainWindow = toggleMainWindow;
         TogglePreviewWindow = togglePreviewWindow;
 
-        CommandManager.AddHandler(COMMAND_NAME, new(Process)
+        CommandManager.AddHandler(NAME, new(Process)
         {
-            HelpMessage = COMMAND_HELP_MESSAGE
+            HelpMessage = HELP_MESSAGE
         });
     }
 
-    public void Dispose() => CommandManager.RemoveHandler(COMMAND_NAME);
+    public void Dispose() => CommandManager.RemoveHandler(NAME);
 
     private void Process(string _, string subcommand)
     {
@@ -66,7 +66,7 @@ public class Command : ICommand
                 TogglePreviewWindow.Invoke();
                 break;
             default:
-                CommandPrinter.PrintError(COMMAND_HELP_MESSAGE);
+                CommandPrinter.PrintError(HELP_MESSAGE);
                 break;
         }
     }
