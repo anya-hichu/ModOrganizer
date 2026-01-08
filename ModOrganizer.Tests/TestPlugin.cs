@@ -30,7 +30,6 @@ public sealed class TestPlugin : ITestableClassTemp
             .WithCommandManagerRemoveHandler(true)
             .WithPluginInterfaceConfig(null)
             .WithPluginInterfaceConfigDirectory(configDirectory)
-            .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceUiBuilderStub()
             .WithPenumbraApiGetModDirectory(modsDirectory)
             .WithPenumbraApiGetModList([])

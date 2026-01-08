@@ -19,13 +19,16 @@ public class PluginBuilder : IBuilder<Plugin>, IStubbableCommandManager, IStubba
 
     public PluginBuilder()
     {
-        PluginInterfaceStub.CreateOf1ObjectArray<RootProvider>(_ => new()
+        PluginInterfaceStub.InjectObjectObjectArray = (instance, _) =>
         {
-            CommandManager = CommandManagerStub,
-            NotificationManager = NotificationManagerStub,
-            PluginInterface = PluginInterfaceStub,
-            PluginLog = PluginLogStub
-        });
+            if (instance is not RootProvider rootProvider) return false;
+
+            rootProvider.CommandManager = CommandManagerStub;
+            rootProvider.NotificationManager = NotificationManagerStub;
+            rootProvider.PluginLog = PluginLogStub;
+
+            return true;
+        };
     }
 
     public Plugin Build() => new(PluginInterfaceStub);

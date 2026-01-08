@@ -14,14 +14,14 @@ public sealed class Plugin : IDalamudPlugin
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
-        RootProvider = pluginInterface.Create<RootProvider>()!;
-
-        RootProvider.Init<ICommand>();
-        RootProvider.Init<IModAutoProcessor>();
+        RootProvider = new(pluginInterface);
 
         pluginInterface.UiBuilder.Draw += RootProvider.Get<WindowSystem>().Draw;
         pluginInterface.UiBuilder.OpenConfigUi += RootProvider.Get<ConfigWindow>().Toggle;
         pluginInterface.UiBuilder.OpenMainUi += RootProvider.Get<MainWindow>().Toggle;
+
+        RootProvider.Init<ICommand>();
+        RootProvider.Init<IModAutoProcessor>();
     }
 
     public void Dispose() => RootProvider.Dispose();

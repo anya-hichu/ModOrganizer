@@ -23,11 +23,20 @@ namespace ModOrganizer.Providers;
 
 public class RootProvider : CachedProvider
 {
+    private IDalamudPluginInterface PluginInterface { get; init; }
+
     [PluginService] public IChatGui? ChatGui { get; set; }
     [PluginService] public ICommandManager? CommandManager { get; set; }
     [PluginService] public INotificationManager? NotificationManager { get; set; }
-    [PluginService] public IDalamudPluginInterface? PluginInterface { get; set; }
+    
     [PluginService] public IPluginLog? PluginLog { get; set; }
+
+    public RootProvider(IDalamudPluginInterface pluginInterface)
+    {
+        PluginInterface = pluginInterface;
+
+        PluginInterface.Inject(this);
+    }
 
     protected override ServiceProvider BuildServiceProvider()
     {
