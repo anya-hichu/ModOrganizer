@@ -20,47 +20,48 @@ public class CommandBuilder : IBuilder<Command>, IStubbableCommandManager, IStub
     private Action ToggleMainWindow { get; set; } = () => throw new NotImplementedException();
     private Action TogglePreviewWindow { get; set; } = () => throw new NotImplementedException();
 
-    public CommandBuilder WithToggleAboutWindow(Action value)
+    public CommandBuilder WithToggleAboutWindow(Action stubAction)
     {
-        ToggleAboutWindow = value;
+        ToggleAboutWindow = stubAction;
         return this;
     }
 
-    public CommandBuilder WithToggleBackupWindow(Action value)
+    public CommandBuilder WithToggleBackupWindow(Action stubAction)
     {
-        ToggleBackupWindow = value;
+        ToggleBackupWindow = stubAction;
         return this;
     }
 
-    public CommandBuilder WithToggleConfigWindow(Action value)
+    public CommandBuilder WithToggleConfigWindow(Action stubAction)
     {
-        ToggleConfigWindow = value;
+        ToggleConfigWindow = stubAction;
         return this;
     }
 
-    public CommandBuilder WithToggleConfigImportWindow(Action value)
+    public CommandBuilder WithToggleConfigImportWindow(Action stubAction)
     {
-        ToggleConfigImportWindow = value;
+        ToggleConfigImportWindow = stubAction;
         return this;
     }
 
-    public CommandBuilder WithToggleConfigExportWindow(Action value)
+    public CommandBuilder WithToggleConfigExportWindow(Action stubAction)
     {
-        ToggleConfigExportWindow = value;
+        ToggleConfigExportWindow = stubAction;
         return this;
     }
 
-    public CommandBuilder WithToggleMainWindow(Action value)
+    public CommandBuilder WithToggleMainWindow(Action stubAction)
     {
-        ToggleMainWindow = value;
+        ToggleMainWindow = stubAction;
         return this;
     }
 
-    public CommandBuilder WithTogglePreviewWindow(Action value)
+    public CommandBuilder WithTogglePreviewWindow(Action stubAction)
     {
-        TogglePreviewWindow = value;
+        TogglePreviewWindow = stubAction;
         return this;
     }
 
-    public Command Build() => new(CommandManagerStub, CommandPrinterStub, ToggleAboutWindow, ToggleBackupWindow, ToggleConfigWindow, ToggleConfigExportWindow, ToggleConfigImportWindow, ToggleMainWindow, TogglePreviewWindow);
+    public Command Build() => new(CommandManagerStub, CommandPrinterStub, ToggleAboutWindow, ToggleBackupWindow, ToggleConfigWindow, 
+        ToggleConfigExportWindow, ToggleConfigImportWindow, ToggleMainWindow, TogglePreviewWindow);
 }

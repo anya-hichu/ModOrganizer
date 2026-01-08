@@ -57,7 +57,7 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
 
         var onModAddedObserver = new StubObserver();
-        modInterop.OnModAdded += ActionDecorator.WithObserver<string>(onModAddedObserver, modDirectory => { });
+        modInterop.OnModAdded += StubAction.WithObserver<string>(onModAddedObserver, modDirectory => { });
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -118,7 +118,7 @@ public class TestModInterop : ITestableClassTemp
         var modDirectory = "Mod Directory";
 
         var onModDeletedObserver = new StubObserver();
-        modInterop.OnModDeleted += ActionDecorator.WithObserver<string>(onModDeletedObserver, modDirectory => { });
+        modInterop.OnModDeleted += StubAction.WithObserver<string>(onModDeletedObserver, modDirectory => { });
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -180,7 +180,7 @@ public class TestModInterop : ITestableClassTemp
         var newModDirectory = "New Mod Directory";
 
         var onModMovedObserver = new StubObserver();
-        modInterop.OnModMoved += ActionDecorator.WithObserver(onModMovedObserver, (string modDirectory, string newModDirectory) => { });
+        modInterop.OnModMoved += StubAction.WithObserver(onModMovedObserver, (string modDirectory, string newModDirectory) => { });
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -297,7 +297,7 @@ public class TestModInterop : ITestableClassTemp
             .WithFileReaderTryReadFromFile(null as SortOrder)
             .Build();
 
-        modInterop.OnSortOrderChanged += ActionDecorator.WithObserver(observer, () => { });
+        modInterop.OnSortOrderChanged += StubAction.WithObserver(observer, () => { });
 
         var sortOrder = modInterop.GetSortOrder();
 
@@ -646,7 +646,7 @@ public class TestModInterop : ITestableClassTemp
         var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
 
         var setModPathObserver = new StubObserver();
-        var setModPath = FuncDecorator.WithObserver(setModPathObserver, (string modDirectory, string modName, string newModPath) => PenumbraApiEc.Success);
+        var setModPath = StubFunc.WithObserver(setModPathObserver, (string modDirectory, string modName, string newModPath) => PenumbraApiEc.Success);
         
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()

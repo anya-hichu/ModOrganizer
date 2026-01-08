@@ -2,8 +2,14 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 
 namespace ModOrganizer.Tests.Systems;
 
-public static class ActionDecorator
+public static class StubAction
 {
+    public static Action WithObserver(IStubObserver observer) => () =>
+    {
+        var action = () => { };
+        observer.Enter(action.GetType(), action);
+    };
+
     public static Action WithObserver(IStubObserver observer, Action action) => () =>
     {
         observer.Enter(action.GetType(), action);
