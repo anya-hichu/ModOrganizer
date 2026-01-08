@@ -13,8 +13,6 @@ using ModOrganizer.Tests.Json.Readers.Files;
 using ModOrganizer.Tests.Systems;
 using ModOrganizer.Tests.Testables;
 using Penumbra.Api.Enums;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ModOrganizer.Tests.Mods.ModInterops;
 
@@ -648,6 +646,8 @@ public class TestModInterop : ITestableClassTemp
         var modsDirectory = Directory.CreateDirectory(Path.Combine(tempDirectory, "ModsDirectory"));
 
         var setModPathObserver = new StubObserver();
+        var setModPath = FuncDecorator.WithObserver(setModPathObserver, (string modDirectory, string modName, string newModPath) => PenumbraApiEc.Success);
+        
         var modInterop = new ModInteropBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
@@ -657,7 +657,7 @@ public class TestModInterop : ITestableClassTemp
             .WithPenumbraApiModAddedOrDeletedNoop()
             .WithPenumbraApiModDirectoryChangedNoop()
             .WithPenumbraApiGetModDirectory(modsDirectory)
-            .WithPenumbraApiSetModPath(FuncDecorator.WithObserver(setModPathObserver, (string modDirectory, string modName, string newModPath) => PenumbraApiEc.Success))
+            .WithPenumbraApiSetModPath(setModPath)
             .WithPluginInterfaceInjectObject(false)
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
@@ -665,7 +665,8 @@ public class TestModInterop : ITestableClassTemp
         var beforeLogCalls = observer.GetCalls();
         Assert.HasCount(1, beforeLogCalls);
 
-        AssertPluginLog.MatchObservedCall(beforeLogCalls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual("Created mod file system watchers", actualMessage));
+        AssertPluginLog.MatchObservedCall(beforeLogCalls[0], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual("Created mod file system watchers", actualMessage));
 
         var modDirectory = "Mod Directory";
         var newModPath = "New Mod Path";
@@ -683,10 +684,14 @@ public class TestModInterop : ITestableClassTemp
         var afterLogCalls = observer.GetCalls();
         Assert.HasCount(5, afterLogCalls);
 
-        AssertPluginLog.MatchObservedCall(afterLogCalls[1], nameof(IPluginLog.Info), actualMessage => Assert.AreEqual($"Set mod [{modDirectory}] path to [{newModPath}]", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterLogCalls[2], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating caches for mod [{modDirectory}]", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterLogCalls[3], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual("Invalidating sort order data cache", actualMessage));
-        AssertPluginLog.MatchObservedCall(afterLogCalls[4], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Invalidating mod info cache [{modDirectory}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[1], nameof(IPluginLog.Info), 
+            actualMessage => Assert.AreEqual($"Set mod [{modDirectory}] path to [{newModPath}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[2], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual($"Invalidating caches for mod [{modDirectory}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[3], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual("Invalidating sort order data cache", actualMessage));
+        AssertPluginLog.MatchObservedCall(afterLogCalls[4], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual($"Invalidating mod info cache [{modDirectory}]", actualMessage));
     }
 
     [TestMethod]

@@ -75,7 +75,7 @@ public static class IStubbablePenumbraApiExtensions
         return stubbable;
     }
 
-    public static T WithPenumbraApiSetModPath<T>(this T stubbable, Func<string, string, string, PenumbraApiEc> func) where T : IStubbablePluginInterface
+    public static T WithPenumbraApiSetModPath<T>(this T stubbable, Func<string, string, string, PenumbraApiEc> funcStub) where T : IStubbablePluginInterface
     {
         stubbable.PluginInterfaceStub.GetIpcSubscriberOf4String(name => new StubICallGateSubscriber<string, string, string, int>()
         {
@@ -83,7 +83,7 @@ public static class IStubbablePenumbraApiExtensions
             {
                 return name switch
                 {
-                    SetModPath.Label => (int)func.Invoke(modDirectory, newPath, modName),
+                    SetModPath.Label => (int)funcStub.Invoke(modDirectory, newPath, modName),
                     _ => throw new NotImplementedException(name),
                 };
             }
