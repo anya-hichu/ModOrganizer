@@ -32,7 +32,7 @@ public class Command : ICommand
         ToggleMainWindow = toggleMainWindow;
         TogglePreviewWindow = togglePreviewWindow;
 
-        CommandManager.AddHandler(COMMAND_NAME, new(Handler)
+        CommandManager.AddHandler(COMMAND_NAME, new(Process)
         {
             HelpMessage = COMMAND_HELP_MESSAGE
         });
@@ -40,7 +40,7 @@ public class Command : ICommand
 
     public void Dispose() => CommandManager.RemoveHandler(COMMAND_NAME);
 
-    private void Handler(string _, string subcommand)
+    private void Process(string _, string subcommand)
     {
         switch (subcommand.Trim())
         {
