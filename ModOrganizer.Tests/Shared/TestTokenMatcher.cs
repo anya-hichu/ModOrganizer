@@ -9,7 +9,7 @@ public class TestTokenMatcher
     [DataRow("s")]
     [DataRow("should")]
     [DataRow("should match")]
-    [DataRow("match this should")]
+    [DataRow(" match THIS should ")]
     public void TestMatches(string filter)
     {
         var success = TokenMatcher.Matches(filter, "this should match");
@@ -21,10 +21,10 @@ public class TestTokenMatcher
     [DataRow("'")]
     [DataRow("shouldn't")]
     [DataRow("shouldn't match")]
-    [DataRow("match this should't")]
+    [DataRow(" match THIS should't ")]
     public void TestMatchesWithoutSuccess(string filter)
     {
-        var success = TokenMatcher.Matches(filter, "this should match");
+        var success = TokenMatcher.Matches(filter, "this should not match");
 
         Assert.IsFalse(success);
     }
@@ -49,7 +49,7 @@ public class TestTokenMatcher
     [DataRow("s")]
     [DataRow("should")]
     [DataRow("should match")]
-    [DataRow("match this should")]
+    [DataRow(" match THIS should ")]
     public void TestMatchesMany(string filter)
     {
         var success = TokenMatcher.MatchesMany(filter, ["this", "should", "match", null]);
@@ -61,10 +61,10 @@ public class TestTokenMatcher
     [DataRow("'")]
     [DataRow("shouldn't")]
     [DataRow("shouldn't match")]
-    [DataRow("match this should't")]
+    [DataRow(" match THIS should't ")]
     public void TestMatchesManyWithoutSuccess(string filter)
     {
-        var success = TokenMatcher.MatchesMany(filter, ["this", "should", "match", null]);
+        var success = TokenMatcher.MatchesMany(filter, ["this", "should not", "match", null]);
 
         Assert.IsFalse(success);
     }

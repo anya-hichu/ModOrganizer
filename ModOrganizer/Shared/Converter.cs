@@ -23,11 +23,9 @@ public abstract class Converter<I, O>(IPluginLog pluginLog) : IConverter<I, O> w
                 PluginLog.Debug($"Failed to convert one or more [{typeof(I).Name}] to [{typeof(O).Name}]");
                 return false;
             }
-            converted.Add(output);
-        }
 
-        var delta = inputs.Count() - converted.Count;
-        if (delta > 0) PluginLog.Warning($"Found {delta} duplication(s) while converting, ignoring");
+            if (!converted.Add(output)) PluginLog.Warning($"Found duplication while converting [{typeof(I).Name}] to [{typeof(O).Name}], ignoring");
+        }
 
         outputs = converted;
         return true;
