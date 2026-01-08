@@ -4,11 +4,9 @@ namespace ModOrganizer.Tests.Systems;
 
 public static class StubAction
 {
-    public static Action WithObserver(IStubObserver observer) => () =>
-    {
-        var action = () => { };
-        observer.Enter(action.GetType(), action);
-    };
+    private static readonly Action NOOP = () => { };
+
+    public static Action WithObserver(IStubObserver observer) => () => observer.Enter(NOOP.GetType(), NOOP);
 
     public static Action WithObserver(IStubObserver observer, Action action) => () =>
     {
