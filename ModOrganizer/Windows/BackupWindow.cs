@@ -8,9 +8,9 @@ using ModOrganizer.Backups;
 using ModOrganizer.Configs;
 using ModOrganizer.Mods;
 using ModOrganizer.Shared;
-using ModOrganizer.Windows.States;
-using ModOrganizer.Windows.States.Results.Backups;
-using ModOrganizer.Windows.States.Results.Showables;
+using ModOrganizer.Windows.Results;
+using ModOrganizer.Windows.Results.Backups;
+using ModOrganizer.Windows.Results.Showables;
 using Scriban;
 using System;
 using System.Diagnostics;
@@ -19,16 +19,16 @@ using System.Linq;
 
 namespace ModOrganizer.Windows;
 
-public class BackupWindow : Window, IDisposable
+public class BackupWindow : Window
 {
     private IBackupManager BackupManager { get; init; }
     private IConfig Config { get; init; }
 
-    private BackupState BackupState { get; init; }
+    private BackupResultState BackupResultState { get; init; }
     private TemplateContext ViewTemplateContext { get; init; } = new();
 
 
-    public BackupWindow(IBackupManager backupManager, IConfig config, IModInterop modInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
+    public BackupWindow(IBackupManager backupManager, BackupResultState backupResultState, IConfig config, IModInterop modInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
     {
         SizeConstraints = new()
         {
@@ -37,21 +37,17 @@ public class BackupWindow : Window, IDisposable
         };
 
         BackupManager = backupManager;
+        BackupResultState = backupResultState;
         Config = config;
-
-        BackupState = new(BackupManager, modInterop, pluginLog);
     }
-
-    public void Dispose() => BackupState.Dispose();
-
 
     public override void Draw()
     {
-        if (ImGui.Button("Create##createBackup") && BackupManager.TryCreate(out var newBackup)) BackupState.Select(newBackup);
+        if (ImGui.Button("Create##createBackup") && BackupManager.TryCreate(out var newBackup)) BackupResultState.Select(newBackup);
         ImGui.SameLine(ImGui.GetWindowWidth() - 95);
         if (ImGui.Button("Open Folder##openBackupFolder")) Process.Start("explorer", BackupManager.GetFolderPath());
 
-        var hasResults = BackupState.GetResults().Any();
+        var hasResults = BackupResultState.GetResults().Any();
         var isConfirmPressed = ImGui.GetIO().KeyCtrl;
 
         var availableRegion = ImGui.GetContentRegionAvail();
@@ -70,21 +66,21 @@ public class BackupWindow : Window, IDisposable
                 {
                     var hash = backup.GetHashCode();
 
-                    var isSelected = backup == BackupState.Selected;
+                    var isSelected = backup == BackupResultState.Selected;
 
                     using (ImRaii.PushColor(ImGuiCol.Text, CustomColors.LightBlue, isSelected))
                     {
                         if (ImGui.TableNextColumn())
                         {
                             ImGui.Text(backup.Auto ? "Auto" : "Manual");
-                            if (ImGui.IsItemClicked()) BackupState.Select(backup);
+                            if (ImGui.IsItemClicked()) BackupResultState.Select(backup);
                         }
 
                         if (ImGui.TableNextColumn())
                         {
                             ImGui.Text(backup.CreatedAt.Humanize());
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(backup.CreatedAt.ToLocalTime().ToString());
-                            if (ImGui.IsItemClicked()) BackupState.Select(backup);
+                            if (ImGui.IsItemClicked()) BackupResultState.Select(backup);
                         }
 
                         if (ImGui.TableNextColumn())
@@ -94,19 +90,19 @@ public class BackupWindow : Window, IDisposable
 
                             ImGui.Text(BackupManager.GetFileName(backup));
                             if (ImGui.IsItemHovered()) ImGui.SetTooltip(path);
-                            if (ImGui.IsItemClicked()) BackupState.Select(backup);
+                            if (ImGui.IsItemClicked()) BackupResultState.Select(backup);
                         }
                     }
 
                     if (ImGui.TableNextColumn())
                     {
-                        if (ImGui.Button($"Select###selectBackup{hash}")) BackupState.Select(backup);
+                        if (ImGui.Button($"Select###selectBackup{hash}")) BackupResultState.Select(backup);
                         ImGui.SameLine();
 
                         using (ImRaii.Disabled(!isConfirmPressed))
                         {
                             using var _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed);
-                            if (ImGui.Button($"Delete###deleteBackup{hash}") && BackupManager.TryDelete(backup) && isSelected) BackupState.Unselect();
+                            if (ImGui.Button($"Delete###deleteBackup{hash}") && BackupManager.TryDelete(backup) && isSelected) BackupResultState.Unselect();
                         }
                         if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.ConfirmHint);
                     }
@@ -119,22 +115,22 @@ public class BackupWindow : Window, IDisposable
             using (ImRaii.Disabled(!isConfirmPressed))
             {
                 using ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black);
-                if (ImGui.Button("Restore##applyBackupState")) BackupState.Apply();
+                if (ImGui.Button("Restore##applyBackupState")) BackupResultState.Apply();
             }
             if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled)) ImGui.SetTooltip(Texts.ConfirmHint);
 
             ImGui.SameLine();
-            var reloadPenumbra = BackupState.ReloadPenumbra;
-            if (ImGui.Checkbox("Reload Penumbra##reloadPenumbra", ref reloadPenumbra)) BackupState.ReloadPenumbra = reloadPenumbra;
+            var reloadPenumbra = BackupResultState.ReloadPenumbra;
+            if (ImGui.Checkbox("Reload Penumbra##reloadPenumbra", ref reloadPenumbra)) BackupResultState.ReloadPenumbra = reloadPenumbra;
             if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Automatically dispatch [{ModInterop.RELOAD_PENUMBRA_COMMAND}] command after restore (might take a few seconds for the file watchers to see changes)");
 
 
             ImGui.SameLine(ImGui.GetWindowWidth() - 190);
-            var showSamePaths = BackupState.ShowSamePaths;
-            if (ImGui.Checkbox("Show Same Paths##showBackupStateSamePath", ref showSamePaths)) BackupState.ShowSamePaths = showSamePaths;
+            var showSamePaths = BackupResultState.ShowSamePaths;
+            if (ImGui.Checkbox("Show Same Paths##showBackupStateSamePath", ref showSamePaths)) BackupResultState.ShowSamePaths = showSamePaths;
 
             ImGui.SameLine();
-            if (ImGui.Button("Clear##clearBackupState")) BackupState.Clear();
+            if (ImGui.Button("Clear##clearBackupState")) BackupResultState.Clear();
 
             using var backupStateResultsTable = ImRaii.Table("backupStateResultsTable", 3, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable);
             if (backupStateResultsTable)
@@ -148,32 +144,32 @@ public class BackupWindow : Window, IDisposable
                 var clearButtonWidth = ImGui.CalcTextSize("NNNN").X;
                 if (ImGui.TableNextColumn())
                 {
-                    var directoryFilter = BackupState.DirectoryFilter;
+                    var directoryFilter = BackupResultState.DirectoryFilter;
                     ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
-                    if (ImGui.InputTextWithHint("##backupStateDirectoryFilter", Texts.FilterHint, ref directoryFilter, ushort.MaxValue)) BackupState.DirectoryFilter = directoryFilter;
+                    if (ImGui.InputTextWithHint("##backupStateDirectoryFilter", Texts.FilterHint, ref directoryFilter, ushort.MaxValue)) BackupResultState.DirectoryFilter = directoryFilter;
                     ImGui.SameLine();
-                    if (ImGui.Button("X##clearBackupStateDirectoryFilter")) BackupState.DirectoryFilter = string.Empty;
+                    if (ImGui.Button("X##clearBackupStateDirectoryFilter")) BackupResultState.DirectoryFilter = string.Empty;
                 }
 
                 if (ImGui.TableNextColumn())
                 {
-                    var pathFilter = BackupState.PathFilter;
+                    var pathFilter = BackupResultState.PathFilter;
                     ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
-                    if (ImGui.InputTextWithHint("##backupStatePathFilter", Texts.FilterHint, ref pathFilter)) BackupState.PathFilter = pathFilter;
+                    if (ImGui.InputTextWithHint("##backupStatePathFilter", Texts.FilterHint, ref pathFilter)) BackupResultState.PathFilter = pathFilter;
                     ImGui.SameLine();
-                    if (ImGui.Button("X##clearBackupStatePathFilter")) BackupState.PathFilter = string.Empty;
+                    if (ImGui.Button("X##clearBackupStatePathFilter")) BackupResultState.PathFilter = string.Empty;
                 }
 
                 if (ImGui.TableNextColumn())
                 {
-                    var oldPathFilter = BackupState.PathFilter;
+                    var oldPathFilter = BackupResultState.PathFilter;
                     ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
-                    if (ImGui.InputTextWithHint("##backupStateOldPathFilter", Texts.FilterHint, ref oldPathFilter)) BackupState.OldPathFilter = oldPathFilter;
+                    if (ImGui.InputTextWithHint("##backupStateOldPathFilter", Texts.FilterHint, ref oldPathFilter)) BackupResultState.OldPathFilter = oldPathFilter;
                     ImGui.SameLine();
-                    if (ImGui.Button("X##clearBackupStateOldPathFilter")) BackupState.OldPathFilter = string.Empty;
+                    if (ImGui.Button("X##clearBackupStateOldPathFilter")) BackupResultState.OldPathFilter = string.Empty;
                 }
 
-                var showedBackupResults = BackupState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order();
+                var showedBackupResults = BackupResultState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order();
 
                 using var clipperResource = new ImRaiiListClipper(showedBackupResults.Count(), ImGui.GetTextLineHeightWithSpacing());
                 var clipper = clipperResource.Value;

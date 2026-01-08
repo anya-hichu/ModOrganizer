@@ -4,21 +4,21 @@ using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
-using ModOrganizer.Windows.States;
-using ModOrganizer.Windows.States.Results.Rules;
+using ModOrganizer.Windows.Results;
+using ModOrganizer.Windows.Results.Rules;
 using System;
 using System.Linq;
 
 namespace ModOrganizer.Windows;
 
-public class PreviewWindow : Window, IDisposable
+public class PreviewWindow : Window
 {
     private RuleResultFileSystem RuleResultFileSystem { get; init; }
 
     private string Filter { get; set; } = string.Empty;
     public bool ShowUnselected { get; set; } = false;
 
-    public PreviewWindow(RuleState ruleState) : base("ModOrganizer - Preview##previewWindow")
+    public PreviewWindow(RuleResultFileSystem ruleResultFileSystem) : base("ModOrganizer - Preview##previewWindow")
     {
         SizeConstraints = new()
         {
@@ -26,10 +26,8 @@ public class PreviewWindow : Window, IDisposable
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
 
-        RuleResultFileSystem = new(ruleState);
+        RuleResultFileSystem = ruleResultFileSystem;
     }
-
-    public void Dispose() => RuleResultFileSystem.Dispose();
 
     public override void Draw()
     {
@@ -64,5 +62,8 @@ public class PreviewWindow : Window, IDisposable
         }
     }
 
-    private VirtualMultiMatcher GetMatcher() => new([new VirtualAttributesMatcher(Filter), new RuleResultMatcher(RuleResultFileSystem, ShowUnselected)]);
+    private VirtualMultiMatcher GetMatcher() => new([
+        new VirtualAttributesMatcher(Filter), 
+        new RuleResultMatcher(RuleResultFileSystem, ShowUnselected)
+    ]);
 }

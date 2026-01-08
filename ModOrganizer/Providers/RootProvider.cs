@@ -1,4 +1,3 @@
-using Dalamud.Game.Text;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -17,7 +16,8 @@ using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
-using ModOrganizer.Windows.States;
+using ModOrganizer.Windows.Results;
+using ModOrganizer.Windows.Results.Rules;
 
 namespace ModOrganizer.Providers;
 
@@ -85,25 +85,34 @@ public class RootProvider : CachedProvider
 
             .AddSingleton<IModFileSystem, ModFileSystem>(p => new(p.GetRequiredService<IModInterop>()))
             .AddSingleton<ICommandPrinter, CommandPrinter>(p => new(p.GetService<IChatGui>()))
-            .AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(), p.GetRequiredService<AboutWindow>().Toggle,
-                p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<ConfigExportWindow>().Toggle,
-                p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle));
+            .AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(), 
+                p.GetRequiredService<AboutWindow>().Toggle, p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, 
+                p.GetRequiredService<ConfigExportWindow>().Toggle, p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle, 
+                p.GetRequiredService<PreviewWindow>().Toggle));
     }
 
     private static void AddSingletons(IServiceCollection collection)
     {
         collection
             .AddSingleton<AboutWindow>(p => new())
-            .AddSingleton<BackupWindow>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>()))
-            .AddSingleton<ConfigWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<BackupWindow>().Toggle))
+
+            .AddSingleton<BackupResultState>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>()))
+            .AddSingleton<BackupWindow>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<BackupResultState>(), p.GetRequiredService<IConfig>(), 
+                p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>()))
+
+            .AddSingleton<ConfigWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IDalamudPluginInterface>(), 
+                p.GetRequiredService<BackupWindow>().Toggle))
             .AddSingleton<ConfigExportWindow>(p => new())
             .AddSingleton<ConfigImportWindow>(p => new())
             
-            .AddSingleton<RuleState>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()))
-            
-            .AddSingleton<MainWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModFileSystem>(), p.GetRequiredService<IPluginLog>(), p.GetRequiredService<RuleState>(),
-                p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle))
-            .AddSingleton<PreviewWindow>(p => new(p.GetRequiredService<RuleState>()))
+            .AddSingleton<RuleResultState>(p => new(p.GetRequiredService<IBackupManager>(), p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<IModProcessor>(), p.GetRequiredService<IPluginLog>()))
+            .AddSingleton<EvaluationResultState>(p => new(p.GetRequiredService<IModInterop>(), p.GetRequiredService<IPluginLog>()))
+            .AddSingleton<MainWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<EvaluationResultState>(), 
+                p.GetRequiredService<IModFileSystem>(), p.GetRequiredService<RuleResultState>(), p.GetRequiredService<BackupWindow>().Toggle, 
+                p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle))
+
+            .AddSingleton<RuleResultFileSystem>(p => new(p.GetRequiredService<RuleResultState>()))
+            .AddSingleton<PreviewWindow>(p => new(p.GetRequiredService<RuleResultFileSystem>()))
             
             .AddSingleton(p =>
             {
