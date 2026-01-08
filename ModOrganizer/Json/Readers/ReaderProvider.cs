@@ -268,19 +268,18 @@ public class ReaderProvider(IPluginLog pluginLog) : CachedProvider, IReaderProvi
                 p.GetRequiredService<IReader<Option>>(), 
                 p.GetRequiredService<IPluginLog>()
             ))
+
             .AddSingleton<IOptionImcAttributeMaskReader, OptionImcAttributeMaskReader>(p => new(
                 p.GetRequiredService<IAssert>(), 
                 p.GetRequiredService<IReader<Option>>(), 
                 p.GetRequiredService<IPluginLog>()
             ))
-            .AddSingleton<IReader<OptionImc>, IOptionImcAttributeMaskReader>(p => p.GetRequiredService<IOptionImcAttributeMaskReader>())
             
             .AddSingleton<IOptionImcIsDisableSubModReader, OptionImcIsDisableSubModReader>(p => new(
                 p.GetRequiredService<IAssert>(), 
                 p.GetRequiredService<IReader<Option>>(), 
                 p.GetRequiredService<IPluginLog>()
             ))
-            .AddSingleton<IReader<OptionImc>, IOptionImcIsDisableSubModReader>(p => p.GetRequiredService<IOptionImcIsDisableSubModReader>())
             
             .AddSingleton<IOptionImcReaderFactory, OptionImcReaderFactory>(p => new(
                 p.GetRequiredService<IAssert>(),
