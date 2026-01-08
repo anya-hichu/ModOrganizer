@@ -17,7 +17,7 @@ public class PluginBuilder : IBuilder<Plugin>, IStubbableCommandManager, IStubba
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public Plugin Build()
+    public PluginBuilder()
     {
         PluginInterfaceStub.CreateOf1ObjectArray(_ =>
         {
@@ -30,7 +30,7 @@ public class PluginBuilder : IBuilder<Plugin>, IStubbableCommandManager, IStubba
 
             return provider;
         });
-
-        return new(PluginInterfaceStub);
     }
+
+    public Plugin Build() => new(PluginInterfaceStub);
 }

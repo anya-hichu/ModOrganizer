@@ -8,7 +8,7 @@ using ModOrganizer.Windows.Configs;
 
 namespace ModOrganizer;
 
-public sealed class Plugin : IDalamudPlugin, IProvider
+public sealed class Plugin : IDalamudPlugin
 {
     private RootProvider RootProvider { get; init; }
 
@@ -16,16 +16,13 @@ public sealed class Plugin : IDalamudPlugin, IProvider
     {
         RootProvider = pluginInterface.Create<RootProvider>()!;
 
-        Init<ICommand>();
-        Init<IModAutoProcessor>();
+        RootProvider.Init<ICommand>();
+        RootProvider.Init<IModAutoProcessor>();
 
-        pluginInterface.UiBuilder.Draw += Get<WindowSystem>().Draw;
-        pluginInterface.UiBuilder.OpenConfigUi += Get<ConfigWindow>().Toggle;
-        pluginInterface.UiBuilder.OpenMainUi += Get<MainWindow>().Toggle;
+        pluginInterface.UiBuilder.Draw += RootProvider.Get<WindowSystem>().Draw;
+        pluginInterface.UiBuilder.OpenConfigUi += RootProvider.Get<ConfigWindow>().Toggle;
+        pluginInterface.UiBuilder.OpenMainUi += RootProvider.Get<MainWindow>().Toggle;
     }
 
     public void Dispose() => RootProvider.Dispose();
-
-    public T Get<T>() where T : notnull => RootProvider.Get<T>();
-    private void Init<T>() where T : notnull => Get<T>();
 }

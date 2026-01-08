@@ -36,11 +36,6 @@ public class RootProvider : CachedProvider
         AddAbstractSingletons(collection);
         AddConcreteSingletons(collection);
 
-
-
-        
-
-
         return collection.BuildServiceProvider();
     }
 

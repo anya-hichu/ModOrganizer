@@ -2,7 +2,7 @@ using Dalamud.Plugin.Services;
 
 namespace ModOrganizer.Commands;
 
-public class CommandPrinter(IChatGui? chatGui) : ICommandPrinter
+public class CommandPrinter(IChatGui? maybeChatGui) : ICommandPrinter
 {
-    public void PrintError(string message) => chatGui?.PrintError(message);
+    public void PrintError(string message) => maybeChatGui?.PrintError(message, nameof(ModOrganizer));
 }
