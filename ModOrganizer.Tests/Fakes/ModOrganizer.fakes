@@ -5,9 +5,13 @@
         <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
         <Add FullName="ModOrganizer.Commands.ICommandPrinter!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.DefaultMods.IDefaultModReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.Groups.IGroupGenericReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.LocalModDatas.ILocalModDataReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.ModMetas.IModMetaReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.SortOrders.ISortOrderReader!"/>
         <Add FullName="ModOrganizer.Json.Readers.Asserts.IAssert!"/>
         <Add FullName="ModOrganizer.Json.Readers.Elements.IElementReader!"/>
-        <Add FullName="ModOrganizer.Json.Readers.Files.IFileReader`1!"/>
         <Add FullName="ModOrganizer.Json.Readers.IReader`1!"/>
         <Add FullName="ModOrganizer.Mods.IModInterop!"/>
         <Add FullName="ModOrganizer.Mods.IModProcessor!"/>

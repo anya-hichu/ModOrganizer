@@ -342,7 +342,7 @@ public class MainWindow : Window
             if (ImGui.Button("X##clearRuleResultNewPathFilter")) RuleResultState.NewPathFilter = string.Empty;
         }
 
-        var showedRuleResults = RuleResultState.GetShowedResults<RuleResult, IShowableRuleResultState>().Order().ToList();
+        var showedRuleResults = RuleResultState.GetShowedRuleResults().Order().ToList();
 
         using var resultClipperResource = new ImRaiiListClipper(showedRuleResults.Count, GetItemHeight());
         var resultClipper = resultClipperResource.Value;
@@ -494,7 +494,7 @@ public class MainWindow : Window
             if (ImGui.Button("X##clearEvaluationStateTemplateFilter")) EvaluationResultState.TemplateFilter = string.Empty;
         }
 
-        var showedEvaluationResults = EvaluationResultState.GetShowedResults<EvaluationResult, IShowableEvaluationResultState>().Order().ToList();
+        var showedEvaluationResults = EvaluationResultState.GetShowedEvaluationResults().Order().ToList();
 
         using var clipperResource = new ImRaiiListClipper(showedEvaluationResults.Count, ImGui.GetTextLineHeightWithSpacing());
         var clipper = clipperResource.Value;

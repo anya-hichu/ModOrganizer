@@ -14,9 +14,9 @@ using ModOrganizer.Json.Readers.Asserts;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations;
 
-public class ManipulationWrapperReaderFactory : TypeReaderFactory<ManipulationWrapper>, IManipulationWrapperReaderFactory
+public class ManipulationWrapperGenericReader : TypeGenericReader<ManipulationWrapper>, IManipulationWrapperGenericReader
 {
-    public ManipulationWrapperReaderFactory(IAssert assert, IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
+    public ManipulationWrapperGenericReader(IAssert assert, IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
         IReader<ManipulationWrapper> metaEqdpWrapperReader, IReader<ManipulationWrapper> metaEqpWrapperReader, IReader<ManipulationWrapper> metaEstWrapperReader, 
         IReader<ManipulationWrapper> metaGeqpWrapperReader, IReader<ManipulationWrapper> metaGmpWrapperReader, IReader<ManipulationWrapper> metaImcWrapperReader, 
         IReader<ManipulationWrapper> metaRspWrapperReader, IReader<ManipulationWrapper> metaShpWrapperReader, IPluginLog pluginLog) : base(assert, pluginLog)

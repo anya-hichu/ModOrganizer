@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers;
 
-public abstract class ReaderFactory<T>(IAssert assert, IPluginLog pluginLog) : Reader<T>(assert, pluginLog) where T : class
+public abstract class GenericReader<T>(IAssert assert, IPluginLog pluginLog) : Reader<T>(assert, pluginLog) where T : class
 {
     protected abstract bool TryGetReader(JsonElement element, [NotNullWhen(true)] out IReader<T>? reader);
 

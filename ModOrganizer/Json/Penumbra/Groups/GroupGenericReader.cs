@@ -5,11 +5,11 @@ using ModOrganizer.Json.Readers.Elements;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupReaderFactory : TypeReaderFactory<Group>, IGroupReaderFactory
+public class GroupGenericReader : TypeGenericReader<Group>, IGroupGenericReader
 {
     public IElementReader ElementReader { get; init; }
 
-    public GroupReaderFactory(IAssert assert, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, 
+    public GroupGenericReader(IAssert assert, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, 
         IReader<Group> groupSingleReader, IElementReader elementReader, IPluginLog pluginLog) : base(assert, pluginLog)
     {
         Readers.Add(GroupCombiningReader.TYPE, groupCombiningReader);

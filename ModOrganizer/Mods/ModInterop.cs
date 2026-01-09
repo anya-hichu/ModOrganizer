@@ -35,11 +35,11 @@ public class ModInterop : IModInterop
     private ICommandManager CommandManager { get; init; }
     private IPluginLog PluginLog { get; init; }
 
-    private IFileReader<DefaultMod> DefaultModFileReader { get; init; }
-    private IFileReader<Group> GroupFileReader { get; init; }
-    private IFileReader<ModMeta> ModMetaFileReader { get; init; }
-    private IFileReader<LocalModData> LocalModDataFileReader { get; init; }
-    private IFileReader<SortOrder> SortOrderFileReader { get; init; }
+    private IDefaultModReader DefaultModReader { get; init; }
+    private IGroupGenericReader GroupGenericReader { get; init; }
+    private IModMetaReader ModMetaReader { get; init; }
+    private ILocalModDataReader LocalModDataReader { get; init; }
+    private ISortOrderReader SortOrderReader { get; init; }
 
     public event Action<string>? OnModAdded;
     public event Action<string>? OnModDeleted;
@@ -73,15 +73,15 @@ public class ModInterop : IModInterop
     private FileSystemWatcher? GroupsFileSystemWatcher { get; set; }
     private FileSystemWatcher? MetaFileSystemWatcher { get; set; }
 
-    public ModInterop(ICommandManager commandManager, IFileReader<DefaultMod> defaultModFileReader, IFileReader<Group> groupFileReader, IFileReader<LocalModData> localModDataFileReader, 
-        IFileReader<ModMeta> modMetaFileReader, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IFileReader<SortOrder> sortOrderFileReader)
+    public ModInterop(ICommandManager commandManager, IDefaultModReader defaultModReader, IGroupGenericReader groupGenericReader, ILocalModDataReader localModDataReader, 
+        IModMetaReader modMetaReader, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, ISortOrderReader sortOrderReader)
     {
         CommandManager = commandManager;
-        DefaultModFileReader = defaultModFileReader;
-        GroupFileReader = groupFileReader;
-        LocalModDataFileReader = localModDataFileReader;
-        ModMetaFileReader = modMetaFileReader;
-        SortOrderFileReader = sortOrderFileReader;
+        DefaultModReader = defaultModReader;
+        GroupGenericReader = groupGenericReader;
+        LocalModDataReader = localModDataReader;
+        ModMetaReader = modMetaReader;
+        SortOrderReader = sortOrderReader;
 
         PluginLog = pluginLog;
 
@@ -279,7 +279,7 @@ public class ModInterop : IModInterop
     {
         if (MaybeSortOrderCache != null) return MaybeSortOrderCache;
 
-        if (SortOrderFileReader.TryReadFromFile(GetSortOrderPath(), out var sortOrder))
+        if (SortOrderReader.TryReadFromFile(GetSortOrderPath(), out var sortOrder))
         {
             MaybeSortOrderCache = sortOrder;
             PluginLog.Debug($"Loaded [{nameof(SortOrder)}] cache (count: {sortOrder.Data.Count})");
@@ -303,13 +303,13 @@ public class ModInterop : IModInterop
 
         var modDirectoryPath = Path.Combine(ModsDirectoryPath, modDirectory);
 
-        if (!LocalModDataFileReader.TryReadFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData)) PluginLog.Warning($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
-        if (!DefaultModFileReader.TryReadFromFile(Path.Combine(modDirectoryPath, DEFAULT_FILE_NAME), out var defaultMod)) PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
-        if (!ModMetaFileReader.TryReadFromFile(Path.Combine(modDirectoryPath, META_FILE_NAME), out var modMeta)) PluginLog.Warning($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
+        if (!LocalModDataReader.TryReadFromFile(Path.Combine(DataDirectory, $"{modDirectory}.json"), out var localModData)) PluginLog.Warning($"Failed to build [{nameof(LocalModData)}] for mod [{modDirectory}]");
+        if (!DefaultModReader.TryReadFromFile(Path.Combine(modDirectoryPath, DEFAULT_FILE_NAME), out var defaultMod)) PluginLog.Warning($"Failed to build [{nameof(DefaultMod)}] for mod [{modDirectory}]");
+        if (!ModMetaReader.TryReadFromFile(Path.Combine(modDirectoryPath, META_FILE_NAME), out var modMeta)) PluginLog.Warning($"Failed to build [{nameof(ModMeta)}] for mod [{modDirectory}]");
 
         var groupFilePaths = Directory.Exists(modDirectoryPath) ? Directory.GetFiles(modDirectoryPath, GROUP_FILE_NAME_PATTERN) : [];
         var maybeGroups = groupFilePaths.Select(p => {
-            if (!GroupFileReader.TryReadFromFile(p, out var group)) PluginLog.Warning($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
+            if (!GroupGenericReader.TryReadFromFile(p, out var group)) PluginLog.Warning($"Failed to build [{nameof(Group)}] for mod [{modDirectory}]");
             return group;
         }).ToArray();
 

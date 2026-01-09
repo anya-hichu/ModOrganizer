@@ -10,7 +10,7 @@ using ModOrganizer.Json.Readers.Asserts;
 namespace ModOrganizer.Json.Penumbra.Groups;
 
 
-public class GroupImcReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IOptionImcReaderFactory optionImcReaderFactory,  IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupImcReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IOptionImcGenericReader optionImcGenericReader,  IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
 {
     public static readonly string TYPE = "Imc";
 
@@ -48,7 +48,7 @@ public class GroupImcReader(IAssert assert, IGroupBaseReader groupBaseReader, IR
         }
 
         var options = Array.Empty<OptionImc>();
-        if (element.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !optionImcReaderFactory.TryReadMany(optionsProperty, out options))
+        if (element.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !optionImcGenericReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {element}");
             return false;

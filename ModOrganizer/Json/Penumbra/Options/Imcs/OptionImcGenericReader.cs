@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
-public class OptionImcReaderFactory(IAssert assert, IReader<OptionImc> optionImcAttributeMaskReader, IReader<OptionImc> optionImcIsDisabledSubModReader, IPluginLog pluginLog) : ReaderFactory<OptionImc>(assert, pluginLog), IOptionImcReaderFactory
+public class OptionImcGenericReader(IAssert assert, IOptionImcAttributeMaskReader optionImcAttributeMaskReader, IOptionImcIsDisableSubModReader optionImcIsDisabledSubModReader, IPluginLog pluginLog) : GenericReader<OptionImc>(assert, pluginLog), IOptionImcGenericReader
 {
     protected override bool TryGetReader(JsonElement element, [NotNullWhen(true)] out IReader<OptionImc>? builder)
     {

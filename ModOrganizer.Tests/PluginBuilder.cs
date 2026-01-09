@@ -1,7 +1,6 @@
 using Dalamud.Plugin.Fakes;
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Providers;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.CommandManagers;
 using ModOrganizer.Tests.Dalamuds.PenumbraApis;
@@ -21,11 +20,11 @@ public class PluginBuilder : IBuilder<Plugin>, IStubbableCommandManager, IStubba
     {
         PluginInterfaceStub.InjectObjectObjectArray = (instance, _) =>
         {
-            if (instance is not RootProvider rootProvider) return false;
+            if (instance is not PluginProvider pluginProvider) return false;
 
-            rootProvider.MaybeCommandManager = CommandManagerStub;
-            rootProvider.MaybeNotificationManager = NotificationManagerStub;
-            rootProvider.MaybePluginLog = PluginLogStub;
+            pluginProvider.MaybeCommandManager = CommandManagerStub;
+            pluginProvider.MaybeNotificationManager = NotificationManagerStub;
+            pluginProvider.MaybePluginLog = PluginLogStub;
 
             return true;
         };

@@ -1,0 +1,224 @@
+using Dalamud.Interface.Windowing;
+using Dalamud.IoC;
+using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
+using Microsoft.Extensions.DependencyInjection;
+using ModOrganizer.Backups;
+using ModOrganizer.Commands;
+using ModOrganizer.Configs;
+using ModOrganizer.Json.Penumbra.Containers;
+using ModOrganizer.Json.Penumbra.DefaultMods;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.LocalModDatas;
+using ModOrganizer.Json.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atrs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqdps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Ests;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Geqps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Gmps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
+using ModOrganizer.Json.Penumbra.ModMetas;
+using ModOrganizer.Json.Penumbra.Options;
+using ModOrganizer.Json.Penumbra.Options.Imcs;
+using ModOrganizer.Json.Penumbra.SortOrders;
+using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Asserts;
+using ModOrganizer.Json.Readers.Elements;
+using ModOrganizer.Mods;
+using ModOrganizer.Rules;
+using ModOrganizer.Shared;
+using ModOrganizer.Windows;
+using ModOrganizer.Windows.Configs;
+using ModOrganizer.Windows.Results;
+using ModOrganizer.Windows.Results.Rules;
+
+namespace ModOrganizer;
+
+public class PluginProvider : CachedProvider
+{
+    private IDalamudPluginInterface PluginInterface { get; init; }
+
+    [PluginService] public IChatGui? MaybeChatGui { get; set; }
+    [PluginService] public ICommandManager? MaybeCommandManager { get; set; }
+    [PluginService] public INotificationManager? MaybeNotificationManager { get; set; }
+    [PluginService] public IPluginLog? MaybePluginLog { get; set; }
+
+    public PluginProvider(IDalamudPluginInterface pluginInterface)
+    {
+        PluginInterface = pluginInterface;
+
+        PluginInterface.Inject(this);
+    }
+
+    protected override ServiceProvider BuildServiceProvider()
+    {
+        var collection = new ServiceCollection();
+
+        collection.AddSingleton(PluginInterface);
+
+        if (MaybeChatGui != null) collection.AddSingleton(MaybeChatGui);
+        if (MaybeCommandManager != null) collection.AddSingleton(MaybeCommandManager);
+        if (MaybeNotificationManager != null) collection.AddSingleton(MaybeNotificationManager);
+        if (MaybePluginLog != null) collection.AddSingleton(MaybePluginLog);
+
+        collection
+            .AddSingleton<IRuleDefaults, RuleDefaults>()
+            .AddSingleton<IConfigDefault, ConfigDefault>()
+            .AddSingleton<IConfigLoader, ConfigLoader>()
+            .AddSingleton(p => p.GetRequiredService<IConfigLoader>().GetOrDefault())
+
+            .AddSingleton<IModInterop, ModInterop>()
+            .AddSingleton<IRuleEvaluator, RuleEvaluator>()
+            .AddSingleton<IBackupManager, BackupManager>()
+            .AddSingleton<IModProcessor, ModProcessor>()
+            .AddSingleton<IModAutoProcessor, ModAutoProcessor>()
+            .AddSingleton<IModFileSystem, ModFileSystem>()
+            .AddSingleton<ICommandPrinter, CommandPrinter>(p => new(p.GetService<IChatGui>()))
+
+            .AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(),
+                p.GetRequiredService<AboutWindow>().Toggle, p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle,
+                p.GetRequiredService<ConfigExportWindow>().Toggle, p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle,
+                p.GetRequiredService<PreviewWindow>().Toggle))
+
+            // Json
+            .AddSingleton<IAssert, Assert>()
+            .AddSingleton<IElementReader, ElementReader>()
+            .AddSingleton<IDefaultModReader, DefaultModReader>()
+            .AddSingleton<ILocalModDataReader, LocalModDataReader>()
+            .AddSingleton<IModMetaReader, ModMetaReader>()
+            .AddSingleton<ISortOrderReader, SortOrderReader>()
+
+            .AddSingleton<IReader<Container>, ContainerReader>()
+            .AddSingleton<IReader<NamedContainer>, NamedContainerReader>()
+
+            .AddSingleton<IGroupBaseReader, GroupBaseReader>()
+
+            .AddSingleton<IReader<Group>, GroupCombiningReader>()
+            .AddKeyedSingleton<IReader<Group>, GroupCombiningReader>(GroupCombiningReader.TYPE)
+
+            .AddSingleton<IReader<Group>, GroupImcReader>()
+            .AddKeyedSingleton<IReader<Group>, GroupImcReader>(GroupImcReader.TYPE)
+
+            .AddSingleton<IReader<Group>, GroupMultiReader>()
+            .AddKeyedSingleton<IReader<Group>, GroupMultiReader>(GroupMultiReader.TYPE)
+
+            .AddSingleton<IReader<Group>, GroupSingleReader>()
+            .AddKeyedSingleton<IReader<Group>, GroupSingleReader>(GroupSingleReader.TYPE)
+
+            .AddSingleton<IGroupGenericReader, GroupGenericReader>(p => new(
+                p.GetRequiredService<IAssert>(),
+                p.GetRequiredKeyedService<IReader<Group>>(GroupCombiningReader.TYPE),
+                p.GetRequiredKeyedService<IReader<Group>>(GroupImcReader.TYPE),
+                p.GetRequiredKeyedService<IReader<Group>>(GroupMultiReader.TYPE),
+                p.GetRequiredKeyedService<IReader<Group>>(GroupSingleReader.TYPE),
+                p.GetRequiredService<IElementReader>(),
+                p.GetRequiredService<IPluginLog>()
+            ))
+
+            .AddSingleton<IReader<MetaImcEntry>, MetaImcEntryReader>()
+            .AddSingleton<IReader<MetaImcIdentifier>, MetaImcIdentifierReader>()
+
+            .AddSingleton<IReader<MetaAtchEntry>, MetaAtchEntryReader>()
+            .AddSingleton<IReader<MetaAtch>, MetaAtchReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaAtchWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtchWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaAtr>, MetaAtrReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtrWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaEqdp>, MetaEqdpReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>(MetaEqdpWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaEqp>, MetaEqpReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>(MetaEqpWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaEst>, MetaEstReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>(MetaEstWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaGeqp>, MetaGeqpReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>(MetaGeqpWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaGmpEntry>, MetaGmpEntryReader>()
+            .AddSingleton<IReader<MetaGmp>, MetaGmpReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>(MetaGmpWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaImc>, MetaImcReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>(MetaImcWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaRsp>, MetaRspReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>(MetaRspWrapperReader.TYPE)
+
+            .AddSingleton<IReader<MetaShp>, MetaShpReader>()
+            .AddSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>()
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(MetaShpWrapperReader.TYPE)
+
+            .AddSingleton<IManipulationWrapperGenericReader, ManipulationWrapperGenericReader>(p => new(
+                p.GetRequiredService<IAssert>(),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaAtchWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaAtrWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaEqdpWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaEqpWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaEstWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaGeqpWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaGmpWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaImcWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaRspWrapperReader.TYPE),
+                p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaShpWrapperReader.TYPE),
+                p.GetRequiredService<IPluginLog>()
+            ))
+
+            .AddSingleton<IReader<Option>, OptionReader>()
+            .AddSingleton<IReader<OptionContainer>, OptionContainerReader>()
+            .AddSingleton<IOptionImcAttributeMaskReader, OptionImcAttributeMaskReader>()
+            .AddSingleton<IOptionImcIsDisableSubModReader, OptionImcIsDisableSubModReader>()
+            .AddSingleton<IOptionImcGenericReader, OptionImcGenericReader>()
+
+            // Windows
+            .AddSingleton<AboutWindow>()
+            .AddSingleton<BackupResultState>()
+            .AddSingleton<BackupWindow>()
+
+            .AddSingleton<ConfigWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<BackupWindow>().Toggle))
+            .AddSingleton<ConfigExportWindow>()
+            .AddSingleton<ConfigImportWindow>()
+
+            .AddSingleton<RuleResultState>()
+            .AddSingleton<EvaluationResultState>()
+            .AddSingleton<MainWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<EvaluationResultState>(),
+                p.GetRequiredService<IModFileSystem>(), p.GetRequiredService<RuleResultState>(), p.GetRequiredService<BackupWindow>().Toggle,
+                p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle))
+
+            .AddSingleton<RuleResultFileSystem>()
+            .AddSingleton<PreviewWindow>()
+
+            .AddSingleton(p =>
+            {
+                var windowSystem = new WindowSystem(nameof(ModOrganizer));
+
+                windowSystem.AddWindow(p.GetRequiredService<AboutWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<BackupWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<ConfigWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<ConfigExportWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<ConfigImportWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<MainWindow>());
+                windowSystem.AddWindow(p.GetRequiredService<PreviewWindow>());
+
+                return windowSystem;
+            });
+
+
+        return collection.BuildServiceProvider();
+    }
+}

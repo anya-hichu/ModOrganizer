@@ -3,8 +3,7 @@ using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs.Fakes;
-using ModOrganizer.Json.Penumbra.SortOrders;
-using ModOrganizer.Json.Readers.Files.Fakes;
+using ModOrganizer.Json.Penumbra.SortOrders.Fakes;
 using ModOrganizer.Mods.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Configs;
@@ -20,7 +19,7 @@ public class BackupManagerBuilder : IBuilder<BackupManager>, IStubbableConfig, I
     public StubIModInterop ModInteropStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIDalamudPluginInterface PluginInterfaceStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIFileReader<SortOrder> SortOrderFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubISortOrderReader SortOrderFileReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
     public BackupManager Build() => new(ConfigStub, ModInteropStub, PluginInterfaceStub, PluginLogStub, SortOrderFileReaderStub);
 }

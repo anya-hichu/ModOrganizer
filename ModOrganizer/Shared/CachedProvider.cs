@@ -1,15 +1,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace ModOrganizer.Providers;
+namespace ModOrganizer.Shared;
 
-public abstract class CachedProvider : Provider, IDisposable
+public abstract class CachedProvider : IDisposable
 {
     private ServiceProvider? ServiceProviderCache { get; set; }
 
     protected abstract ServiceProvider BuildServiceProvider();
 
-    protected override ServiceProvider GetServiceProvider()
+    private ServiceProvider GetServiceProvider()
     {
         if (ServiceProviderCache != null) return ServiceProviderCache;
 
@@ -17,4 +17,7 @@ public abstract class CachedProvider : Provider, IDisposable
     }
 
     public void Dispose() => ServiceProviderCache?.Dispose();
+
+    public T Get<T>() where T: notnull => GetServiceProvider().GetRequiredService<T>();
+    public void Init<T>() where T : notnull => Get<T>();
 }

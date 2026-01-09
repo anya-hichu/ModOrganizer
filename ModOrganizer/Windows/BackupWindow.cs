@@ -12,7 +12,6 @@ using ModOrganizer.Windows.Results;
 using ModOrganizer.Windows.Results.Backups;
 using ModOrganizer.Windows.Results.Showables;
 using Scriban;
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -116,6 +115,8 @@ public class BackupWindow : Window
 
         if (!hasResults) return;
 
+        // TODO: SHOW empty folders to compare
+
         using (ImRaii.Disabled(!hasCompletedTask || !isConfirmPressed))
         {
             using ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedGreen), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black);
@@ -173,7 +174,7 @@ public class BackupWindow : Window
                 if (ImGui.Button("X##clearBackupStateOldPathFilter")) BackupResultState.OldPathFilter = string.Empty;
             }
 
-            var showedBackupResults = BackupResultState.GetShowedResults<BackupResult, IShowableBackupResultState>().Order().ToList();
+            var showedBackupResults = BackupResultState.GetShowedBackupResults().Order().ToList();
 
             using var clipperResource = new ImRaiiListClipper(showedBackupResults.Count, ImGui.GetTextLineHeightWithSpacing());
             var clipper = clipperResource.Value;

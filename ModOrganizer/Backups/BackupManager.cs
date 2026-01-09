@@ -22,7 +22,7 @@ public class BackupManager : IBackupManager
 
     private RateLimitedAction<bool> CreateRecentAction { get; init; }
 
-    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, IFileReader<SortOrder> sortOrderFileReader)
+    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, ISortOrderReader sortOrderFileReader)
     {
         Config = config;
         ModInterop = modInterop;

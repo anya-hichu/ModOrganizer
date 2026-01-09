@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers;
 
-public abstract class TypeReaderFactory<T>(IAssert assert, IPluginLog pluginLog) : ReaderFactory<T>(assert, pluginLog) where T : class
+public abstract class TypeGenericReader<T>(IAssert assert, IPluginLog pluginLog) : GenericReader<T>(assert, pluginLog) where T : class
 {
     private static readonly string TYPE_PROPERTY_NAME = "Type";
 
