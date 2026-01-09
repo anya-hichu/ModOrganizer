@@ -8,19 +8,8 @@ public class TestVirtualFile
     [TestMethod]
     public void TestCompareTo()
     {
-        var left = new VirtualFile()
-        {
-            Name = "Name Left",
-            Directory = string.Empty,
-            Path = string.Empty
-        };
-
-        var right = new VirtualFile()
-        {
-            Name = "Name Right",
-            Directory = string.Empty,
-            Path = string.Empty
-        };
+        var left = new VirtualFile() { Name = "Name Left" };
+        var right = new VirtualFile() { Name = "Name Right" };
         
         var value = left.CompareTo(right);
 
@@ -56,19 +45,8 @@ public class TestVirtualFile
     [DataRow("Path Left", "Path Right")]
     public void TestEqualsWithoutSuccess(string leftPath, string rightPath)
     {
-        var left = new VirtualFile()
-        {
-            Name = string.Empty,
-            Directory = string.Empty,
-            Path = leftPath
-        };
-
-        var right = new VirtualFile()
-        {
-            Name = string.Empty,
-            Directory = string.Empty,
-            Path = rightPath
-        };
+        var left = new VirtualFile() { Path = leftPath };
+        var right = new VirtualFile() { Path = rightPath };
 
         var success = left.Equals(right);
 

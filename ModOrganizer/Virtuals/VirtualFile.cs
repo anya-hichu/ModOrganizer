@@ -4,9 +4,9 @@ namespace ModOrganizer.Virtuals;
 
 public class VirtualFile : IComparable<VirtualFile>, IEquatable<VirtualFile>
 {
-    public required string Name { get; init; }
-    public required string Directory { get; init; }
-    public required string Path { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string Directory { get; init; } = string.Empty;
+    public string Path { get; init; } = string.Empty;
 
     public int CompareTo(VirtualFile? other) => StringComparer.OrdinalIgnoreCase.Compare(Name, other?.Name);
 

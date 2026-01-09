@@ -6,19 +6,6 @@ namespace ModOrganizer.Tests.Virtuals;
 public class TestVirtualFolder
 {
     [TestMethod]
-    public void TestBuildRoot()
-    {
-        var rootFolder = VirtualFolder.BuildRoot();
-
-        Assert.AreEqual(string.Empty, rootFolder.Name);
-        Assert.AreEqual(string.Empty, rootFolder.Path);
-
-        Assert.IsEmpty(rootFolder.Files);
-        Assert.IsEmpty(rootFolder.Folders);
-    }
-
-
-    [TestMethod]
     [DataRow("", 2)]
     [DataRow("2", 2)]
     [DataRow("4", 1)]
@@ -107,18 +94,7 @@ public class TestVirtualFolder
     [TestMethod]
     public void TestIsEmpty()
     {
-        var folder = new VirtualFolder()
-        {
-            Name = string.Empty,
-            Path = string.Empty,
-            Folders = [
-                new()
-                {
-                    Name = string.Empty,
-                    Path = string.Empty,
-                }
-            ]
-        };
+        var folder = new VirtualFolder() { Folders = [new()] };
 
         var success = folder.IsEmpty();
 
@@ -131,22 +107,10 @@ public class TestVirtualFolder
     {
         var folder = new VirtualFolder()
         {
-            Name = string.Empty,
-            Path = string.Empty,
-            Files = [],
             Folders = [
-                new()
-                {
-                    Name = string.Empty,
-                    Path = string.Empty,
-                    Files = [
-                        new() 
-                        {
-                            Name = string.Empty,
-                            Directory = string.Empty,
-                            Path = string.Empty
-                        }
-                    ]
+                new() 
+                { 
+                    Files = [new()] 
                 }
             ]
         };
@@ -161,22 +125,13 @@ public class TestVirtualFolder
     [TestMethod]
     public void TestGetNestedFiles()
     {
-        var nestedFile = new VirtualFile()
-        {
-            Name = string.Empty,
-            Directory = string.Empty,
-            Path = string.Empty
-        };
+        var nestedFile = new VirtualFile();
 
         var folder = new VirtualFolder()
         {
-            Name = string.Empty,
-            Path = string.Empty,
             Folders = [
                 new()
                 {
-                    Name = string.Empty,
-                    Path = string.Empty,
                     Files = [nestedFile]
                 }
             ]
@@ -191,17 +146,8 @@ public class TestVirtualFolder
     [TestMethod]
     public void TestCompareTo()
     {
-        var left = new VirtualFolder()
-        {
-            Name = "Name Left",
-            Path = string.Empty
-        };
-
-        var right = new VirtualFolder()
-        {
-            Name = "Name Right",
-            Path = string.Empty
-        };
+        var left = new VirtualFolder() { Name = "Name Left" };
+        var right = new VirtualFolder() { Name = "Name Right" };
 
         var value = left.CompareTo(right);
 
@@ -235,17 +181,8 @@ public class TestVirtualFolder
     [DataRow("Path Left", "Path Right")]
     public void TestEqualsWithoutSuccess(string leftPath, string rightPath)
     {
-        var left = new VirtualFolder()
-        {
-            Name = string.Empty,
-            Path = leftPath
-        };
-
-        var right = new VirtualFolder()
-        {
-            Name = string.Empty,
-            Path = rightPath
-        };
+        var left = new VirtualFolder() { Path = leftPath };
+        var right = new VirtualFolder() { Path = rightPath };
 
         var success = left.Equals(right);
 

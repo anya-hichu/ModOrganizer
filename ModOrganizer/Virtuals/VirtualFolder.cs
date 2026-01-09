@@ -7,8 +7,8 @@ namespace ModOrganizer.Virtuals;
 
 public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolder>
 {
-    public required string Name { get; init; }
-    public required string Path { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string Path { get; init; } = string.Empty;
 
     public HashSet<VirtualFolder> Folders { get; init; } = [];
     public HashSet<VirtualFile> Files { get; init; } = [];
@@ -48,6 +48,4 @@ public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolde
     public override bool Equals(object? obj) => Equals(obj as VirtualFile);
     public bool Equals(VirtualFolder? other) => other != null && GetHashCode() == other.GetHashCode();
     public override int GetHashCode() => Path.GetHashCode();
-
-    public static VirtualFolder BuildRoot() => new() { Name = string.Empty, Path = string.Empty };
 }
