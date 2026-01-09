@@ -58,14 +58,13 @@ public class PluginProvider : CachedProvider
     {
         var collection = new ServiceCollection();
 
-        collection.AddSingleton(PluginInterface);
-
         if (MaybeChatGui != null) collection.AddSingleton(MaybeChatGui);
         if (MaybeCommandManager != null) collection.AddSingleton(MaybeCommandManager);
         if (MaybeNotificationManager != null) collection.AddSingleton(MaybeNotificationManager);
         if (MaybePluginLog != null) collection.AddSingleton(MaybePluginLog);
 
         collection
+            .AddSingleton(PluginInterface)
             .AddSingleton<IRuleDefaults, RuleDefaults>()
             .AddSingleton<IConfigDefault, ConfigDefault>()
             .AddSingleton<IConfigLoader, ConfigLoader>()
