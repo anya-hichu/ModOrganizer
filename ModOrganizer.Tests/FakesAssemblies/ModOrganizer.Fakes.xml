@@ -553,5 +553,23 @@
         <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateRuleModInfoStringOut">
             <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>
         </member>
+        <member name="T:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler">
+            <summary>Stub type of ModOrganizer.Windows.Togglers.IWindowToggler</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler.#ctor">
+            <summary>Initializes a new instance of type StubIWindowToggler</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler.ModOrganizer#Windows#Togglers#IWindowToggler#SetWindowSystem(Dalamud.Interface.Windowing.WindowSystem)">
+            <summary>Sets the Stub of IWindowToggler.SetWindowSystem(IWindowToggler this, WindowSystem windowSystem)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler.ModOrganizer#Windows#Togglers#IWindowToggler#Toggle``1">
+            <summary>Sets the Stub of IWindowToggler.Toggle(IWindowToggler this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler.SetWindowSystemWindowSystem">
+            <summary>Sets the stub of IWindowToggler.SetWindowSystem(IWindowToggler this, WindowSystem windowSystem)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler.ToggleOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Action)">
+            <summary>Sets stubs of Toggle(IWindowToggler this)</summary>
+        </member>
     </members>
 </doc>

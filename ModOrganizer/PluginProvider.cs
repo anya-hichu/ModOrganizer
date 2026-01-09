@@ -35,6 +35,8 @@ using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.Results;
 using ModOrganizer.Windows.Results.Rules;
+using ModOrganizer.Windows.Togglers;
+using System;
 
 namespace ModOrganizer;
 
@@ -78,10 +80,7 @@ public class PluginProvider : CachedProvider
             .AddSingleton<IModFileSystem, ModFileSystem>()
             .AddSingleton<ICommandPrinter, CommandPrinter>(p => new(p.GetService<IChatGui>()))
 
-            .AddSingleton<ICommand, Command>(p => new(p.GetRequiredService<ICommandManager>(), p.GetRequiredService<ICommandPrinter>(),
-                p.GetRequiredService<AboutWindow>().Toggle, p.GetRequiredService<BackupWindow>().Toggle, p.GetRequiredService<ConfigWindow>().Toggle,
-                p.GetRequiredService<ConfigExportWindow>().Toggle, p.GetRequiredService<ConfigImportWindow>().Toggle, p.GetRequiredService<MainWindow>().Toggle,
-                p.GetRequiredService<PreviewWindow>().Toggle))
+            .AddSingleton<ICommand, Command>()
 
             // Json
             .AddSingleton<IAssert, Assert>()
@@ -167,19 +166,19 @@ public class PluginProvider : CachedProvider
             .AddSingleton<IOptionImcGenericReader, OptionImcGenericReader>()
 
             // Windows
+            .AddSingleton<IWindowToggler, WindowToggler>()
+
             .AddSingleton<AboutWindow>()
             .AddSingleton<BackupResultState>()
             .AddSingleton<BackupWindow>()
 
-            .AddSingleton<ConfigWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IDalamudPluginInterface>(), p.GetRequiredService<BackupWindow>().Toggle))
+            .AddSingleton<ConfigWindow>()
             .AddSingleton<ConfigExportWindow>()
             .AddSingleton<ConfigImportWindow>()
 
             .AddSingleton<RuleResultState>()
             .AddSingleton<EvaluationResultState>()
-            .AddSingleton<MainWindow>(p => new(p.GetRequiredService<IConfig>(), p.GetRequiredService<IModInterop>(), p.GetRequiredService<EvaluationResultState>(),
-                p.GetRequiredService<IModFileSystem>(), p.GetRequiredService<RuleResultState>(), p.GetRequiredService<BackupWindow>().Toggle,
-                p.GetRequiredService<ConfigWindow>().Toggle, p.GetRequiredService<PreviewWindow>().Toggle))
+            .AddSingleton<MainWindow>()
 
             .AddSingleton<RuleResultFileSystem>()
             .AddSingleton<PreviewWindow>()
@@ -195,6 +194,9 @@ public class PluginProvider : CachedProvider
                 windowSystem.AddWindow(p.GetRequiredService<ConfigImportWindow>());
                 windowSystem.AddWindow(p.GetRequiredService<MainWindow>());
                 windowSystem.AddWindow(p.GetRequiredService<PreviewWindow>());
+
+                var windowToggler = p.GetRequiredService<IWindowToggler>();
+                windowToggler.SetWindowSystem(windowSystem);
 
                 return windowSystem;
             });

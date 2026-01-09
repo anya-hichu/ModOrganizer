@@ -29,15 +29,15 @@ public class BackupWindow : Window
 
     public BackupWindow(IBackupManager backupManager, BackupResultState backupResultState, IConfig config, IModInterop modInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
     {
+        BackupManager = backupManager;
+        BackupResultState = backupResultState;
+        Config = config;
+
         SizeConstraints = new()
         {
             MinimumSize = new(375, 330),
             MaximumSize = new(float.MaxValue, float.MaxValue)
-        };
-
-        BackupManager = backupManager;
-        BackupResultState = backupResultState;
-        Config = config;
+        }; 
     }
 
     public override void Draw()

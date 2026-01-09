@@ -18,13 +18,13 @@ public class PreviewWindow : Window
 
     public PreviewWindow(RuleResultFileSystem ruleResultFileSystem) : base("ModOrganizer - Preview##previewWindow")
     {
+        RuleResultFileSystem = ruleResultFileSystem;
+
         SizeConstraints = new()
         {
             MinimumSize = new(375, 330),
             MaximumSize = new(float.MaxValue, float.MaxValue)
         };
-
-        RuleResultFileSystem = ruleResultFileSystem;
     }
 
     public override void Draw()

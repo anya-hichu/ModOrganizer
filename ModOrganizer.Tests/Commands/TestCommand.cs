@@ -4,6 +4,10 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Commands;
 using ModOrganizer.Tests.Dalamuds.CommandManagers;
 using ModOrganizer.Tests.Systems;
+using ModOrganizer.Tests.Windows.Togglers;
+using ModOrganizer.Windows;
+using ModOrganizer.Windows.Configs;
+using ModOrganizer.Windows.Togglers;
 
 namespace ModOrganizer.Tests.Commands;
 
@@ -74,7 +78,14 @@ public class TestCommand
     }
 
     [TestMethod]
-    public void TestHandleToggleAboutWindow()
+    [DataRow("about", typeof(AboutWindow))]
+    [DataRow("backup", typeof(BackupWindow))]
+    [DataRow("config", typeof(ConfigWindow))]
+    [DataRow("config export", typeof(ConfigExportWindow))]
+    [DataRow("config import", typeof(ConfigImportWindow))]
+    [DataRow("main", typeof(MainWindow))]
+    [DataRow("preview", typeof(PreviewWindow))]
+    public void TestHandleToggleWindow(string arguments, Type expectedType)
     {
         var managerObserver = new StubObserver();
         var toggleObserver = new StubObserver();
@@ -83,7 +94,8 @@ public class TestCommand
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
-            .WithToggleAboutWindow(StubAction.WithObserver(toggleObserver))
+            .WithStubbableWindowTogglerDefaults()
+            .WithStubbableWindowTogglerObserver(toggleObserver)
             .Build();
 
         var managerCalls = managerObserver.GetCalls();
@@ -92,152 +104,11 @@ public class TestCommand
         var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
 
         Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "about");
+        commandInfo.Handler.Invoke(Command.NAME, arguments);
 
-        Assert.HasCount(1, toggleObserver.GetCalls());
-    }
+        var toggleCalls = toggleObserver.GetCalls();
+        Assert.HasCount(1, toggleCalls);
 
-    [TestMethod]
-    public void TestHandleToggleBackupWindow()
-    {
-        var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
-
-        var command = new CommandBuilder()
-            .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithToggleBackupWindow(StubAction.WithObserver(toggleObserver))
-            .Build();
-
-        var managerCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, managerCalls);
-
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
-
-        Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "backup");
-
-        Assert.HasCount(1, toggleObserver.GetCalls());
-    }
-
-    [TestMethod]
-    public void TestHandleToggleConfigWindow()
-    {
-        var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
-
-        var command = new CommandBuilder()
-            .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithToggleConfigWindow(StubAction.WithObserver(toggleObserver))
-            .Build();
-
-        var managerCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, managerCalls);
-
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
-
-        Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "config");
-
-        Assert.HasCount(1, toggleObserver.GetCalls());
-    }
-
-    [TestMethod]
-    public void TestHandleToggleConfigExportWindow()
-    {
-        var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
-
-        var command = new CommandBuilder()
-            .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithToggleConfigExportWindow(StubAction.WithObserver(toggleObserver))
-            .Build();
-
-        var managerCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, managerCalls);
-
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
-
-        Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "config export");
-
-        Assert.HasCount(1, toggleObserver.GetCalls());
-    }
-
-    [TestMethod]
-    public void TestHandleToggleConfigImportWindow()
-    {
-        var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
-
-        var command = new CommandBuilder()
-            .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithToggleConfigImportWindow(StubAction.WithObserver(toggleObserver))
-            .Build();
-
-        var managerCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, managerCalls);
-
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
-
-        Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "config import");
-
-        Assert.HasCount(1, toggleObserver.GetCalls());
-    }
-
-    [TestMethod]
-    public void TestHandleToggleMainWindow()
-    {
-        var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
-
-        var command = new CommandBuilder()
-            .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithToggleMainWindow(StubAction.WithObserver(toggleObserver))
-            .Build();
-
-        var managerCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, managerCalls);
-
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
-
-        Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "main");
-
-        Assert.HasCount(1, toggleObserver.GetCalls());
-    }
-
-    [TestMethod]
-    public void TestHandleTogglePreviewWindow()
-    {
-        var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
-
-        var command = new CommandBuilder()
-            .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
-            .WithTogglePreviewWindow(StubAction.WithObserver(toggleObserver))
-            .Build();
-
-        var managerCalls = managerObserver.GetCalls();
-        Assert.HasCount(1, managerCalls);
-
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
-
-        Assert.IsNotNull(commandInfo);
-        commandInfo.Handler.Invoke(Command.NAME, "preview");
-
-        Assert.HasCount(1, toggleObserver.GetCalls());
+        Assert.AreEqual(expectedType, toggleCalls[0].StubbedMethod.GetGenericArguments()[0]);
     }
 }

@@ -17,6 +17,7 @@
         <Add FullName="ModOrganizer.Mods.IModInterop!"/>
         <Add FullName="ModOrganizer.Mods.IModProcessor!"/>
         <Add FullName="ModOrganizer.Rules.IRuleEvaluator!"/>
+        <Add FullName="ModOrganizer.Windows.Togglers.IWindowToggler"/>
     </StubGeneration>
     <ShimGeneration>
         <Clear/>

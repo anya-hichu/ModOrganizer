@@ -1,5 +1,7 @@
 using Dalamud.Plugin.Services;
-using System;
+using ModOrganizer.Windows;
+using ModOrganizer.Windows.Configs;
+using ModOrganizer.Windows.Togglers;
 
 namespace ModOrganizer.Commands;
 
@@ -10,27 +12,13 @@ public class Command : ICommand
 
     private ICommandManager CommandManager { get; init; }
     private ICommandPrinter CommandPrinter { get; init; }
-    private Action ToggleAboutWindow { get; init; }
-    private Action ToggleBackupWindow { get; init; }
-    private Action ToggleConfigWindow { get; init; }
-    private Action ToggleConfigExportWindow { get; init; }
-    private Action ToggleConfigImportWindow { get; init; }
-    private Action ToggleMainWindow { get; init; }
-    private Action TogglePreviewWindow { get; init; }
+    private IWindowToggler WindowToggler { get; init; }
 
-    public Command(ICommandManager commandManager, ICommandPrinter commandPrinter, Action toggleAboutWindow, Action toggleBackupWindow, Action toggleConfigWindow, Action toggleConfigExportWindow, 
-        Action toggleConfigImportWindow, Action toggleMainWindow, Action togglePreviewWindow)
+    public Command(ICommandManager commandManager, ICommandPrinter commandPrinter, IWindowToggler windowToggler)
     {
         CommandManager = commandManager;
         CommandPrinter = commandPrinter;
-
-        ToggleAboutWindow = toggleAboutWindow;
-        ToggleBackupWindow = toggleBackupWindow;
-        ToggleConfigWindow = toggleConfigWindow;
-        ToggleConfigExportWindow = toggleConfigExportWindow;
-        ToggleConfigImportWindow = toggleConfigImportWindow;
-        ToggleMainWindow = toggleMainWindow;
-        TogglePreviewWindow = togglePreviewWindow;
+        WindowToggler = windowToggler;
 
         CommandManager.AddHandler(NAME, new(Process)
         {
@@ -40,30 +28,30 @@ public class Command : ICommand
 
     public void Dispose() => CommandManager.RemoveHandler(NAME);
 
-    private void Process(string _, string subcommand)
+    private void Process(string _, string arguments)
     {
-        switch (subcommand.Trim())
+        switch (arguments.Trim())
         {
             case "about":
-                ToggleAboutWindow.Invoke();
+                WindowToggler.Toggle<AboutWindow>();
                 break;
             case "backup":
-                ToggleBackupWindow.Invoke();
+                WindowToggler.Toggle<BackupWindow>();
                 break;
             case "config":
-                ToggleConfigWindow.Invoke();
+                WindowToggler.Toggle<ConfigWindow>();
                 break;
             case "config export":
-                ToggleConfigExportWindow.Invoke();
+                WindowToggler.Toggle<ConfigExportWindow>();
                 break;
             case "config import":
-                ToggleConfigImportWindow.Invoke();
+                WindowToggler.Toggle<ConfigImportWindow>();
                 break;
             case "main":
-                ToggleMainWindow.Invoke();
+                WindowToggler.Toggle<MainWindow>();
                 break;
             case "preview":
-                TogglePreviewWindow.Invoke();
+                WindowToggler.Toggle<PreviewWindow>();
                 break;
             default:
                 CommandPrinter.PrintError(HELP_MESSAGE);

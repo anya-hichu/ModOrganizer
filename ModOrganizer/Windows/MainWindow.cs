@@ -9,11 +9,12 @@ using ModOrganizer.Configs;
 using ModOrganizer.Mods;
 using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
+using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.Results;
-using ModOrganizer.Windows.Results.Evaluations;
 using ModOrganizer.Windows.Results.Rules;
 using ModOrganizer.Windows.Results.Selectables;
 using ModOrganizer.Windows.Results.Showables;
+using ModOrganizer.Windows.Togglers;
 using Scriban;
 using Scriban.Helpers;
 using Scriban.Parsing;
@@ -30,13 +31,11 @@ namespace ModOrganizer.Windows;
 public class MainWindow : Window
 {
     private IConfig Config { get; init; }
+    private EvaluationResultState EvaluationResultState { get; init; }
     private IModInterop ModInterop { get; init; }
     private IModFileSystem ModFileSystem { get; init; }
-    private Action TogglePreviewWindow { get; init; }
-    private Action ToggleBackupWindow { get; init; }
-
     private RuleResultState RuleResultState { get; init; }
-    private EvaluationResultState EvaluationResultState { get; init; }
+    private IWindowToggler WindowToggler { get; init; }
 
     private string Filter { get; set; } = string.Empty;
     private HashSet<string> SelectedModDirectories { get; set; } = [];
@@ -44,9 +43,15 @@ public class MainWindow : Window
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(IConfig config, IModInterop modInterop, EvaluationResultState evaluationResultState, IModFileSystem modFileSystem, RuleResultState ruleResultState, 
-        Action toggleBackupWindow, Action toggleConfigWindow, Action togglePreviewWindow) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(IConfig config, IModInterop modInterop, EvaluationResultState evaluationResultState, IModFileSystem modFileSystem, RuleResultState ruleResultState, IWindowToggler windowToggler) : base("ModOrganizer - Main##mainWindow")
     {
+        Config = config;
+        EvaluationResultState = evaluationResultState;
+        ModInterop = modInterop;
+        ModFileSystem = modFileSystem;
+        RuleResultState = ruleResultState;
+        WindowToggler = windowToggler;
+
         SizeConstraints = new()
         {
             MinimumSize = new(1200, 850),
@@ -54,30 +59,25 @@ public class MainWindow : Window
         };
 
         TitleBarButtons = [
-            new(){ 
+            new()
+            {
                 Icon = FontAwesomeIcon.Cog, 
                 ShowTooltip = () => ImGui.SetTooltip("Toggle config window"), 
-                Click = _ => toggleConfigWindow.Invoke() 
+                Click = _ => WindowToggler.Toggle<ConfigWindow>() 
             },
-            new() {
+            new() 
+            {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
-                Click = _ => toggleBackupWindow.Invoke()
+                Click = _ => WindowToggler.Toggle<BackupWindow>()
             },
-            new() {
+            new() 
+            {
                 Icon = FontAwesomeIcon.Eye,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle preview window"),
-                Click = _ => togglePreviewWindow.Invoke()
+                Click = _ => WindowToggler.Toggle<PreviewWindow>()
             }
         ];
-
-        Config = config;
-        EvaluationResultState = evaluationResultState;
-        ModInterop = modInterop;
-        ModFileSystem = modFileSystem;
-        RuleResultState = ruleResultState;
-        TogglePreviewWindow = togglePreviewWindow;
-        ToggleBackupWindow = toggleBackupWindow;
 
         ModInterop.OnModDeleted += OnModDeleted;
         ModInterop.OnModMoved += OnModMoved;
@@ -289,10 +289,10 @@ public class MainWindow : Window
         if (ImGui.Checkbox("Show Same Paths##showRuleStateSameRule", ref showSamePaths)) RuleResultState.ShowSamePaths = showSamePaths;
 
         ImGui.SameLine(availableRegion.X - 300);
-        if (ImGui.Button("Show Backups##toggleBackupWindow")) ToggleBackupWindow();
+        if (ImGui.Button("Show Backups##toggleBackupWindow")) WindowToggler.Toggle<BackupWindow>();
 
         ImGui.SameLine();
-        if (ImGui.Button("Preview Tree##togglePreviewWindow")) TogglePreviewWindow();
+        if (ImGui.Button("Preview Tree##togglePreviewWindow")) WindowToggler.Toggle<PreviewWindow>();
 
         ImGui.SameLine();
         using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DalamudRed))

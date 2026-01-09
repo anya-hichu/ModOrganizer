@@ -4,6 +4,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using ModOrganizer.Configs;
 using ModOrganizer.Rules;
+using ModOrganizer.Windows.Togglers;
 using Penumbra.Api.IpcSubscribers;
 using System;
 using System.Linq;
@@ -15,6 +16,7 @@ public class ConfigWindow : Window
 {
     private IConfig Config { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
+    private IWindowToggler WindowToggler { get; init; }
     
 
     private RateLimitedAction SaveConfigLaterAction { get; init; }
@@ -22,8 +24,12 @@ public class ConfigWindow : Window
     private RegisterSettingsSection RegisterSettingsSection { get; init; }
     private UnregisterSettingsSection UnregisterSettingsSection { get; init; }
 
-    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, Action toggleBackupWindow) : base("ModOrganizer - Config##configWindow")
+    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, IWindowToggler windowToggler) : base("ModOrganizer - Config##configWindow")
     {
+        Config = config;
+        PluginInterface = pluginInterface;
+        WindowToggler = windowToggler;
+
         SizeConstraints = new()
         {
             MinimumSize = new(375, 330),
@@ -34,12 +40,9 @@ public class ConfigWindow : Window
             new() {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
-                Click = _ => toggleBackupWindow.Invoke()
+                Click = _ => WindowToggler.Toggle<BackupWindow>()
             }
         ];
-
-        Config = config;
-        PluginInterface = pluginInterface;
 
         SaveConfigLaterAction = Debouncer.Debounce(SaveConfig, TimeSpan.FromSeconds(1));
 
