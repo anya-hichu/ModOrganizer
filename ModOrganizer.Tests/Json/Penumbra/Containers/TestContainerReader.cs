@@ -30,7 +30,7 @@ public class TestContainerReader
         var containerReader = new ContainerReaderBuilder()
             .WithAssertIsValue(true)
             .WithAssertIsStringDict(filesOrFileSwaps)
-            .WithManipulationWrapperReaderTryReadMany(manipulations)
+            .WithManipulationWrapperGenericReaderTryReadMany(manipulations)
             .Build();
 
         var success = containerReader.TryRead(element, out var container);

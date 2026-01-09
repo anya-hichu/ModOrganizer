@@ -96,17 +96,9 @@ public class PluginProvider : CachedProvider
             .AddSingleton<IReader<NamedContainer>, NamedContainerReader>()
 
             .AddSingleton<IGroupBaseReader, GroupBaseReader>()
-
-            .AddSingleton<IReader<Group>, GroupCombiningReader>()
             .AddKeyedSingleton<IReader<Group>, GroupCombiningReader>(GroupCombiningReader.TYPE)
-
-            .AddSingleton<IReader<Group>, GroupImcReader>()
             .AddKeyedSingleton<IReader<Group>, GroupImcReader>(GroupImcReader.TYPE)
-
-            .AddSingleton<IReader<Group>, GroupMultiReader>()
             .AddKeyedSingleton<IReader<Group>, GroupMultiReader>(GroupMultiReader.TYPE)
-
-            .AddSingleton<IReader<Group>, GroupSingleReader>()
             .AddKeyedSingleton<IReader<Group>, GroupSingleReader>(GroupSingleReader.TYPE)
 
             .AddSingleton<IGroupGenericReader, GroupGenericReader>(p => new(
@@ -124,44 +116,34 @@ public class PluginProvider : CachedProvider
 
             .AddSingleton<IReader<MetaAtchEntry>, MetaAtchEntryReader>()
             .AddSingleton<IReader<MetaAtch>, MetaAtchReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaAtchWrapperReader>()
-            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtchWrapperReader.TYPE)
+            .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtchWrapperReader>(MetaAtchWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaAtr>, MetaAtrReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaAtrWrapperReader>(MetaAtrWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaEqdp>, MetaEqdpReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqdpWrapperReader>(MetaEqdpWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaEqp>, MetaEqpReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEqpWrapperReader>(MetaEqpWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaEst>, MetaEstReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaEstWrapperReader>(MetaEstWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaGeqp>, MetaGeqpReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGeqpWrapperReader>(MetaGeqpWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaGmpEntry>, MetaGmpEntryReader>()
             .AddSingleton<IReader<MetaGmp>, MetaGmpReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaGmpWrapperReader>(MetaGmpWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaImc>, MetaImcReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaImcWrapperReader>(MetaImcWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaRsp>, MetaRspReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaRspWrapperReader>(MetaRspWrapperReader.TYPE)
 
             .AddSingleton<IReader<MetaShp>, MetaShpReader>()
-            .AddSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>()
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(MetaShpWrapperReader.TYPE)
 
             .AddSingleton<IManipulationWrapperGenericReader, ManipulationWrapperGenericReader>(p => new(

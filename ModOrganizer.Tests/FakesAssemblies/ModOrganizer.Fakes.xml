@@ -265,6 +265,24 @@
         <member name="F:ModOrganizer.Json.Penumbra.LocalModDatas.Fakes.StubILocalModDataReader.TryReadManyJsonElementLocalModDataArrayOut">
             <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, LocalModData[]* instances)</summary>
         </member>
+        <member name="T:ModOrganizer.Json.Penumbra.Manipulations.Fakes.StubIManipulationWrapperGenericReader">
+            <summary>Stub type of ModOrganizer.Json.Penumbra.Manipulations.IManipulationWrapperGenericReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Penumbra.Manipulations.Fakes.StubIManipulationWrapperGenericReader.#ctor">
+            <summary>Initializes a new instance of type StubIManipulationWrapperGenericReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Penumbra.Manipulations.Fakes.StubIManipulationWrapperGenericReader.ModOrganizer#Json#Readers#IReader{ModOrganizer#Json#Penumbra#Manipulations#ManipulationWrapper}#TryRead(System.Text.Json.JsonElement,ModOrganizer.Json.Penumbra.Manipulations.ManipulationWrapper@)">
+            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement element, ManipulationWrapper* instance)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Penumbra.Manipulations.Fakes.StubIManipulationWrapperGenericReader.ModOrganizer#Json#Readers#IReader{ModOrganizer#Json#Penumbra#Manipulations#ManipulationWrapper}#TryReadMany(System.Text.Json.JsonElement,ModOrganizer.Json.Penumbra.Manipulations.ManipulationWrapper[]@)">
+            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, ManipulationWrapper[]* instances)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Penumbra.Manipulations.Fakes.StubIManipulationWrapperGenericReader.TryReadJsonElementManipulationWrapperOut">
+            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement element, ManipulationWrapper* instance)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Penumbra.Manipulations.Fakes.StubIManipulationWrapperGenericReader.TryReadManyJsonElementManipulationWrapperArrayOut">
+            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, ManipulationWrapper[]* instances)</summary>
+        </member>
         <member name="T:ModOrganizer.Json.Penumbra.ModMetas.Fakes.StubIModMetaReader">
             <summary>Stub type of ModOrganizer.Json.Penumbra.ModMetas.IModMetaReader</summary>
         </member>

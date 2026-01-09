@@ -1,7 +1,5 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Penumbra.Groups;
 using ModOrganizer.Json.Penumbra.Manipulations;
-using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Asserts;
 using System;
@@ -11,7 +9,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Containers;
 
-public class ContainerReader(IAssert assert, IReader<ManipulationWrapper> manipulationWrapperReader, IPluginLog pluginLog) : Reader<Container>(assert, pluginLog)
+public class ContainerReader(IAssert assert, IManipulationWrapperGenericReader manipulationWrapperGenericReader, IPluginLog pluginLog) : Reader<Container>(assert, pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out Container? instance)
     {
@@ -34,7 +32,7 @@ public class ContainerReader(IAssert assert, IReader<ManipulationWrapper> manipu
         }
 
         var manipulations = Array.Empty<ManipulationWrapper>();
-        if (element.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && manipulationsProperty.ValueKind != JsonValueKind.Null && !manipulationWrapperReader.TryReadMany(manipulationsProperty, out manipulations))
+        if (element.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && manipulationsProperty.ValueKind != JsonValueKind.Null && !manipulationWrapperGenericReader.TryReadMany(manipulationsProperty, out manipulations))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(Container.Manipulations)}] for [{nameof(Container)}]: {element}");
             return false;
