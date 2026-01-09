@@ -6,7 +6,6 @@
         <Add FullName="ModOrganizer.Commands.ICommandPrinter!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
         <Add FullName="ModOrganizer.Configs.IConfigDefault!"/>
-        <Add FullName="ModOrganizer.Rules.IRuleDefaults!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.DefaultMods.IDefaultModReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.Groups.IGroupGenericReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.LocalModDatas.ILocalModDataReader!"/>
@@ -18,6 +17,7 @@
         <Add FullName="ModOrganizer.Json.Readers.IReader`1!"/>
         <Add FullName="ModOrganizer.Mods.IModInterop!"/>
         <Add FullName="ModOrganizer.Mods.IModProcessor!"/>
+        <Add FullName="ModOrganizer.Rules.IRuleDefaults!"/>
         <Add FullName="ModOrganizer.Rules.IRuleEvaluator!"/>
         <Add FullName="ModOrganizer.Virtuals.IVirtualMatcher!"/>
         <Add FullName="ModOrganizer.Windows.Togglers.IWindowToggler"/>
