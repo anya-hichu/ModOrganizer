@@ -3,7 +3,6 @@ using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Commands;
 using ModOrganizer.Tests.Dalamuds.CommandManagers;
-using ModOrganizer.Tests.Systems;
 using ModOrganizer.Tests.Windows.Togglers;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
@@ -30,9 +29,11 @@ public class TestCommand
 
         var beforeCall = beforeCalls[0];
         Assert.AreEqual(nameof(ICommandManager.AddHandler), beforeCall.StubbedMethod.Name);
-        Assert.AreEqual(Command.NAME, beforeCall.GetArguments()[0] as string);
 
-        var commandInfo = beforeCall.GetArguments()[1] as CommandInfo;
+        var beforeCallArguments = beforeCall.GetArguments();
+        Assert.AreEqual(Command.NAME, beforeCallArguments[0] as string);
+
+        var commandInfo = beforeCallArguments[1] as CommandInfo;
         Assert.IsNotNull(commandInfo);
         Assert.AreEqual(Command.HELP_MESSAGE, commandInfo.HelpMessage);
 
@@ -54,9 +55,8 @@ public class TestCommand
         var printerObserver = new StubObserver();
 
         var command = new CommandBuilder()
+            .WithCommandManagerDefaults()
             .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
             .WithCommandPrinterDefaults()
             .WithCommandPrinterObserver(printerObserver)
             .Build();
@@ -64,9 +64,12 @@ public class TestCommand
         var managerCalls = managerObserver.GetCalls();
         Assert.HasCount(1, managerCalls);
 
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
+        var managerCall = managerCalls[0];
+        Assert.AreEqual(nameof(ICommandManager.AddHandler), managerCall.StubbedMethod.Name);
 
+        var commandInfo = managerCall.GetArguments()[1] as CommandInfo;
         Assert.IsNotNull(commandInfo);
+
         commandInfo.Handler.Invoke(Command.NAME, string.Empty);
 
         var printerCalls = printerObserver.GetCalls();
@@ -88,12 +91,12 @@ public class TestCommand
     public void TestHandleToggleWindow(string arguments, Type expectedType)
     {
         var managerObserver = new StubObserver();
+
         var togglerObserver = new StubObserver();
 
         var command = new CommandBuilder()
+            .WithCommandManagerDefaults()
             .WithCommandManagerObserver(managerObserver)
-            .WithCommandManagerAddHandler(true)
-            .WithCommandManagerRemoveHandler(true)
             .WithStubbableWindowTogglerDefaults()
             .WithStubbableWindowTogglerObserver(togglerObserver)
             .Build();
@@ -101,9 +104,12 @@ public class TestCommand
         var managerCalls = managerObserver.GetCalls();
         Assert.HasCount(1, managerCalls);
 
-        var commandInfo = managerCalls[0].GetArguments()[1] as CommandInfo;
+        var managerCall = managerCalls[0];
+        Assert.AreEqual(nameof(ICommandManager.AddHandler), managerCall.StubbedMethod.Name);
 
+        var commandInfo = managerCall.GetArguments()[1] as CommandInfo;
         Assert.IsNotNull(commandInfo);
+
         commandInfo.Handler.Invoke(Command.NAME, arguments);
 
         var togglerCalls = togglerObserver.GetCalls();

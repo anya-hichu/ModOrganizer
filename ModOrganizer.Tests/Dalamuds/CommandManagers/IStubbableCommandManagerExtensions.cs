@@ -4,6 +4,13 @@ namespace ModOrganizer.Tests.Dalamuds.CommandManagers;
 
 public static class IStubbableCommandManagerExtensions
 {
+    public static T WithCommandManagerDefaults<T>(this T stubbable) where T : IStubbableCommandManager
+    {
+        stubbable.CommandManagerStub.BehaveAsDefaultValue();
+
+        return stubbable;
+    }
+
     public static T WithCommandManagerObserver<T>(this T stubbable, IStubObserver observer) where T : IStubbableCommandManager
     {
         stubbable.CommandManagerStub.InstanceObserver = observer;

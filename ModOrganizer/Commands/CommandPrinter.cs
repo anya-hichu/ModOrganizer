@@ -4,5 +4,5 @@ namespace ModOrganizer.Commands;
 
 public class CommandPrinter(IChatGui? maybeChatGui) : ICommandPrinter
 {
-    public void PrintError(string message) => maybeChatGui?.PrintError(message, nameof(ModOrganizer));
+    public void PrintError(string message) => maybeChatGui?.PrintError(message);
 }
