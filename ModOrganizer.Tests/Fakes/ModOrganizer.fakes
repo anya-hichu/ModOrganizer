@@ -5,6 +5,8 @@
         <Add FullName="ModOrganizer.Backups.IBackupManager!"/>
         <Add FullName="ModOrganizer.Commands.ICommandPrinter!"/>
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
+        <Add FullName="ModOrganizer.Configs.IConfigDefault!"/>
+        <Add FullName="ModOrganizer.Rules.IRuleDefaults!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.DefaultMods.IDefaultModReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.Groups.IGroupGenericReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.LocalModDatas.ILocalModDataReader!"/>

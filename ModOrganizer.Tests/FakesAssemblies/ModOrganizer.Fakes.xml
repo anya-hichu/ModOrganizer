@@ -175,6 +175,18 @@
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
         </member>
+        <member name="T:ModOrganizer.Configs.Fakes.StubIConfigDefault">
+            <summary>Stub type of ModOrganizer.Configs.IConfigDefault</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfigDefault.#ctor">
+            <summary>Initializes a new instance of type StubIConfigDefault</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Fakes.StubIConfigDefault.Build">
+            <summary>Sets the stub of IBuilder`1.Build(IBuilder`1 this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Fakes.StubIConfigDefault.ModOrganizer#Shared#IBuilder{ModOrganizer#Configs#IConfig}#Build">
+            <summary>Sets the Stub of IBuilder`1.Build(IBuilder`1 this)</summary>
+        </member>
         <member name="T:ModOrganizer.Json.Penumbra.DefaultMods.Fakes.StubIDefaultModReader">
             <summary>Stub type of ModOrganizer.Json.Penumbra.DefaultMods.IDefaultModReader</summary>
         </member>
@@ -534,6 +546,18 @@
         </member>
         <member name="F:ModOrganizer.Mods.Fakes.StubIModProcessor.TryProcessStringStringOutBoolean">
             <summary>Sets the stub of IModProcessor.TryProcess(IModProcessor this, String modDirectory, String* newModPath, Boolean dryRun)</summary>
+        </member>
+        <member name="T:ModOrganizer.Rules.Fakes.StubIRuleDefaults">
+            <summary>Stub type of ModOrganizer.Rules.IRuleDefaults</summary>
+        </member>
+        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleDefaults.#ctor">
+            <summary>Initializes a new instance of type StubIRuleDefaults</summary>
+        </member>
+        <member name="F:ModOrganizer.Rules.Fakes.StubIRuleDefaults.Build">
+            <summary>Sets the stub of IBuilder`1.Build(IBuilder`1 this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Rules.Fakes.StubIRuleDefaults.ModOrganizer#Shared#IBuilder{System#Collections#Generic#HashSet{ModOrganizer#Rules#Rule}}#Build">
+            <summary>Sets the Stub of IBuilder`1.Build(IBuilder`1 this)</summary>
         </member>
         <member name="T:ModOrganizer.Rules.Fakes.StubIRuleEvaluator">
             <summary>Stub type of ModOrganizer.Rules.IRuleEvaluator</summary>

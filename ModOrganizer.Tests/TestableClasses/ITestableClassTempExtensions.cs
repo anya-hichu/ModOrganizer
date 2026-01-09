@@ -1,4 +1,4 @@
-namespace ModOrganizer.Tests.Testables;
+namespace ModOrganizer.Tests.TestableClasses;
 
 public static class ITestableClassTempExtensions
 {

@@ -1,5 +1,4 @@
 using Dalamud.Plugin;
-using ModOrganizer.Shared;
 
 namespace ModOrganizer.Configs;
 

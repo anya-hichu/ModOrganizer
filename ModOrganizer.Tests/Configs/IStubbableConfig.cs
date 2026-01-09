@@ -4,5 +4,5 @@ namespace ModOrganizer.Tests.Configs;
 
 public interface IStubbableConfig
 {
-    StubIConfig ConfigStub { get;}
+    StubIConfig ConfigStub { get; }
 }

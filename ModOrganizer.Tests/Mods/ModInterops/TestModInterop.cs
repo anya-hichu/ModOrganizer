@@ -11,7 +11,7 @@ using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers.Files;
 using ModOrganizer.Tests.Systems;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 using Penumbra.Api.Enums;
 
 namespace ModOrganizer.Tests.Mods.ModInterops;

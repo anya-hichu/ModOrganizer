@@ -6,7 +6,7 @@ using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModProcessors;
 using ModOrganizer.Tests.Dalamuds.NotificationManagers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 
 namespace ModOrganizer.Tests.Mods.ModAutoProcessors;
 

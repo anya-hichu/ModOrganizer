@@ -2,7 +2,7 @@ using ModOrganizer.Tests.Dalamuds.CommandManagers;
 using ModOrganizer.Tests.Dalamuds.PenumbraApis;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 using Penumbra.Api.Enums;
 
 namespace ModOrganizer.Tests;

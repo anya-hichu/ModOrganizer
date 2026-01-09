@@ -3,7 +3,7 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 
 namespace ModOrganizer.Tests.Rules.Evaluators;
 

@@ -9,7 +9,7 @@ using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers.Files;
 using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Systems.DateTimeOffsets;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 
 namespace ModOrganizer.Tests.Backups;
 

@@ -1,5 +1,5 @@
 using ModOrganizer.Tests.Mods.ModInterops;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 
 namespace ModOrganizer.Tests.Mods.ModFileSystems;
 

@@ -4,7 +4,7 @@ using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Mods.ModInterops;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Testables;
+using ModOrganizer.Tests.TestableClasses;
 using Penumbra.Api.Enums;
 using ModOrganizer.Backups;
 using ModOrganizer.Tests.Backups;

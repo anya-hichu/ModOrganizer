@@ -1,3 +1,4 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
 
 namespace ModOrganizer.Windows;
@@ -15,6 +16,6 @@ public class AboutWindow : Window
 
     public override void Draw()
     {
-        throw new System.NotImplementedException();
+        ImGui.Text("test");
     }
 }

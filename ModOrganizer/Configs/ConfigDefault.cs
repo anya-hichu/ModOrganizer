@@ -4,5 +4,5 @@ namespace ModOrganizer.Configs;
 
 public class ConfigDefault(IRuleDefaults ruleDefaults) : IConfigDefault
 {
-    public Config Build() => new() { Rules = ruleDefaults.Build() };
+    public IConfig Build() => new Config() { Rules = ruleDefaults.Build() };
 }

@@ -1,13 +1,10 @@
 using ModOrganizer.Rules;
-using ModOrganizer.Tests.Testables;
 
 namespace ModOrganizer.Tests.Rules;
 
 [TestClass]
-public class TestRuleDefault : ITestableClassTemp
+public class TestRuleDefault
 {
-    public TestContext TestContext { get; set; }
-
     [TestMethod]
     public void TestGet()
     {
