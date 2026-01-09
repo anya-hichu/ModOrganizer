@@ -2,6 +2,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using ModOrganizer.Commands;
 using ModOrganizer.Mods;
+using ModOrganizer.Providers;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 

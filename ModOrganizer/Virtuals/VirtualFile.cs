@@ -1,4 +1,3 @@
-using ModOrganizer.Shared;
 using System;
 
 namespace ModOrganizer.Virtuals;

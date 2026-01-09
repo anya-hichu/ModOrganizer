@@ -13,25 +13,30 @@ public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolde
     public HashSet<VirtualFolder> Folders { get; init; } = [];
     public HashSet<VirtualFile> Files { get; init; } = [];
 
-    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? filteredFolder) => TrySearch(new VirtualAttributesMatcher(filter), out filteredFolder);
+    public bool TrySearch(string filter, [NotNullWhen(true)] out VirtualFolder? result) => TrySearch(new VirtualAttributesMatcher(filter), out result);
 
-    public bool TrySearch(VirtualMatcher matcher, [NotNullWhen(true)] out VirtualFolder? filteredFolder)
+    public bool TrySearch(VirtualMatcher matcher, [NotNullWhen(true)] out VirtualFolder? result)
     {
-        if (matcher.Matches(this))
+        result = null;
+
+        if (matcher.MatchesFolder(this))
         {
-            filteredFolder = this;
+            result = this;
             return true;
         }
 
-        filteredFolder = new()
+        var filteredfolder = new VirtualFolder()
         {
             Name = Name,
             Path = Path,
             Folders = [.. Folders.SelectMany<VirtualFolder, VirtualFolder>(f => f.TrySearch(matcher, out var filteredSubfolder) ? [filteredSubfolder] : [])],
-            Files = [.. Files.Where(matcher.Matches)]
+            Files = [.. Files.Where(matcher.MatchesFile)]
         };
 
-        return !filteredFolder.IsEmpty();
+        if (filteredfolder.IsEmpty()) return false;
+
+        result = filteredfolder;
+        return true;
     }
     
     public bool IsEmpty() => Files.Count == 0 && Folders.All(f => f.IsEmpty());

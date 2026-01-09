@@ -3,7 +3,7 @@ using System;
 
 namespace ModOrganizer.Mods;
 
-public interface IModFileSystem : IDisposable, IVirtualFileSystem
+public interface IModFileSystem : IVirtualFileSystem, IDisposable
 {
     //Empty
 }

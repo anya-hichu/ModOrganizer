@@ -2,9 +2,9 @@ using System.Linq;
 
 namespace ModOrganizer.Virtuals;
 
-public abstract class VirtualMatcher
+public abstract class VirtualMatcher : IVirtualMatcher
 {
-    public virtual bool Matches(VirtualFolder folder) => folder.Files.All(Matches) && folder.Folders.All(Matches);
+    public abstract bool MatchesFile(VirtualFile file);
 
-    public abstract bool Matches(VirtualFile file);
+    public virtual bool MatchesFolder(VirtualFolder folder) => folder.Files.All(MatchesFile) && folder.Folders.All(MatchesFolder);
 }

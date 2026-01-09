@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace ModOrganizer.Shared;
+namespace ModOrganizer.Providers;
 
 public abstract class CachedProvider : IDisposable
 {

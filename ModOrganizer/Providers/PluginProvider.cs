@@ -30,15 +30,13 @@ using ModOrganizer.Json.Readers.Asserts;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
-using ModOrganizer.Shared;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.Results;
 using ModOrganizer.Windows.Results.Rules;
 using ModOrganizer.Windows.Togglers;
-using System;
 
-namespace ModOrganizer;
+namespace ModOrganizer.Providers;
 
 public class PluginProvider : CachedProvider
 {

@@ -8,7 +8,7 @@ using ModOrganizer.Shared;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups;
 
-public class GroupReaderFactoryBuilder : IBuilder<GroupGenericReader>
+public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>
 {
     public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 

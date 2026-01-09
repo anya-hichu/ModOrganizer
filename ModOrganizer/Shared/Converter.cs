@@ -1,7 +1,6 @@
 using Dalamud.Plugin.Services;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 namespace ModOrganizer.Shared;
 

@@ -553,6 +553,24 @@
         <member name="F:ModOrganizer.Rules.Fakes.StubIRuleEvaluator.TryEvaluateRuleModInfoStringOut">
             <summary>Sets the stub of IRuleEvaluator.TryEvaluate(IRuleEvaluator this, Rule rule, ModInfo modInfo, String* path)</summary>
         </member>
+        <member name="T:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher">
+            <summary>Stub type of ModOrganizer.Virtuals.IVirtualMatcher</summary>
+        </member>
+        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.#ctor">
+            <summary>Initializes a new instance of type StubIVirtualMatcher</summary>
+        </member>
+        <member name="F:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.MatchesFileVirtualFile">
+            <summary>Sets the stub of IVirtualMatcher.MatchesFile(IVirtualMatcher this, VirtualFile file)</summary>
+        </member>
+        <member name="F:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.MatchesFolderVirtualFolder">
+            <summary>Sets the stub of IVirtualMatcher.MatchesFolder(IVirtualMatcher this, VirtualFolder folder)</summary>
+        </member>
+        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#MatchesFile(ModOrganizer.Virtuals.VirtualFile)">
+            <summary>Sets the Stub of IVirtualMatcher.MatchesFile(IVirtualMatcher this, VirtualFile file)</summary>
+        </member>
+        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#MatchesFolder(ModOrganizer.Virtuals.VirtualFolder)">
+            <summary>Sets the Stub of IVirtualMatcher.MatchesFolder(IVirtualMatcher this, VirtualFolder folder)</summary>
+        </member>
         <member name="T:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler">
             <summary>Stub type of ModOrganizer.Windows.Togglers.IWindowToggler</summary>
         </member>
