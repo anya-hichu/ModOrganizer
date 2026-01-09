@@ -88,14 +88,14 @@ public class TestCommand
     public void TestHandleToggleWindow(string arguments, Type expectedType)
     {
         var managerObserver = new StubObserver();
-        var toggleObserver = new StubObserver();
+        var togglerObserver = new StubObserver();
 
         var command = new CommandBuilder()
             .WithCommandManagerObserver(managerObserver)
             .WithCommandManagerAddHandler(true)
             .WithCommandManagerRemoveHandler(true)
             .WithStubbableWindowTogglerDefaults()
-            .WithStubbableWindowTogglerObserver(toggleObserver)
+            .WithStubbableWindowTogglerObserver(togglerObserver)
             .Build();
 
         var managerCalls = managerObserver.GetCalls();
@@ -106,9 +106,11 @@ public class TestCommand
         Assert.IsNotNull(commandInfo);
         commandInfo.Handler.Invoke(Command.NAME, arguments);
 
-        var toggleCalls = toggleObserver.GetCalls();
-        Assert.HasCount(1, toggleCalls);
+        var togglerCalls = togglerObserver.GetCalls();
+        Assert.HasCount(1, togglerCalls);
 
-        Assert.AreEqual(expectedType, toggleCalls[0].StubbedMethod.GetGenericArguments()[0]);
+        var togglerCallMethod = togglerCalls[0].StubbedMethod;
+        Assert.AreEqual(nameof(IWindowToggler.Toggle), togglerCallMethod.Name);
+        Assert.AreEqual(expectedType, togglerCallMethod.GetGenericArguments()[0]);
     }
 }
