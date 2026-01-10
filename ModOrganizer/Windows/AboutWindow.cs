@@ -16,6 +16,6 @@ public class AboutWindow : Window
 
     public override void Draw()
     {
-        ImGui.Text("test");
+        ImGui.Text("About");
     }
 }

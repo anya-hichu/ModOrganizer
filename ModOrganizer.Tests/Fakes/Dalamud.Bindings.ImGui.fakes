@@ -1,0 +1,11 @@
+<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Dalamud.Bindings.ImGui"/>
+    <StubGeneration>
+        <Clear/>
+        <Add FullName="Dalamud.Bindings.ImGui.IImGui!"/>
+    </StubGeneration>
+    <ShimGeneration>
+        <Clear/>
+        <Add FullName="Dalamud.Bindings.ImGui.ImGui!"/>
+    </ShimGeneration>
+</Fakes>

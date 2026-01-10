@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Dalamud.Bindings.ImGui.Fakes</name>
+    </assembly>
+    <members>
+        <member name="T:Dalamud.Bindings.ImGui.Fakes.ShimImGui">
+            <summary>Shim type of Dalamud.Bindings.ImGui.ImGui</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.ShimImGui.#ctor">
+            <summary>Initializes a new shim instance</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.ShimImGui.#ctor(Dalamud.Bindings.ImGui.ImGui)">
+            <summary>Initializes a new shim for the given instance</summary>
+        </member>
+        <member name="T:Dalamud.Bindings.ImGui.Fakes.ShimImGui.AllInstances">
+            <summary>Define shims for all instances members</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.ShimImGui.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.ShimImGui.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:Dalamud.Bindings.ImGui.Fakes.ShimImGui.Behavior">
+            <summary>Assigns the behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:Dalamud.Bindings.ImGui.Fakes.ShimImGui.ButtonImU8StringVector2">
+            <summary>Sets the Shim of ImGui.Button(ImU8String label, Vector2 size)</summary>
+        </member>
+        <member name="P:Dalamud.Bindings.ImGui.Fakes.ShimImGui.Constructor">
+            <summary>Sets the Shim of ImGui.ImGui(ImGui this)</summary>
+        </member>
+        <member name="P:Dalamud.Bindings.ImGui.Fakes.ShimImGui.InstanceGet">
+            <summary>Sets the Shim of ImGui.get_Instance()</summary>
+        </member>
+        <member name="P:Dalamud.Bindings.ImGui.Fakes.ShimImGui.TextImU8String">
+            <summary>Sets the Shim of ImGui.Text(ImU8String text)</summary>
+        </member>
+        <member name="T:Dalamud.Bindings.ImGui.Fakes.StubIImGui">
+            <summary>Stub type of Dalamud.Bindings.ImGui.IImGui</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.#ctor">
+            <summary>Initializes a new instance of type StubIImGui</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.ButtonImU8StringVector2">
+            <summary>Sets the stub of IImGui.Button(IImGui this, ImU8String label, Vector2 size)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Button(Dalamud.Bindings.ImGui.ImU8String,System.Numerics.Vector2)">
+            <summary>Sets the Stub of IImGui.Button(IImGui this, ImU8String label, Vector2 size)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Text(Dalamud.Bindings.ImGui.ImU8String)">
+            <summary>Sets the Stub of IImGui.Text(IImGui this, ImU8String text)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.TextImU8String">
+            <summary>Sets the stub of IImGui.Text(IImGui this, ImU8String text)</summary>
+        </member>
+    </members>
+</doc>

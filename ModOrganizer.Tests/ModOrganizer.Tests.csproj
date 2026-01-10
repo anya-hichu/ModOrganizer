@@ -15,6 +15,7 @@
     
     <ItemGroup>
         <ProjectReference Include="..\ModOrganizer\ModOrganizer.csproj" />
+        <ProjectReference Include="..\ModOrganizer.Fakes\Dalamud.Bindings.ImGui\Dalamud.Bindings.ImGui.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -33,6 +34,9 @@
     <ItemGroup Condition="'$(BuildingInsideVisualStudio)' == ''">
         <Reference Include="Dalamud.14.0.0.0.Fakes">
             <HintPath>FakesAssemblies\Dalamud.14.0.0.0.Fakes.dll</HintPath>
+        </Reference>
+        <Reference Include="Dalamud.Bindings.ImGui.Fakes">
+            <HintPath>FakesAssemblies\Dalamud.Bindings.ImGui.Fakes.dll</HintPath>
         </Reference>
         <Reference Include="ModOrganizer.Fakes">
             <HintPath>FakesAssemblies\ModOrganizer.Fakes.dll</HintPath>
