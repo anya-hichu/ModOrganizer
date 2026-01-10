@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModOrganizer", "ModOrganize
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModOrganizer.Tests", "ModOrganizer.Tests\ModOrganizer.Tests.csproj", "{2FCCD91F-2644-408A-AAF4-8CBAA5CD288E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dalamud.Bindings.ImGui", "ModOrganizer.Fakes\Dalamud.Bindings.ImGui\Dalamud.Bindings.ImGui.csproj", "{D8950E82-BC9F-3CBA-6B05-D601188019F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dalamud.Bindings.ImGui", "ModOrganizer.Shims\Dalamud.Bindings.ImGui\Dalamud.Bindings.ImGui.csproj", "{D8950E82-BC9F-3CBA-6B05-D601188019F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

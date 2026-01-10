@@ -15,7 +15,7 @@
     
     <ItemGroup>
         <ProjectReference Include="..\ModOrganizer\ModOrganizer.csproj" />
-        <ProjectReference Include="..\ModOrganizer.Fakes\Dalamud.Bindings.ImGui\Dalamud.Bindings.ImGui.csproj" />
+        <ProjectReference Include="..\ModOrganizer.Shims\Dalamud.Bindings.ImGui\Dalamud.Bindings.ImGui.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
