@@ -1,3 +1,4 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Bindings.ImGui.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Shared;
@@ -22,5 +23,10 @@ public class ImGuiStubBuilder : IBuilder<StubIImGui>
         return this; 
     }
 
-    public StubIImGui Build() => ImGuiStub;
+    public StubIImGui Build() 
+    {
+        ImGui.Instance = ImGuiStub;
+
+        return ImGuiStub;
+    } 
 }

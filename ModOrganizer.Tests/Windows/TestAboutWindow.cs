@@ -21,10 +21,6 @@ public class TestAboutWindow
             .WithObserver(observer)
             .Build();
 
-        using var _ = new ImGuiShimsContextBuilder()
-            .WithImGuiInstance(stub)
-            .Build();
-
         aboutWindow.Draw();
 
         var calls = observer.GetCalls();

@@ -4,8 +4,5 @@
         <Clear/>
         <Add FullName="Dalamud.Bindings.ImGui.IImGui!"/>
     </StubGeneration>
-    <ShimGeneration>
-        <Clear/>
-        <Add FullName="Dalamud.Bindings.ImGui.ImGui!"/>
-    </ShimGeneration>
+    <ShimGeneration Disable="true"/>
 </Fakes>
