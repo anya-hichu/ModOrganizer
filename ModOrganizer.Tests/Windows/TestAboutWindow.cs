@@ -1,5 +1,4 @@
 using Dalamud.Bindings.ImGui;
-using Dalamud.Bindings.ImGui.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Dalamuds.Bindings.ImGuis;
 using ModOrganizer.Windows;
@@ -10,6 +9,7 @@ namespace ModOrganizer.Tests.Windows;
 public class TestAboutWindow
 {
     [TestMethod]
+    [DoNotParallelize]
     public void TestDraw()
     {
         var observer = new StubObserver();
