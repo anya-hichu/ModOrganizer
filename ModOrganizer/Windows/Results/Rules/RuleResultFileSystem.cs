@@ -1,12 +1,11 @@
 using ModOrganizer.Virtuals;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ModOrganizer.Windows.Results.Rules;
 
-public class RuleResultFileSystem : VirtualFileSystem, IDisposable
+public class RuleResultFileSystem : VirtualFileSystem, IRuleResultFileSystem
 {
     private RuleResultState RuleResultState { get; init; }
 

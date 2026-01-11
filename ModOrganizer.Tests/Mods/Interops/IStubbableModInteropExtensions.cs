@@ -3,7 +3,7 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using Penumbra.Api.Enums;
 
-namespace ModOrganizer.Tests.Mods.ModInterops;
+namespace ModOrganizer.Tests.Mods.Interops;
 
 public static class IStubbableModInteropExtensions
 {

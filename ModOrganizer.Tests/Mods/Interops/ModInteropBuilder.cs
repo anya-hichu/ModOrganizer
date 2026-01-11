@@ -13,7 +13,7 @@ using ModOrganizer.Tests.Dalamuds.PenumbraApis;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 
-namespace ModOrganizer.Tests.Mods.ModInterops;
+namespace ModOrganizer.Tests.Mods.Interops;
 
 public class ModInteropBuilder : IBuilder<ModInterop>, IStubbableCommandManager, IStubbablePluginInterface, IStubbablePenumbraApi, IStubbablePluginLog
 {

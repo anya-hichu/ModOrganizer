@@ -2,9 +2,9 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Mods.Fakes;
 using ModOrganizer.Shared;
-using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Mods.Interops;
 
-namespace ModOrganizer.Tests.Mods.ModFileSystems;
+namespace ModOrganizer.Tests.Mods.FileSystems;
 
 public class ModFileSystemBuilder : IBuilder<ModFileSystem>, IStubbableModInterop
 {

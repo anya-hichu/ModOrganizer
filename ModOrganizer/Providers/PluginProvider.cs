@@ -178,7 +178,7 @@ public class PluginProvider : CachedProvider
             .AddSingleton<EvaluationResultState>()
             .AddSingleton<MainWindow>()
 
-            .AddSingleton<RuleResultFileSystem>()
+            .AddSingleton<IRuleResultFileSystem, RuleResultFileSystem>()
             .AddSingleton<PreviewWindow>()
 
             .AddSingleton(p =>

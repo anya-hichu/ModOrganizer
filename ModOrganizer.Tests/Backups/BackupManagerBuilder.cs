@@ -9,7 +9,7 @@ using ModOrganizer.Shared;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Mods.Interops;
 
 namespace ModOrganizer.Tests.Backups;
 

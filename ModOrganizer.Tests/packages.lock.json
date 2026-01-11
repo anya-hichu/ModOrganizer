@@ -245,10 +245,7 @@
         "contentHash": "6kdd65+HCrSbO80ELfyQJMs/My8tbpqoxS6VDfhQSdTq8y2kLjxpfxnVEeh3Av1Q+XDOxMv/rBXYsgQR3iQswA=="
       },
       "dalamud.bindings.imgui": {
-        "type": "Project",
-        "dependencies": {
-          "HexaGen.Runtime": "[1.1.24, )"
-        }
+        "type": "Project"
       },
       "modorganizer": {
         "type": "Project",

@@ -2,6 +2,7 @@ using Dalamud.Game.Command;
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Commands;
+using ModOrganizer.Tests.Commands.Printers;
 using ModOrganizer.Tests.Dalamuds.CommandManagers;
 using ModOrganizer.Tests.Windows.Togglers;
 using ModOrganizer.Windows;

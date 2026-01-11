@@ -5,18 +5,18 @@ namespace ModOrganizer.Providers;
 
 public abstract class CachedProvider : IDisposable
 {
-    private ServiceProvider? ServiceProviderCache { get; set; }
+    private ServiceProvider? MaybeServiceProviderCache { get; set; }
 
     protected abstract ServiceProvider BuildServiceProvider();
 
     private ServiceProvider GetServiceProvider()
     {
-        if (ServiceProviderCache != null) return ServiceProviderCache;
+        if (MaybeServiceProviderCache != null) return MaybeServiceProviderCache;
 
-        return ServiceProviderCache = BuildServiceProvider();
+        return MaybeServiceProviderCache = BuildServiceProvider();
     }
 
-    public void Dispose() => ServiceProviderCache?.Dispose();
+    public void Dispose() => MaybeServiceProviderCache?.Dispose();
 
     public T Get<T>() where T: notnull => GetServiceProvider().GetRequiredService<T>();
     public void Init<T>() where T : notnull => Get<T>();

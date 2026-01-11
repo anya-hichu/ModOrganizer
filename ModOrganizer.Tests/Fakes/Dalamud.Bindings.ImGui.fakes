@@ -3,6 +3,7 @@
     <StubGeneration>
         <Clear/>
         <Add FullName="Dalamud.Bindings.ImGui.IImGui!"/>
+        <Add FullName="Dalamud.Bindings.ImGui.IImGuiListClipperPtr!"/>
     </StubGeneration>
     <ShimGeneration Disable="true"/>
 </Fakes>

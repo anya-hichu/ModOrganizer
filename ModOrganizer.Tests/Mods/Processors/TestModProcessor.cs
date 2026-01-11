@@ -2,7 +2,7 @@ using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
-using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Mods.Interops;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.TestableClasses;
 using Penumbra.Api.Enums;
@@ -10,7 +10,7 @@ using ModOrganizer.Backups;
 using ModOrganizer.Tests.Backups;
 using ModOrganizer.Tests.Rules.Evaluators;
 
-namespace ModOrganizer.Tests.Mods.ModProcessors;
+namespace ModOrganizer.Tests.Mods.Processors;
 
 [TestClass]
 public class TestModProcessor : ITestableClassTemp

@@ -595,6 +595,30 @@
         <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#MatchesFolder(ModOrganizer.Virtuals.VirtualFolder)">
             <summary>Sets the Stub of IVirtualMatcher.MatchesFolder(IVirtualMatcher this, VirtualFolder folder)</summary>
         </member>
+        <member name="T:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem">
+            <summary>Stub type of ModOrganizer.Windows.Results.Rules.IRuleResultFileSystem</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.#ctor">
+            <summary>Initializes a new instance of type StubIRuleResultFileSystem</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.Dispose">
+            <summary>Sets the stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.GetRootFolder">
+            <summary>Sets the stub of IVirtualFileSystem.GetRootFolder(IVirtualFileSystem this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.ModOrganizer#Virtuals#IVirtualFileSystem#GetRootFolder">
+            <summary>Sets the Stub of IVirtualFileSystem.GetRootFolder(IVirtualFileSystem this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.ModOrganizer#Windows#Results#Rules#IRuleResultFileSystem#TryGetFileData(ModOrganizer.Virtuals.VirtualFile,ModOrganizer.Windows.Results.Rules.RulePathResult@)">
+            <summary>Sets the Stub of IRuleResultFileSystem.TryGetFileData(IRuleResultFileSystem this, VirtualFile file, RulePathResult* fileData)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.System#IDisposable#Dispose">
+            <summary>Sets the Stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.TryGetFileDataVirtualFileRulePathResultOut">
+            <summary>Sets the stub of IRuleResultFileSystem.TryGetFileData(IRuleResultFileSystem this, VirtualFile file, RulePathResult* fileData)</summary>
+        </member>
         <member name="T:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler">
             <summary>Stub type of ModOrganizer.Windows.Togglers.IWindowToggler</summary>
         </member>

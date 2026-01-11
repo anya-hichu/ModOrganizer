@@ -9,10 +9,10 @@ using ModOrganizer.Shared;
 using ModOrganizer.Tests.Backups;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Mods.Interops;
 using ModOrganizer.Tests.Rules.Evaluators;
 
-namespace ModOrganizer.Tests.Mods.ModProcessors;
+namespace ModOrganizer.Tests.Mods.Processors;
 
 public class ModProcessorBuilder : IBuilder<ModProcessor>, IStubbableBackupManager, IStubbableConfig, IStubbableModInterop, IStubbablePluginLog, IStubbableRuleEvaluator
 {

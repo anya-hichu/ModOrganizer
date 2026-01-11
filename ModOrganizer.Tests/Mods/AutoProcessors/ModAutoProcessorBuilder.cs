@@ -7,10 +7,10 @@ using ModOrganizer.Shared;
 using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Dalamuds.NotificationManagers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Mods.ModInterops;
-using ModOrganizer.Tests.Mods.ModProcessors;
+using ModOrganizer.Tests.Mods.Interops;
+using ModOrganizer.Tests.Mods.Processors;
 
-namespace ModOrganizer.Tests.Mods.ModAutoProcessors;
+namespace ModOrganizer.Tests.Mods.AutoProcessors;
 
 public class ModAutoProcessorBuilder : IBuilder<ModAutoProcessor>, IStubbableConfig, IStubbableNotificationManager, IStubbableModInterop, IStubbableModProcessor, IStubbablePluginLog
 {

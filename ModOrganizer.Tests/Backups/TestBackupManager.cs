@@ -7,7 +7,7 @@ using ModOrganizer.Tests.Configs;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers.Files;
-using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Mods.Interops;
 using ModOrganizer.Tests.Systems.DateTimeOffsets;
 using ModOrganizer.Tests.TestableClasses;
 

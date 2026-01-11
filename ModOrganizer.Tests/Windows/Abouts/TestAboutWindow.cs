@@ -1,9 +1,8 @@
 using Dalamud.Bindings.ImGui;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Tests.Dalamuds.Bindings.ImGuis;
-using ModOrganizer.Windows;
 
-namespace ModOrganizer.Tests.Windows;
+namespace ModOrganizer.Tests.Windows.Abouts;
 
 [TestClass]
 public class TestAboutWindow
@@ -14,14 +13,12 @@ public class TestAboutWindow
     {
         var observer = new StubObserver();
 
-        var aboutWindow = new AboutWindow();
-
-        var stub = new ImGuiStubBuilder()
-            .WithDefaults()
-            .WithObserver(observer)
+        using var aboutWindowResource = new AboutWindowResourceBuilder()
+            .WithImGuiDefaults()
+            .WithImGuiObserver(observer)
             .Build();
 
-        aboutWindow.Draw();
+        aboutWindowResource.Value.Draw();
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);

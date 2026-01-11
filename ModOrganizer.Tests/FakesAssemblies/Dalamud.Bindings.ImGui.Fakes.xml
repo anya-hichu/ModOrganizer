@@ -16,17 +16,47 @@
         <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Button(Dalamud.Bindings.ImGui.ImU8String,System.Numerics.Vector2)">
             <summary>Sets the Stub of IImGui.Button(IImGui this, ImU8String label, Vector2 size)</summary>
         </member>
-        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#InputText(Dalamud.Bindings.ImGui.ImU8String,System.String@,System.Int32,Dalamud.Bindings.ImGui.ImGuiInputTextFlags,Dalamud.Bindings.ImGui.ImGui.ImGuiInputTextCallbackDelegate)">
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#ImGuiListClipper">
+            <summary>Sets the Stub of IImGui.ImGuiListClipper(IImGui this)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#InputText(Dalamud.Bindings.ImGui.ImU8String,System.String@,System.Int32,Dalamud.Bindings.ImGui.ImGuiInputTextFlags,Dalamud.Bindings.ImGui.ImGuiInputTextCallbackDelegate)">
             <summary>Sets the Stub of IImGui.InputText(IImGui this, ImU8String label, String* buf, Int32 maxLength, ImGuiInputTextFlags flags, ImGuiInputTextCallbackDelegate callback)</summary>
         </member>
         <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Text(Dalamud.Bindings.ImGui.ImU8String)">
             <summary>Sets the Stub of IImGui.Text(IImGui this, ImU8String text)</summary>
         </member>
-        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.InputTextImU8StringStringRefInt32ImGuiInputTextFlagsImGuiImGuiInputTextCallbackDelegate">
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.ImGuiListClipper">
+            <summary>Sets the stub of IImGui.ImGuiListClipper(IImGui this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.InputTextImU8StringStringRefInt32ImGuiInputTextFlagsImGuiInputTextCallbackDelegate">
             <summary>Sets the stub of IImGui.InputText(IImGui this, ImU8String label, String* buf, Int32 maxLength, ImGuiInputTextFlags flags, ImGuiInputTextCallbackDelegate callback)</summary>
         </member>
         <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.TextImU8String">
             <summary>Sets the stub of IImGui.Text(IImGui this, ImU8String text)</summary>
+        </member>
+        <member name="T:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr">
+            <summary>Stub type of Dalamud.Bindings.ImGui.IImGuiListClipperPtr</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.#ctor">
+            <summary>Initializes a new instance of type StubIImGuiListClipperPtr</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.BeginInt32Single">
+            <summary>Sets the stub of IImGuiListClipperPtr.Begin(IImGuiListClipperPtr this, Int32 itemsCount, Single itemsHeight)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.Dalamud#Bindings#ImGui#IImGuiListClipperPtr#Begin(System.Int32,System.Single)">
+            <summary>Sets the Stub of IImGuiListClipperPtr.Begin(IImGuiListClipperPtr this, Int32 itemsCount, Single itemsHeight)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.Dalamud#Bindings#ImGui#IImGuiListClipperPtr#Destroy">
+            <summary>Sets the Stub of IImGuiListClipperPtr.Destroy(IImGuiListClipperPtr this)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.Dalamud#Bindings#ImGui#IImGuiListClipperPtr#End">
+            <summary>Sets the Stub of IImGuiListClipperPtr.End(IImGuiListClipperPtr this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.Destroy">
+            <summary>Sets the stub of IImGuiListClipperPtr.Destroy(IImGuiListClipperPtr this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr.End">
+            <summary>Sets the stub of IImGuiListClipperPtr.End(IImGuiListClipperPtr this)</summary>
         </member>
         <member name="T:Microsoft.QualityTools.Testing.Fakes.Delegates.DalamudBindingsImGuiDelegates">
             <summary>Contains custom delegates used for the stubs and shims of Dalamud.Bindings.ImGui</summary>

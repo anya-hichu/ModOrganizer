@@ -1,7 +1,7 @@
-using ModOrganizer.Tests.Mods.ModInterops;
+using ModOrganizer.Tests.Mods.Interops;
 using ModOrganizer.Tests.TestableClasses;
 
-namespace ModOrganizer.Tests.Mods.ModFileSystems;
+namespace ModOrganizer.Tests.Mods.FileSystems;
 
 [TestClass]
 public class TestModFileSystem : ITestableClassTemp

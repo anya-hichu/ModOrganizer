@@ -3,6 +3,7 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Commands;
 using ModOrganizer.Commands.Fakes;
 using ModOrganizer.Shared;
+using ModOrganizer.Tests.Commands.Printers;
 using ModOrganizer.Tests.Dalamuds.CommandManagers;
 using ModOrganizer.Tests.Windows.Togglers;
 using ModOrganizer.Windows.Togglers.Fakes;

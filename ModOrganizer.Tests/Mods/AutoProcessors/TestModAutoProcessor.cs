@@ -3,12 +3,12 @@ using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Mods;
 using ModOrganizer.Tests.Configs;
-using ModOrganizer.Tests.Mods.ModProcessors;
+using ModOrganizer.Tests.Mods.Processors;
 using ModOrganizer.Tests.Dalamuds.NotificationManagers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.TestableClasses;
 
-namespace ModOrganizer.Tests.Mods.ModAutoProcessors;
+namespace ModOrganizer.Tests.Mods.AutoProcessors;
 
 [TestClass]
 public class TestModAutoProcessor : ITestableClassTemp

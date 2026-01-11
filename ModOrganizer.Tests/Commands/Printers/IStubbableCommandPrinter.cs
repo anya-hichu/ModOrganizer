@@ -1,6 +1,6 @@
 using ModOrganizer.Commands.Fakes;
 
-namespace ModOrganizer.Tests.Commands;
+namespace ModOrganizer.Tests.Commands.Printers;
 
 public interface IStubbableCommandPrinter
 {

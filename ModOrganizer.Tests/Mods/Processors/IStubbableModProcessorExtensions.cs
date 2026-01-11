@@ -1,6 +1,6 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 
-namespace ModOrganizer.Tests.Mods.ModProcessors;
+namespace ModOrganizer.Tests.Mods.Processors;
 
 public static class IStubbableModProcessorExtensions
 {

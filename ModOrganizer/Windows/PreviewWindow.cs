@@ -11,12 +11,12 @@ namespace ModOrganizer.Windows;
 
 public class PreviewWindow : Window
 {
-    private RuleResultFileSystem RuleResultFileSystem { get; init; }
+    private IRuleResultFileSystem RuleResultFileSystem { get; init; }
 
     private string Filter { get; set; } = string.Empty;
     public bool ShowUnselected { get; set; } = false;
 
-    public PreviewWindow(RuleResultFileSystem ruleResultFileSystem) : base("ModOrganizer - Preview##previewWindow")
+    public PreviewWindow(IRuleResultFileSystem ruleResultFileSystem) : base("ModOrganizer - Preview##previewWindow")
     {
         RuleResultFileSystem = ruleResultFileSystem;
 

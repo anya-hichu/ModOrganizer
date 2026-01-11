@@ -1,6 +1,6 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 
-namespace ModOrganizer.Tests.Commands;
+namespace ModOrganizer.Tests.Commands.Printers;
 
 public static class IStubbableCommandPrinterExtensions
 {

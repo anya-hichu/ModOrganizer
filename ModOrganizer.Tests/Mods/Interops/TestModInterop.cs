@@ -14,7 +14,7 @@ using ModOrganizer.Tests.Systems;
 using ModOrganizer.Tests.TestableClasses;
 using Penumbra.Api.Enums;
 
-namespace ModOrganizer.Tests.Mods.ModInterops;
+namespace ModOrganizer.Tests.Mods.Interops;
 
 [TestClass]
 public class TestModInterop : ITestableClassTemp
