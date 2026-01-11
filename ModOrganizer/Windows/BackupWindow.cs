@@ -176,12 +176,12 @@ public class BackupWindow : Window
 
             var showedBackupResults = BackupResultState.GetShowedBackupResults().Order().ToList();
 
-            using var clipperResource = new ImRaiiListClipper(showedBackupResults.Count, ImGui.GetTextLineHeightWithSpacing());
-            var clipper = clipperResource.Value;
+            using var imRaiiListClipper = new ImRaiiListClipper(showedBackupResults.Count, ImGui.GetTextLineHeightWithSpacing());
+            var imGuiListClipper = imRaiiListClipper.Value;
 
-            while (clipper.Step())
+            while (imGuiListClipper.Step())
             {
-                for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                for (var i = imGuiListClipper.DisplayStart; i < imGuiListClipper.DisplayEnd; i++)
                 {
                     var backupResult = showedBackupResults.ElementAt(i);
 

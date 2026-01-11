@@ -36,7 +36,7 @@ public class ImRaiiListClipperResourceBuilder : IBuilder<RaiiGuard<ImRaiiListCli
         return new(ImGuiListClipperItemsCount, ImGuiListClipperItemsHeight);
     }
 
-    private static void Release(ImRaiiListClipper raiiListClipper) => raiiListClipper.Dispose();
+    private static void Release(ImRaiiListClipper imRaiiListClipper) => imRaiiListClipper.Dispose();
 
     public RaiiGuard<ImRaiiListClipper> Build() => new(Acquire, Release);
 }

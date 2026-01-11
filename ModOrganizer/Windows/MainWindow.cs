@@ -228,12 +228,12 @@ public class MainWindow : Window
 
                 var orderedModDirectories = SelectedModDirectories.OrderBy(d => d, StringComparer.OrdinalIgnoreCase).ToList();
 
-                using var clipperResource = new ImRaiiListClipper(orderedModDirectories.Count, GetItemHeight());
-                var clipper = clipperResource.Value;
+                using var imRaiiListClipper = new ImRaiiListClipper(orderedModDirectories.Count, GetItemHeight());
+                var imGuiListClipper = imRaiiListClipper.Value;
 
-                while (clipper.Step())
+                while (imGuiListClipper.Step())
                 {
-                    for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+                    for (var i = imGuiListClipper.DisplayStart; i < imGuiListClipper.DisplayEnd; i++)
                     {
                         var modDirectory = orderedModDirectories.ElementAt(i);
 
@@ -303,96 +303,97 @@ public class MainWindow : Window
         using var ruleStateResultsTable = ImRaii.Table("ruleStateResultsTable", 4, ImGuiTableFlags.RowBg | ImGuiTableFlags.ScrollY | ImGuiTableFlags.Resizable, 
             new(availableRegion.X, availableRegion.Y / 2));
 
-        if (!ruleStateResultsTable) return;
-     
-        ImGui.TableSetupColumn($"##ruleStateResultActions", ImGuiTableColumnFlags.None, 1);
-        ImGui.TableSetupColumn($"Mod Directory##ruleStateResultDirectories", ImGuiTableColumnFlags.None, 4);
-        ImGui.TableSetupColumn($"Path##ruleStateResultPaths", ImGuiTableColumnFlags.None, 4);
-        ImGui.TableSetupColumn($"New Path##ruleStateResultNewPaths", ImGuiTableColumnFlags.None, 4);
-        ImGui.TableSetupScrollFreeze(0, 2);
-        ImGui.TableHeadersRow();
-
-        ImGui.TableNextColumn();
-
-        var clearButtonWidth = ImGui.CalcTextSize("NNNN").X;
-        if (ImGui.TableNextColumn())
+        if (ruleStateResultsTable)
         {
-            var directoryFilter = RuleResultState.DirectoryFilter;
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
-            if (ImGui.InputTextWithHint("##ruleResultDirectoryFilter", Texts.FilterHint, ref directoryFilter, ushort.MaxValue)) RuleResultState.DirectoryFilter = directoryFilter;
-            ImGui.SameLine();
-            if (ImGui.Button("X###clearRuleResultDirectoryFilter")) RuleResultState.DirectoryFilter = string.Empty;
-        }
+            ImGui.TableSetupColumn($"##ruleStateResultActions", ImGuiTableColumnFlags.None, 1);
+            ImGui.TableSetupColumn($"Mod Directory##ruleStateResultDirectories", ImGuiTableColumnFlags.None, 4);
+            ImGui.TableSetupColumn($"Path##ruleStateResultPaths", ImGuiTableColumnFlags.None, 4);
+            ImGui.TableSetupColumn($"New Path##ruleStateResultNewPaths", ImGuiTableColumnFlags.None, 4);
+            ImGui.TableSetupScrollFreeze(0, 2);
+            ImGui.TableHeadersRow();
 
-        if (ImGui.TableNextColumn())
-        {
-            var pathFilter = RuleResultState.PathFilter;
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
-            if (ImGui.InputTextWithHint("##ruleResultPathFilter", Texts.FilterHint, ref pathFilter)) RuleResultState.PathFilter = pathFilter;
-            ImGui.SameLine();
-            if (ImGui.Button("X##clearRuleResultPathFilter")) RuleResultState.PathFilter = string.Empty;
-        }
+            ImGui.TableNextColumn();
 
-        if (ImGui.TableNextColumn())
-        {
-            var newPathFilter = RuleResultState.NewPathFilter;
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
-            if (ImGui.InputTextWithHint("##ruleResultNewPathFilter", Texts.FilterHint, ref newPathFilter)) RuleResultState.NewPathFilter = newPathFilter;
-            ImGui.SameLine();
-            if (ImGui.Button("X##clearRuleResultNewPathFilter")) RuleResultState.NewPathFilter = string.Empty;
-        }
-
-        var showedRuleResults = RuleResultState.GetShowedRuleResults().Order().ToList();
-
-        using var resultClipperResource = new ImRaiiListClipper(showedRuleResults.Count, GetItemHeight());
-        var resultClipper = resultClipperResource.Value;
-
-        while (resultClipper.Step())
-        {
-            for (var i = resultClipper.DisplayStart; i < resultClipper.DisplayEnd; i++)
+            var clearButtonWidth = ImGui.CalcTextSize("NNNN").X;
+            if (ImGui.TableNextColumn())
             {
-                var ruleResult = showedRuleResults.ElementAt(i);
+                var directoryFilter = RuleResultState.DirectoryFilter;
+                ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
+                if (ImGui.InputTextWithHint("##ruleResultDirectoryFilter", Texts.FilterHint, ref directoryFilter, ushort.MaxValue)) RuleResultState.DirectoryFilter = directoryFilter;
+                ImGui.SameLine();
+                if (ImGui.Button("X###clearRuleResultDirectoryFilter")) RuleResultState.DirectoryFilter = string.Empty;
+            }
 
-                if (ImGui.TableNextColumn())
+            if (ImGui.TableNextColumn())
+            {
+                var pathFilter = RuleResultState.PathFilter;
+                ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
+                if (ImGui.InputTextWithHint("##ruleResultPathFilter", Texts.FilterHint, ref pathFilter)) RuleResultState.PathFilter = pathFilter;
+                ImGui.SameLine();
+                if (ImGui.Button("X##clearRuleResultPathFilter")) RuleResultState.PathFilter = string.Empty;
+            }
+
+            if (ImGui.TableNextColumn())
+            {
+                var newPathFilter = RuleResultState.NewPathFilter;
+                ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - clearButtonWidth);
+                if (ImGui.InputTextWithHint("##ruleResultNewPathFilter", Texts.FilterHint, ref newPathFilter)) RuleResultState.NewPathFilter = newPathFilter;
+                ImGui.SameLine();
+                if (ImGui.Button("X##clearRuleResultNewPathFilter")) RuleResultState.NewPathFilter = string.Empty;
+            }
+
+            var showedRuleResults = RuleResultState.GetShowedRuleResults().Order().ToList();
+
+            using var imRaiiListClipper = new ImRaiiListClipper(showedRuleResults.Count, GetItemHeight());
+            var imGuiListClipper = imRaiiListClipper.Value;
+
+            while (imGuiListClipper.Step())
+            {
+                for (var i = imGuiListClipper.DisplayStart; i < imGuiListClipper.DisplayEnd; i++)
                 {
-                    if (ruleResult is ISelectableResult selectableResult)
+                    var ruleResult = showedRuleResults.ElementAt(i);
+
+                    if (ImGui.TableNextColumn())
                     {
-                        var isSelected = selectableResult.Selected;
-                        if (ImGui.Checkbox($"###selectRuleResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.Selected = isSelected;
-                    } 
-                    else
-                    {
-                        DrawInvisibleCheckbox();
+                        if (ruleResult is ISelectableResult selectableResult)
+                        {
+                            var isSelected = selectableResult.Selected;
+                            if (ImGui.Checkbox($"###selectRuleResult{selectableResult.GetHashCode()}", ref isSelected)) selectableResult.Selected = isSelected;
+                        }
+                        else
+                        {
+                            DrawInvisibleCheckbox();
+                        }
                     }
-                }
 
-                if (ImGui.TableNextColumn())
-                {
-                    ImGui.Text(ruleResult.Directory);
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip(Inspect(ruleResult.Directory));
-                }
-
-                using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, ruleResult is RuleSamePathResult);
-
-                if (ImGui.TableNextColumn())
-                {
-                    ImGui.Text(ruleResult.Path);
-                    if (ImGui.IsItemHovered()) ImGui.SetTooltip(Inspect(ruleResult.Path));
-                }
-
-                if (ImGui.TableNextColumn())
-                {
-                    switch (ruleResult)
+                    if (ImGui.TableNextColumn())
                     {
-                        case RulePathResult rulePathResult:
-                            DrawResult(rulePathResult);
-                            break;
-                        case RuleSamePathResult ruleSamePathResult:
-                            DrawResult(ruleSamePathResult);
-                            break;
-                        case IError error:
-                            DrawError(error);
-                            break;
+                        ImGui.Text(ruleResult.Directory);
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip(Inspect(ruleResult.Directory));
+                    }
+
+                    using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudGrey3, ruleResult is RuleSamePathResult);
+
+                    if (ImGui.TableNextColumn())
+                    {
+                        ImGui.Text(ruleResult.Path);
+                        if (ImGui.IsItemHovered()) ImGui.SetTooltip(Inspect(ruleResult.Path));
+                    }
+
+                    if (ImGui.TableNextColumn())
+                    {
+                        switch (ruleResult)
+                        {
+                            case RulePathResult rulePathResult:
+                                DrawResult(rulePathResult);
+                                break;
+                            case RuleSamePathResult ruleSamePathResult:
+                                DrawResult(ruleSamePathResult);
+                                break;
+                            case IError error:
+                                DrawError(error);
+                                break;
+                        }
                     }
                 }
             }
@@ -496,12 +497,12 @@ public class MainWindow : Window
 
         var showedEvaluationResults = EvaluationResultState.GetShowedEvaluationResults().Order().ToList();
 
-        using var clipperResource = new ImRaiiListClipper(showedEvaluationResults.Count, ImGui.GetTextLineHeightWithSpacing());
-        var clipper = clipperResource.Value;
+        using var imRaiiListClipper = new ImRaiiListClipper(showedEvaluationResults.Count, ImGui.GetTextLineHeightWithSpacing());
+        var imGuiListClipper = imRaiiListClipper.Value;
 
-        while (clipper.Step())
+        while (imGuiListClipper.Step())
         {
-            for (var i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
+            for (var i = imGuiListClipper.DisplayStart; i < imGuiListClipper.DisplayEnd; i++)
             {
                 var evaluationResult = showedEvaluationResults.ElementAt(i);
 
