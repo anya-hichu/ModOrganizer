@@ -13,26 +13,104 @@
         <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.ButtonImU8StringVector2">
             <summary>Sets the stub of IImGui.Button(IImGui this, ImU8String label, Vector2 size)</summary>
         </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.CheckboxImU8StringBooleanRef">
+            <summary>Sets the stub of IImGui.Checkbox(IImGui this, ImU8String label, Boolean* value)</summary>
+        </member>
         <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Button(Dalamud.Bindings.ImGui.ImU8String,System.Numerics.Vector2)">
             <summary>Sets the Stub of IImGui.Button(IImGui this, ImU8String label, Vector2 size)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Checkbox(Dalamud.Bindings.ImGui.ImU8String,System.Boolean@)">
+            <summary>Sets the Stub of IImGui.Checkbox(IImGui this, ImU8String label, Boolean* value)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#GetColorU32(Dalamud.Bindings.ImGui.ImGuiCol)">
+            <summary>Sets the Stub of IImGui.GetColorU32(IImGui this, ImGuiCol idx)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#GetWindowWidth">
+            <summary>Sets the Stub of IImGui.GetWindowWidth(IImGui this)</summary>
         </member>
         <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#ImGuiListClipper">
             <summary>Sets the Stub of IImGui.ImGuiListClipper(IImGui this)</summary>
         </member>
-        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#InputText(Dalamud.Bindings.ImGui.ImU8String,System.String@,System.Int32,Dalamud.Bindings.ImGui.ImGuiInputTextFlags,Dalamud.Bindings.ImGui.ImGuiInputTextCallbackDelegate)">
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#InputText(Dalamud.Bindings.ImGui.ImU8String,System.String@,System.Int32,Dalamud.Bindings.ImGui.ImGuiInputTextFlags,Dalamud.Bindings.ImGui.ImGui.ImGuiInputTextCallbackDelegate)">
             <summary>Sets the Stub of IImGui.InputText(IImGui this, ImU8String label, String* buf, Int32 maxLength, ImGuiInputTextFlags flags, ImGuiInputTextCallbackDelegate callback)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#InputTextWithHint(Dalamud.Bindings.ImGui.ImU8String,Dalamud.Bindings.ImGui.ImU8String,System.String@,System.Int32,Dalamud.Bindings.ImGui.ImGuiInputTextFlags,Dalamud.Bindings.ImGui.ImGui.ImGuiInputTextCallbackDelegate)">
+            <summary>Sets the Stub of IImGui.InputTextWithHint(IImGui this, ImU8String label, ImU8String hint, String* buf, Int32 maxLength, ImGuiInputTextFlags flags, ImGuiInputTextCallbackDelegate callback)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#IsItemClicked">
+            <summary>Sets the Stub of IImGui.IsItemClicked(IImGui this)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#IsItemHovered">
+            <summary>Sets the Stub of IImGui.IsItemHovered(IImGui this)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#PopStyleColor(System.Int32)">
+            <summary>Sets the Stub of IImGui.PopStyleColor(IImGui this, Int32 count)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#PushStyleColor(Dalamud.Bindings.ImGui.ImGuiCol,System.Numerics.Vector4)">
+            <summary>Sets the Stub of IImGui.PushStyleColor(IImGui this, ImGuiCol idx, Vector4 col)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#SameLine">
+            <summary>Sets the Stub of IImGui.SameLine(IImGui this)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#SameLine(System.Single)">
+            <summary>Sets the Stub of IImGui.SameLine(IImGui this, Single offsetFromStartX)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#SetTooltip(Dalamud.Bindings.ImGui.ImU8String)">
+            <summary>Sets the Stub of IImGui.SetTooltip(IImGui this, ImU8String text)</summary>
         </member>
         <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#Text(Dalamud.Bindings.ImGui.ImU8String)">
             <summary>Sets the Stub of IImGui.Text(IImGui this, ImU8String text)</summary>
         </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#TreeNodeEx(Dalamud.Bindings.ImGui.ImU8String,Dalamud.Bindings.ImGui.ImGuiTreeNodeFlags,Dalamud.Bindings.ImGui.ImU8String)">
+            <summary>Sets the Stub of IImGui.TreeNodeEx(IImGui this, ImU8String id, ImGuiTreeNodeFlags flags, ImU8String label)</summary>
+        </member>
+        <member name="M:Dalamud.Bindings.ImGui.Fakes.StubIImGui.Dalamud#Bindings#ImGui#IImGui#TreePop">
+            <summary>Sets the Stub of IImGui.TreePop(IImGui this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.GetColorU32ImGuiCol">
+            <summary>Sets the stub of IImGui.GetColorU32(IImGui this, ImGuiCol idx)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.GetWindowWidth">
+            <summary>Sets the stub of IImGui.GetWindowWidth(IImGui this)</summary>
+        </member>
         <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.ImGuiListClipper">
             <summary>Sets the stub of IImGui.ImGuiListClipper(IImGui this)</summary>
         </member>
-        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.InputTextImU8StringStringRefInt32ImGuiInputTextFlagsImGuiInputTextCallbackDelegate">
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.InputTextImU8StringStringRefInt32ImGuiInputTextFlagsImGuiImGuiInputTextCallbackDelegate">
             <summary>Sets the stub of IImGui.InputText(IImGui this, ImU8String label, String* buf, Int32 maxLength, ImGuiInputTextFlags flags, ImGuiInputTextCallbackDelegate callback)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.InputTextWithHintImU8StringImU8StringStringRefInt32ImGuiInputTextFlagsImGuiImGuiInputTextCallbackDelegate">
+            <summary>Sets the stub of IImGui.InputTextWithHint(IImGui this, ImU8String label, ImU8String hint, String* buf, Int32 maxLength, ImGuiInputTextFlags flags, ImGuiInputTextCallbackDelegate callback)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.IsItemClicked">
+            <summary>Sets the stub of IImGui.IsItemClicked(IImGui this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.IsItemHovered">
+            <summary>Sets the stub of IImGui.IsItemHovered(IImGui this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.PopStyleColorInt32">
+            <summary>Sets the stub of IImGui.PopStyleColor(IImGui this, Int32 count)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.PushStyleColorImGuiColVector4">
+            <summary>Sets the stub of IImGui.PushStyleColor(IImGui this, ImGuiCol idx, Vector4 col)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.SameLine">
+            <summary>Sets the stub of IImGui.SameLine(IImGui this)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.SameLineSingle">
+            <summary>Sets the stub of IImGui.SameLine(IImGui this, Single offsetFromStartX)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.SetTooltipImU8String">
+            <summary>Sets the stub of IImGui.SetTooltip(IImGui this, ImU8String text)</summary>
         </member>
         <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.TextImU8String">
             <summary>Sets the stub of IImGui.Text(IImGui this, ImU8String text)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.TreeNodeExImU8StringImGuiTreeNodeFlagsImU8String">
+            <summary>Sets the stub of IImGui.TreeNodeEx(IImGui this, ImU8String id, ImGuiTreeNodeFlags flags, ImU8String label)</summary>
+        </member>
+        <member name="F:Dalamud.Bindings.ImGui.Fakes.StubIImGui.TreePop">
+            <summary>Sets the stub of IImGui.TreePop(IImGui this)</summary>
         </member>
         <member name="T:Dalamud.Bindings.ImGui.Fakes.StubIImGuiListClipperPtr">
             <summary>Stub type of Dalamud.Bindings.ImGui.IImGuiListClipperPtr</summary>

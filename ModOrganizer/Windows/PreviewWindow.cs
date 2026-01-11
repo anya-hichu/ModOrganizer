@@ -55,7 +55,7 @@ public class PreviewWindow : Window
             if (!RuleResultFileSystem.TryGetFileData(file, out var rulePathResult)) continue;
             using var _ = ImRaii.PushColor(ImGuiCol.Text, rulePathResult.Selected ? ImGuiColors.DalamudWhite : ImGuiColors.DalamudGrey3);
             using var node = ImRaii.TreeNode($"{file.Name}###resultVirtualFile{file.GetHashCode()}", ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet);
-            if (ImGui.IsItemClicked()) rulePathResult.Selected = !rulePathResult.Selected;;
+            if (ImGui.IsItemClicked()) rulePathResult.Selected = !rulePathResult.Selected;
             if (ImGui.IsItemHovered()) ImGui.SetTooltip($"Current: {rulePathResult.Path}");
         }
     }
