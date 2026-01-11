@@ -16,13 +16,16 @@ public class TextImRaiiListClipper
         var count = 1;
         var height = 2f;
 
-        var clipperResource = new ImRaiiListClipperResourceBuilder()
+        var builder = new ImRaiiListClipperResourceBuilder()
             .WithImGuiListClipperStub()
             .WithImGuiListClipperDefaults()
             .WithImGuiListClipperObserver(observer)
             .WithImRaiiListClipperItemsCount(count)
-            .WithImRaiiListClipperItemsHeight(height)
-            .Build();
+            .WithImRaiiListClipperItemsHeight(height);
+
+        var imRaiiListClipperResource = builder.Build();
+
+        Assert.AreSame(builder.ImGuiListClipperPtrStub, imRaiiListClipperResource.Value.Value.MaybeImplementation);
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
@@ -34,7 +37,7 @@ public class TextImRaiiListClipper
         Assert.AreEqual(count, beforeCallArguments[0]);
         Assert.AreEqual(height, beforeCallArguments[1]);
 
-        clipperResource.Dispose();
+        imRaiiListClipperResource.Dispose();
 
         var afterCalls = observer.GetCalls();
         Assert.HasCount(3, afterCalls);
