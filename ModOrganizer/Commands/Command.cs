@@ -20,7 +20,7 @@ public class Command : ICommand
         CommandPrinter = commandPrinter;
         WindowToggler = windowToggler;
 
-        CommandManager.AddHandler(NAME, new(Process)
+        CommandManager.AddHandler(NAME, new(Handle)
         {
             HelpMessage = HELP_MESSAGE
         });
@@ -28,7 +28,7 @@ public class Command : ICommand
 
     public void Dispose() => CommandManager.RemoveHandler(NAME);
 
-    private void Process(string _, string arguments)
+    private void Handle(string _, string arguments)
     {
         switch (arguments.Trim())
         {

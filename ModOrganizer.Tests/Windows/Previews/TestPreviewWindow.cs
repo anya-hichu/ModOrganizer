@@ -42,7 +42,7 @@ public class TestPreviewWindow
         var observer = new StubObserver();
 
         var resultDirectory = "Result Directory";
-        var resultPath = "Result Path";
+        var resultNewPath = "Result New Path";
 
         var rootFolder = new VirtualFolder()
         {
@@ -56,7 +56,7 @@ public class TestPreviewWindow
                         {
                             Name = "Result Name",
                             Directory = resultDirectory,
-                            Path = resultPath
+                            Path = resultNewPath
                         }
                     ]
                 }
@@ -66,8 +66,8 @@ public class TestPreviewWindow
         var fileData = new RulePathResult()
         {
             Directory = resultDirectory,
-            Path = resultPath,
-            NewPath = "Result New Path"
+            Path = "Result Path",
+            NewPath = resultNewPath
         };
 
         using var previewWindowResource = new PreviewWindowResourceBuilder()
@@ -82,6 +82,7 @@ public class TestPreviewWindow
         var calls = observer.GetCalls();
         Assert.HasCount(10, calls);
 
+        // TODO: Add label checks
         Assert.AreEqual(nameof(ImGui.InputTextWithHint), calls[0].StubbedMethod.Name);
         Assert.AreEqual(nameof(ImGui.SameLine), calls[1].StubbedMethod.Name);
         Assert.AreEqual(nameof(ImGui.Button), calls[2].StubbedMethod.Name);

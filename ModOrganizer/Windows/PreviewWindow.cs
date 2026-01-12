@@ -38,7 +38,7 @@ public class PreviewWindow : Window
         var showUnselected = ShowUnselected;
         if (ImGui.Checkbox("Show Unselected##showUnselectedResults", ref showUnselected)) ShowUnselected = showUnselected;
 
-        if (RuleResultFileSystem.GetRootFolder().TrySearch(GetMatcher(), out var filteredFolder)) DrawVirtualFolderTree(filteredFolder);
+        if (RuleResultFileSystem.GetRootFolder().TrySearch(BuildMatcher(), out var filteredFolder)) DrawVirtualFolderTree(filteredFolder);
     }
 
     private void DrawVirtualFolderTree(VirtualFolder folder)
@@ -60,7 +60,7 @@ public class PreviewWindow : Window
         }
     }
 
-    private VirtualMultiMatcher GetMatcher() => new([
+    private VirtualMultiMatcher BuildMatcher() => new([
         new VirtualAttributesMatcher(Filter), 
         new RuleResultMatcher(RuleResultFileSystem, ShowUnselected)
     ]);
