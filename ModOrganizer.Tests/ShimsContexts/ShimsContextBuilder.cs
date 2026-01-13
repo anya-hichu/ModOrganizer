@@ -11,7 +11,9 @@ public abstract class ShimsContextBuilder : IBuilder<IDisposable>, IShimmableCon
     public IDisposable Build() 
     {
         var shimsContext = ShimsContext.Create();
+
         OnShimsContext?.Invoke();
+
         return shimsContext;
     }
 }

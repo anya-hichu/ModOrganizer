@@ -1,9 +1,10 @@
 using Dalamud.Bindings.ImGui.Fakes;
-using Microsoft.QualityTools.Testing.Fakes.Stubs;
 
 namespace ModOrganizer.Tests.Dalamuds.Bindings.ImGuis.ListClippers;
 
-public interface IStubbableImGuiListClipper : IStubbableImGui
+public interface IStubbableImGuiListClipper
 {
-    StubIImGuiListClipperPtr ImGuiListClipperPtrStub { get; }
+    StubIImGuiListClipperPtr ImGuiListClipperStub { get; }
+    int ImGuiListClipperItemsCount { set; }
+    float ImGuiListClipperItemsHeight { set; }
 }

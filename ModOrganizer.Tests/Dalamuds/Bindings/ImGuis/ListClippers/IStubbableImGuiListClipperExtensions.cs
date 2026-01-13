@@ -1,28 +1,34 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using ModOrganizer.Tests.Shared.ImRaiiListClippers;
 
 namespace ModOrganizer.Tests.Dalamuds.Bindings.ImGuis.ListClippers;
 
 public static class IStubbableImGuiListClipperExtensions
 {
-    public static T WithImGuiListClipperStub<T>(this T stubbable) where T : IStubbableImGuiListClipper
+    public static T WithImGuiListClipperItemsCount<T>(this T stubbable, int count) where T : IStubbableImGuiListClipper
     {
-        stubbable.ImGuiStub.ImGuiListClipper = () => new()
-        {
-            MaybeImplementation = stubbable.ImGuiListClipperPtrStub
-        };
+        stubbable.ImGuiListClipperItemsCount = count;
 
         return stubbable;
     }
+
+    public static T WithImGuiListClipperItemsHeight<T>(this T stubbable, float height) where T : IStubbableImGuiListClipper
+    {
+        stubbable.ImGuiListClipperItemsHeight = height;
+
+        return stubbable;
+    }
+
     public static T WithImGuiListClipperDefaults<T>(this T stubbable) where T : IStubbableImGuiListClipper
     {
-        stubbable.ImGuiListClipperPtrStub.BehaveAsDefaultValue();
+        stubbable.ImGuiListClipperStub.BehaveAsDefaultValue();
 
         return stubbable;
     }
 
     public static T WithImGuiListClipperObserver<T>(this T stubbable, IStubObserver observer) where T : IStubbableImGuiListClipper
     {
-        stubbable.ImGuiListClipperPtrStub.InstanceObserver = observer;
+        stubbable.ImGuiListClipperStub.InstanceObserver = observer;
 
         return stubbable;
     }

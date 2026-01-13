@@ -7,6 +7,7 @@ public static class IStubbableRuleEvaluatorExtensions
         stubbable.RuleEvaluatorStub.TryEvaluateManyIEnumerableOfRuleModInfoStringOut = (rules, modInfo, out path) =>
         {
             path = stubValue;
+
             return stubValue != null;
         };
 

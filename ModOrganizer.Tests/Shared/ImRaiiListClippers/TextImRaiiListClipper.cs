@@ -16,22 +16,18 @@ public class TextImRaiiListClipper
         var count = 1;
         var height = 2f;
 
-        var builder = new ImRaiiListClipperResourceBuilder()
-            .WithImGuiListClipperStub()
+        var imRaiiListClipperResource = new ImRaiiListClipperResourceBuilder()
+            .WithImRaiiListClipperItemsCount(count)
+            .WithImRaiiListClipperItemsHeight(height)
             .WithImGuiListClipperDefaults()
             .WithImGuiListClipperObserver(observer)
-            .WithImRaiiListClipperItemsCount(count)
-            .WithImRaiiListClipperItemsHeight(height);
-
-        var imRaiiListClipperResource = builder.Build();
-
-        Assert.AreSame(builder.ImGuiListClipperPtrStub, imRaiiListClipperResource.Value.Value.MaybeImplementation);
+            .Build();
 
         var beforeCalls = observer.GetCalls();
         Assert.HasCount(1, beforeCalls);
 
         var beforeCall = beforeCalls[0];
-        Assert.AreEqual(nameof(IImGuiListClipperPtr.Begin), beforeCall.StubbedMethod.Name);
+        Assert.AreEqual(nameof(ImGuiListClipperPtr.Begin), beforeCall.StubbedMethod.Name);
 
         var beforeCallArguments = beforeCall.GetArguments();
         Assert.AreEqual(count, beforeCallArguments[0]);
@@ -42,7 +38,7 @@ public class TextImRaiiListClipper
         var afterCalls = observer.GetCalls();
         Assert.HasCount(3, afterCalls);
 
-        Assert.AreEqual(nameof(IImGuiListClipperPtr.End), afterCalls[1].StubbedMethod.Name);
-        Assert.AreEqual(nameof(IImGuiListClipperPtr.Destroy), afterCalls[2].StubbedMethod.Name);
+        Assert.AreEqual(nameof(ImGuiListClipperPtr.End), afterCalls[1].StubbedMethod.Name);
+        Assert.AreEqual(nameof(ImGuiListClipperPtr.Destroy), afterCalls[2].StubbedMethod.Name);
     }
 }

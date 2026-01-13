@@ -36,7 +36,9 @@ public static class ImGui
 
     public static void Text(ImU8String text) => GetImplementation().Text(text);
 
-    public static bool TreeNodeEx(ImU8String id, ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.None, ImU8String label = default) => GetImplementation().TreeNodeEx(id, flags, label);
+    public static bool TreeNodeEx(ImU8String id, ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags.None, ImU8String label = default) => 
+        GetImplementation().TreeNodeEx(id, flags, label);
+
     public static void TreePop() => GetImplementation().TreePop();
 
     private static IImGui GetImplementation() => MaybeImplementation ?? throw new NotImplementedException();

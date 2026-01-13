@@ -10,21 +10,24 @@ namespace ModOrganizer.Tests.Shared.ImRaiiListClippers;
 public class ImRaiiListClipperResourceBuilder : IBuilder<RaiiGuard<ImRaiiListClipper>>, IStubbableImGui, IStubbableImGuiListClipper
 {
     public StubIImGui ImGuiStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-    public StubIImGuiListClipperPtr ImGuiListClipperPtrStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIImGuiListClipperPtr ImGuiListClipperStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public int ImGuiListClipperItemsCount { get; set; } = default;
-    public float ImGuiListClipperItemsHeight { get; set; } = default;
+    private int ImRaiiListClipperItemsCount { get; set; } = default;
+    private float ImRaiiListClipperItemsHeight { get; set; } = default;
+
+    public ImRaiiListClipperResourceBuilder() 
+        => ImGuiStub.ImGuiListClipper = () => new() { MaybeImplementation = ImGuiListClipperStub };
 
     public ImRaiiListClipperResourceBuilder WithImRaiiListClipperItemsCount(int count)
     {
-        ImGuiListClipperItemsCount = count;
+        ImRaiiListClipperItemsCount = count;
 
         return this; 
     }
 
     public ImRaiiListClipperResourceBuilder WithImRaiiListClipperItemsHeight(float height)
     {
-        ImGuiListClipperItemsHeight = height;
+        ImRaiiListClipperItemsHeight = height;
 
         return this;
     }
@@ -33,10 +36,15 @@ public class ImRaiiListClipperResourceBuilder : IBuilder<RaiiGuard<ImRaiiListCli
     {
         ImGui.MaybeImplementation = ImGuiStub;
 
-        return new(ImGuiListClipperItemsCount, ImGuiListClipperItemsHeight);
+        return new(ImRaiiListClipperItemsCount, ImRaiiListClipperItemsHeight);
     }
 
-    private static void Release(ImRaiiListClipper imRaiiListClipper) => imRaiiListClipper.Dispose();
+    private static void Release(ImRaiiListClipper imRaiiListClipper) 
+    {
+        imRaiiListClipper.Dispose();
+
+        ImGui.MaybeImplementation = null;
+    } 
 
     public RaiiGuard<ImRaiiListClipper> Build() => new(Acquire, Release);
 }
