@@ -13,14 +13,14 @@ public class TextImRaiiListClipper
     {
         var observer = new StubObserver();
 
-        var count = 1;
-        var height = 2f;
+        var itemsCount = 1;
+        var itemsHeight = 2f;
 
         var imRaiiListClipperResource = new ImRaiiListClipperResourceBuilder()
             .WithImGuiListClipperDefaults()
             .WithImGuiListClipperObserver(observer)
-            .WithItemsCount(count)
-            .WithItemsHeight(height)
+            .WithItemsCount(itemsCount)
+            .WithItemsHeight(itemsHeight)
             .Build();
 
         var beforeCalls = observer.GetCalls();
@@ -30,8 +30,8 @@ public class TextImRaiiListClipper
         Assert.AreEqual(nameof(ImGuiListClipperPtr.Begin), beforeCall.StubbedMethod.Name);
 
         var beforeCallArguments = beforeCall.GetArguments();
-        Assert.AreEqual(count, beforeCallArguments[0]);
-        Assert.AreEqual(height, beforeCallArguments[1]);
+        Assert.AreEqual(itemsCount, beforeCallArguments[0]);
+        Assert.AreEqual(itemsHeight, beforeCallArguments[1]);
 
         imRaiiListClipperResource.Dispose();
 

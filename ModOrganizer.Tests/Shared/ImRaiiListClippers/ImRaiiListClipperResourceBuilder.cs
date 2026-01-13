@@ -21,14 +21,12 @@ public class ImRaiiListClipperResourceBuilder : IBuilder<RaiiGuard<ImRaiiListCli
     public ImRaiiListClipperResourceBuilder WithItemsCount(int count)
     {
         ItemsCount = count;
-
         return this; 
     }
 
     public ImRaiiListClipperResourceBuilder WithItemsHeight(float height)
     {
         ItemsHeight = height;
-
         return this;
     }
 
