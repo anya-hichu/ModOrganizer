@@ -1,4 +1,6 @@
+using Microsoft.QualityTools.Testing.Fakes.Instances;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Readers.Asserts;
 
@@ -14,6 +16,18 @@ public static class IStubbableAssertExtensions
     public static T WithAssertIsValue<T>(this T stubbable, bool stubValue) where T : IStubbableAssert
     {
         stubbable.AssertStub.IsValueJsonElementJsonValueKind = (element, kind) => stubValue;
+
+        return stubbable;
+    }
+
+    public static T WithAssertIsValuePresent<T>(this T stubbable, string? stubValue) where T : IStubbableAssert
+    {
+        stubbable.AssertStub.IsValuePresentJsonElementStringStringOutBoolean = (element, propertyName, out value, required) => 
+        {
+            value = stubValue;
+
+            return value != null;
+        };
 
         return stubbable;
     }

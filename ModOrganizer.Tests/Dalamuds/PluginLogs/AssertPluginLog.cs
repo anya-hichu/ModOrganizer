@@ -11,6 +11,6 @@ public static class AssertPluginLog
         var arguments = call.GetArguments();
         Assert.HasCount(2, arguments);
 
-        matchMessage(arguments[0] as string);
+        matchMessage.Invoke(arguments[0] as string);
     }
 }

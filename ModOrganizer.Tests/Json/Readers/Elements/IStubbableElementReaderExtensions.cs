@@ -17,6 +17,7 @@ public static class IStubbableElementReaderExtensions
         stubbable.ElementReaderStub.TryReadFromFileStringJsonElementOut = (path, out instance) =>
         {
             instance = stubValue.GetValueOrDefault();
+
             return stubValue.HasValue;
         };
 

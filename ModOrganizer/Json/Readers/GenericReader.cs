@@ -13,11 +13,7 @@ public abstract class GenericReader<T>(IAssert assert, IPluginLog pluginLog) : R
     {
         instance = null;
 
-        if (!TryGetReader(element, out var reader))
-        {
-            PluginLog.Debug($"Failed to get [{typeof(T).Name}] reader: {element}");
-            return false;
-        }
+        if (!TryGetReader(element, out var reader)) return false;
 
         if (!reader.TryRead(element, out instance))
         {

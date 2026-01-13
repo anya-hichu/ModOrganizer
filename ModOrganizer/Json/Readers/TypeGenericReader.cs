@@ -22,10 +22,12 @@ public abstract class TypeGenericReader<T>(IAssert assert, IPluginLog pluginLog)
 
         if (!Readers.TryGetValue(type, out reader))
         {
-            PluginLog.Warning($"Failed to get [{typeof(T).Name}] builder for type [{type}] (registered types: [{string.Join(", ", Readers.Keys)}]): {element}");
+            PluginLog.Warning($"Failed to get [{typeof(T).Name}] reader for type [{type}] (registered types: {string.Join(", ", Readers.Keys)}): {element}");
             return false;
         }
 
         return true;
     }
+
+
 }
