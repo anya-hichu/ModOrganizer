@@ -5,7 +5,7 @@ namespace ModOrganizer.Tests.Configs.Defaults;
 
 public static class IStubbableConfigDefaultExtensions
 {
-    public static T WithConfigDefault<T>(this T stubbable, IConfig stubValue) where T : IStubbableConfigDefault
+    public static T WithConfigDefaultBuild<T>(this T stubbable, IConfig stubValue) where T : IStubbableConfigDefault
     {
         stubbable.ConfigDefaultStub.Build = () => stubValue;
 

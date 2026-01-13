@@ -24,16 +24,16 @@ public class TestConfigLoader
     [TestMethod]
     public void TestDefault()
     {
-        var defaultConfig = new Config();
+        var config = new Config();
 
         var configLoader = new ConfigLoaderBuild()
             .WithPluginInterfaceConfig(null)
-            .WithConfigDefault(defaultConfig)
+            .WithConfigDefaultBuild(config)
             .Build();
 
         var actualConfig = configLoader.GetOrDefault();
 
-        Assert.AreSame(defaultConfig, actualConfig);
+        Assert.AreSame(config, actualConfig);
 
     }
 }

@@ -6,11 +6,12 @@ namespace ModOrganizer.Tests.Rules;
 public class TestRuleDefault
 {
     [TestMethod]
-    public void TestGet()
+    public void TestBuild()
     {
         var ruleDefaults = new RuleDefaults();
 
         var rules = ruleDefaults.Build();
+
         Assert.HasCount(16, rules);
     }
 }
