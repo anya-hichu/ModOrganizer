@@ -12,22 +12,22 @@ public class ImRaiiListClipperResourceBuilder : IBuilder<RaiiGuard<ImRaiiListCli
     public StubIImGui ImGuiStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIImGuiListClipperPtr ImGuiListClipperStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    private int ImRaiiListClipperItemsCount { get; set; } = default;
-    private float ImRaiiListClipperItemsHeight { get; set; } = default;
+    private int ItemsCount { get; set; } = default;
+    private float ItemsHeight { get; set; } = default;
 
     public ImRaiiListClipperResourceBuilder() 
         => ImGuiStub.ImGuiListClipper = () => new() { MaybeImplementation = ImGuiListClipperStub };
 
-    public ImRaiiListClipperResourceBuilder WithImRaiiListClipperItemsCount(int count)
+    public ImRaiiListClipperResourceBuilder WithItemsCount(int count)
     {
-        ImRaiiListClipperItemsCount = count;
+        ItemsCount = count;
 
         return this; 
     }
 
-    public ImRaiiListClipperResourceBuilder WithImRaiiListClipperItemsHeight(float height)
+    public ImRaiiListClipperResourceBuilder WithItemsHeight(float height)
     {
-        ImRaiiListClipperItemsHeight = height;
+        ItemsHeight = height;
 
         return this;
     }
@@ -36,7 +36,7 @@ public class ImRaiiListClipperResourceBuilder : IBuilder<RaiiGuard<ImRaiiListCli
     {
         ImGui.MaybeImplementation = ImGuiStub;
 
-        return new(ImRaiiListClipperItemsCount, ImRaiiListClipperItemsHeight);
+        return new(ItemsCount, ItemsHeight);
     }
 
     private static void Release(ImRaiiListClipper imRaiiListClipper) 

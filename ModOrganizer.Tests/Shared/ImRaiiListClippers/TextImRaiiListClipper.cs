@@ -17,10 +17,10 @@ public class TextImRaiiListClipper
         var height = 2f;
 
         var imRaiiListClipperResource = new ImRaiiListClipperResourceBuilder()
-            .WithImRaiiListClipperItemsCount(count)
-            .WithImRaiiListClipperItemsHeight(height)
             .WithImGuiListClipperDefaults()
             .WithImGuiListClipperObserver(observer)
+            .WithItemsCount(count)
+            .WithItemsHeight(height)
             .Build();
 
         var beforeCalls = observer.GetCalls();
