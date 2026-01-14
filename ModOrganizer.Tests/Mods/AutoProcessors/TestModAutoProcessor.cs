@@ -74,7 +74,8 @@ public class TestModAutoProcessor : ITestableClassTemp
 
         var logCalls = logObserver.GetCalls();
         Assert.HasCount(1, logCalls);
-        AssertPluginLog.MatchObservedCall(logCalls[0], nameof(IPluginLog.Debug), actualMessage => Assert.StartsWith($"Waiting [{delay}] ms before processing mod [{modDirectory}] inside task", actualMessage));
+        AssertPluginLog.MatchObservedCall(logCalls[0], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.StartsWith($"Waiting [{delay}] ms before processing mod [{modDirectory}] inside task", actualMessage));
 
         var processorCalls = processorObserver.GetCalls();
         Assert.HasCount(1, processorCalls);

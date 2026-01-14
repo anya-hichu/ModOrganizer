@@ -108,7 +108,8 @@ public class TestRuleEvaluator : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), actualMessage => Assert.AreEqual($"Match expression [{matchExpression}] did not evaluate to a boolean, ignoring", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.AreEqual($"Match expression [{matchExpression}] did not evaluate to a boolean, ignoring", actualMessage));
     }
 
     [TestMethod]
@@ -138,12 +139,14 @@ public class TestRuleEvaluator : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
-            actualMessage => Assert.AreEqual($$"""
+        var expectedMessage = $$"""
             Failed to parse path template [{{pathTemplate}}], ignoring: <input>(1,6) : error : Invalid token found `}`. Expecting <EOL>/end of line.
             <input>(1,6) : error : Unexpected } while no matching {
             
-            """.ReplaceLineEndings(Environment.NewLine), actualMessage));
+            """.ReplaceLineEndings(Environment.NewLine);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.AreEqual(expectedMessage, actualMessage));
     }
 
     [TestMethod]
@@ -191,7 +194,8 @@ public class TestRuleEvaluator : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}] with [0] rules enabled out of [1]", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual($"No rule matched mod [{TEST_MOD_DIRECTORY}] with [0] rules enabled out of [1]", actualMessage));
     }
 
     [TestMethod]

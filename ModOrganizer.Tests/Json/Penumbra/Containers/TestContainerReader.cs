@@ -101,7 +101,8 @@ public class TestContainerReader
         var calls = observer.GetCalls();
 
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [Files] for [Container]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Failed to read one or more [Files] for [Container]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -132,7 +133,8 @@ public class TestContainerReader
         var calls = observer.GetCalls();
 
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [FileSwaps] for [Container]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Failed to read one or more [FileSwaps] for [Container]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -163,6 +165,7 @@ public class TestContainerReader
         var calls = observer.GetCalls();
 
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [Manipulations] for [Container]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Failed to read one or more [Manipulations] for [Container]: {element}", actualMessage));
     }
 }

@@ -118,8 +118,10 @@ public class TestBackupManager : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), actualMessage => Assert.StartsWith("Caught exception while trying to copy", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Error), actualMessage => Assert.AreEqual(message, actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.StartsWith("Caught exception while trying to copy", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Error), 
+            actualMessage => Assert.AreEqual(message, actualMessage));
     }
 
     [TestMethod]
@@ -318,7 +320,8 @@ public class TestBackupManager : ITestableClassTemp
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), actualMessage => Assert.AreEqual($"Created auto backup [{createdAutoBackup.CreatedAt}] file before restore", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug), 
+            actualMessage => Assert.AreEqual($"Created auto backup [{createdAutoBackup.CreatedAt}] file before restore", actualMessage));
     }
 
     [TestMethod]

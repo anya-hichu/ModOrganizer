@@ -415,7 +415,8 @@ public class TestAssert
         var calls = observer.GetCalls();
 
         Assert.HasCount(1, calls);
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Property [{propertyName}] is not parsable as [UInt16]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Property [{propertyName}] is not parsable as [UInt16]: {element}", actualMessage));
     }
 
     [TestMethod]

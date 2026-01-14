@@ -205,7 +205,9 @@ public class TestSortOrderReader
         var calls = observer.GetCalls();
         Assert.HasCount(2, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read one or more [Data] for [SortOrder]: {element}", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [Data] for [SortOrder]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
     }
 }
