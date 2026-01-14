@@ -194,7 +194,7 @@ public class PluginProvider : CachedProvider
                 windowSystem.AddWindow(p.GetRequiredService<PreviewWindow>());
 
                 var windowToggler = p.GetRequiredService<IWindowToggler>();
-                windowToggler.SetWindowSystem(windowSystem);
+                windowToggler.MaybeWindowSystem = windowSystem;
 
                 return windowSystem;
             });

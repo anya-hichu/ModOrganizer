@@ -4,7 +4,7 @@ namespace ModOrganizer.Windows.Togglers;
 
 public interface IWindowToggler
 {
-    void SetWindowSystem(WindowSystem windowSystem);
+    WindowSystem? MaybeWindowSystem { get; set; }
 
     void Toggle<T>() where T : Window;
 }
