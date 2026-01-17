@@ -1,5 +1,4 @@
 using Dalamud.Plugin.Services.Fakes;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
@@ -23,38 +22,37 @@ namespace ModOrganizer.Tests.Json.Penumbra.Manipulations;
 
 public class ManipulationWrapperGenericReaderBuilder : IBuilder<ManipulationWrapperGenericReader>, IStubbableAssert, IStubbablePluginLog, IStubbableReaderProvider<ManipulationWrapper>
 {
-    private static readonly HashSet<string> READER_TYPES = [MetaAtchWrapperReader.TYPE, MetaAtrWrapperReader.TYPE, MetaEqdpWrapperReader.TYPE, MetaEqpWrapperReader.TYPE,
-            MetaEstWrapperReader.TYPE, MetaGeqpWrapperReader.TYPE, MetaGmpWrapperReader.TYPE, MetaImcWrapperReader.TYPE, MetaRspWrapperReader.TYPE, MetaShpWrapperReader.TYPE];
-
     public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    private ServiceProvider ReaderStubProvider { get; init; }
+    public StubIReader<ManipulationWrapper> MetaAtchWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaAtrWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaEqdpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaEqpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaEstWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaGeqpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaGmpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaImcWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaRspWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<ManipulationWrapper> MetaShpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public ManipulationWrapperGenericReaderBuilder()
+    public StubIReader<ManipulationWrapper> GetReaderStub(string type) => type switch
     {
-        var collection = new ServiceCollection();
+        _ when type == MetaAtchWrapperReader.TYPE => MetaAtchWrapperReaderStub,
+        _ when type == MetaAtrWrapperReader.TYPE => MetaAtrWrapperReaderStub,
+        _ when type == MetaEqdpWrapperReader.TYPE => MetaEqdpWrapperReaderStub,
+        _ when type == MetaEqpWrapperReader.TYPE => MetaEqpWrapperReaderStub,
+        _ when type == MetaEstWrapperReader.TYPE => MetaEstWrapperReaderStub,
+        _ when type == MetaGeqpWrapperReader.TYPE => MetaGeqpWrapperReaderStub,
+        _ when type == MetaGmpWrapperReader.TYPE => MetaGmpWrapperReaderStub,
+        _ when type == MetaImcWrapperReader.TYPE => MetaImcWrapperReaderStub,
+        _ when type == MetaRspWrapperReader.TYPE => MetaRspWrapperReaderStub,
+        _ when type == MetaShpWrapperReader.TYPE => MetaShpWrapperReaderStub,
 
-        foreach (var type in READER_TYPES) collection.AddKeyedSingleton<StubIReader<ManipulationWrapper>>(type, (_, __) => new() { InstanceBehavior = StubBehaviors.NotImplemented });
+        _ => throw new NotImplementedException()
+    };
 
-        ReaderStubProvider = collection.BuildServiceProvider();
-    }
-
-    public StubIReader<ManipulationWrapper> GetReaderStub(string type) => ReaderStubProvider.GetRequiredKeyedService<StubIReader<ManipulationWrapper>>(type);
-
-    public ManipulationWrapperGenericReader Build() => new(
-        AssertStub,
-        GetReaderStub(MetaAtchWrapperReader.TYPE),
-        GetReaderStub(MetaAtrWrapperReader.TYPE),
-        GetReaderStub(MetaEqdpWrapperReader.TYPE),
-        GetReaderStub(MetaEqpWrapperReader.TYPE),
-        GetReaderStub(MetaEstWrapperReader.TYPE),
-        GetReaderStub(MetaGeqpWrapperReader.TYPE),
-        GetReaderStub(MetaGmpWrapperReader.TYPE),
-        GetReaderStub(MetaImcWrapperReader.TYPE),
-        GetReaderStub(MetaRspWrapperReader.TYPE),
-        GetReaderStub(MetaShpWrapperReader.TYPE),
-        PluginLogStub
-    );
+    public ManipulationWrapperGenericReader Build() => new(AssertStub, MetaAtchWrapperReaderStub, MetaAtrWrapperReaderStub, MetaEqdpWrapperReaderStub, MetaEqpWrapperReaderStub, MetaEstWrapperReaderStub,
+        MetaGeqpWrapperReaderStub, MetaGmpWrapperReaderStub, MetaImcWrapperReaderStub, MetaRspWrapperReaderStub, MetaShpWrapperReaderStub, PluginLogStub);
 }
