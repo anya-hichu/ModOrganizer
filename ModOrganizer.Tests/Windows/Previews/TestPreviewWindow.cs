@@ -41,6 +41,9 @@ public class TestPreviewWindow
     {
         var observer = new StubObserver();
 
+        var folderName = "Folder Name";
+
+        var resultName = "Result Name";
         var resultDirectory = "Result Directory";
         var resultNewPath = "Result New Path";
 
@@ -49,12 +52,12 @@ public class TestPreviewWindow
             Folders = [
                 new() 
                 {
-                    Name = "Folder Name",
+                    Name = folderName,
                     Path = "Folder Path",
                     Files = [
-                        new() 
+                        new()
                         {
-                            Name = "Result Name",
+                            Name = resultName,
                             Directory = resultDirectory,
                             Path = resultNewPath
                         }
@@ -73,6 +76,7 @@ public class TestPreviewWindow
         using var previewWindowResource = new PreviewWindowResourceBuilder()
             .WithImGuiDefaults()
             .WithImGuiObserver(observer)
+            .WithImGuiTreeNodeEx(true)
             .WithRuleResultFileSystemRootFolder(rootFolder)
             .WithRuleResultFileSystemTryGetFileData(fileData)
             .Build();
@@ -80,7 +84,7 @@ public class TestPreviewWindow
         previewWindowResource.Value.Draw();
 
         var calls = observer.GetCalls();
-        Assert.HasCount(10, calls);
+        Assert.HasCount(18, calls);
 
         // TODO: Add label checks
         Assert.AreEqual(nameof(ImGui.InputTextWithHint), calls[0].StubbedMethod.Name);
@@ -89,9 +93,28 @@ public class TestPreviewWindow
         Assert.AreEqual(nameof(ImGui.GetWindowWidth), calls[3].StubbedMethod.Name);
         Assert.AreEqual(nameof(ImGui.SameLine), calls[4].StubbedMethod.Name);
         Assert.AreEqual(nameof(ImGui.Checkbox), calls[5].StubbedMethod.Name);
+
         Assert.AreEqual(nameof(ImGui.GetColorU32), calls[6].StubbedMethod.Name);
         Assert.AreEqual(nameof(ImGui.PushStyleColor), calls[7].StubbedMethod.Name);
-        Assert.AreEqual(nameof(ImGui.TreeNodeEx), calls[8].StubbedMethod.Name);
-        Assert.AreEqual(nameof(ImGui.PopStyleColor), calls[9].StubbedMethod.Name);
+        {
+            Assert.AreEqual(nameof(ImGui.TreeNodeEx), calls[8].StubbedMethod.Name);
+            Assert.StartsWith($"{folderName}###resultVirtualFolder", calls[8].GetArguments()[0].ToString());
+            {
+                Assert.AreEqual(nameof(ImGui.GetColorU32), calls[9].StubbedMethod.Name);
+                Assert.AreEqual(nameof(ImGui.PushStyleColor), calls[10].StubbedMethod.Name);
+                {
+                    Assert.AreEqual(nameof(ImGui.TreeNodeEx), calls[11].StubbedMethod.Name);
+                    Assert.StartsWith($"{resultName}###resultVirtualFile", calls[11].GetArguments()[0].ToString());
+                    {
+                        Assert.AreEqual(nameof(ImGui.IsItemClicked), calls[12].StubbedMethod.Name);
+                        Assert.AreEqual(nameof(ImGui.IsItemHovered), calls[13].StubbedMethod.Name);
+                    }
+                    Assert.AreEqual(nameof(ImGui.TreePop), calls[14].StubbedMethod.Name);
+                }
+                Assert.AreEqual(nameof(ImGui.PopStyleColor), calls[15].StubbedMethod.Name);
+            }
+            Assert.AreEqual(nameof(ImGui.TreePop), calls[16].StubbedMethod.Name);
+        }
+        Assert.AreEqual(nameof(ImGui.PopStyleColor), calls[17].StubbedMethod.Name);
     }
 }

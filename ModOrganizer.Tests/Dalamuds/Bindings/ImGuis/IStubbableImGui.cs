@@ -1,4 +1,3 @@
-using Dalamud.Bindings.ImGui;
 using Dalamud.Bindings.ImGui.Fakes;
 
 namespace ModOrganizer.Tests.Dalamuds.Bindings.ImGuis;

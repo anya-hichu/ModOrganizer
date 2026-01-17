@@ -28,4 +28,11 @@ public static class IStubbableImGuiExtensions
 
         return stubbable;
     }
+
+    public static T WithImGuiTreeNodeEx<T>(this T stubbable, bool stubValue) where T : IStubbableImGui
+    {
+        stubbable.ImGuiStub.TreeNodeExImU8StringImGuiTreeNodeFlagsImU8String = (id, flags, label) => stubValue;
+
+        return stubbable;
+    }
 }
