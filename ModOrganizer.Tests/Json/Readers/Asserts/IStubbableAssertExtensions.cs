@@ -20,6 +20,18 @@ public static class IStubbableAssertExtensions
         return stubbable;
     }
 
+    public static T WithAssertIsPropertyPresent<T>(this T stubbable, JsonElement? stubValue) where T : IStubbableAssert
+    {
+        stubbable.AssertStub.IsPropertyPresentJsonElementStringJsonElementOutBoolean = (element, propertyName, out property, warn) =>
+        {
+            property = stubValue.GetValueOrDefault();
+
+            return stubValue.HasValue;
+        };
+
+        return stubbable;
+    }
+
     public static T WithAssertIsValuePresent<T>(this T stubbable, string? stubValue) where T : IStubbableAssert
     {
         stubbable.AssertStub.IsValuePresentJsonElementStringStringOutBoolean = (element, propertyName, out value, required) => 

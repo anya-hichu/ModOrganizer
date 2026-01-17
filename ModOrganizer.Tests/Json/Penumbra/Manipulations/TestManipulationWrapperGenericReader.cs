@@ -3,6 +3,7 @@ using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Readers;
 using ModOrganizer.Tests.Json.Readers.Asserts;
 using System.Text.Json;
 
@@ -27,7 +28,7 @@ public class TestManipulationWrapperGenericReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            {"Type", type}
+            { "Type", type }
         });
 
         var success = manipulationWrapperGenericReader.TryRead(element, out var manipulationWrapper);
@@ -55,8 +56,6 @@ public class TestManipulationWrapperGenericReader
     [DataRow("Shp")]
     public void TestTryReadWithType(string type)
     {
-        var observer = new StubObserver();
-
         var manipulationWrapper = new ManipulationWrapper()
         {
             Type = type,
@@ -66,7 +65,7 @@ public class TestManipulationWrapperGenericReader
         var manipulationWrapperGenericReader = new ManipulationWrapperGenericReaderBuilder()
             .WithAssertIsValue(true)
             .WithAssertIsValuePresent(type)
-            .WithManipulationWrapperReaderTryRead(type, manipulationWrapper)
+            .WithReaderTryRead(type, manipulationWrapper)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
@@ -99,12 +98,12 @@ public class TestManipulationWrapperGenericReader
             .WithPluginLogObserver(observer)
             .WithAssertIsValue(true)
             .WithAssertIsValuePresent(type)
-            .WithManipulationWrapperReaderTryRead(type, null)
+            .WithReaderTryRead(type, null as ManipulationWrapper)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            {"Type", type}
+            { "Type", type }
         });
 
         var success = manipulationWrapperGenericReader.TryRead(element, out var manipulationWrapper);

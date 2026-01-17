@@ -30,9 +30,7 @@ public class RuleDefaults : IRuleDefaults
         Build(EmoteCategory.Special),
         Build(EmoteCategory.Expressions),
 
-        // ModelType like summon/ minion
-
-        // TODO: rewrite to use object {"type" => categorize}
+        // ModelType like summon / minion
         new() {
             Path = $"Defaults/V{DEFAULT_VERSION}/Sets",
             Priority = 0,

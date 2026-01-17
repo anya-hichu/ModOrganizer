@@ -49,4 +49,9 @@
     <ItemGroup>
         <AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Json\Penumbra\ModMetas\" />
+      <Folder Include="Json\Penumbra\Options\" />
+    </ItemGroup>
 </Project>

@@ -18,17 +18,17 @@ public class BackupManager : IBackupManager
     private IModInterop ModInterop { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
     private IPluginLog PluginLog { get; init; }
-    private IFileReader<SortOrder> SortOrderFileReader { get; init; }
+    private ISortOrderReader SortOrderReader { get; init; }
 
     private RateLimitedAction<bool> CreateRecentAction { get; init; }
 
-    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, ISortOrderReader sortOrderFileReader)
+    public BackupManager(IConfig config, IModInterop modInterop, IDalamudPluginInterface pluginInterface, IPluginLog pluginLog, ISortOrderReader sortOrderReader)
     {
         Config = config;
         ModInterop = modInterop;
         PluginInterface = pluginInterface;
         PluginLog = pluginLog;
-        SortOrderFileReader = sortOrderFileReader;
+        SortOrderReader = sortOrderReader;
 
         CreateRecentAction = Debouncer.Debounce<bool>(auto => Create(auto), TimeSpan.FromSeconds(5), leading: true, trailing: false);
     }
@@ -154,7 +154,7 @@ public class BackupManager : IBackupManager
         }
     }
 
-    public bool TryRead(Backup backup, [NotNullWhen(true)] out SortOrder? sortOrder) => SortOrderFileReader.TryReadFromFile(GetPath(backup), out sortOrder);
+    public bool TryRead(Backup backup, [NotNullWhen(true)] out SortOrder? sortOrder) => SortOrderReader.TryReadFromFile(GetPath(backup), out sortOrder);
 
     public string GetPath(Backup backup) => GetPath(backup.CreatedAt);
     private string GetPath(DateTimeOffset offset) => Path.Combine(GetFolderPath(), GetFileName(offset));
