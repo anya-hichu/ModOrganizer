@@ -44,7 +44,7 @@ public class MainWindow : Window
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(IConfig config, IModInterop modInterop, IEvaluationResultState evaluationResultState, IModFileSystem modFileSystem, IRuleResultState ruleResultState, IWindowToggler windowToggler) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(IConfig config, IEvaluationResultState evaluationResultState, IModFileSystem modFileSystem, IModInterop modInterop, IRuleResultState ruleResultState, IWindowToggler windowToggler) : base("ModOrganizer - Main##mainWindow")
     {
         Config = config;
         EvaluationResultState = evaluationResultState;
