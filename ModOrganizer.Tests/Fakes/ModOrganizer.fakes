@@ -20,7 +20,10 @@
         <Add FullName="ModOrganizer.Rules.IRuleDefaults!"/>
         <Add FullName="ModOrganizer.Rules.IRuleEvaluator!"/>
         <Add FullName="ModOrganizer.Virtuals.IVirtualMatcher!"/>
+        <Add FullName="ModOrganizer.Windows.Results.Backups.IBackupResultState!"/>
+        <Add FullName="ModOrganizer.Windows.Results.Evaluations.IEvaluationResultState!"/>
         <Add FullName="ModOrganizer.Windows.Results.Rules.IRuleResultFileSystem!"/>
+        <Add FullName="ModOrganizer.Windows.Results.Rules.IRuleResultState!"/>
         <Add FullName="ModOrganizer.Windows.Togglers.IWindowToggler!"/>
     </StubGeneration>
     <ShimGeneration>

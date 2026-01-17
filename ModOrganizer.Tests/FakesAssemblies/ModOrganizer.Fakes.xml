@@ -595,6 +595,318 @@
         <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#MatchesFolder(ModOrganizer.Virtuals.VirtualFolder)">
             <summary>Sets the Stub of IVirtualMatcher.MatchesFolder(IVirtualMatcher this, VirtualFolder folder)</summary>
         </member>
+        <member name="T:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState">
+            <summary>Stub type of ModOrganizer.Windows.Results.Backups.IBackupResultState</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.#ctor">
+            <summary>Initializes a new instance of type StubIBackupResultState</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.Apply">
+            <summary>Sets the stub of IBackupResultState.Apply(IBackupResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.AttachBackingFieldToDirectoryFilter">
+            <summary>Attaches delegates to emulate StubIBackupResultState.DirectoryFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.AttachBackingFieldToDirectoryFilter01">
+            <summary>Attaches delegates to emulate StubIBackupResultState.DirectoryFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.AttachBackingFieldToOldPathFilter">
+            <summary>Attaches delegates to emulate StubIBackupResultState.OldPathFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.AttachBackingFieldToPathFilter">
+            <summary>Attaches delegates to emulate StubIBackupResultState.PathFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.AttachBackingFieldToReloadPenumbra">
+            <summary>Attaches delegates to emulate StubIBackupResultState.ReloadPenumbra as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.AttachBackingFieldToShowSamePaths">
+            <summary>Attaches delegates to emulate StubIBackupResultState.ShowSamePaths as a property with a backing field.</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.Clear">
+            <summary>Sets the stub of IResultState.Clear(IResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#IResultState#DirectoryFilter">
+            <summary>Sets the stub of IResultState.get_DirectoryFilter(IResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Showables#IShowableResultState#DirectoryFilter">
+            <summary>Sets the stub of IShowableResultState.get_DirectoryFilter(IShowableResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#DirectoryFilter">
+            <summary>Sets the stub of IBackupResultState.get_DirectoryFilter(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.DirectoryFilterGet">
+            <summary>Sets the stub of IBackupResultState.get_DirectoryFilter(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.DirectoryFilterGet01">
+            <summary>Sets the stub of IResultState.get_DirectoryFilter(IResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.DirectoryFilterGet02">
+            <summary>Sets the stub of IShowableResultState.get_DirectoryFilter(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.DirectoryFilterSetString">
+            <summary>Sets the stub of IBackupResultState.set_DirectoryFilter(IBackupResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.DirectoryFilterSetString01">
+            <summary>Sets the stub of IResultState.set_DirectoryFilter(IResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.Dispose">
+            <summary>Sets the stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.GetResults">
+            <summary>Sets the stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.GetResultsOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.GetResultsOf101``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.HasCompletedTask">
+            <summary>Sets the stub of IResultState.HasCompletedTask(IResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.IsSelectedBackup">
+            <summary>Sets the stub of IBackupResultState.IsSelected(IBackupResultState this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#Apply">
+            <summary>Sets the Stub of IBackupResultState.Apply(IBackupResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#IsSelected(ModOrganizer.Backups.Backup)">
+            <summary>Sets the Stub of IBackupResultState.IsSelected(IBackupResultState this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#Preview">
+            <summary>Sets the Stub of IBackupResultState.Preview(IBackupResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#Select(ModOrganizer.Backups.Backup)">
+            <summary>Sets the Stub of IBackupResultState.Select(IBackupResultState this, Backup backup)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#Unselect">
+            <summary>Sets the Stub of IBackupResultState.Unselect(IBackupResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#IResultState#Clear">
+            <summary>Sets the Stub of IResultState.Clear(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#IResultState#GetResults">
+            <summary>Sets the Stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#IResultState#GetResults``1">
+            <summary>Sets the Stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#IResultState#HasCompletedTask">
+            <summary>Sets the Stub of IResultState.HasCompletedTask(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Showables#IShowableResultState#GetResults``1">
+            <summary>Sets the Stub of IShowableResultState.GetResults(IShowableResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#OldPathFilter">
+            <summary>Sets the stub of IBackupResultState.get_OldPathFilter(IBackupResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Showables#IShowableBackupResultState#OldPathFilter">
+            <summary>Sets the stub of IShowableBackupResultState.get_OldPathFilter(IShowableBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.OldPathFilterGet">
+            <summary>Sets the stub of IBackupResultState.get_OldPathFilter(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.OldPathFilterGet01">
+            <summary>Sets the stub of IShowableBackupResultState.get_OldPathFilter(IShowableBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.OldPathFilterSetString">
+            <summary>Sets the stub of IBackupResultState.set_OldPathFilter(IBackupResultState this, String value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Showables#IShowableBackupResultState#PathFilter">
+            <summary>Sets the stub of IShowableBackupResultState.get_PathFilter(IShowableBackupResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#PathFilter">
+            <summary>Sets the stub of IBackupResultState.get_PathFilter(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.PathFilterGet">
+            <summary>Sets the stub of IBackupResultState.get_PathFilter(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.PathFilterGet01">
+            <summary>Sets the stub of IShowableBackupResultState.get_PathFilter(IShowableBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.PathFilterSetString">
+            <summary>Sets the stub of IBackupResultState.set_PathFilter(IBackupResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.Preview">
+            <summary>Sets the stub of IBackupResultState.Preview(IBackupResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#ReloadPenumbra">
+            <summary>Sets the stub of IBackupResultState.get_ReloadPenumbra(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ReloadPenumbraGet">
+            <summary>Sets the stub of IBackupResultState.get_ReloadPenumbra(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ReloadPenumbraSetBoolean">
+            <summary>Sets the stub of IBackupResultState.set_ReloadPenumbra(IBackupResultState this, Boolean value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.SelectBackup">
+            <summary>Sets the stub of IBackupResultState.Select(IBackupResultState this, Backup backup)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Showables#IShowableBackupResultState#ShowSamePaths">
+            <summary>Sets the stub of IShowableBackupResultState.get_ShowSamePaths(IShowableBackupResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ModOrganizer#Windows#Results#Backups#IBackupResultState#ShowSamePaths">
+            <summary>Sets the stub of IBackupResultState.get_ShowSamePaths(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ShowSamePathsGet">
+            <summary>Sets the stub of IBackupResultState.get_ShowSamePaths(IBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ShowSamePathsGet01">
+            <summary>Sets the stub of IShowableBackupResultState.get_ShowSamePaths(IShowableBackupResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.ShowSamePathsSetBoolean">
+            <summary>Sets the stub of IBackupResultState.set_ShowSamePaths(IBackupResultState this, Boolean value)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.System#IDisposable#Dispose">
+            <summary>Sets the Stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState.Unselect">
+            <summary>Sets the stub of IBackupResultState.Unselect(IBackupResultState this)</summary>
+        </member>
+        <member name="T:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState">
+            <summary>Stub type of ModOrganizer.Windows.Results.Evaluations.IEvaluationResultState</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.#ctor">
+            <summary>Initializes a new instance of type StubIEvaluationResultState</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.AttachBackingFieldToDirectoryFilter">
+            <summary>Attaches delegates to emulate StubIEvaluationResultState.DirectoryFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.AttachBackingFieldToDirectoryFilter01">
+            <summary>Attaches delegates to emulate StubIEvaluationResultState.DirectoryFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.AttachBackingFieldToExpression">
+            <summary>Attaches delegates to emulate StubIEvaluationResultState.Expression as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.AttachBackingFieldToExpressionFilter">
+            <summary>Attaches delegates to emulate StubIEvaluationResultState.ExpressionFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.AttachBackingFieldToTemplate">
+            <summary>Attaches delegates to emulate StubIEvaluationResultState.Template as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.AttachBackingFieldToTemplateFilter">
+            <summary>Attaches delegates to emulate StubIEvaluationResultState.TemplateFilter as a property with a backing field.</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.Clear">
+            <summary>Sets the stub of IResultState.Clear(IResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Showables#IShowableResultState#DirectoryFilter">
+            <summary>Sets the stub of IShowableResultState.get_DirectoryFilter(IShowableResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#DirectoryFilter">
+            <summary>Sets the stub of IEvaluationResultState.get_DirectoryFilter(IEvaluationResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#IResultState#DirectoryFilter">
+            <summary>Sets the stub of IResultState.get_DirectoryFilter(IResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.DirectoryFilterGet">
+            <summary>Sets the stub of IEvaluationResultState.get_DirectoryFilter(IEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.DirectoryFilterGet01">
+            <summary>Sets the stub of IResultState.get_DirectoryFilter(IResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.DirectoryFilterGet02">
+            <summary>Sets the stub of IShowableResultState.get_DirectoryFilter(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.DirectoryFilterSetString">
+            <summary>Sets the stub of IEvaluationResultState.set_DirectoryFilter(IEvaluationResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.DirectoryFilterSetString01">
+            <summary>Sets the stub of IResultState.set_DirectoryFilter(IResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.Dispose">
+            <summary>Sets the stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.EvaluateHashSetOfString">
+            <summary>Sets the stub of IEvaluationResultState.Evaluate(IEvaluationResultState this, HashSet`1 modDirectories)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#Expression">
+            <summary>Sets the stub of IEvaluationResultState.get_Expression(IEvaluationResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#ExpressionFilter">
+            <summary>Sets the stub of IEvaluationResultState.get_ExpressionFilter(IEvaluationResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Showables#IShowableEvaluationResultState#ExpressionFilter">
+            <summary>Sets the stub of IShowableEvaluationResultState.get_ExpressionFilter(IShowableEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ExpressionFilterGet">
+            <summary>Sets the stub of IEvaluationResultState.get_ExpressionFilter(IEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ExpressionFilterGet01">
+            <summary>Sets the stub of IShowableEvaluationResultState.get_ExpressionFilter(IShowableEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ExpressionFilterSetString">
+            <summary>Sets the stub of IEvaluationResultState.set_ExpressionFilter(IEvaluationResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ExpressionGet">
+            <summary>Sets the stub of IEvaluationResultState.get_Expression(IEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ExpressionSetString">
+            <summary>Sets the stub of IEvaluationResultState.set_Expression(IEvaluationResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.GetResults">
+            <summary>Sets the stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.GetResultsOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.GetResultsOf101``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.HasCompletedTask">
+            <summary>Sets the stub of IResultState.HasCompletedTask(IResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.LoadRule">
+            <summary>Sets the stub of IEvaluationResultState.Load(IEvaluationResultState this, Rule rule)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#Evaluate(System.Collections.Generic.HashSet{System.String})">
+            <summary>Sets the Stub of IEvaluationResultState.Evaluate(IEvaluationResultState this, HashSet`1 modDirectories)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#Load(ModOrganizer.Rules.Rule)">
+            <summary>Sets the Stub of IEvaluationResultState.Load(IEvaluationResultState this, Rule rule)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#IResultState#Clear">
+            <summary>Sets the Stub of IResultState.Clear(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#IResultState#GetResults">
+            <summary>Sets the Stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#IResultState#GetResults``1">
+            <summary>Sets the Stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#IResultState#HasCompletedTask">
+            <summary>Sets the Stub of IResultState.HasCompletedTask(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Showables#IShowableResultState#GetResults``1">
+            <summary>Sets the Stub of IShowableResultState.GetResults(IShowableResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.System#IDisposable#Dispose">
+            <summary>Sets the Stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#Template">
+            <summary>Sets the stub of IEvaluationResultState.get_Template(IEvaluationResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Showables#IShowableEvaluationResultState#TemplateFilter">
+            <summary>Sets the stub of IShowableEvaluationResultState.get_TemplateFilter(IShowableEvaluationResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.ModOrganizer#Windows#Results#Evaluations#IEvaluationResultState#TemplateFilter">
+            <summary>Sets the stub of IEvaluationResultState.get_TemplateFilter(IEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.TemplateFilterGet">
+            <summary>Sets the stub of IEvaluationResultState.get_TemplateFilter(IEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.TemplateFilterGet01">
+            <summary>Sets the stub of IShowableEvaluationResultState.get_TemplateFilter(IShowableEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.TemplateFilterSetString">
+            <summary>Sets the stub of IEvaluationResultState.set_TemplateFilter(IEvaluationResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.TemplateGet">
+            <summary>Sets the stub of IEvaluationResultState.get_Template(IEvaluationResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Evaluations.Fakes.StubIEvaluationResultState.TemplateSetString">
+            <summary>Sets the stub of IEvaluationResultState.set_Template(IEvaluationResultState this, String value)</summary>
+        </member>
         <member name="T:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem">
             <summary>Stub type of ModOrganizer.Windows.Results.Rules.IRuleResultFileSystem</summary>
         </member>
@@ -618,6 +930,174 @@
         </member>
         <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultFileSystem.TryGetFileDataVirtualFileRulePathResultOut">
             <summary>Sets the stub of IRuleResultFileSystem.TryGetFileData(IRuleResultFileSystem this, VirtualFile file, RulePathResult* fileData)</summary>
+        </member>
+        <member name="T:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState">
+            <summary>Stub type of ModOrganizer.Windows.Results.Rules.IRuleResultState</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.#ctor">
+            <summary>Initializes a new instance of type StubIRuleResultState</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.Apply">
+            <summary>Sets the stub of IRuleResultState.Apply(IRuleResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.AttachBackingFieldToDirectoryFilter">
+            <summary>Attaches delegates to emulate StubIRuleResultState.DirectoryFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.AttachBackingFieldToDirectoryFilter01">
+            <summary>Attaches delegates to emulate StubIRuleResultState.DirectoryFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.AttachBackingFieldToNewPathFilter">
+            <summary>Attaches delegates to emulate StubIRuleResultState.NewPathFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.AttachBackingFieldToPathFilter">
+            <summary>Attaches delegates to emulate StubIRuleResultState.PathFilter as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.AttachBackingFieldToShowErrors">
+            <summary>Attaches delegates to emulate StubIRuleResultState.ShowErrors as a property with a backing field.</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.AttachBackingFieldToShowSamePaths">
+            <summary>Attaches delegates to emulate StubIRuleResultState.ShowSamePaths as a property with a backing field.</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.Clear">
+            <summary>Sets the stub of IResultState.Clear(IResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#IResultState#DirectoryFilter">
+            <summary>Sets the stub of IResultState.get_DirectoryFilter(IResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#DirectoryFilter">
+            <summary>Sets the stub of IRuleResultState.get_DirectoryFilter(IRuleResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Showables#IShowableResultState#DirectoryFilter">
+            <summary>Sets the stub of IShowableResultState.get_DirectoryFilter(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.DirectoryFilterGet">
+            <summary>Sets the stub of IRuleResultState.get_DirectoryFilter(IRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.DirectoryFilterGet01">
+            <summary>Sets the stub of IResultState.get_DirectoryFilter(IResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.DirectoryFilterGet02">
+            <summary>Sets the stub of IShowableResultState.get_DirectoryFilter(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.DirectoryFilterSetString">
+            <summary>Sets the stub of IRuleResultState.set_DirectoryFilter(IRuleResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.DirectoryFilterSetString01">
+            <summary>Sets the stub of IResultState.set_DirectoryFilter(IResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.Dispose">
+            <summary>Sets the stub of IDisposable.Dispose(IDisposable this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.GetResults">
+            <summary>Sets the stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.GetResultsOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IRuleResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.GetResultsOf101``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.GetResultsOf102``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(ISelectableResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.GetResultsOf103``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Sets stubs of GetResults(IShowableResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.HasCompletedTask">
+            <summary>Sets the stub of IResultState.HasCompletedTask(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#IResultState#Clear">
+            <summary>Sets the Stub of IResultState.Clear(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#IResultState#GetResults">
+            <summary>Sets the Stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#IResultState#GetResults``1">
+            <summary>Sets the Stub of IResultState.GetResults(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#IResultState#HasCompletedTask">
+            <summary>Sets the Stub of IResultState.HasCompletedTask(IResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#Apply">
+            <summary>Sets the Stub of IRuleResultState.Apply(IRuleResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#GetResults``1">
+            <summary>Sets the Stub of IRuleResultState.GetResults(IRuleResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#Preview(System.Collections.Generic.HashSet{System.String})">
+            <summary>Sets the Stub of IRuleResultState.Preview(IRuleResultState this, HashSet`1 modDirectories)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Selectables#ISelectableResultState#GetResults``1">
+            <summary>Sets the Stub of ISelectableResultState.GetResults(ISelectableResultState this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Showables#IShowableResultState#GetResults``1">
+            <summary>Sets the Stub of IShowableResultState.GetResults(IShowableResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Showables#IShowableRuleResultState#NewPathFilter">
+            <summary>Sets the stub of IShowableRuleResultState.get_NewPathFilter(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#NewPathFilter">
+            <summary>Sets the stub of IRuleResultState.get_NewPathFilter(IRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.NewPathFilterGet">
+            <summary>Sets the stub of IRuleResultState.get_NewPathFilter(IRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.NewPathFilterGet01">
+            <summary>Sets the stub of IShowableRuleResultState.get_NewPathFilter(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.NewPathFilterSetString">
+            <summary>Sets the stub of IRuleResultState.set_NewPathFilter(IRuleResultState this, String value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#PathFilter">
+            <summary>Sets the stub of IRuleResultState.get_PathFilter(IRuleResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Showables#IShowableRuleResultState#PathFilter">
+            <summary>Sets the stub of IShowableRuleResultState.get_PathFilter(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.PathFilterGet">
+            <summary>Sets the stub of IRuleResultState.get_PathFilter(IRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.PathFilterGet01">
+            <summary>Sets the stub of IShowableRuleResultState.get_PathFilter(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.PathFilterSetString">
+            <summary>Sets the stub of IRuleResultState.set_PathFilter(IRuleResultState this, String value)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.PreviewHashSetOfString">
+            <summary>Sets the stub of IRuleResultState.Preview(IRuleResultState this, HashSet`1 modDirectories)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#ShowErrors">
+            <summary>Sets the stub of IRuleResultState.get_ShowErrors(IRuleResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Showables#IShowableRuleResultState#ShowErrors">
+            <summary>Sets the stub of IShowableRuleResultState.get_ShowErrors(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ShowErrorsGet">
+            <summary>Sets the stub of IRuleResultState.get_ShowErrors(IRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ShowErrorsGet01">
+            <summary>Sets the stub of IShowableRuleResultState.get_ShowErrors(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ShowErrorsSetBoolean">
+            <summary>Sets the stub of IRuleResultState.set_ShowErrors(IRuleResultState this, Boolean value)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Rules#IRuleResultState#ShowSamePaths">
+            <summary>Sets the stub of IRuleResultState.get_ShowSamePaths(IRuleResultState this)</summary>
+        </member>
+        <member name="P:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ModOrganizer#Windows#Results#Showables#IShowableRuleResultState#ShowSamePaths">
+            <summary>Sets the stub of IShowableRuleResultState.get_ShowSamePaths(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ShowSamePathsGet">
+            <summary>Sets the stub of IRuleResultState.get_ShowSamePaths(IRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ShowSamePathsGet01">
+            <summary>Sets the stub of IShowableRuleResultState.get_ShowSamePaths(IShowableRuleResultState this)</summary>
+        </member>
+        <member name="F:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.ShowSamePathsSetBoolean">
+            <summary>Sets the stub of IRuleResultState.set_ShowSamePaths(IRuleResultState this, Boolean value)</summary>
+        </member>
+        <member name="M:ModOrganizer.Windows.Results.Rules.Fakes.StubIRuleResultState.System#IDisposable#Dispose">
+            <summary>Sets the Stub of IDisposable.Dispose(IDisposable this)</summary>
         </member>
         <member name="T:ModOrganizer.Windows.Togglers.Fakes.StubIWindowToggler">
             <summary>Stub type of ModOrganizer.Windows.Togglers.IWindowToggler</summary>
