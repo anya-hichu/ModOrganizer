@@ -18,12 +18,12 @@ public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>, IStubbabl
 {
     public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
+    public StubIElementReader ElementReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<Group> GroupCombiningReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<Group> GroupImcReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<Group> GroupMultiReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<Group> GroupSingleReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-
-    public StubIElementReader ElementReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    
     public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
     public StubIReader<Group> GetReaderStub(string type) => type switch
@@ -36,5 +36,5 @@ public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>, IStubbabl
         _ => throw new NotImplementedException()
     };
 
-    public GroupGenericReader Build() => new(AssertStub, GroupCombiningReaderStub, GroupImcReaderStub, GroupMultiReaderStub, GroupSingleReaderStub, ElementReaderStub, PluginLogStub);
+    public GroupGenericReader Build() => new(AssertStub, ElementReaderStub, GroupCombiningReaderStub, GroupImcReaderStub, GroupMultiReaderStub, GroupSingleReaderStub, PluginLogStub);
 }

@@ -9,14 +9,14 @@ public class GroupGenericReader : TypeGenericReader<Group>, IGroupGenericReader
 {
     public IElementReader ElementReader { get; init; }
 
-    public GroupGenericReader(IAssert assert, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, 
-        IReader<Group> groupSingleReader, IElementReader elementReader, IPluginLog pluginLog) : base(assert, pluginLog)
+    public GroupGenericReader(IAssert assert, IElementReader elementReader, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, 
+        IReader<Group> groupSingleReader, IPluginLog pluginLog) : base(assert, pluginLog)
     {
+        ElementReader = elementReader;
+
         Readers.Add(GroupCombiningReader.TYPE, groupCombiningReader);
         Readers.Add(GroupImcReader.TYPE, groupImcReader);
         Readers.Add(GroupMultiReader.TYPE, groupMultiReader);
         Readers.Add(GroupSingleReader.TYPE, groupSingleReader);
-        
-        ElementReader = elementReader;
     }
 }

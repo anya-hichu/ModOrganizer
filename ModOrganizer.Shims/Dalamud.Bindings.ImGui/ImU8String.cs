@@ -150,7 +150,7 @@ public struct ImU8String : IDisposable
 
     public static ImU8String Empty => default;
 
-    public readonly unsafe ReadOnlySpan<byte> Span
+    public unsafe ReadOnlySpan<byte> Span
     {
         get
         {
@@ -307,7 +307,7 @@ public struct ImU8String : IDisposable
         return other;
     }
 
-    public override readonly string ToString() => Encoding.UTF8.GetString(this.Span);
+    public override string ToString() => Encoding.UTF8.GetString(this.Span);
 
     public void AppendLiteral(string value)
     {

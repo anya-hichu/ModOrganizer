@@ -8,7 +8,6 @@ using ModOrganizer.Backups;
 using ModOrganizer.Configs;
 using ModOrganizer.Mods;
 using ModOrganizer.Shared;
-using ModOrganizer.Windows.Results;
 using ModOrganizer.Windows.Results.Backups;
 using ModOrganizer.Windows.Results.Showables;
 using Scriban;
@@ -23,11 +22,11 @@ public class BackupWindow : Window
     private IBackupManager BackupManager { get; init; }
     private IConfig Config { get; init; }
 
-    private BackupResultState BackupResultState { get; init; }
+    private IBackupResultState BackupResultState { get; init; }
+
     private TemplateContext ViewTemplateContext { get; init; } = new();
 
-
-    public BackupWindow(IBackupManager backupManager, BackupResultState backupResultState, IConfig config, IModInterop modInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
+    public BackupWindow(IBackupManager backupManager, IBackupResultState backupResultState, IConfig config, IModInterop modInterop, IPluginLog pluginLog) : base("ModOrganizer - Backup##backupWindow")
     {
         BackupManager = backupManager;
         BackupResultState = backupResultState;
@@ -69,7 +68,7 @@ public class BackupWindow : Window
                 {
                     var hash = backup.GetHashCode();
 
-                    var isSelected = backup == BackupResultState.Selected;
+                    var isSelected = BackupResultState.IsSelected(backup);
 
                     using (ImRaii.PushColor(ImGuiCol.Text, CustomColors.LightBlue, isSelected))
                     {

@@ -2,18 +2,15 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Backups;
 using ModOrganizer.Configs;
 using ModOrganizer.Mods;
-using ModOrganizer.Windows.Results.Rules;
-using ModOrganizer.Windows.Results.Selectables;
-using ModOrganizer.Windows.Results.Showables;
 using Penumbra.Api.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModOrganizer.Windows.Results;
+namespace ModOrganizer.Windows.Results.Rules;
 
-public class RuleResultState(IBackupManager backupManager, IConfig config, IModInterop modInterop, IModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), ISelectableResultState, IShowableRuleResultState
+public class RuleResultState(IBackupManager backupManager, IConfig config, IModInterop modInterop, IModProcessor modProcessor, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), IRuleResultState
 {
     public event Action? OnResultsChanged;
 

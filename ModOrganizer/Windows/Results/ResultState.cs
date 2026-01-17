@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ModOrganizer.Windows.Results;
 
-public abstract class ResultState : IDisposable
+public abstract class ResultState : IResultState
 {
     protected IModInterop ModInterop { get; init; }
     protected IPluginLog PluginLog { get; init; }

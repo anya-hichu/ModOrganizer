@@ -11,6 +11,7 @@ using ModOrganizer.Shared;
 using ModOrganizer.Virtuals;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.Results;
+using ModOrganizer.Windows.Results.Evaluations;
 using ModOrganizer.Windows.Results.Rules;
 using ModOrganizer.Windows.Results.Selectables;
 using ModOrganizer.Windows.Results.Showables;
@@ -31,10 +32,10 @@ namespace ModOrganizer.Windows;
 public class MainWindow : Window
 {
     private IConfig Config { get; init; }
-    private EvaluationResultState EvaluationResultState { get; init; }
+    private IEvaluationResultState EvaluationResultState { get; init; }
     private IModInterop ModInterop { get; init; }
     private IModFileSystem ModFileSystem { get; init; }
-    private RuleResultState RuleResultState { get; init; }
+    private IRuleResultState RuleResultState { get; init; }
     private IWindowToggler WindowToggler { get; init; }
 
     private string Filter { get; set; } = string.Empty;
@@ -43,7 +44,7 @@ public class MainWindow : Window
     private TemplateContext ViewTemplateContext { get; init; } = new() { MemberRenamer = MemberRenamer.Rename };
     private SourceSpan ViewSourceSpan { get; init; } = new();
 
-    public MainWindow(IConfig config, IModInterop modInterop, EvaluationResultState evaluationResultState, IModFileSystem modFileSystem, RuleResultState ruleResultState, IWindowToggler windowToggler) : base("ModOrganizer - Main##mainWindow")
+    public MainWindow(IConfig config, IModInterop modInterop, IEvaluationResultState evaluationResultState, IModFileSystem modFileSystem, IRuleResultState ruleResultState, IWindowToggler windowToggler) : base("ModOrganizer - Main##mainWindow")
     {
         Config = config;
         EvaluationResultState = evaluationResultState;

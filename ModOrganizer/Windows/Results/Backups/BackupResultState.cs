@@ -1,14 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Backups;
 using ModOrganizer.Mods;
-using ModOrganizer.Windows.Results.Backups;
-using ModOrganizer.Windows.Results.Showables;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModOrganizer.Windows.Results;
+namespace ModOrganizer.Windows.Results.Backups;
 
-public class BackupResultState : ResultState, IShowableBackupResultState
+public class BackupResultState : ResultState, IBackupResultState
 {
     private IBackupManager BackupManager { get; init; }
 
@@ -17,7 +15,7 @@ public class BackupResultState : ResultState, IShowableBackupResultState
     public string PathFilter { get; set; } = string.Empty;
     public string OldPathFilter { get; set; } = string.Empty;
 
-    public Backup? Selected { get; private set; }
+    private Backup? Selected { get; set; }
 
     public bool ReloadPenumbra { get; set; } = true;
 
@@ -45,6 +43,8 @@ public class BackupResultState : ResultState, IShowableBackupResultState
         PathFilter = string.Empty;
         OldPathFilter = string.Empty;
     }
+
+    public bool IsSelected(Backup backup) => Selected == backup;
 
     public void Select(Backup backup)
     {

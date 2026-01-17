@@ -2,8 +2,6 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Shared;
-using ModOrganizer.Windows.Results.Evaluations;
-using ModOrganizer.Windows.Results.Showables;
 using Scriban.Parsing;
 using System;
 using System.Collections.Generic;
@@ -11,9 +9,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ModOrganizer.Windows.Results;
+namespace ModOrganizer.Windows.Results.Evaluations;
 
-public class EvaluationResultState(IModInterop modInterop, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), IShowableEvaluationResultState
+public class EvaluationResultState(IModInterop modInterop, IPluginLog pluginLog) : ResultState(modInterop, pluginLog), IEvaluationResultState
 {
     public string Expression { get; set; } = string.Empty;
     public string Template { get; set; } = string.Empty;

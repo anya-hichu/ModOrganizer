@@ -32,7 +32,8 @@ using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
-using ModOrganizer.Windows.Results;
+using ModOrganizer.Windows.Results.Backups;
+using ModOrganizer.Windows.Results.Evaluations;
 using ModOrganizer.Windows.Results.Rules;
 using ModOrganizer.Windows.Togglers;
 
@@ -99,11 +100,11 @@ public class PluginProvider : CachedProvider
 
             .AddSingleton<IGroupGenericReader, GroupGenericReader>(p => new(
                 p.GetRequiredService<IAssert>(),
+                p.GetRequiredService<IElementReader>(),
                 p.GetRequiredKeyedService<IReader<Group>>(GroupCombiningReader.TYPE),
                 p.GetRequiredKeyedService<IReader<Group>>(GroupImcReader.TYPE),
                 p.GetRequiredKeyedService<IReader<Group>>(GroupMultiReader.TYPE),
                 p.GetRequiredKeyedService<IReader<Group>>(GroupSingleReader.TYPE),
-                p.GetRequiredService<IElementReader>(),
                 p.GetRequiredService<IPluginLog>()
             ))
 
@@ -167,15 +168,16 @@ public class PluginProvider : CachedProvider
             .AddSingleton<IWindowToggler, WindowToggler>()
 
             .AddSingleton<AboutWindow>()
-            .AddSingleton<BackupResultState>()
+
+            .AddSingleton<IBackupResultState, BackupResultState>()
             .AddSingleton<BackupWindow>()
 
             .AddSingleton<ConfigWindow>()
             .AddSingleton<ConfigExportWindow>()
             .AddSingleton<ConfigImportWindow>()
 
-            .AddSingleton<RuleResultState>()
-            .AddSingleton<EvaluationResultState>()
+            .AddSingleton<IRuleResultState, RuleResultState>()
+            .AddSingleton<IEvaluationResultState, EvaluationResultState>()
             .AddSingleton<MainWindow>()
 
             .AddSingleton<IRuleResultFileSystem, RuleResultFileSystem>()

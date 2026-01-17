@@ -7,11 +7,11 @@ namespace ModOrganizer.Windows.Results.Rules;
 
 public class RuleResultFileSystem : VirtualFileSystem, IRuleResultFileSystem
 {
-    private RuleResultState RuleResultState { get; init; }
+    private IRuleResultState RuleResultState { get; init; }
 
     private HashSet<Result>? MaybeResultsCache { get; set; }
 
-    public RuleResultFileSystem(RuleResultState ruleResultState)
+    public RuleResultFileSystem(IRuleResultState ruleResultState)
     {
         RuleResultState = ruleResultState;
 

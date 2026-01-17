@@ -24,8 +24,6 @@ public class ManipulationWrapperGenericReaderBuilder : IBuilder<ManipulationWrap
 {
     public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
-    public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-
     public StubIReader<ManipulationWrapper> MetaAtchWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<ManipulationWrapper> MetaAtrWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<ManipulationWrapper> MetaEqdpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
@@ -36,6 +34,8 @@ public class ManipulationWrapperGenericReaderBuilder : IBuilder<ManipulationWrap
     public StubIReader<ManipulationWrapper> MetaImcWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<ManipulationWrapper> MetaRspWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<ManipulationWrapper> MetaShpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+
+    public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
 
     public StubIReader<ManipulationWrapper> GetReaderStub(string type) => type switch
     {
