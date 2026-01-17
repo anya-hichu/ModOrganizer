@@ -1,5 +1,4 @@
 using ModOrganizer.Shared;
-using ModOrganizer.Windows.Results;
 using ModOrganizer.Windows.Results.Showables;
 
 namespace ModOrganizer.Windows.Results.Rules;
