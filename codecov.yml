@@ -1,4 +1,2 @@
-coverage:
-  range:
-    - 30
-    - 100
+ignore:
+  - "ModOrganizer.Shims"
