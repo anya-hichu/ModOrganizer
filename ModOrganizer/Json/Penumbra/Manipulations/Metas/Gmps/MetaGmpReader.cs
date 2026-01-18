@@ -13,7 +13,7 @@ public class MetaGmpReader(IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog 
         instance = null;
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmp.Entry), out var entryProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmp.Entry), out var entryProperty)) return false;
 
         if (!metaGmpEntryReader.TryRead(entryProperty, out var entry))
         {
@@ -21,7 +21,7 @@ public class MetaGmpReader(IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog 
             return false;
         }
 
-        if (!IsU16Value(element, nameof(MetaGmp.SetId), out var setId)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaGmp.SetId), out var setId)) return false;
 
         instance = new()
         { 

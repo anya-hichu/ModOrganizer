@@ -14,11 +14,11 @@ public class MetaEstReader(IPluginLog pluginLog) : Reader<MetaEst>(pluginLog)
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsU16Value(element, nameof(MetaEst.Entry), out var entry)) return false;
-        if (!IsValuePresent(element, nameof(MetaEst.Gender), out var gender)) return false;
-        if (!IsValuePresent(element, nameof(MetaEst.Race), out var race)) return false;
-        if (!IsU16Value(element, nameof(MetaEst.SetId), out var setIdProperty)) return false;
-        if (!IsValuePresent(element, nameof(MetaEst.Slot), out var slot)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaEst.Entry), out var entry)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaEst.Gender), out var gender)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaEst.Race), out var race)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaEst.SetId), out var setIdProperty)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaEst.Slot), out var slot)) return false;
 
         instance = new()
         {

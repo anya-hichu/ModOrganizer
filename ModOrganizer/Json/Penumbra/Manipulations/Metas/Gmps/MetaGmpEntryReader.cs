@@ -14,13 +14,13 @@ public class MetaGmpEntryReader(IPluginLog pluginLog) : Reader<MetaGmpEntry>(plu
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.Enabled), out var enabledProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.Animated), out var animatedProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.RotationA), out var rotationAProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.RotationB), out var rotationBProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.RotationC), out var rotationCProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.UnknownA), out var unknownAProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaGmpEntry.UnknownB), out var unknownBProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.Enabled), out var enabledProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.Animated), out var animatedProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.RotationA), out var rotationAProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.RotationB), out var rotationBProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.RotationC), out var rotationCProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.UnknownA), out var unknownAProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.UnknownB), out var unknownBProperty)) return false;
 
         instance = new()
         {

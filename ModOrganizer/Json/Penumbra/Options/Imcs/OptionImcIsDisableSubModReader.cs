@@ -12,7 +12,7 @@ public class OptionImcIsDisableSubModReader(IReader<Option> optionReader, IPlugi
     {
         instance = null;
 
-        if (!IsPropertyPresent(element, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
+        if (!TryGetRequiredProperty(element, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {

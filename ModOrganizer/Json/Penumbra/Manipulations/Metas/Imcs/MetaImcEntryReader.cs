@@ -14,12 +14,12 @@ public class MetaImcEntryReader(IPluginLog pluginLog) : Reader<MetaImcEntry>(plu
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsU8Value(element, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
-        if (!IsU8Value(element, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
-        if (!IsU8Value(element, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
-        if (!IsU8Value(element, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
+        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
+        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
+        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
+        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
 
         instance = new()
         {

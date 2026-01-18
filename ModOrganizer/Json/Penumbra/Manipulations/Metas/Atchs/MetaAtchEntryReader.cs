@@ -14,15 +14,15 @@ public class MetaAtchEntryReader(IPluginLog pluginLog) : Reader<MetaAtchEntry>(p
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsValuePresent(element, nameof(MetaAtchEntry.Bone), out var bone)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaAtchEntry.Bone), out var bone)) return false;
 
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.Scale), out var scaleProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.OffsetX), out var offsetXProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.OffsetY), out var offsetYProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.OffsetZ), out var offsetZProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.RotationX), out var rotationXProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.RotationY), out var rotationYProperty)) return false;
-        if (!IsPropertyPresent(element, nameof(MetaAtchEntry.RotationZ), out var rotationZProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.Scale), out var scaleProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.OffsetX), out var offsetXProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.OffsetY), out var offsetYProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.OffsetZ), out var offsetZProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.RotationX), out var rotationXProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.RotationY), out var rotationYProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.RotationZ), out var rotationZProperty)) return false;
 
         instance = new()
         { 

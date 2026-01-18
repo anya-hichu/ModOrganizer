@@ -14,7 +14,7 @@ public class OptionReader(IPluginLog pluginLog) : Reader<Option>(pluginLog)
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsValuePresent(element, nameof(Option.Name), out var name)) return false;
+        if (!TryGetRequiredValue(element, nameof(Option.Name), out var name)) return false;
 
         var description = element.TryGetProperty(nameof(Option.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
         int? priority = element.TryGetProperty(nameof(Option.Priority), out var priorityProperty) ? priorityProperty.GetInt32() : null;

@@ -18,7 +18,7 @@ public class NamedContainerReader(IReader<Container> containerReader, IPluginLog
             return false;
         }
 
-        if (!IsOptionalValue(element, nameof(NamedContainer.Name), out string? name)) return false;
+        if (!TryGetOptionalValue(element, nameof(NamedContainer.Name), out string? name)) return false;
 
         instance = new()
         {

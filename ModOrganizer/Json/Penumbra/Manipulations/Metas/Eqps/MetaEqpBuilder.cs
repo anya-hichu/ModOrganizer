@@ -14,9 +14,9 @@ public class MetaEqpReader(IPluginLog pluginLog) : Reader<MetaEqp>(pluginLog)
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsPropertyPresent(element, nameof(MetaEqp.Entry), out var entryProperty)) return false;
-        if (!IsU16Value(element, nameof(MetaEqp.SetId), out var setId)) return false;
-        if (!IsValuePresent(element, nameof(MetaEqp.Slot), out var slot)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaEqp.Entry), out var entryProperty)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaEqp.SetId), out var setId)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaEqp.Slot), out var slot)) return false;
 
         instance = new()
         {

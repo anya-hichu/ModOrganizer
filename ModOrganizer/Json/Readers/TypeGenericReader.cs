@@ -18,7 +18,7 @@ public abstract class TypeGenericReader<T>(IPluginLog pluginLog) : GenericReader
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsValuePresent(element, TYPE_PROPERTY_NAME, out var type)) return false;
+        if (!TryGetRequiredValue(element, TYPE_PROPERTY_NAME, out var type)) return false;
 
         if (!Readers.TryGetValue(type, out reader))
         {

@@ -110,7 +110,7 @@ public class TestContainerReader
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [String]: {files}", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
-            actualMessage => Assert.AreEqual($"Failed to read one or more [Files] for [Container]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [Container] optional property [Files] values: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -141,7 +141,7 @@ public class TestContainerReader
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [String]: {fileSwaps}", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
-            actualMessage => Assert.AreEqual($"Failed to read one or more [FileSwaps] for [Container]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [Container] optional property [FileSwaps] values: {element}", actualMessage));
     }
 
     [TestMethod]

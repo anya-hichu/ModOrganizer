@@ -94,7 +94,7 @@ public class TestSortOrderReader
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual("Expected value kind [Object] but found [Null]: ", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Failed to read one or more [Data] for [SortOrder]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [SortOrder] required property [Data] values: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -103,7 +103,8 @@ public class TestSortOrderReader
         var observer = new StubObserver();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?> 
-        { 
+        {
+            { nameof(SortOrder.Data), new Dictionary<string, string>() },
             { nameof(SortOrder.EmptyFolders), null } 
         });
 
@@ -123,7 +124,7 @@ public class TestSortOrderReader
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected value kind [Array] but found [Null]: ", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Failed to read one or more [EmptyFolders] for [SortOrder]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [SortOrder] required property [EmptyFolders] values: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -197,9 +198,9 @@ public class TestSortOrderReader
         Assert.HasCount(3, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected value kind [Object] but found [Null]: ", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [Null]: ", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Failed to read one or more [Data] for [SortOrder]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [SortOrder] required property [Data] values: {element}", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[2], nameof(IPluginLog.Warning), 
             actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
     }

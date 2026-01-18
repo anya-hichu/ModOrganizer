@@ -14,8 +14,8 @@ public class MetaGeqpReader(IPluginLog pluginLog) : Reader<MetaGeqp>(pluginLog)
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        IsU16Value(element, nameof(MetaGeqp.Condition), out var condition, false);
-        if (!IsValuePresent(element, nameof(MetaGeqp.Type), out var type)) return false;
+        if (!TryGetOptionalU16Value(element, nameof(MetaGeqp.Condition), out var condition)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaGeqp.Type), out var type)) return false;
 
         instance = new()
         {

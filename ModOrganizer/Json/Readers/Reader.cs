@@ -1,6 +1,5 @@
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using ModOrganizer.Json.Penumbra.Containers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -42,31 +41,33 @@ public abstract class Reader<T>(IPluginLog pluginLog) : IReader<T> where T : cla
         return false;
     }
 
-    protected bool IsPropertyPresent(JsonElement element, string name, out JsonElement property, bool warn = true)
+    protected bool TryGetRequiredProperty(JsonElement element, string name, out JsonElement property)
     {
         if (element.TryGetProperty(name, out property)) return true;
 
-        if (warn) PluginLog.Warning($"Expected property [{name}] is missing: {element}");
+        PluginLog.Warning($"Expected [{typeof(T).Name}] property [{name}] is missing for [{typeof(T).Name}]: {element}");
         return false;
     }
 
-    protected bool IsValuePresent(JsonElement element, string propertyName, [NotNullWhen(true)] out string? value, bool required = true)
+    protected bool TryGetRequiredValue(JsonElement element, string propertyName, [NotNullWhen(true)] out string? value)
     {
         value = null;
 
-        if (!IsPropertyPresent(element, propertyName, out var property, warn: required)) return false;
+        if (!TryGetRequiredProperty(element, propertyName, out var property)) return false;
+        if (!IsValue(property, JsonValueKind.String)) return false;
 
-        value = property.GetString();
-        if (value.IsNullOrEmpty())
+        var parsedValue = property.GetString();
+        if (parsedValue.IsNullOrEmpty())
         {
-            PluginLog.Warning($"Property [{propertyName}] is null or empty: {element}");
+            PluginLog.Warning($"Expected [{typeof(T).Name}] property [{propertyName}] value to not be null or empty: {element}");
             return false;
         }
 
+        value = parsedValue;
         return true;
     }
 
-    protected bool IsOptionalValue(JsonElement element, string propertyName, out string? value)
+    protected bool TryGetOptionalValue(JsonElement element, string propertyName, out string? value)
     {
         value = null;
 
@@ -76,28 +77,30 @@ public abstract class Reader<T>(IPluginLog pluginLog) : IReader<T> where T : cla
                 value = property.GetString();
                 return true;
             case true when property.ValueKind == JsonValueKind.Null:
-            case false: return true;
+            case false:
+                return true;
             default:
-                PluginLog.Warning($"Expected property [{nameof(NamedContainer.Name)}] value kind to be [{JsonValueKind.String}] or [{JsonValueKind.Null}] but found [{property.ValueKind}]: {element}");
+                PluginLog.Warning($"Expected [{typeof(T).Name}] optional property [{propertyName}] value to be [{JsonValueKind.String}] but found kind [{property.ValueKind}]: {element}");
                 break;
         }
 
         return false;
     }
 
-    protected bool IsOptionalValue(JsonElement element, string propertyName, out int? value)
+    protected bool TryGetOptionalValue(JsonElement element, string propertyName, out int? value)
     {
         value = null;
 
         switch (element.TryGetProperty(propertyName, out var property))
         {
-            case true when property.ValueKind == JsonValueKind.Number:
-                value = property.GetInt32();
+            case true when property.ValueKind == JsonValueKind.Number && property.TryGetInt32(out var parsedValue):
+                value = parsedValue;
                 return true;
             case true when property.ValueKind == JsonValueKind.Null:
-            case false: return true;
+            case false:
+                return true;
             default:
-                PluginLog.Warning($"Expected property [{nameof(NamedContainer.Name)}] value kind to be [{JsonValueKind.Number}] or [{JsonValueKind.Null}] but found [{property.ValueKind}]: {element}");
+                PluginLog.Warning($"Expected [{typeof(T).Name}] optional property [{propertyName}] value to be parsable as [{typeof(int).Name}] but found kind [{property.ValueKind}]: {element}");
                 break;
         }
 
@@ -105,34 +108,84 @@ public abstract class Reader<T>(IPluginLog pluginLog) : IReader<T> where T : cla
     }
 
     // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_enums.json#U8
-    protected bool IsU8Value(JsonElement element, string propertyName, out byte value, bool required = true)
+    private static bool TryGetU8(JsonElement element, out byte value)
     {
         value = default;
 
-        if (!IsPropertyPresent(element, propertyName, out var property, warn: required)) return false;
+        if ((element.ValueKind == JsonValueKind.Number && element.TryGetByte(out var parsedValue)) || (element.ValueKind == JsonValueKind.String && byte.TryParse(element.GetString(), CultureInfo.InvariantCulture, out parsedValue)))
+        {
+            value = parsedValue;
+            return true;
+        }
 
-        if (property.ValueKind == JsonValueKind.Number && property.TryGetByte(out value)) return true;
-        if (property.ValueKind == JsonValueKind.String && byte.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
-
-        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(byte).Name}]: {element}");
         return false;
+    }
+
+    protected bool TryGetOptionalU8Value(JsonElement element, string propertyName, out byte value)
+    {
+        value = default;
+
+        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind == JsonValueKind.Null) return true;
+        if (!TryGetU8(property, out value))
+        {
+            PluginLog.Warning($"Expected [{typeof(T).Name}] optional property [{propertyName}] value to be parsable as [{typeof(byte).Name}] but found [{property.ValueKind}]: {element}");
+            return false;
+        }
+
+        return true;
+    }
+
+    protected bool TryGetRequiredU8Value(JsonElement element, string propertyName, out byte value)
+    {
+        value = default;
+
+        if (!TryGetRequiredProperty(element, propertyName, out var property)) return false;
+        if (!TryGetU8(property, out value))
+        {
+            PluginLog.Warning($"Expected [{typeof(T).Name}] property [{propertyName}] value to be parsable as [{typeof(byte).Name}] but found [{property.ValueKind}]: {element}");
+            return false;
+        }
+
+        return true;
     }
 
     // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_enums.json#U16
-    protected bool IsU16Value(JsonElement element, string propertyName, out ushort value, bool required = true)
+    private static bool TryGetU16(JsonElement element, out ushort value)
     {
         value = default;
 
-        if (!IsPropertyPresent(element, propertyName, out var property, warn: required)) return false;
+        if ((element.ValueKind == JsonValueKind.Number && element.TryGetUInt16(out var parsedValue)) || (element.ValueKind == JsonValueKind.String && ushort.TryParse(element.GetString(), CultureInfo.InvariantCulture, out parsedValue)))
+        {
+            value = parsedValue;
+            return true;
+        }
 
-        if (property.ValueKind == JsonValueKind.Number && property.TryGetUInt16(out value)) return true;
-        if (property.ValueKind == JsonValueKind.String && ushort.TryParse(property.GetString(), CultureInfo.InvariantCulture, out value)) return true;
-
-        PluginLog.Warning($"Property [{propertyName}] is not parsable as [{typeof(ushort).Name}]: {element}");
         return false;
     }
 
-    protected bool IsDict(JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value)
+    protected bool TryGetOptionalU16Value(JsonElement element, string propertyName, out ushort value)
+    {
+        value = default;
+
+        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind == JsonValueKind.Null) return true;
+        if (TryGetU16(property, out value)) return true;
+
+        PluginLog.Warning($"Failed to read [{typeof(T).Name}] optional property [{propertyName}] value for [{typeof(T).Name}]: {element}");
+        return false;
+    }
+
+    protected bool TryGetRequiredU16Value(JsonElement element, string propertyName, out ushort value)
+    {
+        value = default;
+
+        if (!TryGetRequiredProperty(element, propertyName, out var property)) return false;
+        if (TryGetU16(property, out value)) return true;
+
+        PluginLog.Warning($"Failed to read [{typeof(T).Name}] required property [{propertyName}] value for [{typeof(T).Name}]: {element}");
+        return false;
+    }
+
+    private bool TryGetDict(JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value)
     {
         value = null;
 
@@ -149,7 +202,32 @@ public abstract class Reader<T>(IPluginLog pluginLog) : IReader<T> where T : cla
         return true;
     }
 
-    protected bool IsArray(JsonElement element, [NotNullWhen(true)] out string[]? value)
+    protected bool TryGetOptionalDictValue(JsonElement element, string propertyName, [NotNullWhen(true)] out Dictionary<string, string>? value)
+    {
+        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind == JsonValueKind.Null)
+        {
+            value = [];
+            return true;
+        }
+
+        if (TryGetDict(property, out value)) return true;
+
+        PluginLog.Warning($"Failed to read [{typeof(T).Name}] optional property [{propertyName}] values: {element}");
+        return false;
+    }
+    protected bool TryGetRequiredDictValue(JsonElement element, string propertyName, [NotNullWhen(true)] out Dictionary<string, string>? value)
+    {
+        value = null;
+
+        if (!TryGetRequiredProperty(element, propertyName, out var property)) return false;
+
+        if (TryGetDict(property, out value)) return true;
+
+        PluginLog.Warning($"Failed to read [{typeof(T).Name}] required property [{propertyName}] values: {element}");
+        return false;
+    }
+
+    private bool TryGetArray(JsonElement element, [NotNullWhen(true)] out string[]? value)
     {
         value = null;
 
@@ -166,14 +244,46 @@ public abstract class Reader<T>(IPluginLog pluginLog) : IReader<T> where T : cla
         return true;
     }
 
-    protected bool IsArray(JsonElement element, [NotNullWhen(true)] out int[]? value)
+    protected bool TryGetOptionalArrayValue(JsonElement element, string propertyName, [NotNullWhen(true)] out string[]? value)
+    {
+        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind == JsonValueKind.Null)
+        {
+            value = [];
+            return true;
+        }
+
+        if (TryGetArray(property, out value)) return true;
+
+        PluginLog.Warning($"Failed to read [{typeof(T).Name}] optional property [{propertyName}] values: {element}");
+        return false;
+    }
+
+    protected bool TryGetRequiredArrayValue(JsonElement element, string propertyName, [NotNullWhen(true)] out string[]? value)
     {
         value = null;
 
-        if (!IsValue(element, JsonValueKind.Array)) return false;
+        if (!TryGetRequiredProperty(element, propertyName, out var property)) return false;
+
+        if (TryGetArray(property, out value)) return true;
+
+        PluginLog.Warning($"Failed to read [{typeof(T).Name}] required property [{propertyName}] values: {element}");
+        return false;
+    }
+
+    protected bool TryGetOptionalArrayValue(JsonElement element, string propertyName, [NotNullWhen(true)] out int[]? value)
+    {
+        value = null;
+
+        if (!element.TryGetProperty(propertyName, out var property) || property.ValueKind == JsonValueKind.Null)
+        {
+            value = [];
+            return true;
+        }
+
+        if (!IsValue(property, JsonValueKind.Array)) return false;
 
         var list = new List<int>();
-        foreach (var item in element.EnumerateArray())
+        foreach (var item in property.EnumerateArray())
         {
             if (!IsValue(item, JsonValueKind.Number)) return false;
             if (!item.TryGetInt32(out var parsed)) return false;

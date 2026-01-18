@@ -16,7 +16,7 @@ public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string 
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsPropertyPresent(element, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
 
         if (!TryReadWrapped(manipulationProperty, out var wrapped))
         {

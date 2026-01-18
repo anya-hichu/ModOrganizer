@@ -14,7 +14,7 @@ public class RuleDataReader(IPluginLog pluginLog) : Reader<RuleData>(pluginLog)
         instance = null;
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
-        if (!IsValuePresent(element, nameof(RuleData.Path), out var path)) return false;
+        if (!TryGetRequiredValue(element, nameof(RuleData.Path), out var path)) return false;
 
         bool? enabled = element.TryGetProperty(nameof(RuleData.Enabled), out var enabledProperty) ? enabledProperty.GetBoolean() : null;
 

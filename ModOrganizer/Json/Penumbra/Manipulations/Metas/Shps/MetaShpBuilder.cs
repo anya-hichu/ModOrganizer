@@ -15,8 +15,8 @@ public class MetaShpReader(IPluginLog pluginLog) : Reader<MetaShp>(pluginLog)
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsValuePresent(element, nameof(MetaShp.Shape), out var shape)) return false;
-        IsU16Value(element, nameof(MetaShp.Id), out var id, false);
+        if (!TryGetRequiredValue(element, nameof(MetaShp.Shape), out var shape)) return false;
+        if (!TryGetOptionalU16Value(element, nameof(MetaShp.Id), out var id)) return false;
 
         var entry = element.TryGetProperty(nameof(MetaShp.Entry), out var entryProperty) && entryProperty.GetBoolean();
         var slot = element.TryGetProperty(nameof(MetaShp.Slot), out var slotProperty) ? slotProperty.GetString() : null;

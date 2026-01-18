@@ -2,7 +2,6 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
 
 using ModOrganizer.Json.Readers.Elements;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -20,7 +19,7 @@ public class ModMetaReader(IElementReader elementReader, IPluginLog pluginLog) :
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsPropertyPresent(element, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
+        if (!TryGetRequiredProperty(element, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
 
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
@@ -29,34 +28,17 @@ public class ModMetaReader(IElementReader elementReader, IPluginLog pluginLog) :
             return false;
         }
 
-        if (!IsValuePresent(element, nameof(ModMeta.Name), out var name)) return false;
+        if (!TryGetRequiredValue(element, nameof(ModMeta.Name), out var name)) return false;
 
-        var author = element.TryGetProperty(nameof(ModMeta.Author), out var authorProperty) ? authorProperty.GetString() : null;
-        var description = element.TryGetProperty(nameof(ModMeta.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
-        var image = element.TryGetProperty(nameof(ModMeta.Image), out var imageProperty) ? imageProperty.GetString() : null;
-        var version = element.TryGetProperty(nameof(ModMeta.Version), out var versionProperty) ? versionProperty.GetString() : null;
-        var website = element.TryGetProperty(nameof(ModMeta.Website), out var websiteProperty) ? websiteProperty.GetString() : null;
+        if (!TryGetOptionalValue(element, nameof(ModMeta.Author), out string? author)) return false;
+        if (!TryGetOptionalValue(element, nameof(ModMeta.Description), out string? description)) return false;
+        if (!TryGetOptionalValue(element, nameof(ModMeta.Image), out string? image)) return false;
+        if (!TryGetOptionalValue(element, nameof(ModMeta.Version), out string? version)) return false;
+        if (!TryGetOptionalValue(element, nameof(ModMeta.Website), out string? website)) return false;
 
-        var modTags = Array.Empty<string>();
-        if (element.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) && !IsArray(modTagsProperty, out modTags))
-        {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]: {element}");
-            return false;
-        }
-
-        var defaultPreferredItems = Array.Empty<int>();
-        if (element.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) && !IsArray(defaultPreferredItemsProperty, out defaultPreferredItems))
-        {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]: {element}");
-            return false;
-        }
-
-        var requiredFeatures = Array.Empty<string>();
-        if (element.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) && !IsArray(requiredFeaturesProperty, out requiredFeatures))
-        {
-            PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]: {element}");
-            return false;
-        }
+        if (!TryGetOptionalArrayValue(element, nameof(ModMeta.ModTags), out string[]? modTags)) return false;
+        if (!TryGetOptionalArrayValue(element, nameof(ModMeta.DefaultPreferredItems), out int[]? defaultPreferredItems)) return false;
+        if (!TryGetOptionalArrayValue(element, nameof(ModMeta.RequiredFeatures), out string[]? requiredFeatures)) return false;
 
         instance = new()
         {

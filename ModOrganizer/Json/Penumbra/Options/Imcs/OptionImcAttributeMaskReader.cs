@@ -12,7 +12,7 @@ public class OptionImcAttributeMaskReader(IReader<Option> optionReader, IPluginL
     {
         instance = null;
 
-        if (!IsPropertyPresent(element, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
+        if (!TryGetRequiredProperty(element, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {

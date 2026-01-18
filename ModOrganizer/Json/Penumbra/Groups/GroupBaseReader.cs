@@ -23,14 +23,14 @@ public class GroupBaseReader(IPluginLog pluginLog) : Reader<Group>(pluginLog), I
             return false;
         }
 
-        if (!IsValuePresent(element, nameof(Group.Name), out var name)) return false;
-        if (!IsValuePresent(element, nameof(Group.Type), out var type)) return false;
+        if (!TryGetRequiredValue(element, nameof(Group.Name), out var name)) return false;
+        if (!TryGetRequiredValue(element, nameof(Group.Type), out var type)) return false;
 
-        if (!IsOptionalValue(element, nameof(Group.Description), out string? description)) return false;
-        if (!IsOptionalValue(element, nameof(Group.Image), out string? image)) return false;
-        if (!IsOptionalValue(element, nameof(Group.Page), out int? page)) return false;
-        if (!IsOptionalValue(element, nameof(Group.Priority), out int? priority)) return false;
-        if (!IsOptionalValue(element, nameof(Group.DefaultSettings), out int? defaultSettings)) return false;
+        if (!TryGetOptionalValue(element, nameof(Group.Description), out string? description)) return false;
+        if (!TryGetOptionalValue(element, nameof(Group.Image), out string? image)) return false;
+        if (!TryGetOptionalValue(element, nameof(Group.Page), out int? page)) return false;
+        if (!TryGetOptionalValue(element, nameof(Group.Priority), out int? priority)) return false;
+        if (!TryGetOptionalValue(element, nameof(Group.DefaultSettings), out int? defaultSettings)) return false;
 
         instance = new Group()
         {

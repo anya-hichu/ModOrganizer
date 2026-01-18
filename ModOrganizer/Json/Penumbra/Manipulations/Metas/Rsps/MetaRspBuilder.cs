@@ -14,9 +14,9 @@ public class MetaRspReader(IPluginLog pluginLog) : Reader<MetaRsp>(pluginLog)
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsPropertyPresent(element, nameof(MetaRsp.Entry), out var entryProperty)) return false;
-        if (!IsValuePresent(element, nameof(MetaRsp.SubRace), out var subRace)) return false;
-        if (!IsValuePresent(element, nameof(MetaRsp.Attribute), out var attribute)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaRsp.Entry), out var entryProperty)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaRsp.SubRace), out var subRace)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaRsp.Attribute), out var attribute)) return false;
 
         instance = new()
         {

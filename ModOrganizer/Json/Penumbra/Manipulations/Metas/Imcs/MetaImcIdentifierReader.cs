@@ -14,12 +14,12 @@ public class MetaImcIdentifierReader(IPluginLog pluginLog) : Reader<MetaImcIdent
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsU16Value(element, nameof(MetaImcIdentifier.PrimaryId), out var primaryId)) return false;
-        if (!IsU16Value(element, nameof(MetaImcIdentifier.SecondaryId), out var secondaryId)) return false;
-        if (!IsU8Value(element, nameof(MetaImcIdentifier.Variant), out var variant)) return false;
-        if (!IsValuePresent(element, nameof(MetaImcIdentifier.ObjectType), out var objectType)) return false;
-        if (!IsValuePresent(element, nameof(MetaImcIdentifier.EquipSlot), out var equipSlot)) return false;
-        if (!IsValuePresent(element, nameof(MetaImcIdentifier.BodySlot), out var bodySlot)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaImcIdentifier.PrimaryId), out var primaryId)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaImcIdentifier.SecondaryId), out var secondaryId)) return false;
+        if (!TryGetRequiredU8Value(element, nameof(MetaImcIdentifier.Variant), out var variant)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaImcIdentifier.ObjectType), out var objectType)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaImcIdentifier.EquipSlot), out var equipSlot)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaImcIdentifier.BodySlot), out var bodySlot)) return false;
 
         instance = new()
         {

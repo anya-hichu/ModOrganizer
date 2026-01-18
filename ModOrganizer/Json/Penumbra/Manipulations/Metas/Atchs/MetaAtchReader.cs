@@ -14,11 +14,11 @@ public class MetaAtchReader(IReader<MetaAtchEntry> metaAtchEntryReader, IPluginL
 
         if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!IsPropertyPresent(element, nameof(MetaAtch.Entry), out var entryProperty)) return false;
-        if (!IsValuePresent(element, nameof(MetaAtch.Gender), out var gender)) return false;
-        if (!IsValuePresent(element, nameof(MetaAtch.Race), out var race)) return false;
-        if (!IsValuePresent(element, nameof(MetaAtch.Type), out var type)) return false;
-        if (!IsU16Value(element, nameof(MetaAtch.Index), out var index)) return false;
+        if (!TryGetRequiredProperty(element, nameof(MetaAtch.Entry), out var entryProperty)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaAtch.Gender), out var gender)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaAtch.Race), out var race)) return false;
+        if (!TryGetRequiredValue(element, nameof(MetaAtch.Type), out var type)) return false;
+        if (!TryGetRequiredU16Value(element, nameof(MetaAtch.Index), out var index)) return false;
 
         if (!metaAtchEntryReader.TryRead(entryProperty, out var entry))
         {

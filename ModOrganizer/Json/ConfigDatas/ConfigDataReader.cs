@@ -29,7 +29,7 @@ public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ru
         }
 
         RuleData[]? rules = null;
-        if (IsPropertyPresent(element, nameof(ConfigData.Rules), out var rulesProperty) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
+        if (TryGetRequiredProperty(element, nameof(ConfigData.Rules), out var rulesProperty) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {element}");
             return false;
