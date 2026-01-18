@@ -1,19 +1,19 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Gmps;
 
-public class MetaGmpReader(IAssert assert, IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog pluginLog) : Reader<MetaGmp>(assert, pluginLog)
+public class MetaGmpReader(IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog pluginLog) : Reader<MetaGmp>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out MetaGmp? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
-        if (!Assert.IsPropertyPresent(element, nameof(MetaGmp.Entry), out var entryProperty)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsPropertyPresent(element, nameof(MetaGmp.Entry), out var entryProperty)) return false;
 
         if (!metaGmpEntryReader.TryRead(entryProperty, out var entry))
         {
@@ -21,7 +21,7 @@ public class MetaGmpReader(IAssert assert, IReader<MetaGmpEntry> metaGmpEntryRea
             return false;
         }
 
-        if (!Assert.IsU16Value(element, nameof(MetaGmp.SetId), out var setId)) return false;
+        if (!IsU16Value(element, nameof(MetaGmp.SetId), out var setId)) return false;
 
         instance = new()
         { 

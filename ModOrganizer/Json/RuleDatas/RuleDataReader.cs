@@ -1,20 +1,20 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using ModOrganizer.Json.RuleDatas;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.RuleExports;
 
-public class RuleDataReader(IAssert assert, IPluginLog pluginLog) : Reader<RuleData>(assert, pluginLog)
+public class RuleDataReader(IPluginLog pluginLog) : Reader<RuleData>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out RuleData? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
-        if (!Assert.IsValuePresent(element, nameof(RuleData.Path), out var path)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValuePresent(element, nameof(RuleData.Path), out var path)) return false;
 
         bool? enabled = element.TryGetProperty(nameof(RuleData.Enabled), out var enabledProperty) ? enabledProperty.GetBoolean() : null;
 

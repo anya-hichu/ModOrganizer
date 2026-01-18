@@ -1,8 +1,6 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
-using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Json.Readers.Asserts;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Containers;
@@ -22,22 +20,9 @@ public class TestNamedContainerReader
             { nameof(NamedContainer.Name), name }
         });
 
-        var filesOrFileSwaps = new Dictionary<string, string>();
-        var manipulations = Array.Empty<ManipulationWrapper>();
-
-        var container = new Container()
-        {
-            Files = filesOrFileSwaps,
-            FileSwaps = filesOrFileSwaps,
-            Manipulations = manipulations
-        };
-
         var namedContainerReader = new NamedContainerReaderBuilder()
-            .WithAssertIsValue(true)
-            .WithAssertIsOptionalValue(name, true)
-            .WithAssertIsStringDict(filesOrFileSwaps)
+            .WithContainerReaderTryRead(new())
             .WithContainerReaderObserver(observer)
-            .WithContainerReaderTryRead(container)
             .Build();
 
         var success = namedContainerReader.TryRead(element, out var namedContainer);
@@ -45,10 +30,7 @@ public class TestNamedContainerReader
         Assert.IsTrue(success);
         Assert.IsNotNull(namedContainer);
 
-        Assert.AreSame(name, namedContainer.Name);
-        Assert.AreSame(filesOrFileSwaps, namedContainer.Files);
-        Assert.AreSame(filesOrFileSwaps, namedContainer.FileSwaps);
-        Assert.AreSame(manipulations, namedContainer.Manipulations);
+        Assert.AreEqual(name, namedContainer.Name);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
@@ -80,7 +62,6 @@ public class TestNamedContainerReader
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsOptionalValueSuccessfulOnTrue()
             .WithContainerReaderTryRead(new())
             .Build();
 

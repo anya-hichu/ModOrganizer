@@ -26,7 +26,7 @@ using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
@@ -82,7 +82,6 @@ public class PluginProvider : CachedProvider
             .AddSingleton<ICommand, Command>()
 
             // Json
-            .AddSingleton<IAssert, Assert>()
             .AddSingleton<IElementReader, ElementReader>()
             .AddSingleton<IDefaultModReader, DefaultModReader>()
             .AddSingleton<ILocalModDataReader, LocalModDataReader>()
@@ -99,7 +98,6 @@ public class PluginProvider : CachedProvider
             .AddKeyedSingleton<IReader<Group>, GroupSingleReader>(GroupSingleReader.TYPE)
 
             .AddSingleton<IGroupGenericReader, GroupGenericReader>(p => new(
-                p.GetRequiredService<IAssert>(),
                 p.GetRequiredService<IElementReader>(),
                 p.GetRequiredKeyedService<IReader<Group>>(GroupCombiningReader.TYPE),
                 p.GetRequiredKeyedService<IReader<Group>>(GroupImcReader.TYPE),
@@ -144,7 +142,6 @@ public class PluginProvider : CachedProvider
             .AddKeyedSingleton<IReader<ManipulationWrapper>, MetaShpWrapperReader>(MetaShpWrapperReader.TYPE)
 
             .AddSingleton<IManipulationWrapperGenericReader, ManipulationWrapperGenericReader>(p => new(
-                p.GetRequiredService<IAssert>(),
                 p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaAtchWrapperReader.TYPE),
                 p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaAtrWrapperReader.TYPE),
                 p.GetRequiredKeyedService<IReader<ManipulationWrapper>>(MetaEqdpWrapperReader.TYPE),

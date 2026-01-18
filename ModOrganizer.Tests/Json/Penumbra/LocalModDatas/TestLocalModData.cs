@@ -1,5 +1,4 @@
 using ModOrganizer.Json.Penumbra.LocalModDatas;
-using ModOrganizer.Tests.Json.Readers.Asserts;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.LocalModDatas;
@@ -13,16 +12,13 @@ public class TestLocalModData
         var localTags = Array.Empty<string>();
         var preferredChangedItems = Array.Empty<int>();
 
-        var localModDatReader = new LocalModDataReaderBuilder()
-            .WithAssertIsValue(true)
-            .WithAssertIsPropertyPresent(JsonSerializer.SerializeToElement(LocalModDataReader.SUPPORTED_FILE_VERSION))
-            .WithAssertIsStringArray(localTags)
-            .Build();
+        var localModDatReader = new LocalModDataReaderBuilder().Build();
 
         var importDate = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
+            { nameof(LocalModData.FileVersion), LocalModDataReader.SUPPORTED_FILE_VERSION },
             { nameof(LocalModData.ImportDate), importDate },
             { nameof(LocalModData.Favorite), true }
         });

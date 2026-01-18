@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
 
-public class MetaAtchWrapperReader(IAssert assert, IReader<MetaAtch> metaAtchReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaAtch>(assert, pluginLog, TYPE)
+public class MetaAtchWrapperReader(IReader<MetaAtch> metaAtchReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaAtch>(pluginLog, TYPE)
 {
     public static readonly string TYPE = "Atch";
 

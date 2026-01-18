@@ -1,6 +1,5 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
 using ModOrganizer.Json.Readers.Clipboards;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
@@ -10,7 +9,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataReader(IAssert assert, IElementReader elementReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(assert, pluginLog), IClipboardReader<ConfigData>, IFileReader<ConfigData>
+public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IClipboardReader<ConfigData>, IFileReader<ConfigData>
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
@@ -20,7 +19,7 @@ public class ConfigDataReader(IAssert assert, IElementReader elementReader, IRea
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         int? version = element.TryGetProperty(nameof(ConfigData.Version), out var versionProperty) ? versionProperty.GetInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
@@ -30,7 +29,7 @@ public class ConfigDataReader(IAssert assert, IElementReader elementReader, IRea
         }
 
         RuleData[]? rules = null;
-        if (Assert.IsPropertyPresent(element, nameof(ConfigData.Rules), out var rulesProperty) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
+        if (IsPropertyPresent(element, nameof(ConfigData.Rules), out var rulesProperty) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {element}");
             return false;

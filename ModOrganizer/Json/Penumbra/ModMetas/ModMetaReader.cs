@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.ModMetas;
 
-public class ModMetaReader(IAssert assert, IElementReader elementReader, IPluginLog pluginLog) : Reader<ModMeta>(assert, pluginLog), IModMetaReader
+public class ModMetaReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<ModMeta>(pluginLog), IModMetaReader
 {
     private static readonly uint SUPPORTED_FILE_VERSION = 3;
 
@@ -18,9 +18,9 @@ public class ModMetaReader(IAssert assert, IElementReader elementReader, IPlugin
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyPresent(element, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
+        if (!IsPropertyPresent(element, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
 
         var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
@@ -29,7 +29,7 @@ public class ModMetaReader(IAssert assert, IElementReader elementReader, IPlugin
             return false;
         }
 
-        if (!Assert.IsValuePresent(element, nameof(ModMeta.Name), out var name)) return false;
+        if (!IsValuePresent(element, nameof(ModMeta.Name), out var name)) return false;
 
         var author = element.TryGetProperty(nameof(ModMeta.Author), out var authorProperty) ? authorProperty.GetString() : null;
         var description = element.TryGetProperty(nameof(ModMeta.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
@@ -38,21 +38,21 @@ public class ModMetaReader(IAssert assert, IElementReader elementReader, IPlugin
         var website = element.TryGetProperty(nameof(ModMeta.Website), out var websiteProperty) ? websiteProperty.GetString() : null;
 
         var modTags = Array.Empty<string>();
-        if (element.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) && !Assert.IsStringArray(modTagsProperty, out modTags))
+        if (element.TryGetProperty(nameof(ModMeta.ModTags), out var modTagsProperty) && !IsArray(modTagsProperty, out modTags))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.ModTags)}] for [{nameof(ModMeta)}]: {element}");
             return false;
         }
 
         var defaultPreferredItems = Array.Empty<int>();
-        if (element.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) && !Assert.IsIntArray(defaultPreferredItemsProperty, out defaultPreferredItems))
+        if (element.TryGetProperty(nameof(ModMeta.DefaultPreferredItems), out var defaultPreferredItemsProperty) && !IsArray(defaultPreferredItemsProperty, out defaultPreferredItems))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.DefaultPreferredItems)}] for [{nameof(ModMeta)}]: {element}");
             return false;
         }
 
         var requiredFeatures = Array.Empty<string>();
-        if (element.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) && !Assert.IsStringArray(requiredFeaturesProperty, out requiredFeatures))
+        if (element.TryGetProperty(nameof(ModMeta.RequiredFeatures), out var requiredFeaturesProperty) && !IsArray(requiredFeaturesProperty, out requiredFeatures))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(ModMeta.RequiredFeatures)}] for [{nameof(ModMeta)}]: {element}");
             return false;

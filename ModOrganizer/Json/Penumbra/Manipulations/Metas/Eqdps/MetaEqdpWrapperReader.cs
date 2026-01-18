@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqdps;
 
-public class MetaEqdpWrapperReader(IAssert assert, IReader<MetaEqdp> metaEqdpReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaEqdp>(assert, pluginLog, TYPE)
+public class MetaEqdpWrapperReader(IReader<MetaEqdp> metaEqdpReader, IPluginLog pluginLog) : ManipulationWrapperReader<MetaEqdp>(pluginLog, TYPE)
 {
     public static readonly string TYPE = "Eqdp";
 

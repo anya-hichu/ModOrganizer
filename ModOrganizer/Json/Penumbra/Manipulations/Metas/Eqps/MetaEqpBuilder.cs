@@ -1,22 +1,22 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Eqps;
 
-public class MetaEqpReader(IAssert assert, IPluginLog pluginLog) : Reader<MetaEqp>(assert, pluginLog)
+public class MetaEqpReader(IPluginLog pluginLog) : Reader<MetaEqp>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out MetaEqp? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyPresent(element, nameof(MetaEqp.Entry), out var entryProperty)) return false;
-        if (!Assert.IsU16Value(element, nameof(MetaEqp.SetId), out var setId)) return false;
-        if (!Assert.IsValuePresent(element, nameof(MetaEqp.Slot), out var slot)) return false;
+        if (!IsPropertyPresent(element, nameof(MetaEqp.Entry), out var entryProperty)) return false;
+        if (!IsU16Value(element, nameof(MetaEqp.SetId), out var setId)) return false;
+        if (!IsValuePresent(element, nameof(MetaEqp.Slot), out var slot)) return false;
 
         instance = new()
         {

@@ -2,14 +2,14 @@ using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupCombiningReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<NamedContainer> namedContainerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupCombiningReader(IGroupBaseReader groupBaseReader, IReader<NamedContainer> namedContainerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
     public static readonly string TYPE = "Combining";
 
@@ -17,7 +17,7 @@ public class GroupCombiningReader(IAssert assert, IGroupBaseReader groupBaseRead
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         if (!groupBaseReader.TryRead(element, out var group))
         {

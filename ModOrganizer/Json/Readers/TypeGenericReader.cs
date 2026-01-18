@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers;
 
-public abstract class TypeGenericReader<T>(IAssert assert, IPluginLog pluginLog) : GenericReader<T>(assert, pluginLog) where T : class
+public abstract class TypeGenericReader<T>(IPluginLog pluginLog) : GenericReader<T>(pluginLog) where T : class
 {
     private static readonly string TYPE_PROPERTY_NAME = "Type";
 
@@ -16,9 +16,9 @@ public abstract class TypeGenericReader<T>(IAssert assert, IPluginLog pluginLog)
     {
         reader = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsValuePresent(element, TYPE_PROPERTY_NAME, out var type)) return false;
+        if (!IsValuePresent(element, TYPE_PROPERTY_NAME, out var type)) return false;
 
         if (!Readers.TryGetValue(type, out reader))
         {

@@ -3,7 +3,6 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Groups;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers;
-using ModOrganizer.Tests.Json.Readers.Asserts;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups;
@@ -21,13 +20,11 @@ public class TestGroupGenericReader
         var groupGenericReader = new GroupGenericReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsValue(true)
-            .WithAssertIsValuePresent(type)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { "Type", type }
+            { nameof(Group.Type), type }
         });
 
         var success = groupGenericReader.TryRead(element, out var group);
@@ -57,14 +54,12 @@ public class TestGroupGenericReader
         };
 
         var groupGenericReader = new GroupGenericReaderBuilder()
-            .WithAssertIsValue(true)
-            .WithAssertIsValuePresent(type)
             .WithReaderTryRead(type, group)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            {"Type", type}
+            { nameof(Group.Type), type }
         });
 
         var success = groupGenericReader.TryRead(element, out var actualGroup);
@@ -85,14 +80,12 @@ public class TestGroupGenericReader
         var groupGenericReader = new GroupGenericReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsValue(true)
-            .WithAssertIsValuePresent(type)
             .WithReaderTryRead(type, null as Group)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { "Type", type }
+            { nameof(Group.Type), type }
         });
 
         var success = groupGenericReader.TryRead(element, out var group);

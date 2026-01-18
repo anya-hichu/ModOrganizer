@@ -11,19 +11,15 @@ using ModOrganizer.Json.Penumbra.Manipulations.Metas.Gmps;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
-using ModOrganizer.Json.Readers.Asserts.Fakes;
 using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers;
-using ModOrganizer.Tests.Json.Readers.Asserts;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Manipulations;
 
-public class ManipulationWrapperGenericReaderBuilder : IBuilder<ManipulationWrapperGenericReader>, IStubbableAssert, IStubbablePluginLog, IStubbableReaderProvider<ManipulationWrapper>
+public class ManipulationWrapperGenericReaderBuilder : IBuilder<ManipulationWrapperGenericReader>, IStubbablePluginLog, IStubbableReaderProvider<ManipulationWrapper>
 {
-    public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-
     public StubIReader<ManipulationWrapper> MetaAtchWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<ManipulationWrapper> MetaAtrWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<ManipulationWrapper> MetaEqdpWrapperReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
@@ -53,6 +49,6 @@ public class ManipulationWrapperGenericReaderBuilder : IBuilder<ManipulationWrap
         _ => throw new NotImplementedException()
     };
 
-    public ManipulationWrapperGenericReader Build() => new(AssertStub, MetaAtchWrapperReaderStub, MetaAtrWrapperReaderStub, MetaEqdpWrapperReaderStub, MetaEqpWrapperReaderStub, MetaEstWrapperReaderStub,
+    public ManipulationWrapperGenericReader Build() => new(MetaAtchWrapperReaderStub, MetaAtrWrapperReaderStub, MetaEqdpWrapperReaderStub, MetaEqpWrapperReaderStub, MetaEstWrapperReaderStub,
         MetaGeqpWrapperReaderStub, MetaGmpWrapperReaderStub, MetaImcWrapperReaderStub, MetaRspWrapperReaderStub, MetaShpWrapperReaderStub, PluginLogStub);
 }

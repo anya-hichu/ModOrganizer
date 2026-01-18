@@ -4,7 +4,6 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers;
-using ModOrganizer.Tests.Json.Readers.Asserts;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Manipulations;
@@ -22,13 +21,11 @@ public class TestManipulationWrapperGenericReader
         var manipulationWrapperGenericReader = new ManipulationWrapperGenericReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsValue(true)
-            .WithAssertIsValuePresent(type)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { "Type", type }
+            { nameof(ManipulationWrapper.Type), type }
         });
 
         var success = manipulationWrapperGenericReader.TryRead(element, out var manipulationWrapper);
@@ -63,14 +60,12 @@ public class TestManipulationWrapperGenericReader
         };
 
         var manipulationWrapperGenericReader = new ManipulationWrapperGenericReaderBuilder()
-            .WithAssertIsValue(true)
-            .WithAssertIsValuePresent(type)
             .WithReaderTryRead(type, manipulationWrapper)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            {"Type", type}
+            { nameof(ManipulationWrapper.Type), type }
         });
 
         var success = manipulationWrapperGenericReader.TryRead(element, out var actualManipulationWrapper);
@@ -96,14 +91,12 @@ public class TestManipulationWrapperGenericReader
         var manipulationWrapperGenericReader = new ManipulationWrapperGenericReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsValue(true)
-            .WithAssertIsValuePresent(type)
             .WithReaderTryRead(type, null as ManipulationWrapper)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { "Type", type }
+            { nameof(ManipulationWrapper.Type), type }
         });
 
         var success = manipulationWrapperGenericReader.TryRead(element, out var manipulationWrapper);

@@ -5,12 +5,12 @@ using ModOrganizer.Json.Penumbra.Options.Imcs;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using ModOrganizer.Json.Readers.Asserts;
+
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
 
-public class GroupImcReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IOptionImcGenericReader optionImcGenericReader,  IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IOptionImcGenericReader optionImcGenericReader,  IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
     public static readonly string TYPE = "Imc";
 

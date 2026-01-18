@@ -1,19 +1,19 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options;
 
-public class OptionContainerReader(IAssert assert, IReader<Container> containerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<OptionContainer>(assert, pluginLog)
+public class OptionContainerReader(IReader<Container> containerReader, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<OptionContainer>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out OptionContainer? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         if (!containerReader.TryRead(element, out var container))
         {

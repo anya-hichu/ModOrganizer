@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Containers;
 
-public class NamedContainerReader(IAssert assert, IReader<Container> containerReader, IPluginLog pluginLog) : Reader<NamedContainer>(assert, pluginLog)
+public class NamedContainerReader(IReader<Container> containerReader, IPluginLog pluginLog) : Reader<NamedContainer>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out NamedContainer? instance)
     {
@@ -18,7 +18,7 @@ public class NamedContainerReader(IAssert assert, IReader<Container> containerRe
             return false;
         }
 
-        if (!Assert.IsOptionalValue(element, nameof(NamedContainer.Name), out var name)) return false;
+        if (!IsOptionalValue(element, nameof(NamedContainer.Name), out string? name)) return false;
 
         instance = new()
         {

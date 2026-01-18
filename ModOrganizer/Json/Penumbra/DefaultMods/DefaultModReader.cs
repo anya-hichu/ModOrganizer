@@ -1,14 +1,14 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.DefaultMods;
 
-public class DefaultModReader(IAssert assert, IReader<Container> containerReader, IElementReader elementReader, IPluginLog pluginLog) : Reader<DefaultMod>(assert, pluginLog), IDefaultModReader
+public class DefaultModReader(IReader<Container> containerReader, IElementReader elementReader, IPluginLog pluginLog) : Reader<DefaultMod>(pluginLog), IDefaultModReader
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
@@ -18,7 +18,7 @@ public class DefaultModReader(IAssert assert, IReader<Container> containerReader
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         uint? version = element.TryGetProperty(nameof(DefaultMod.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)

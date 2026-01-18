@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
-public class OptionImcGenericReader(IAssert assert, IOptionImcAttributeMaskReader optionImcAttributeMaskReader, IOptionImcIsDisableSubModReader optionImcIsDisabledSubModReader, IPluginLog pluginLog) : GenericReader<OptionImc>(assert, pluginLog), IOptionImcGenericReader
+public class OptionImcGenericReader(IOptionImcAttributeMaskReader optionImcAttributeMaskReader, IOptionImcIsDisableSubModReader optionImcIsDisabledSubModReader, IPluginLog pluginLog) : GenericReader<OptionImc>(pluginLog), IOptionImcGenericReader
 {
     protected override bool TryGetReader(JsonElement element, [NotNullWhen(true)] out IReader<OptionImc>? builder)
     {

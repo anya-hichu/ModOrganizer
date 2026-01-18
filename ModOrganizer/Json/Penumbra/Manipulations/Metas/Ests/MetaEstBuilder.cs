@@ -1,24 +1,24 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Ests;
 
-public class MetaEstReader(IAssert assert, IPluginLog pluginLog) : Reader<MetaEst>(assert, pluginLog)
+public class MetaEstReader(IPluginLog pluginLog) : Reader<MetaEst>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out MetaEst? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsU16Value(element, nameof(MetaEst.Entry), out var entry)) return false;
-        if (!Assert.IsValuePresent(element, nameof(MetaEst.Gender), out var gender)) return false;
-        if (!Assert.IsValuePresent(element, nameof(MetaEst.Race), out var race)) return false;
-        if (!Assert.IsU16Value(element, nameof(MetaEst.SetId), out var setIdProperty)) return false;
-        if (!Assert.IsValuePresent(element, nameof(MetaEst.Slot), out var slot)) return false;
+        if (!IsU16Value(element, nameof(MetaEst.Entry), out var entry)) return false;
+        if (!IsValuePresent(element, nameof(MetaEst.Gender), out var gender)) return false;
+        if (!IsValuePresent(element, nameof(MetaEst.Race), out var race)) return false;
+        if (!IsU16Value(element, nameof(MetaEst.SetId), out var setIdProperty)) return false;
+        if (!IsValuePresent(element, nameof(MetaEst.Slot), out var slot)) return false;
 
         instance = new()
         {

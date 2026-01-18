@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.SortOrders;
 
-public class SortOrderReader(IAssert assert, IElementReader elementReader, IPluginLog pluginLog) : Reader<SortOrder>(assert, pluginLog), ISortOrderReader
+public class SortOrderReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<SortOrder>(pluginLog), ISortOrderReader
 {
     public IElementReader ElementReader { get; init; } = elementReader;
 
@@ -17,17 +17,17 @@ public class SortOrderReader(IAssert assert, IElementReader elementReader, IPlug
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         var data = new Dictionary<string, string>();
-        if (element.TryGetProperty(nameof(SortOrder.Data), out var dataProperty) && !Assert.IsStringDict(dataProperty, out data))
+        if (element.TryGetProperty(nameof(SortOrder.Data), out var dataProperty) && !IsDict(dataProperty, out data))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(SortOrder.Data)}] for [{nameof(SortOrder)}]: {element}");
             return false;
         }
 
         var emptyFolders = Array.Empty<string>();
-        if (element.TryGetProperty(nameof(SortOrder.EmptyFolders), out var emptyFoldersProperty) && !Assert.IsStringArray(emptyFoldersProperty, out emptyFolders))
+        if (element.TryGetProperty(nameof(SortOrder.EmptyFolders), out var emptyFoldersProperty) && !IsArray(emptyFoldersProperty, out emptyFolders))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(SortOrder.EmptyFolders)}] for [{nameof(SortOrder)}]: {element}");
             return false;

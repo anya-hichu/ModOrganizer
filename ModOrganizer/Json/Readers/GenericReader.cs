@@ -1,11 +1,11 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers;
 
-public abstract class GenericReader<T>(IAssert assert, IPluginLog pluginLog) : Reader<T>(assert, pluginLog) where T : class
+public abstract class GenericReader<T>(IPluginLog pluginLog) : Reader<T>(pluginLog) where T : class
 {
     protected abstract bool TryGetReader(JsonElement element, [NotNullWhen(true)] out IReader<T>? reader);
 

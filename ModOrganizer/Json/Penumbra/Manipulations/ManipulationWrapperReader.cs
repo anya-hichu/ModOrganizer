@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations;
 
-public abstract class ManipulationWrapperReader<T>(IAssert assert, IPluginLog pluginLog, string type) : Reader<ManipulationWrapper>(assert, pluginLog) where T : Manipulation
+public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string type) : Reader<ManipulationWrapper>(pluginLog) where T : Manipulation
 {
     private string Type { get; init; } = type;
 
@@ -14,9 +14,9 @@ public abstract class ManipulationWrapperReader<T>(IAssert assert, IPluginLog pl
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyPresent(element, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+        if (!IsPropertyPresent(element, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
 
         if (!TryReadWrapped(manipulationProperty, out var wrapped))
         {

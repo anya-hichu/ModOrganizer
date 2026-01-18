@@ -1,14 +1,14 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupSingleReader(IAssert assert, IGroupBaseReader groupBaseReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog)
+public class GroupSingleReader(IGroupBaseReader groupBaseReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
     public static readonly string TYPE = "Single";
 
@@ -16,7 +16,7 @@ public class GroupSingleReader(IAssert assert, IGroupBaseReader groupBaseReader,
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         if (!groupBaseReader.TryRead(element, out var group))
         {

@@ -10,16 +10,16 @@ using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 
 namespace ModOrganizer.Json.Penumbra.Manipulations;
 
 public class ManipulationWrapperGenericReader : TypeGenericReader<ManipulationWrapper>, IManipulationWrapperGenericReader
 {
-    public ManipulationWrapperGenericReader(IAssert assert, IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
+    public ManipulationWrapperGenericReader(IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
         IReader<ManipulationWrapper> metaEqdpWrapperReader, IReader<ManipulationWrapper> metaEqpWrapperReader, IReader<ManipulationWrapper> metaEstWrapperReader, 
         IReader<ManipulationWrapper> metaGeqpWrapperReader, IReader<ManipulationWrapper> metaGmpWrapperReader, IReader<ManipulationWrapper> metaImcWrapperReader, 
-        IReader<ManipulationWrapper> metaRspWrapperReader, IReader<ManipulationWrapper> metaShpWrapperReader, IPluginLog pluginLog) : base(assert, pluginLog)
+        IReader<ManipulationWrapper> metaRspWrapperReader, IReader<ManipulationWrapper> metaShpWrapperReader, IPluginLog pluginLog) : base(pluginLog)
     {
         Readers.Add(MetaAtchWrapperReader.TYPE, metaAtchWrapperReader);
         Readers.Add(MetaAtrWrapperReader.TYPE, metaAtrWrapperReader);

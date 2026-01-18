@@ -1,12 +1,12 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Groups;
 
-public class GroupBaseReader(IAssert assert, IPluginLog pluginLog) : Reader<Group>(assert, pluginLog), IGroupBaseReader
+public class GroupBaseReader(IPluginLog pluginLog) : Reader<Group>(pluginLog), IGroupBaseReader
 {
     private static readonly uint SUPPORTED_VERSION = 0;
 
@@ -14,7 +14,7 @@ public class GroupBaseReader(IAssert assert, IPluginLog pluginLog) : Reader<Grou
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
         uint? version = element.TryGetProperty(nameof(Group.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)
@@ -23,26 +23,24 @@ public class GroupBaseReader(IAssert assert, IPluginLog pluginLog) : Reader<Grou
             return false;
         }
 
-        if (!Assert.IsValuePresent(element, nameof(Group.Name), out var name)) return false;
-        if (!Assert.IsValuePresent(element, nameof(Group.Type), out var type)) return false;
+        if (!IsValuePresent(element, nameof(Group.Name), out var name)) return false;
+        if (!IsValuePresent(element, nameof(Group.Type), out var type)) return false;
 
-        var description = element.TryGetProperty(nameof(Group.Description), out var descriptionProperty) ? descriptionProperty.GetString() : null;
-        var image = element.TryGetProperty(nameof(Group.Image), out var îmageProperty) ? îmageProperty.GetString() : null;
-
-        int? page = element.TryGetProperty(nameof(Group.Page), out var pageProperty) && 
-            pageProperty.TryGetInt32(out var parsedPage) ? parsedPage : null;
-        int? priority = element.TryGetProperty(nameof(Group.Page), out var priorityProperty) && 
-            priorityProperty.TryGetInt32(out var parsedPriority) ? parsedPriority : null;
-        int? defaultSettings = element.TryGetProperty(nameof(Group.Page), out var defaultSettingsProperty) &&
-            defaultSettingsProperty.TryGetInt32(out var parsedDefaultSettings) ? parsedDefaultSettings : null;
+        if (!IsOptionalValue(element, nameof(Group.Description), out string? description)) return false;
+        if (!IsOptionalValue(element, nameof(Group.Image), out string? image)) return false;
+        if (!IsOptionalValue(element, nameof(Group.Page), out int? page)) return false;
+        if (!IsOptionalValue(element, nameof(Group.Priority), out int? priority)) return false;
+        if (!IsOptionalValue(element, nameof(Group.DefaultSettings), out int? defaultSettings)) return false;
 
         instance = new Group()
         {
+            Version = version,
             Name = name,
-            Type = type,
             Description = description,
             Image = image,
+            Page = page,
             Priority = priority,
+            Type = type,
             DefaultSettings = defaultSettings
         };
 

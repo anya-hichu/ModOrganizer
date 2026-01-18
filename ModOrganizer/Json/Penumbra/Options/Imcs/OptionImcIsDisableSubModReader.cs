@@ -1,18 +1,18 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Options.Imcs;
 
-public class OptionImcIsDisableSubModReader(IAssert assert, IReader<Option> optionReader, IPluginLog pluginLog) : Reader<OptionImc>(assert, pluginLog), IOptionImcIsDisableSubModReader
+public class OptionImcIsDisableSubModReader(IReader<Option> optionReader, IPluginLog pluginLog) : Reader<OptionImc>(pluginLog), IOptionImcIsDisableSubModReader
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out OptionImc? instance)
     {
         instance = null;
 
-        if (!Assert.IsPropertyPresent(element, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
+        if (!IsPropertyPresent(element, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {

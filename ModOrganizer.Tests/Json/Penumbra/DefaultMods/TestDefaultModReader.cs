@@ -5,7 +5,7 @@ using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Containers;
-using ModOrganizer.Tests.Json.Readers.Asserts;
+using System;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.DefaultMods;
@@ -34,7 +34,6 @@ public class TestDefaultModReader
         };
 
         var defaultModReader = new DefaultModReaderBuilder()
-            .WithAssertIsValue(true)
             .WithContainerReaderTryRead(container)
             .Build();
 
@@ -51,16 +50,25 @@ public class TestDefaultModReader
     [TestMethod]
     public void TestTryReadWithInvalidKind()
     {
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+        var observer = new StubObserver();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
 
         var defaultModReader = new DefaultModReaderBuilder()
-            .WithAssertIsValue(false)
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
             .Build();
 
         var success = defaultModReader.TryRead(element, out var defaultMod);
 
         Assert.IsFalse(success);
         Assert.IsNull(defaultMod);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual("Expected value kind [Object] but found [Null]: ", actualMessage));
     }
 
     [TestMethod]
@@ -77,7 +85,6 @@ public class TestDefaultModReader
         var defaultModReader = new DefaultModReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsValue(true)
             .Build();
 
         var success = defaultModReader.TryRead(element, out var defaultMod);
@@ -102,7 +109,6 @@ public class TestDefaultModReader
         var defaultModReader = new DefaultModReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithAssertIsValue(true)
             .WithContainerReaderTryRead(null)
             .Build();
 

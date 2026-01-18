@@ -1,20 +1,20 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts;
+
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 
-public class MetaImcReader(IAssert assert, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IPluginLog pluginLog) : Reader<MetaImc>(assert, pluginLog)
+public class MetaImcReader(IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IPluginLog pluginLog) : Reader<MetaImc>(pluginLog)
 {
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out MetaImc? instance)
     {
         instance = null;
 
-        if (!Assert.IsValue(element, JsonValueKind.Object)) return false;
+        if (!IsValue(element, JsonValueKind.Object)) return false;
 
-        if (!Assert.IsPropertyPresent(element, nameof(MetaImc.Entry), out var entryProperty)) return false;
+        if (!IsPropertyPresent(element, nameof(MetaImc.Entry), out var entryProperty)) return false;
 
         if (!imcEntryReader.TryRead(entryProperty, out var entry))
         {

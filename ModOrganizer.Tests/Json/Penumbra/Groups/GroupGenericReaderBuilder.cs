@@ -1,23 +1,16 @@
 using Dalamud.Plugin.Services.Fakes;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Groups;
-using ModOrganizer.Json.Penumbra.Manipulations;
-using ModOrganizer.Json.Readers;
-using ModOrganizer.Json.Readers.Asserts.Fakes;
 using ModOrganizer.Json.Readers.Elements.Fakes;
 using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers;
-using ModOrganizer.Tests.Json.Readers.Asserts;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups;
 
-public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>, IStubbableAssert, IStubbablePluginLog, IStubbableReaderProvider<Group>
+public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>, IStubbablePluginLog, IStubbableReaderProvider<Group>
 {
-    public StubIAssert AssertStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
-
     public StubIElementReader ElementReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<Group> GroupCombiningReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<Group> GroupImcReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
@@ -36,5 +29,5 @@ public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>, IStubbabl
         _ => throw new NotImplementedException()
     };
 
-    public GroupGenericReader Build() => new(AssertStub, ElementReaderStub, GroupCombiningReaderStub, GroupImcReaderStub, GroupMultiReaderStub, GroupSingleReaderStub, PluginLogStub);
+    public GroupGenericReader Build() => new(ElementReaderStub, GroupCombiningReaderStub, GroupImcReaderStub, GroupMultiReaderStub, GroupSingleReaderStub, PluginLogStub);
 }
