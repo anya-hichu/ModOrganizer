@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -14,23 +14,22 @@ public class GroupBaseReader(IPluginLog pluginLog) : Reader<Group>(pluginLog), I
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        uint? version = element.TryGetProperty(nameof(Group.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
-        if (version != null && version != SUPPORTED_VERSION)
+        if (element.TryGetOptionalPropertyValue(nameof(Group.Version), out uint? version, PluginLog) && version != SUPPORTED_VERSION)
         {
             PluginLog.Warning($"Failed to read [{typeof(Group).Name}], unsupported [{nameof(Group.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {element}");
             return false;
         }
 
-        if (!TryGetRequiredValue(element, nameof(Group.Name), out var name)) return false;
-        if (!TryGetRequiredValue(element, nameof(Group.Type), out var type)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(Group.Name), out var name, PluginLog)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(Group.Type), out var type, PluginLog)) return false;
 
-        if (!TryGetOptionalValue(element, nameof(Group.Description), out string? description)) return false;
-        if (!TryGetOptionalValue(element, nameof(Group.Image), out string? image)) return false;
-        if (!TryGetOptionalValue(element, nameof(Group.Page), out int? page)) return false;
-        if (!TryGetOptionalValue(element, nameof(Group.Priority), out int? priority)) return false;
-        if (!TryGetOptionalValue(element, nameof(Group.DefaultSettings), out int? defaultSettings)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Group.Description), out string? description, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Group.Image), out string? image, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Group.Page), out int? page, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Group.Priority), out int? priority, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Group.DefaultSettings), out int? defaultSettings, PluginLog)) return false;
 
         instance = new Group()
         {

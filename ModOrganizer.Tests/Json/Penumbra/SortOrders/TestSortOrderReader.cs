@@ -65,7 +65,7 @@ public class TestSortOrderReader
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected value kind [Object] but found [Null]: ", actualMessage));
+            actualMessage => Assert.AreEqual("Expected [Object] but found [Null]: ", actualMessage));
     }
 
     [TestMethod]
@@ -89,12 +89,10 @@ public class TestSortOrderReader
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(2, calls);
+        Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected value kind [Object] but found [Null]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Failed to read [SortOrder] required property [Data] values: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [Data] to be present: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -119,12 +117,10 @@ public class TestSortOrderReader
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(2, calls);
+        Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected value kind [Array] but found [Null]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Failed to read [SortOrder] required property [EmptyFolders] values: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [EmptyFolders] to be present: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -195,13 +191,11 @@ public class TestSortOrderReader
         Assert.IsNull(sortOrder);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(3, calls);
+        Assert.HasCount(2, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [Null]: ", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Failed to read [SortOrder] required property [Data] values: {element}", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[2], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.AreEqual($"Expected property [Data] to be present: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
             actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
     }
 }

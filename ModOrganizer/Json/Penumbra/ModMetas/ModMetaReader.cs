@@ -17,28 +17,27 @@ public class ModMetaReader(IElementReader elementReader, IPluginLog pluginLog) :
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredProperty(element, nameof(ModMeta.FileVersion), out var fileVersionProperty)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(ModMeta.FileVersion), out uint fileVersion, PluginLog)) return false;
 
-        var fileVersion = fileVersionProperty.GetUInt32();
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
             PluginLog.Warning($"Failed to read [{nameof(ModMeta)}], unsupported [{nameof(ModMeta.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}): {element}");
             return false;
         }
 
-        if (!TryGetRequiredValue(element, nameof(ModMeta.Name), out var name)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(ModMeta.Name), out string? name, PluginLog)) return false;
 
-        if (!TryGetOptionalValue(element, nameof(ModMeta.Author), out string? author)) return false;
-        if (!TryGetOptionalValue(element, nameof(ModMeta.Description), out string? description)) return false;
-        if (!TryGetOptionalValue(element, nameof(ModMeta.Image), out string? image)) return false;
-        if (!TryGetOptionalValue(element, nameof(ModMeta.Version), out string? version)) return false;
-        if (!TryGetOptionalValue(element, nameof(ModMeta.Website), out string? website)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.Author), out string? author, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.Description), out string? description, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.Image), out string? image, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.Version), out string? version, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.Website), out string? website, PluginLog)) return false;
 
-        if (!TryGetOptionalArrayValue(element, nameof(ModMeta.ModTags), out string[]? modTags)) return false;
-        if (!TryGetOptionalArrayValue(element, nameof(ModMeta.DefaultPreferredItems), out int[]? defaultPreferredItems)) return false;
-        if (!TryGetOptionalArrayValue(element, nameof(ModMeta.RequiredFeatures), out string[]? requiredFeatures)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.ModTags), out string[]? modTags, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.DefaultPreferredItems), out int[]? defaultPreferredItems, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(ModMeta.RequiredFeatures), out string[]? requiredFeatures, PluginLog)) return false;
 
         instance = new()
         {

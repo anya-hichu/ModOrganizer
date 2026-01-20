@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -18,7 +18,7 @@ public class NamedContainerReader(IReader<Container> containerReader, IPluginLog
             return false;
         }
 
-        if (!TryGetOptionalValue(element, nameof(NamedContainer.Name), out string? name)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(NamedContainer.Name), out string? name, PluginLog)) return false;
 
         instance = new()
         {

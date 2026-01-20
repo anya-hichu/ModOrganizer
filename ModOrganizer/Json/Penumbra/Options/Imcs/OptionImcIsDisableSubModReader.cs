@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,7 +12,7 @@ public class OptionImcIsDisableSubModReader(IReader<Option> optionReader, IPlugi
     {
         instance = null;
 
-        if (!TryGetRequiredProperty(element, nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var optionIsDisableSubMod)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out bool optionIsDisableSubMod, PluginLog)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {
@@ -27,7 +27,7 @@ public class OptionImcIsDisableSubModReader(IReader<Option> optionReader, IPlugi
             Priority = option.Priority,
             Image = option.Image,
 
-            IsDisableSubMod = optionIsDisableSubMod.GetBoolean()
+            IsDisableSubMod = optionIsDisableSubMod
         };
 
         return true;

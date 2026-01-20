@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,7 +12,7 @@ public class OptionImcAttributeMaskReader(IReader<Option> optionReader, IPluginL
     {
         instance = null;
 
-        if (!TryGetRequiredProperty(element, nameof(OptionImcAttributeMask.AttributeMask), out var optionAttributeMask)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(OptionImcAttributeMask.AttributeMask), out ushort optionAttributeMask, PluginLog)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {
@@ -27,7 +27,7 @@ public class OptionImcAttributeMaskReader(IReader<Option> optionReader, IPluginL
             Priority = option.Priority,
             Image = option.Image,
 
-            AttributeMask = optionAttributeMask.GetUInt16()
+            AttributeMask = optionAttributeMask
         };
 
         return true;

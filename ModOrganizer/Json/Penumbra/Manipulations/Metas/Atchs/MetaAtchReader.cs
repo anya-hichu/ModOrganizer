@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,13 +12,13 @@ public class MetaAtchReader(IReader<MetaAtchEntry> metaAtchEntryReader, IPluginL
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredProperty(element, nameof(MetaAtch.Entry), out var entryProperty)) return false;
-        if (!TryGetRequiredValue(element, nameof(MetaAtch.Gender), out var gender)) return false;
-        if (!TryGetRequiredValue(element, nameof(MetaAtch.Race), out var race)) return false;
-        if (!TryGetRequiredValue(element, nameof(MetaAtch.Type), out var type)) return false;
-        if (!TryGetRequiredU16Value(element, nameof(MetaAtch.Index), out var index)) return false;
+        if (!element.TryGetProperty(nameof(MetaAtch.Entry), out var entryProperty, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Gender), out string? gender, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Race), out string? race, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Type), out string? type, PluginLog)) return false;
+        if (!element.TryGetRequiredU16PropertyValue(nameof(MetaAtch.Index), out var index, PluginLog)) return false;
 
         if (!metaAtchEntryReader.TryRead(entryProperty, out var entry))
         {

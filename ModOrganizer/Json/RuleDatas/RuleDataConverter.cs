@@ -9,12 +9,14 @@ public class RuleDataConverter(IPluginLog pluginLog) : Converter<RuleData, Rule>
 {
     public override bool TryConvert(RuleData ruleData, [NotNullWhen(true)] out Rule? rule)
     {
-        rule = new() { Path = ruleData.Path };
-
-        if (ruleData.Enabled.HasValue) rule.Enabled = ruleData.Enabled.Value;
-        if (ruleData.Priority.HasValue) rule.Priority = ruleData.Priority.Value;
-        if (ruleData.MatchExpression != null) rule.MatchExpression = ruleData.MatchExpression;
-        if (ruleData.PathTemplate != null) rule.PathTemplate = ruleData.PathTemplate;
+        rule = new()
+        {
+            Enabled = ruleData.Enabled,
+            Path = ruleData.Path,
+            Priority = ruleData.Priority,
+            MatchExpression = ruleData.MatchExpression,
+            PathTemplate = ruleData.PathTemplate
+        };
 
         return true;
     }

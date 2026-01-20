@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,8 +12,9 @@ public class MetaGmpReader(IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog 
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmp.Entry), out var entryProperty)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
+
+        if (!element.TryGetProperty(nameof(MetaGmp.Entry), out var entryProperty, PluginLog)) return false;
 
         if (!metaGmpEntryReader.TryRead(entryProperty, out var entry))
         {
@@ -21,7 +22,7 @@ public class MetaGmpReader(IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog 
             return false;
         }
 
-        if (!TryGetRequiredU16Value(element, nameof(MetaGmp.SetId), out var setId)) return false;
+        if (!element.TryGetRequiredU16PropertyValue(nameof(MetaGmp.SetId), out var setId, PluginLog)) return false;
 
         instance = new()
         { 

@@ -1,5 +1,5 @@
 using Dalamud.Plugin.Services;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -16,9 +16,9 @@ public abstract class TypeGenericReader<T>(IPluginLog pluginLog) : GenericReader
     {
         reader = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredValue(element, TYPE_PROPERTY_NAME, out var type)) return false;
+        if (!element.TryGetRequiredPropertyValue(TYPE_PROPERTY_NAME, out string? type, PluginLog)) return false;
 
         if (!Readers.TryGetValue(type, out reader))
         {

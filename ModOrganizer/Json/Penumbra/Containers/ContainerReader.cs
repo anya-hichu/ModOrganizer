@@ -1,8 +1,9 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Manipulations;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -14,17 +15,13 @@ public class ContainerReader(IManipulationWrapperGenericReader manipulationWrapp
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetOptionalDictValue(element, nameof(Container.Files), out var files)) return false;
-        if (!TryGetOptionalDictValue(element, nameof(Container.FileSwaps), out var fileSwaps)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Container.Files), out Dictionary<string, string>? files, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(Container.FileSwaps), out Dictionary<string, string>? fileSwaps, PluginLog)) return false;
 
         var manipulations = Array.Empty<ManipulationWrapper>();
-        if (element.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty) && manipulationsProperty.ValueKind != JsonValueKind.Null && !manipulationWrapperGenericReader.TryReadMany(manipulationsProperty, out manipulations))
-        {
-            PluginLog.Warning($"Failed to read one or more [{nameof(Container.Manipulations)}] for [{nameof(Container)}]: {element}");
-            return false;
-        }
+        if (element.TryGetProperty(nameof(Container.Manipulations), out var manipulationsProperty, PluginLog) && !manipulationWrapperGenericReader.TryReadMany(manipulationsProperty, out manipulations)) return false;
 
         instance = new()
         {

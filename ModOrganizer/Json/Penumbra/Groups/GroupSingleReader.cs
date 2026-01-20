@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -16,7 +16,7 @@ public class GroupSingleReader(IGroupBaseReader groupBaseReader, IReader<OptionC
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         if (!groupBaseReader.TryRead(element, out var group))
         {

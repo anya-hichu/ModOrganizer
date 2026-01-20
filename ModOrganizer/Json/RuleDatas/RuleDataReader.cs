@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.RuleDatas;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -13,14 +13,12 @@ public class RuleDataReader(IPluginLog pluginLog) : Reader<RuleData>(pluginLog)
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
-        if (!TryGetRequiredValue(element, nameof(RuleData.Path), out var path)) return false;
-
-        bool? enabled = element.TryGetProperty(nameof(RuleData.Enabled), out var enabledProperty) ? enabledProperty.GetBoolean() : null;
-
-        int? priority = element.TryGetProperty(nameof(RuleData.Priority), out var priorityProperty) ? priorityProperty.GetInt32() : null;
-        var matchExpression = element.TryGetProperty(nameof(RuleData.MatchExpression), out var matchExpressionProperty) ? matchExpressionProperty.GetString() : null;
-        var pathTemplate = element.TryGetProperty(nameof(RuleData.PathTemplate), out var pathTemplateProperty) ? pathTemplateProperty.GetString() : null;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(RuleData.Enabled), out bool enabled, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(RuleData.Path), out string? path, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(RuleData.Priority), out int priority, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(RuleData.MatchExpression), out string? matchExpression, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(RuleData.PathTemplate), out string? pathTemplate, PluginLog)) return false;
 
         instance = new()
         {

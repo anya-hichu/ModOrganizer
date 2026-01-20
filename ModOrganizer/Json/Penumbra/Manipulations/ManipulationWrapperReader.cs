@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -14,9 +14,9 @@ public abstract class ManipulationWrapperReader<T>(IPluginLog pluginLog, string 
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredProperty(element, nameof(ManipulationWrapper.Manipulation), out var manipulationProperty)) return false;
+        if (!element.TryGetProperty(nameof(ManipulationWrapper.Manipulation), out var manipulationProperty, PluginLog)) return false;
 
         if (!TryReadWrapped(manipulationProperty, out var wrapped))
         {

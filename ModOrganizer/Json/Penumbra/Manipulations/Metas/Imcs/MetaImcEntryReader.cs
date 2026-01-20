@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,14 +12,14 @@ public class MetaImcEntryReader(IPluginLog pluginLog) : Reader<MetaImcEntry>(plu
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.MaterialId), out var materialId)) return false;
-        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.DecalId), out var decalId)) return false;
-        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.VfxId), out var vfxId)) return false;
-        if (!TryGetRequiredU8Value(element, nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaImcEntry.AttributeMask), out var attributeMaskIdProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaImcEntry.SoundId), out var soundIdProperty)) return false;
+        if (!element.TryGetRequiredU8PropertyValue(nameof(MetaImcEntry.MaterialId), out var materialId, PluginLog)) return false;
+        if (!element.TryGetRequiredU8PropertyValue(nameof(MetaImcEntry.DecalId), out var decalId, PluginLog)) return false;
+        if (!element.TryGetRequiredU8PropertyValue(nameof(MetaImcEntry.VfxId), out var vfxId, PluginLog)) return false;
+        if (!element.TryGetRequiredU8PropertyValue(nameof(MetaImcEntry.MaterialAnimationId), out var materialAnimationId, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaImcEntry.AttributeMask), out ushort attributeMask, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaImcEntry.SoundId), out byte soundId, PluginLog)) return false;
 
         instance = new()
         {
@@ -27,8 +27,8 @@ public class MetaImcEntryReader(IPluginLog pluginLog) : Reader<MetaImcEntry>(plu
             DecalId = decalId,
             VfxId = vfxId,
             MaterialAnimationId = materialAnimationId,
-            AttributeMask = attributeMaskIdProperty.GetUInt16(),
-            SoundId = soundIdProperty.GetByte()
+            AttributeMask = attributeMask,
+            SoundId = soundId
         };
 
         return true;

@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,9 +12,9 @@ public class MetaImcReader(IReader<MetaImcEntry> imcEntryReader, IReader<MetaImc
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredProperty(element, nameof(MetaImc.Entry), out var entryProperty)) return false;
+        if (!element.TryGetProperty(nameof(MetaImc.Entry), out var entryProperty, PluginLog)) return false;
 
         if (!imcEntryReader.TryRead(entryProperty, out var entry))
         {

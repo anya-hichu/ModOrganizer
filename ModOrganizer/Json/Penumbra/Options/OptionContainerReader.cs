@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -13,7 +13,7 @@ public class OptionContainerReader(IReader<Container> containerReader, IReader<O
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         if (!containerReader.TryRead(element, out var container))
         {

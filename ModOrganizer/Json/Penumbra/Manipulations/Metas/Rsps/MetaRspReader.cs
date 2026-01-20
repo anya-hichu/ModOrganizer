@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,15 +12,15 @@ public class MetaRspReader(IPluginLog pluginLog) : Reader<MetaRsp>(pluginLog)
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredProperty(element, nameof(MetaRsp.Entry), out var entryProperty)) return false;
-        if (!TryGetRequiredValue(element, nameof(MetaRsp.SubRace), out var subRace)) return false;
-        if (!TryGetRequiredValue(element, nameof(MetaRsp.Attribute), out var attribute)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaRsp.Entry), out float entry, PluginLog)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaRsp.SubRace), out string? subRace, PluginLog)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaRsp.Attribute), out string? attribute, PluginLog)) return false;
 
         instance = new()
         {
-            Entry = entryProperty.GetSingle(),
+            Entry = entry,
             SubRace = subRace,
             Attribute = attribute
         };

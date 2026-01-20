@@ -18,7 +18,7 @@ public class DefaultModReader(IReader<Container> containerReader, IElementReader
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         uint? version = element.TryGetProperty(nameof(DefaultMod.Version), out var versionProperty) ? versionProperty.GetUInt32() : null;
         if (version != null && version != SUPPORTED_VERSION)

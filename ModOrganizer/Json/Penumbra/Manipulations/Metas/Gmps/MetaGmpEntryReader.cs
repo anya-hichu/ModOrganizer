@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,25 +12,25 @@ public class MetaGmpEntryReader(IPluginLog pluginLog) : Reader<MetaGmpEntry>(plu
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.Enabled), out var enabledProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.Animated), out var animatedProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.RotationA), out var rotationAProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.RotationB), out var rotationBProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.RotationC), out var rotationCProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.UnknownA), out var unknownAProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaGmpEntry.UnknownB), out var unknownBProperty)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.Enabled), out bool enabled, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.Animated), out bool animated, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.RotationA), out ushort rotationA, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.RotationB), out ushort rotationB, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.RotationC), out ushort rotationC, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.UnknownA), out byte unknownA, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaGmpEntry.UnknownB), out byte unknownB, PluginLog)) return false;
 
         instance = new()
         {
-            Enabled = enabledProperty.GetBoolean(),
-            Animated = animatedProperty.GetBoolean(),
-            RotationA = rotationAProperty.GetUInt16(),
-            RotationB = rotationBProperty.GetUInt16(),
-            RotationC = rotationCProperty.GetUInt16(),
-            UnknownA = unknownAProperty.GetByte(),
-            UnknownB = unknownBProperty.GetByte()
+            Enabled = enabled,
+            Animated = animated,
+            RotationA = rotationA,
+            RotationB = rotationB,
+            RotationC = rotationC,
+            UnknownA = unknownA,
+            UnknownB = unknownB
         };
 
         return true;

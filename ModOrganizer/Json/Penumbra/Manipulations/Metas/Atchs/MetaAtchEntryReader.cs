@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,28 +12,27 @@ public class MetaAtchEntryReader(IPluginLog pluginLog) : Reader<MetaAtchEntry>(p
     {
         instance = null;
 
-        if (!IsValue(element, JsonValueKind.Object)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!TryGetRequiredValue(element, nameof(MetaAtchEntry.Bone), out var bone)) return false;
-
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.Scale), out var scaleProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.OffsetX), out var offsetXProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.OffsetY), out var offsetYProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.OffsetZ), out var offsetZProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.RotationX), out var rotationXProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.RotationY), out var rotationYProperty)) return false;
-        if (!TryGetRequiredProperty(element, nameof(MetaAtchEntry.RotationZ), out var rotationZProperty)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaAtchEntry.Bone), out var bone, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.Scale), out float scale, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.OffsetX), out float offsetX, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.OffsetY), out float offsetY, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.OffsetZ), out float offsetZ, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.RotationX), out float rotationX, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.RotationY), out float rotationY, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtchEntry.RotationZ), out float rotationZ, PluginLog)) return false;
 
         instance = new()
         { 
             Bone = bone,
-            Scale = scaleProperty.GetSingle(),
-            OffsetX = offsetXProperty.GetSingle(),
-            OffsetY = offsetYProperty.GetSingle(),
-            OffsetZ = offsetZProperty.GetSingle(),
-            RotationX = rotationXProperty.GetSingle(),
-            RotationY = rotationYProperty.GetSingle(),
-            RotationZ = rotationZProperty.GetSingle(),
+            Scale = scale,
+            OffsetX = offsetX,
+            OffsetY = offsetY,
+            OffsetZ = offsetZ,
+            RotationX = rotationX,
+            RotationY = rotationY,
+            RotationZ = rotationZ
         };
 
         return true;
