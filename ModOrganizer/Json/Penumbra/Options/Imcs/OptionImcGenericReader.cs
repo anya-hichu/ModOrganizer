@@ -18,7 +18,7 @@ public class OptionImcGenericReader(IOptionImcAttributeMaskReader optionImcAttri
         switch (element.HasProperty(attributeMaskName), element.HasProperty(isDisableSubModName))
         {
             case (true, true):
-                PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both attributes [{attributeMaskName}] and [{isDisableSubModName}] are present");
+                PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both properties [{attributeMaskName}] and [{isDisableSubModName}] are present");
                 return false;
 
             case (true, false):
@@ -30,7 +30,7 @@ public class OptionImcGenericReader(IOptionImcAttributeMaskReader optionImcAttri
                 return true;
 
             case (false, false):
-                PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both attributes [{attributeMaskName}] and [{isDisableSubModName}] are missing");
+                PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both properties [{attributeMaskName}] and [{isDisableSubModName}] are missing");
                 break;
         }
 
