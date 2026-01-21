@@ -13,12 +13,12 @@ public class TestVirtualMultiMatcher
         var matcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesFolderVirtualFolder = _ => true, 
+            MatchesVirtualFolder = _ => true, 
         };
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
 
-        var success = multiMatcher.Matches((VirtualFolder)new());
+        var success = multiMatcher.Matches(new VirtualFolder());
 
         Assert.IsTrue(success);
     }
@@ -29,18 +29,18 @@ public class TestVirtualMultiMatcher
         var firstMatcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesFolderVirtualFolder = _ => true 
+            MatchesVirtualFolder = _ => true 
         };
 
         var secondMatcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesFolderVirtualFolder = _ => false
+            MatchesVirtualFolder = _ => false
         };
 
         var multiMatcher = new VirtualMultiMatcher([firstMatcher, secondMatcher]);
         
-        var success = multiMatcher.Matches((VirtualFolder)new());
+        var success = multiMatcher.Matches(new VirtualFolder());
 
         Assert.IsFalse(success);
     }
@@ -51,12 +51,12 @@ public class TestVirtualMultiMatcher
         var matcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesFileVirtualFile = _ => true,
+            MatchesVirtualFile = _ => true,
         };
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
 
-        var success = multiMatcher.Matches((VirtualFile)new());
+        var success = multiMatcher.Matches(new VirtualFile());
 
         Assert.IsTrue(success);
     }
@@ -67,18 +67,18 @@ public class TestVirtualMultiMatcher
         var firstMatcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesFileVirtualFile = _ => true,
+            MatchesVirtualFile = _ => true,
         };
 
         var secondMatcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesFileVirtualFile = _ => false,
+            MatchesVirtualFile = _ => false,
         };
 
         var multiMatcher = new VirtualMultiMatcher([firstMatcher, secondMatcher]);
 
-        var success = multiMatcher.Matches((VirtualFile)new());
+        var success = multiMatcher.Matches(new VirtualFile());
 
         Assert.IsFalse(success);
     }

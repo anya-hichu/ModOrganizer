@@ -541,17 +541,17 @@
         <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.#ctor">
             <summary>Initializes a new instance of type StubIVirtualMatcher</summary>
         </member>
-        <member name="F:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.MatchesFileVirtualFile">
-            <summary>Sets the stub of IVirtualMatcher.MatchesFile(IVirtualMatcher this, VirtualFile file)</summary>
+        <member name="F:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.MatchesVirtualFile">
+            <summary>Sets the stub of IVirtualMatcher.Matches(IVirtualMatcher this, VirtualFile file)</summary>
         </member>
-        <member name="F:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.MatchesFolderVirtualFolder">
-            <summary>Sets the stub of IVirtualMatcher.MatchesFolder(IVirtualMatcher this, VirtualFolder folder)</summary>
+        <member name="F:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.MatchesVirtualFolder">
+            <summary>Sets the stub of IVirtualMatcher.Matches(IVirtualMatcher this, VirtualFolder folder)</summary>
         </member>
-        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#MatchesFile(ModOrganizer.Virtuals.VirtualFile)">
-            <summary>Sets the Stub of IVirtualMatcher.MatchesFile(IVirtualMatcher this, VirtualFile file)</summary>
+        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#Matches(ModOrganizer.Virtuals.VirtualFile)">
+            <summary>Sets the Stub of IVirtualMatcher.Matches(IVirtualMatcher this, VirtualFile file)</summary>
         </member>
-        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#MatchesFolder(ModOrganizer.Virtuals.VirtualFolder)">
-            <summary>Sets the Stub of IVirtualMatcher.MatchesFolder(IVirtualMatcher this, VirtualFolder folder)</summary>
+        <member name="M:ModOrganizer.Virtuals.Fakes.StubIVirtualMatcher.ModOrganizer#Virtuals#IVirtualMatcher#Matches(ModOrganizer.Virtuals.VirtualFolder)">
+            <summary>Sets the Stub of IVirtualMatcher.Matches(IVirtualMatcher this, VirtualFolder folder)</summary>
         </member>
         <member name="T:ModOrganizer.Windows.Results.Backups.Fakes.StubIBackupResultState">
             <summary>Stub type of ModOrganizer.Windows.Results.Backups.IBackupResultState</summary>
