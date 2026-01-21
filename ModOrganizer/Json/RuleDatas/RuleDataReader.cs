@@ -14,6 +14,7 @@ public class RuleDataReader(IPluginLog pluginLog) : Reader<RuleData>(pluginLog)
         instance = null;
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
+
         if (!element.TryGetRequiredPropertyValue(nameof(RuleData.Enabled), out bool enabled, PluginLog)) return false;
         if (!element.TryGetRequiredPropertyValue(nameof(RuleData.Path), out string? path, PluginLog)) return false;
         if (!element.TryGetRequiredPropertyValue(nameof(RuleData.Priority), out int priority, PluginLog)) return false;

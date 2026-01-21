@@ -12,7 +12,9 @@ public class NamedContainerReader(IReader<Container> containerReader, IPluginLog
     {
         instance = null;
 
-        if(!containerReader.TryRead(element, out var container))
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
+
+        if (!containerReader.TryRead(element, out var container))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(NamedContainer)}]: {element}");
             return false;
