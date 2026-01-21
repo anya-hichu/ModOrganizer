@@ -19,7 +19,7 @@ public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolde
     {
         result = null;
 
-        if (matcher.MatchesFolder(this))
+        if (matcher.Matches(this))
         {
             result = this;
             return true;
@@ -30,7 +30,7 @@ public class VirtualFolder : IComparable<VirtualFolder>, IEquatable<VirtualFolde
             Name = Name,
             Path = Path,
             Folders = [.. Folders.SelectMany<VirtualFolder, VirtualFolder>(f => f.TrySearch(matcher, out var filteredSubfolder) ? [filteredSubfolder] : [])],
-            Files = [.. Files.Where(matcher.MatchesFile)]
+            Files = [.. Files.Where(matcher.Matches)]
         };
 
         if (filteredfolder.IsEmpty()) return false;

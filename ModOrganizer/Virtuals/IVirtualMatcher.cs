@@ -2,6 +2,6 @@ namespace ModOrganizer.Virtuals;
 
 public interface IVirtualMatcher
 {
-    bool MatchesFile(VirtualFile file);
-    bool MatchesFolder(VirtualFolder folder);
+    bool Matches(VirtualFile file);
+    bool Matches(VirtualFolder folder);
 }

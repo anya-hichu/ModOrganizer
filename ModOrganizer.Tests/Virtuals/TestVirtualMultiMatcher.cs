@@ -18,7 +18,7 @@ public class TestVirtualMultiMatcher
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
 
-        var success = multiMatcher.MatchesFolder(new());
+        var success = multiMatcher.Matches((VirtualFolder)new());
 
         Assert.IsTrue(success);
     }
@@ -40,7 +40,7 @@ public class TestVirtualMultiMatcher
 
         var multiMatcher = new VirtualMultiMatcher([firstMatcher, secondMatcher]);
         
-        var success = multiMatcher.MatchesFolder(new());
+        var success = multiMatcher.Matches((VirtualFolder)new());
 
         Assert.IsFalse(success);
     }
@@ -56,7 +56,7 @@ public class TestVirtualMultiMatcher
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
 
-        var success = multiMatcher.MatchesFile(new());
+        var success = multiMatcher.Matches((VirtualFile)new());
 
         Assert.IsTrue(success);
     }
@@ -78,7 +78,7 @@ public class TestVirtualMultiMatcher
 
         var multiMatcher = new VirtualMultiMatcher([firstMatcher, secondMatcher]);
 
-        var success = multiMatcher.MatchesFile(new());
+        var success = multiMatcher.Matches((VirtualFile)new());
 
         Assert.IsFalse(success);
     }

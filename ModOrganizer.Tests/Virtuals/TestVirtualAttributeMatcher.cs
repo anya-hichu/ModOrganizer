@@ -21,7 +21,7 @@ public class TestVirtualAttributeMatcher
             Path = "match"
         };
 
-        var success = matcher.MatchesFile(file);
+        var success = matcher.Matches(file);
 
         Assert.IsTrue(success);
     }
@@ -42,7 +42,7 @@ public class TestVirtualAttributeMatcher
             Path = "match"
         };
 
-        var success = matcher.MatchesFile(file);
+        var success = matcher.Matches(file);
 
         Assert.IsFalse(success);
     }
