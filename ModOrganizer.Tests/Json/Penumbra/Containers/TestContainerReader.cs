@@ -56,7 +56,24 @@ public class TestContainerReader
     }
 
     [TestMethod]
-    public void TestTryReadWithDefaults()
+    public void TestTryReadWithoutProperties()
+    {
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var containerReader = new ContainerReaderBuilder().Build();
+
+        var success = containerReader.TryRead(element, out var container);
+
+        Assert.IsTrue(success);
+        Assert.IsNotNull(container);
+
+        Assert.IsNull(container.Files);
+        Assert.IsNull(container.FileSwaps);
+        Assert.IsNull(container.Manipulations);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithNullPropertyValues()
     {
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
@@ -72,14 +89,9 @@ public class TestContainerReader
         Assert.IsTrue(success);
         Assert.IsNotNull(container);
 
-        Assert.IsNotNull(container.Files);
-        Assert.IsEmpty(container.Files);
-
-        Assert.IsNotNull(container.FileSwaps);
-        Assert.IsEmpty(container.FileSwaps);
-
-        Assert.IsNotNull(container.Manipulations);
-        Assert.IsEmpty(container.Manipulations);
+        Assert.IsNull(container.Files);
+        Assert.IsNull(container.FileSwaps);
+        Assert.IsNull(container.Manipulations);
     }
 
     [TestMethod]
@@ -87,7 +99,7 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var files = "Invalid";
+        var files = "Invalid Files";
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
@@ -106,11 +118,9 @@ public class TestContainerReader
 
         var calls = observer.GetCalls();
 
-        Assert.HasCount(2, calls);
+        Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [String]: {files}", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
-            actualMessage => Assert.AreEqual($"Failed to read [Container] optional property [Files] values: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -118,7 +128,7 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var fileSwaps = "Invalid";
+        var fileSwaps = "Invalid File Swaps";
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
@@ -136,12 +146,10 @@ public class TestContainerReader
         Assert.IsNull(container);
 
         var calls = observer.GetCalls();
-        Assert.HasCount(2, calls);
+        Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [String]: {fileSwaps}", actualMessage));
-        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
-            actualMessage => Assert.AreEqual($"Failed to read [Container] optional property [FileSwaps] values: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -151,7 +159,7 @@ public class TestContainerReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
-            { nameof(Container.Manipulations), "Invalid" }
+            { nameof(Container.Manipulations), "Invalid Manipulations" }
         });
 
         var containerReader = new ContainerReaderBuilder()
@@ -166,8 +174,8 @@ public class TestContainerReader
         Assert.IsNull(container);
 
         var calls = observer.GetCalls();
-
         Assert.HasCount(1, calls);
+
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
             actualMessage => Assert.AreEqual($"Failed to read one or more [Manipulations] for [Container]: {element}", actualMessage));
     }

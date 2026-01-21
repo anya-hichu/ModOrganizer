@@ -3,7 +3,7 @@ using ModOrganizer.Json.Readers.Files;
 
 namespace ModOrganizer.Json.Penumbra.ModMetas;
 
-public interface IModMetaReader : IReader<ModMeta>, IFileReader<ModMeta>
+public interface IModMetaReader : IReader<ModMetaV3>, IFileReader<ModMetaV3>
 {
     // Empty
 }

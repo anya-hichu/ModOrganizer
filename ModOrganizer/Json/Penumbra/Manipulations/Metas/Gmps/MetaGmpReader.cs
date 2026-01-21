@@ -14,7 +14,7 @@ public class MetaGmpReader(IReader<MetaGmpEntry> metaGmpEntryReader, IPluginLog 
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!element.TryGetProperty(nameof(MetaGmp.Entry), out var entryProperty, PluginLog)) return false;
+        if (!element.TryGetRequiredProperty(nameof(MetaGmp.Entry), out var entryProperty, PluginLog)) return false;
 
         if (!metaGmpEntryReader.TryRead(entryProperty, out var entry))
         {

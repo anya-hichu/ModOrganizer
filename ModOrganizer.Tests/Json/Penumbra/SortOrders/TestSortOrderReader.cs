@@ -65,7 +65,7 @@ public class TestSortOrderReader
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual("Expected [Object] but found [Null]: ", actualMessage));
+            actualMessage => Assert.AreEqual("Expected value kind [Object] but found [Null]: ", actualMessage));
     }
 
     [TestMethod]

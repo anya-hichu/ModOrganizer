@@ -17,7 +17,7 @@ public class MetaAtrReader(IPluginLog pluginLog) : Reader<MetaAtr>(pluginLog)
         if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaAtr.Attribute), out var attribute, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(MetaAtr.Entry), out bool? entry, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(MetaAtr.Slot), out string? slot, PluginLog)) return false;
-        if (!element.TryGetOptionalPropertyU16Value(nameof(MetaAtr.Id), out var id, PluginLog)) return false;
+        if (!element.TryGetOptionalU16PropertyValue(nameof(MetaAtr.Id), out var id, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(MetaAtr.GenderRaceCondition), out ushort? genderRaceCondition, PluginLog)) return false;
 
         instance = new()

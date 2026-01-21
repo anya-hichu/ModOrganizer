@@ -14,7 +14,7 @@ public class MetaImcReader(IReader<MetaImcEntry> imcEntryReader, IReader<MetaImc
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!element.TryGetProperty(nameof(MetaImc.Entry), out var entryProperty, PluginLog)) return false;
+        if (!element.TryGetRequiredProperty(nameof(MetaImc.Entry), out var entryProperty, PluginLog)) return false;
 
         if (!imcEntryReader.TryRead(entryProperty, out var entry))
         {

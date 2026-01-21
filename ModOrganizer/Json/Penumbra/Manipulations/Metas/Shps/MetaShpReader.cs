@@ -16,7 +16,7 @@ public class MetaShpReader(IPluginLog pluginLog) : Reader<MetaShp>(pluginLog)
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaShp.Shape), out var shape, PluginLog)) return false;
-        if (!element.TryGetOptionalPropertyU16Value(nameof(MetaShp.Id), out var id, PluginLog)) return false;
+        if (!element.TryGetOptionalU16PropertyValue(nameof(MetaShp.Id), out var id, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(MetaShp.Entry), out bool? entry, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(MetaShp.Slot), out string? slot, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(MetaShp.Slot), out string? connectorCondition, PluginLog)) return false;

@@ -6,30 +6,30 @@ using System.Text.Json;
 
 namespace ModOrganizer.Json.Penumbra.LocalModDatas;
 
-public class LocalModDataReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<LocalModData>(pluginLog), ILocalModDataReader
+public class LocalModDataReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<LocalModDataV3>(pluginLog), ILocalModDataReader
 {
     public static readonly uint SUPPORTED_FILE_VERSION = 3;
 
     public IElementReader ElementReader { get; init; } = elementReader;
 
-    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out LocalModData? instance)
+    public override bool TryRead(JsonElement element, [NotNullWhen(true)] out LocalModDataV3? instance)
     {
         instance = null;
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!element.TryGetRequiredPropertyValue(nameof(LocalModData.FileVersion), out uint fileVersion, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(LocalModDataV3.FileVersion), out uint fileVersion, PluginLog)) return false;
 
         if (fileVersion != SUPPORTED_FILE_VERSION)
         {
-            PluginLog.Warning($"Failed to read [{nameof(LocalModData)}], unsupported [{nameof(LocalModData.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}): {element}");
+            PluginLog.Warning($"Failed to read [{nameof(LocalModDataV3)}], unsupported [{nameof(LocalModDataV3.FileVersion)}] found [{fileVersion}] (supported version: {SUPPORTED_FILE_VERSION}): {element}");
             return false;
         }
 
-        if (!element.TryGetOptionalPropertyValue(nameof(LocalModData.ImportDate), out long? importDate, PluginLog)) return false;
-        if (!element.TryGetOptionalPropertyValue(nameof(LocalModData.LocalTags), out string[]? localTags, PluginLog)) return false;
-        if (!element.TryGetOptionalPropertyValue(nameof(LocalModData.Favorite), out bool? favorite)) return false;
-        if (!element.TryGetOptionalPropertyValue(nameof(LocalModData.PreferredChangedItems), out int[]? preferredChangedItems, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.ImportDate), out long? importDate, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.LocalTags), out string[]? localTags, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.Favorite), out bool? favorite)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.PreferredChangedItems), out int[]? preferredChangedItems, PluginLog)) return false;
 
         instance = new()
         {

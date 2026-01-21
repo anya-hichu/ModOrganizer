@@ -12,9 +12,9 @@ public class ModInfo
     public required string Path { get; init; }
 
     public required Dictionary<string, object?> ChangedItems { get; init; }
-    public required LocalModData Data { get; init; }
+    public required LocalModDataV3 Data { get; init; }
 
     public required DefaultMod Default { get; init; }
-    public required ModMeta Meta { get; init; }
+    public required ModMetaV3 Meta { get; init; }
     public required Group[] Groups { get; init; }
 }

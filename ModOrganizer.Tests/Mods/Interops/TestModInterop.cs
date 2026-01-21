@@ -412,10 +412,14 @@ public class TestModInterop : ITestableClassTemp
             .WithPluginInterfaceConfigDirectory(configDirectory)
             .Build();
 
-        var localModData = new LocalModData() { FileVersion = 0 };
-        var defaultMod = new DefaultMod();
-        var modMeta = new ModMeta() { FileVersion = 0, Name = "Mod Name" };
         var sortOrder = new SortOrder() { Data = { { modDirectory, modPath } } };
+        var localModData = new LocalModDataV3() { FileVersion = 0 };
+        var defaultMod = new DefaultMod();
+        var modMeta = new ModMetaV3()
+        { 
+            FileVersion = 0, 
+            Name = "Mod Name" 
+        };
 
         using var _ = new ModInteropShimsContextBuilder()
             .WithFileReaderTryReadFromFile(sortOrder)

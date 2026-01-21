@@ -9,18 +9,20 @@ public class TestLocalModData
     [TestMethod]
     public void TestTryRead()
     {
-        var localTags = Array.Empty<string>();
-        var preferredChangedItems = Array.Empty<int>();
+        var fileVersion = 3u;
+        var importDate = 2;
+        var localTag = "Local Tag";
+        var preferredChangedItem = 1;
 
         var localModDatReader = new LocalModDataReaderBuilder().Build();
 
-        var importDate = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { nameof(LocalModData.FileVersion), LocalModDataReader.SUPPORTED_FILE_VERSION },
-            { nameof(LocalModData.ImportDate), importDate },
-            { nameof(LocalModData.Favorite), true }
+            { nameof(LocalModDataV3.FileVersion), fileVersion },
+            { nameof(LocalModDataV3.ImportDate), importDate },
+            { nameof(LocalModDataV3.LocalTags), new string[] { localTag } },
+            { nameof(LocalModDataV3.Favorite), true },
+            { nameof(LocalModDataV3.PreferredChangedItems), new int[] { preferredChangedItem } }
         });
 
         var success = localModDatReader.TryRead(element, out var localModData);
@@ -28,10 +30,17 @@ public class TestLocalModData
         Assert.IsTrue(success);
         Assert.IsNotNull(localModData);
 
-        Assert.AreEqual(LocalModDataReader.SUPPORTED_FILE_VERSION, localModData.FileVersion);
+        Assert.AreEqual(fileVersion, localModData.FileVersion);
         Assert.AreEqual(importDate, localModData.ImportDate);
-        Assert.AreSame(localTags, localModData.LocalTags);
+
+        Assert.IsNotNull(localModData.LocalTags);
+        Assert.HasCount(1, localModData.LocalTags);
+        Assert.AreEqual(localTag, localModData.LocalTags[0]);
+
         Assert.IsTrue(localModData.Favorite);
-        Assert.AreSame(preferredChangedItems, localModData.PreferredChangedItems);
+
+        Assert.IsNotNull(localModData.PreferredChangedItems);
+        Assert.HasCount(1, localModData.PreferredChangedItems);
+        Assert.AreEqual(preferredChangedItem, localModData.PreferredChangedItems[0]);
     }
 }
