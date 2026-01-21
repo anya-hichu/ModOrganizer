@@ -162,6 +162,8 @@ public static class ElementExtensions
 
     #endregion
 
+    public static bool HasProperty(this JsonElement element, string name) => element.TryGetProperty(name, out var _);
+
     public static bool TryGetOptionalProperty(this JsonElement element, string name, out JsonElement property, IPluginLog? maybePluginLog = null)
     {
         property = default;

@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Readers;
-
+using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -12,28 +12,28 @@ public class OptionImcGenericReader(IOptionImcAttributeMaskReader optionImcAttri
     {
         builder = null;
 
-        var hasAttributeMaskProperty = element.TryGetProperty(nameof(OptionImcAttributeMask.AttributeMask), out var _);
-        var hasIsDisableSubModProperty = element.TryGetProperty(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out var _);
+        var attributeMaskName = nameof(OptionImcAttributeMask.AttributeMask);
+        var isDisableSubModName = nameof(OptionImcIsDisableSubMod.IsDisableSubMod);
 
-        if (hasAttributeMaskProperty && hasIsDisableSubModProperty)
+        switch (element.HasProperty(attributeMaskName), element.HasProperty(isDisableSubModName))
         {
-            PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both attributes [{nameof(OptionImcAttributeMask.AttributeMask)}] and [{nameof(OptionImcIsDisableSubMod.IsDisableSubMod)}] are present");
-            return false;
+            case (true, true):
+                PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both attributes [{attributeMaskName}] and [{isDisableSubModName}] are present");
+                return false;
+
+            case (true, false):
+                builder = optionImcAttributeMaskReader;
+                return true;
+
+            case (false, true):
+                builder = optionImcIsDisabledSubModReader;
+                return true;
+
+            case (false, false):
+                PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both attributes [{attributeMaskName}] and [{isDisableSubModName}] are missing");
+                break;
         }
 
-        if (hasAttributeMaskProperty)
-        {
-            builder = optionImcAttributeMaskReader;
-            return true;
-        }
-
-        if (hasIsDisableSubModProperty)
-        {
-            builder = optionImcIsDisabledSubModReader;
-            return true;
-        }
-
-        PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both attributes [{nameof(OptionImcAttributeMask.AttributeMask)}] and [{nameof(OptionImcIsDisableSubMod.IsDisableSubMod)}] are missing");
         return false;
     }
 }
