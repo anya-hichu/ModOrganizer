@@ -1,7 +1,8 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
+using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Elements;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -18,18 +19,20 @@ public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEnt
     {
         instance = null;
 
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
+
         var allVariants = element.TryGetProperty(nameof(GroupImc.AllVariants), out var allVariantsProperty) && allVariantsProperty.GetBoolean();
         var allAttributes = element.TryGetProperty(nameof(GroupImc.AllAttributes), out var allAttributesProperty) && allAttributesProperty.GetBoolean();
 
         MetaImcEntry? defaultEntry = null;
-        if (element.TryGetProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
+        if (element.TryGetOptionalProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
         {
             PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 
         MetaImcIdentifier? identifier = null;
-        if (element.TryGetProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
+        if (element.TryGetOptionalProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
         {
             PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]: {element}");
             return false;

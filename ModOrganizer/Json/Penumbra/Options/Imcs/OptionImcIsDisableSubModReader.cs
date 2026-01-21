@@ -12,13 +12,15 @@ public class OptionImcIsDisableSubModReader(IReader<Option> optionReader, IPlugi
     {
         instance = null;
 
-        if (!element.TryGetRequiredPropertyValue(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out bool optionIsDisableSubMod, PluginLog)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionImcIsDisableSubMod)}]: {element}");
             return false;
         }
+
+        if (!element.TryGetRequiredPropertyValue(nameof(OptionImcIsDisableSubMod.IsDisableSubMod), out bool optionIsDisableSubMod, PluginLog)) return false;
 
         instance = new OptionImcIsDisableSubMod()
         {

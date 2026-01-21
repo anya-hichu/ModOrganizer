@@ -9,8 +9,7 @@ public class GroupGenericReader : TypeGenericReader<Group>, IGroupGenericReader
 {
     public IElementReader ElementReader { get; init; }
 
-    public GroupGenericReader(IElementReader elementReader, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, 
-        IReader<Group> groupSingleReader, IPluginLog pluginLog) : base(pluginLog)
+    public GroupGenericReader(IElementReader elementReader, IReader<Group> groupCombiningReader, IReader<Group> groupImcReader, IReader<Group> groupMultiReader, IReader<Group> groupSingleReader, IPluginLog pluginLog) : base(pluginLog)
     {
         ElementReader = elementReader;
 

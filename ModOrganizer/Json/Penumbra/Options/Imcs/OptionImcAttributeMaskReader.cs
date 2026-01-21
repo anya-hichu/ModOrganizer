@@ -12,13 +12,15 @@ public class OptionImcAttributeMaskReader(IReader<Option> optionReader, IPluginL
     {
         instance = null;
 
-        if (!element.TryGetRequiredPropertyValue(nameof(OptionImcAttributeMask.AttributeMask), out ushort optionAttributeMask, PluginLog)) return false;
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         if (!optionReader.TryRead(element, out var option))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Option)}] for [{nameof(OptionImcAttributeMask)}]: {element}");
             return false;
         }
+
+        if (!element.TryGetRequiredPropertyValue(nameof(OptionImcAttributeMask.AttributeMask), out ushort optionAttributeMask, PluginLog)) return false;
 
         instance = new OptionImcAttributeMask()
         {

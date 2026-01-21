@@ -12,6 +12,8 @@ public class OptionImcGenericReader(IOptionImcAttributeMaskReader optionImcAttri
     {
         builder = null;
 
+        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
+
         var attributeMaskName = nameof(OptionImcAttributeMask.AttributeMask);
         var isDisableSubModName = nameof(OptionImcIsDisableSubMod.IsDisableSubMod);
 

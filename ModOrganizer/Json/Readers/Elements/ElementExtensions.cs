@@ -164,7 +164,7 @@ public static class ElementExtensions
 
     public static bool HasProperty(this JsonElement element, string name) => element.TryGetProperty(name, out var _);
 
-    public static bool TryGetOptionalProperty(this JsonElement element, string name, out JsonElement property, IPluginLog? maybePluginLog = null)
+    public static bool TryGetOptionalProperty(this JsonElement element, string name, out JsonElement property)
     {
         property = default;
         if (!element.TryGetProperty(name, out var elementProperty)) return false;
@@ -186,14 +186,14 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out string? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         return property.TryGetValue(out value, maybePluginLog);
     }
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out bool? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out bool propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -202,7 +202,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out byte? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out byte propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -211,7 +211,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out ushort? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out ushort propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -220,7 +220,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out uint? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out uint propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -229,7 +229,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out ulong? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out ulong propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -238,7 +238,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out int? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out int propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -247,7 +247,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out long? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out long propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -256,7 +256,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out float? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetValue(out float propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -265,28 +265,28 @@ public static class ElementExtensions
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         return property.TryGetValue(out value, maybePluginLog);
     }
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out string[]? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         return property.TryGetValue(out value, maybePluginLog);
     }
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out int[]? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         return property.TryGetValue(out value, maybePluginLog);
     }
 
     public static bool TryGetOptionalU8PropertyValue(this JsonElement element, string propertyName, out byte? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetU8Value(out var propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
@@ -295,7 +295,7 @@ public static class ElementExtensions
     public static bool TryGetOptionalU16PropertyValue(this JsonElement element, string propertyName, out ushort? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
         if (!property.TryGetU16Value(out var propertyValue, maybePluginLog)) return false;
         value = propertyValue;
         return true;
