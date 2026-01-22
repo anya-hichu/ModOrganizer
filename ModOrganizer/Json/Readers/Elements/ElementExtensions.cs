@@ -148,7 +148,7 @@ public static class ElementExtensions
         if (!element.TryGetValue(out value, maybePluginLog)) return false;
         if (value.IsNullOrEmpty())
         {
-            maybePluginLog?.Warning($"Expected value to not be empty: {element}");
+            maybePluginLog?.Warning("Expected value to not be empty");
             return false;
         }
         return true;
