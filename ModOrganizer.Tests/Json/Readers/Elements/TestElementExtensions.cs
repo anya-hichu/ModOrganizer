@@ -145,7 +145,7 @@ public class TestElementExtensions
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected boolean value kind but found [{element.ValueKind}]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected [Boolean] value but found [{element.ValueKind}]: {element}", actualMessage));
     }
 
     [TestMethod]

@@ -34,7 +34,7 @@ public static class ElementExtensions
             value = element.GetBoolean();
             return true;
         }
-        maybePluginLog?.Warning($"Expected [{typeof(bool).Name}] value kind but found [{element.ValueKind}]: {element}");
+        maybePluginLog?.Warning($"Expected [{typeof(bool).Name}] value but found [{element.ValueKind}]: {element}");
         return false;
     }
 
