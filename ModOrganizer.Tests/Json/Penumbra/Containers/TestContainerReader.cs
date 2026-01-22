@@ -120,7 +120,7 @@ public class TestContainerReader
 
         Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [String]: {files}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [String]: {files}", actualMessage));
     }
 
     [TestMethod]
@@ -149,7 +149,7 @@ public class TestContainerReader
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected value kind [Object] but found [String]: {fileSwaps}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [String]: {fileSwaps}", actualMessage));
     }
 
     [TestMethod]

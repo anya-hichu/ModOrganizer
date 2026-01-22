@@ -105,15 +105,7 @@ public class TestVirtualFolder
     [TestMethod]
     public void TestIsEmptyWithoutSuccess()
     {
-        var folder = new VirtualFolder()
-        {
-            Folders = [
-                new() 
-                { 
-                    Files = [new()] 
-                }
-            ]
-        };
+        var folder = new VirtualFolder() { Folders = [new() { Files = [new()] }] };
 
         var success = folder.IsEmpty();
 
@@ -127,15 +119,7 @@ public class TestVirtualFolder
     {
         var nestedFile = new VirtualFile();
 
-        var folder = new VirtualFolder()
-        {
-            Folders = [
-                new()
-                {
-                    Files = [nestedFile]
-                }
-            ]
-        };
+        var folder = new VirtualFolder() { Folders = [new() { Files = [nestedFile] }] };
 
         var nestedFiles = folder.GetNestedFiles();
 

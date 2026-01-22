@@ -12,7 +12,7 @@ public static class ElementExtensions
     public static bool Is(this JsonElement element, JsonValueKind kind, IPluginLog? maybePluginLog = null)
     {
         if (element.ValueKind == kind) return true;
-        maybePluginLog?.Warning($"Expected value kind [{kind}] but found [{element.ValueKind}]: {element}");
+        maybePluginLog?.Warning($"Expected [{kind}] value kind but found [{element.ValueKind}]: {element}");
         return false;
     }
 
@@ -176,7 +176,6 @@ public static class ElementExtensions
     public static bool TryGetRequiredProperty(this JsonElement element, string name, out JsonElement property, IPluginLog? maybePluginLog = null)
     {
         if (element.TryGetProperty(name, out property) && !property.Is(JsonValueKind.Null)) return true;
-
         maybePluginLog?.Warning($"Expected property [{name}] to be present: {element}");
         return false;
     }
@@ -361,6 +360,20 @@ public static class ElementExtensions
         return property.TryGetValue(out value, maybePluginLog);
     }
 
+    public static bool TryGetRequiredU8PropertyValue(this JsonElement element, string propertyName, out byte value, IPluginLog? maybePluginLog = null)
+    {
+        value = default;
+        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
+        return property.TryGetU8Value(out value, maybePluginLog);
+    }
+
+    public static bool TryGetRequiredU16PropertyValue(this JsonElement element, string propertyName, out ushort value, IPluginLog? maybePluginLog = null)
+    {
+        value = default;
+        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
+        return property.TryGetU16Value(out value, maybePluginLog);
+    }
+
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
@@ -380,20 +393,6 @@ public static class ElementExtensions
         value = null;
         if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
         return property.TryGetValue(out value);
-    }
-
-    public static bool TryGetRequiredU8PropertyValue(this JsonElement element, string propertyName, out byte value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetU8Value(out value, maybePluginLog);
-    }
-
-    public static bool TryGetRequiredU16PropertyValue(this JsonElement element, string propertyName, out ushort value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetU16Value(out value, maybePluginLog);
     }
 
     public static bool TryGetRequiredNotEmptyPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
