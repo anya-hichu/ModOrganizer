@@ -12,12 +12,10 @@ public class OptionImcGenericReader(IOptionImcAttributeMaskReader optionImcAttri
     {
         builder = null;
 
-        if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
-
         var attributeMaskName = nameof(OptionImcAttributeMask.AttributeMask);
         var isDisableSubModName = nameof(OptionImcIsDisableSubMod.IsDisableSubMod);
 
-        switch (element.HasProperty(attributeMaskName), element.HasProperty(isDisableSubModName))
+        switch (element.HasProperty(attributeMaskName, PluginLog), element.HasProperty(isDisableSubModName, PluginLog))
         {
             case (true, true):
                 PluginLog.Warning($"Failed to determine builder for [{nameof(OptionImc)}], both properties [{attributeMaskName}] and [{isDisableSubModName}] are present");

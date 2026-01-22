@@ -77,10 +77,7 @@ public class TestDefaultModReader
         var observer = new StubObserver();
 
         var version = 1;
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
-        {
-            { nameof(DefaultMod.Version), version }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(DefaultMod.Version), version } });
 
         var defaultModReader = new DefaultModReaderBuilder()
             .WithPluginLogDefaults()

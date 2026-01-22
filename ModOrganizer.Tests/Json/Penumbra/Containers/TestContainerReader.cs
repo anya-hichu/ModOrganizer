@@ -24,12 +24,8 @@ public class TestContainerReader
 
         var value = new Dictionary<string, object?>()
         {
-            { nameof(Container.Files), new Dictionary<string, string>() {
-                { filePath, fileNewPath }
-            }},
-            { nameof(Container.FileSwaps), new Dictionary<string, string>() { 
-                { fileSwapPath, fileSwapNewPath }
-            }},
+            { nameof(Container.Files), new Dictionary<string, string>() { { filePath, fileNewPath } } },
+            { nameof(Container.FileSwaps), new Dictionary<string, string>() { { fileSwapPath, fileSwapNewPath } } },
             { nameof(Container.Manipulations), manipulations }
         };
 
@@ -157,10 +153,7 @@ public class TestContainerReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
-        {
-            { nameof(Container.Manipulations), "Invalid Manipulations" }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Container.Manipulations), "Invalid Manipulations" } });
 
         var containerReader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()

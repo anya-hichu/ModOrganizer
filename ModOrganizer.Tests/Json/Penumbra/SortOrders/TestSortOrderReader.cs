@@ -22,12 +22,8 @@ public class TestSortOrderReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
         {
-            { nameof(SortOrder.Data), new Dictionary<string, string>() {
-                { modDirectory, modPath }
-            }},
-            { nameof(SortOrder.EmptyFolders), new string[] {
-                emptyFolder
-            }}
+            { nameof(SortOrder.Data), new Dictionary<string, string>() { { modDirectory, modPath } } },
+            { nameof(SortOrder.EmptyFolders), new string[] { emptyFolder } }
         });
 
         var sortOrderReader = new SortOrderReaderBuilder().Build();
@@ -135,12 +131,8 @@ public class TestSortOrderReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { nameof(SortOrder.Data), new Dictionary<string, string>() {
-                { modDirectory, modPath }
-            }},
-            { nameof(SortOrder.EmptyFolders), new string[] {
-                emptyFolder
-            }}
+            { nameof(SortOrder.Data), new Dictionary<string, string>() { { modDirectory, modPath } } },
+            { nameof(SortOrder.EmptyFolders), new string[] { emptyFolder } }
         });
 
         var sortOrderReader = new SortOrderReaderBuilder()
@@ -173,10 +165,7 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
-        { 
-            { nameof(SortOrder.Data), null } 
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(SortOrder.Data), null } });
 
         var sortOrderReader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()

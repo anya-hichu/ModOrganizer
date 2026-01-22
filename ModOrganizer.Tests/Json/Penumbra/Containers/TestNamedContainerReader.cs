@@ -15,10 +15,7 @@ public class TestNamedContainerReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
-        {
-            { nameof(NamedContainer.Name), name }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
 
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithContainerReaderTryRead(new())
@@ -54,10 +51,7 @@ public class TestNamedContainerReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
-        {
-            { nameof(NamedContainer.Name), false }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), false } });
 
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()

@@ -22,10 +22,7 @@ public class TestGroupGenericReader
             .WithPluginLogObserver(observer)
             .Build();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
-        {
-            { nameof(Group.Type), type }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Group.Type), type } });
 
         var success = groupGenericReader.TryRead(element, out var group);
 
@@ -57,10 +54,7 @@ public class TestGroupGenericReader
             .WithReaderTryRead(type, group)
             .Build();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
-        {
-            { nameof(Group.Type), type }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Group.Type), type } });
 
         var success = groupGenericReader.TryRead(element, out var actualGroup);
 
@@ -83,10 +77,7 @@ public class TestGroupGenericReader
             .WithReaderTryRead(type, null as Group)
             .Build();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
-        {
-            { nameof(Group.Type), type }
-        });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Group.Type), type } });
 
         var success = groupGenericReader.TryRead(element, out var group);
 
