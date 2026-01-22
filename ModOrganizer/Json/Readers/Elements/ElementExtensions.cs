@@ -144,7 +144,7 @@ public static class ElementExtensions
     public static bool TryGetU8Value(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null)
     {
         if (element.TryGetValue(out value)) return true;
-        if (element.ValueKind == JsonValueKind.String && byte.TryParse(element.GetString(), CultureInfo.InvariantCulture, out value)) return true;
+        if (element.TryGetValue(out string? textValue) && byte.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
         
         maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as U8: {element}");
         return false;
@@ -154,7 +154,7 @@ public static class ElementExtensions
     public static bool TryGetU16Value(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null)
     {
         if (element.TryGetValue(out value)) return true;
-        if (element.ValueKind == JsonValueKind.String && ushort.TryParse(element.GetString(), CultureInfo.InvariantCulture, out value)) return true;
+        if (element.TryGetValue(out string? textValue) && ushort.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
 
         maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as U16: {element}");
         return false;
