@@ -13,7 +13,7 @@ public class TestVirtualMultiMatcher
         var matcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesVirtualFolder = _ => true, 
+            MatchesVirtualFolder = _ => true
         };
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
@@ -51,7 +51,6 @@ public class TestVirtualMultiMatcher
         var matcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesVirtualFile = _ => true,
         };
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
@@ -67,13 +66,13 @@ public class TestVirtualMultiMatcher
         var firstMatcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesVirtualFile = _ => true,
+            MatchesVirtualFile = _ => true
         };
 
         var secondMatcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
-            MatchesVirtualFile = _ => false,
+            MatchesVirtualFile = _ => false
         };
 
         var multiMatcher = new VirtualMultiMatcher([firstMatcher, secondMatcher]);
