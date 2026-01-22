@@ -34,7 +34,7 @@ public static class ElementExtensions
             value = element.GetBoolean();
             return true;
         }
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -43,7 +43,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetByte(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -52,7 +52,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetUInt16(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -61,7 +61,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetUInt32(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -70,7 +70,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetUInt64(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -79,7 +79,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetInt32(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -88,7 +88,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetInt64(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -97,7 +97,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetSingle(out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -159,7 +159,7 @@ public static class ElementExtensions
     {
         if (element.TryGetValue(out value)) return true;
         if (element.TryGetValue(out string? textValue) && byte.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -168,7 +168,7 @@ public static class ElementExtensions
     {
         if (element.TryGetValue(out value)) return true;
         if (element.TryGetValue(out string? textValue) && ushort.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
-        element.LogNotParsable(value, maybePluginLog);
+        element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
@@ -416,6 +416,6 @@ public static class ElementExtensions
 
     #endregion
 
-    private static void LogNotParsable(this JsonElement element, object value, IPluginLog? maybePluginLog = null) 
+    private static void LogNotParsableAs(this JsonElement element, object value, IPluginLog? maybePluginLog = null) 
         => maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as [{value.GetType().Name}]: {element}");
 }
