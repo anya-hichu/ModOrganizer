@@ -9,9 +9,9 @@ namespace ModOrganizer.Json.Readers.Elements;
 
 public static class ElementExtensions
 {
-    public delegate bool TryGetValueFunc<T>(out T value);
-    public delegate bool TryGetValueFuncClass<T>(JsonElement element, [NotNullWhen(true)] out T? value, IPluginLog? maybePluginLog) where T : class;
-    public delegate bool TryGetValueFuncStruct<T>(JsonElement element, out T value, IPluginLog? maybePluginLog) where T : struct;
+    private delegate bool TryGetValueFunc<T>(out T value);
+    private delegate bool TryGetValueFuncClass<T>(JsonElement element, [NotNullWhen(true)] out T? value, IPluginLog? maybePluginLog) where T : class;
+    private delegate bool TryGetValueFuncStruct<T>(JsonElement element, out T value, IPluginLog? maybePluginLog) where T : struct;
 
     public static bool Is(this JsonElement element, JsonValueKind kind, IPluginLog? maybePluginLog = null)
     {
@@ -222,14 +222,14 @@ public static class ElementExtensions
 
     #region Required Property Value
 
-    public static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, [NotNullWhen(true)] out T? value, TryGetValueFuncClass<T> func, IPluginLog? maybePluginLog = null) where T : class
+    private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, [NotNullWhen(true)] out T? value, TryGetValueFuncClass<T> func, IPluginLog? maybePluginLog = null) where T : class
     {
         value = null;
         if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
         return func.Invoke(property, out value, maybePluginLog);
     }
 
-    public static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, out T value, TryGetValueFuncStruct<T> func, IPluginLog? maybePluginLog = null) where T : struct
+    private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, out T value, TryGetValueFuncStruct<T> func, IPluginLog? maybePluginLog = null) where T : struct
     {
         value = default;
         if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
