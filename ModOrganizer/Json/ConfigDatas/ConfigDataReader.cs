@@ -21,8 +21,7 @@ public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ru
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        int? version = element.TryGetProperty(nameof(ConfigData.Version), out var versionProperty) ? versionProperty.GetInt32() : null;
-        if (version != null && version != SUPPORTED_VERSION)
+        if (element.TryGetOptionalPropertyValue(nameof(ConfigData.Version), out int? version, PluginLog) && version != SUPPORTED_VERSION)
         {
             PluginLog.Warning($"Failed to read [{nameof(ConfigData)}], unsupported [{nameof(ConfigData.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {element}");
             return false;

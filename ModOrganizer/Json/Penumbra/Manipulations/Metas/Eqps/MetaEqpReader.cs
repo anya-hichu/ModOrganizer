@@ -16,7 +16,7 @@ public class MetaEqpReader(IPluginLog pluginLog) : Reader<MetaEqp>(pluginLog)
 
         if (!element.TryGetRequiredPropertyValue(nameof(MetaEqp.Entry), out ulong entry, PluginLog)) return false;
         if (!element.TryGetRequiredU16PropertyValue(nameof(MetaEqp.SetId), out var setId, PluginLog)) return false;
-        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaEqp.Slot), out string? slot, PluginLog)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaEqp.Slot), out var slot, PluginLog)) return false;
 
         instance = new()
         {

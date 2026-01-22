@@ -8,7 +8,7 @@ namespace ModOrganizer.Json.Penumbra.LocalModDatas;
 
 public class LocalModDataReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<LocalModDataV3>(pluginLog), ILocalModDataReader
 {
-    public static readonly uint SUPPORTED_FILE_VERSION = 3;
+    public static readonly int SUPPORTED_FILE_VERSION = 3;
 
     public IElementReader ElementReader { get; init; } = elementReader;
 
@@ -28,7 +28,7 @@ public class LocalModDataReader(IElementReader elementReader, IPluginLog pluginL
 
         if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.ImportDate), out long? importDate, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.LocalTags), out string[]? localTags, PluginLog)) return false;
-        if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.Favorite), out bool? favorite)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.Favorite), out bool? favorite, PluginLog)) return false;
         if (!element.TryGetOptionalPropertyValue(nameof(LocalModDataV3.PreferredChangedItems), out int[]? preferredChangedItems, PluginLog)) return false;
 
         instance = new()

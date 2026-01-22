@@ -20,7 +20,7 @@ public class ContainerReader(IManipulationWrapperGenericReader manipulationWrapp
         if (!element.TryGetOptionalPropertyValue(nameof(Container.FileSwaps), out Dictionary<string, string>? fileSwaps, PluginLog)) return false;
 
         ManipulationWrapper[]? manipulations = null;
-        if (element.TryGetOptionalProperty(nameof(Container.Manipulations), out var manipulationsProperty) && !manipulationWrapperGenericReader.TryReadMany(manipulationsProperty, out manipulations))
+        if (element.TryGetOptionalProperty(nameof(Container.Manipulations), out var manipulationsProperty, PluginLog) && !manipulationWrapperGenericReader.TryReadMany(manipulationsProperty, out manipulations))
         {
             PluginLog.Warning($"Failed to read one or more [Manipulations] for [Container]: {element}");
             return false;
