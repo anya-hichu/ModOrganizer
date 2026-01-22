@@ -9,6 +9,10 @@ namespace ModOrganizer.Json.Readers.Elements;
 
 public static class ElementExtensions
 {
+    public delegate bool TryGetValueFunc<T>(out T value);
+    public delegate bool TryGetValueFuncClass<T>(JsonElement element, [NotNullWhen(true)] out T? value, IPluginLog? maybePluginLog) where T : class;
+    public delegate bool TryGetValueFuncStruct<T>(JsonElement element, out T value, IPluginLog? maybePluginLog) where T : struct;
+
     public static bool Is(this JsonElement element, JsonValueKind kind, IPluginLog? maybePluginLog = null)
     {
         if (element.ValueKind == kind) return true;
@@ -16,9 +20,12 @@ public static class ElementExtensions
         return false;
     }
 
+    private static void LogNotParsableAs(this JsonElement element, object value, IPluginLog? maybePluginLog = null)
+        => maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as [{value.GetType().Name}]: {element}");
+
     #region Values
 
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
+    public static bool TryGetStringValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.String, maybePluginLog)) return false;
@@ -26,7 +33,7 @@ public static class ElementExtensions
         return value != null;
     }
 
-    public static bool TryGetValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null)
+    public static bool TryGetBoolValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (element.ValueKind == JsonValueKind.False || element.ValueKind == JsonValueKind.True)
@@ -38,70 +45,16 @@ public static class ElementExtensions
         return false;
     }
 
-    public static bool TryGetValue(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetNumberValue<T>(this JsonElement element, out T value, TryGetValueFunc<T> func, IPluginLog? maybePluginLog = null) where T : struct
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetByte(out value)) return true;
+        if (func.Invoke(out value)) return true;
         element.LogNotParsableAs(value, maybePluginLog);
         return false;
     }
 
-    public static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetUInt16(out value)) return true;
-        element.LogNotParsableAs(value, maybePluginLog);
-        return false;
-    }
-
-    public static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetUInt32(out value)) return true;
-        element.LogNotParsableAs(value, maybePluginLog);
-        return false;
-    }
-
-    public static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetUInt64(out value)) return true;
-        element.LogNotParsableAs(value, maybePluginLog);
-        return false;
-    }
-
-    public static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetInt32(out value)) return true;
-        element.LogNotParsableAs(value, maybePluginLog);
-        return false;
-    }
-
-    public static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetInt64(out value)) return true;
-        element.LogNotParsableAs(value, maybePluginLog);
-        return false;
-    }
-
-    public static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        if (element.TryGetSingle(out value)) return true;
-        element.LogNotParsableAs(value, maybePluginLog);
-        return false;
-    }
-
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
+    public static bool TryGetDictValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.Object, maybePluginLog)) return false;
@@ -115,7 +68,7 @@ public static class ElementExtensions
         return true;
     }
 
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null)
+    public static bool TryGetArrayValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.Array, maybePluginLog)) return false;
@@ -129,7 +82,7 @@ public static class ElementExtensions
         return true;
     }
 
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null)
+    public static bool TryGetArrayValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.Array, maybePluginLog)) return false;
@@ -172,6 +125,19 @@ public static class ElementExtensions
         return false;
     }
 
+    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null) => element.TryGetStringValue(out value, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null) => element.TryGetBoolValue(out value, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetByte, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt16, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt32, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt64, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt32, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt64, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetSingle, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null) => element.TryGetDictValue(out value, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
+    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
+
     #endregion
 
     public static bool HasProperty(this JsonElement element, string name) => element.TryGetProperty(name, out var _);
@@ -194,228 +160,123 @@ public static class ElementExtensions
 
     #region Optional Property Value
 
+    private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetValueFuncClass<T> func, IPluginLog? maybePluginLog = null) where T : class
+    {
+        value = null;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
+        return func.Invoke(property, out value, maybePluginLog);
+    }
+
+    private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetValueFuncStruct<T> func, IPluginLog? maybePluginLog = null) where T : struct
+    {
+        value = null;
+        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
+        if (!func.Invoke(property, out var propertyValue, maybePluginLog)) return false;
+        value = propertyValue;
+        return true;
+    }
+
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out string? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
-    public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out bool? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out bool propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+    public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out bool? value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
-    public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out byte? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out byte propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+    public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out byte? value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
-    public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out ushort? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out ushort propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+    public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out ushort? value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out uint? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out uint propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out ulong? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out ulong propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out int? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out int propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out long? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out long propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out float? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetValue(out float propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out string[]? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalPropertyValue(this JsonElement element, string propertyName, out int[]? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetOptionalU8PropertyValue(this JsonElement element, string propertyName, out byte? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetU8Value(out var propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetU8Value, maybePluginLog);
 
     public static bool TryGetOptionalU16PropertyValue(this JsonElement element, string propertyName, out ushort? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetOptionalProperty(propertyName, out var property)) return true;
-        if (!property.TryGetU16Value(out var propertyValue, maybePluginLog)) return false;
-        value = propertyValue;
-        return true;
-    }
+        => element.TryGetOptionalPropertyValue(propertyName, out value, TryGetU16Value, maybePluginLog);
 
     #endregion
 
     #region Required Property Value
 
-    public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
+    public static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, [NotNullWhen(true)] out T? value, TryGetValueFuncClass<T> func, IPluginLog? maybePluginLog = null) where T : class
     {
         value = null;
         if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
+        return func.Invoke(property, out value, maybePluginLog);
     }
+
+    public static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, out T value, TryGetValueFuncStruct<T> func, IPluginLog? maybePluginLog = null) where T : struct
+    {
+        value = default;
+        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
+        return func.Invoke(property, out value, maybePluginLog);
+    }
+
+    public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out bool value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out byte value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out ushort value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out uint value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out ulong value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out int value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, out float value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value, maybePluginLog);
-    }
-
-    public static bool TryGetRequiredU8PropertyValue(this JsonElement element, string propertyName, out byte value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetU8Value(out value, maybePluginLog);
-    }
-
-    public static bool TryGetRequiredU16PropertyValue(this JsonElement element, string propertyName, out ushort value, IPluginLog? maybePluginLog = null)
-    {
-        value = default;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetU16Value(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetValue(out value);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredNotEmptyPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
-    {
-        value = null;
-        if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
-        return property.TryGetNotEmptyValue(out value, maybePluginLog);
-    }
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetNotEmptyValue, maybePluginLog);
+
+    public static bool TryGetRequiredU8PropertyValue(this JsonElement element, string propertyName, out byte value, IPluginLog? maybePluginLog = null)
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetU8Value, maybePluginLog);
+
+    public static bool TryGetRequiredU16PropertyValue(this JsonElement element, string propertyName, out ushort value, IPluginLog? maybePluginLog = null)
+        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetU16Value, maybePluginLog);
 
     #endregion
-
-    private static void LogNotParsableAs(this JsonElement element, object value, IPluginLog? maybePluginLog = null) 
-        => maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as [{value.GetType().Name}]: {element}");
 }
