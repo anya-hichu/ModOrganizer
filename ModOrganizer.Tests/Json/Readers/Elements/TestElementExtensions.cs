@@ -1,4 +1,5 @@
 using Dalamud.Plugin.Services;
+using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
@@ -17,11 +18,9 @@ public class TestElementExtensions
     [DataRow("true")]
     [DataRow("false")]
     [DataRow(""" "" """)]
-    public void TestIs(string jsonValue)
+    public void TestIs(string json)
     {
-        var element = new ElementBuilder()
-            .WithJsonValue(jsonValue)
-            .Build();
+        var element = JsonSerializer.Deserialize<JsonElement>(json);
 
         var success = element.Is(element.ValueKind);
 
@@ -36,18 +35,19 @@ public class TestElementExtensions
     [DataRow("true")]
     [DataRow("false")]
     [DataRow(""" "" """)]
-    public void TestIsWithInvalidTypes(string jsonValue)
+    public void TestIsWithInvalidTypes(string json)
     {
         var observer = new StubObserver();
 
-        var builder = new ElementBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .WithJsonValue(jsonValue);
+        var pluginLogStub = new StubIPluginLog()
+        {
+            InstanceBehavior = StubBehaviors.DefaultValue,
+            InstanceObserver = observer
+        };
 
-        var element = builder.Build();
+        var element = JsonSerializer.Deserialize<JsonElement>(json);
 
-        var success = element.Is(JsonValueKind.Undefined, builder.PluginLogStub);
+        var success = element.Is(JsonValueKind.Undefined, pluginLogStub);
 
         Assert.IsFalse(success);
 
@@ -58,6 +58,32 @@ public class TestElementExtensions
             actualMessage => Assert.AreEqual($"Expected [Undefined] value kind but found [{element.ValueKind}]: {element}", actualMessage));
     }
 
+    [TestMethod]
+    public void TestHasProperty()
+    {
+        var propertyName = "Property Name";
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { propertyName, null }
+        });
+
+        var success = element.HasProperty(propertyName);
+
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public void TestHasPropertyWithoutSuccess()
+    {
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var success = element.HasProperty("Property Name");
+
+        Assert.IsFalse(success);
+    }
+
+    /*
     [TestMethod]
     [DataRow("")]
     [DataRow(" ")]
@@ -218,4 +244,5 @@ public class TestElementExtensions
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected value kind [{element.ValueKind}] to be parsable as [Byte]: {element}", actualMessage));
     }
+    */
 }

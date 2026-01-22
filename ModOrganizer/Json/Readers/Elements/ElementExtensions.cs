@@ -20,12 +20,14 @@ public static class ElementExtensions
         return false;
     }
 
+    public static bool HasProperty(this JsonElement element, string name) => element.TryGetProperty(name, out var _);
+
     private static void LogNotParsableAs(this JsonElement element, object value, IPluginLog? maybePluginLog = null)
         => maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as [{value.GetType().Name}]: {element}");
 
     #region Values
 
-    public static bool TryGetStringValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetStringValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.String, maybePluginLog)) return false;
@@ -33,7 +35,7 @@ public static class ElementExtensions
         return value != null;
     }
 
-    public static bool TryGetBoolValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetBoolValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (element.ValueKind == JsonValueKind.False || element.ValueKind == JsonValueKind.True)
@@ -54,7 +56,7 @@ public static class ElementExtensions
         return false;
     }
 
-    public static bool TryGetDictValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetDictValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.Object, maybePluginLog)) return false;
@@ -68,7 +70,7 @@ public static class ElementExtensions
         return true;
     }
 
-    public static bool TryGetArrayValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetArrayValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.Array, maybePluginLog)) return false;
@@ -82,7 +84,7 @@ public static class ElementExtensions
         return true;
     }
 
-    public static bool TryGetArrayValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetArrayValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null)
     {
         value = null;
         if (!element.Is(JsonValueKind.Array, maybePluginLog)) return false;
@@ -96,7 +98,7 @@ public static class ElementExtensions
         return true;
     }
 
-    public static bool TryGetNotEmptyValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetNotEmptyValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
     {
         if (!element.TryGetValue(out value, maybePluginLog)) return false;
         if (value.IsNullOrEmpty())
@@ -108,7 +110,7 @@ public static class ElementExtensions
     }
 
     // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_enums.json#U8
-    public static bool TryGetU8Value(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetU8Value(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null)
     {
         if (element.TryGetValue(out value)) return true;
         if (element.TryGetValue(out string? textValue) && byte.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
@@ -117,7 +119,7 @@ public static class ElementExtensions
     }
 
     // https://github.com/xivdev/Penumbra/blob/318a41fe52ad00ce120d08b2c812e11a6a9b014a/schemas/structs/meta_enums.json#U16
-    public static bool TryGetU16Value(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null)
+    private static bool TryGetU16Value(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null)
     {
         if (element.TryGetValue(out value)) return true;
         if (element.TryGetValue(out string? textValue) && ushort.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
@@ -125,22 +127,22 @@ public static class ElementExtensions
         return false;
     }
 
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null) => element.TryGetStringValue(out value, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null) => element.TryGetBoolValue(out value, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetByte, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt16, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt32, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt64, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt32, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt64, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetSingle, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null) => element.TryGetDictValue(out value, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
-    public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null) => element.TryGetStringValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null) => element.TryGetBoolValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetByte, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt16, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt32, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt64, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt32, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt64, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetSingle, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null) => element.TryGetDictValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
 
     #endregion
 
-    public static bool HasProperty(this JsonElement element, string name) => element.TryGetProperty(name, out var _);
+    #region Optional Property
 
     public static bool TryGetOptionalProperty(this JsonElement element, string name, out JsonElement property)
     {
@@ -150,15 +152,6 @@ public static class ElementExtensions
         property = elementProperty;
         return true;
     }
-
-    public static bool TryGetRequiredProperty(this JsonElement element, string name, out JsonElement property, IPluginLog? maybePluginLog = null)
-    {
-        if (element.TryGetProperty(name, out property) && !property.Is(JsonValueKind.Null)) return true;
-        maybePluginLog?.Warning($"Expected property [{name}] to be present: {element}");
-        return false;
-    }
-
-    #region Optional Property Value
 
     private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetValueFuncClass<T> func, IPluginLog? maybePluginLog = null) where T : class
     {
@@ -220,7 +213,14 @@ public static class ElementExtensions
 
     #endregion
 
-    #region Required Property Value
+    #region Required Properties
+
+    public static bool TryGetRequiredProperty(this JsonElement element, string name, out JsonElement property, IPluginLog? maybePluginLog = null)
+    {
+        if (element.TryGetProperty(name, out property) && !property.Is(JsonValueKind.Null)) return true;
+        maybePluginLog?.Warning($"Expected property [{name}] to be present: {element}");
+        return false;
+    }
 
     private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, [NotNullWhen(true)] out T? value, TryGetValueFuncClass<T> func, IPluginLog? maybePluginLog = null) where T : class
     {
