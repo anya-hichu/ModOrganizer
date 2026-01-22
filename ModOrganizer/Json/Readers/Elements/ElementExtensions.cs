@@ -34,7 +34,7 @@ public static class ElementExtensions
             value = element.GetBoolean();
             return true;
         }
-        maybePluginLog?.Warning($"Expected [{typeof(bool).Name}] value but found [{element.ValueKind}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -43,7 +43,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetByte(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(byte).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -52,7 +52,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetUInt16(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(ushort).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -61,7 +61,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetUInt32(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(uint).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -70,7 +70,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetUInt64(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(ulong).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -79,7 +79,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetInt32(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(int).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -88,7 +88,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetInt64(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(long).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -97,7 +97,7 @@ public static class ElementExtensions
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
         if (element.TryGetSingle(out value)) return true;
-        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(float).Name}]: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -159,8 +159,7 @@ public static class ElementExtensions
     {
         if (element.TryGetValue(out value)) return true;
         if (element.TryGetValue(out string? textValue) && byte.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
-        
-        maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as U8: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -169,8 +168,7 @@ public static class ElementExtensions
     {
         if (element.TryGetValue(out value)) return true;
         if (element.TryGetValue(out string? textValue) && ushort.TryParse(textValue, CultureInfo.InvariantCulture, out value)) return true;
-
-        maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as U16: {element}");
+        element.LogNotParsable(value, maybePluginLog);
         return false;
     }
 
@@ -417,4 +415,7 @@ public static class ElementExtensions
     }
 
     #endregion
+
+    private static void LogNotParsable(this JsonElement element, object value, IPluginLog? maybePluginLog = null) 
+        => maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as [{value.GetType().Name}]: {element}");
 }

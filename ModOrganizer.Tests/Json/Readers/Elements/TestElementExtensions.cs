@@ -145,7 +145,7 @@ public class TestElementExtensions
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected [Boolean] value but found [{element.ValueKind}]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected value kind [{element.ValueKind}] to be parsable as [Boolean]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -216,6 +216,6 @@ public class TestElementExtensions
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected value to be parsable as [Byte]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected value kind [{element.ValueKind}] to be parsable as [Byte]: {element}", actualMessage));
     }
 }
