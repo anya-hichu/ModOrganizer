@@ -51,6 +51,7 @@ public class TestVirtualMultiMatcher
         var matcher = new StubIVirtualMatcher()
         {
             InstanceBehavior = StubBehaviors.NotImplemented,
+            MatchesVirtualFile = _ => true
         };
 
         var multiMatcher = new VirtualMultiMatcher([matcher, matcher]);
