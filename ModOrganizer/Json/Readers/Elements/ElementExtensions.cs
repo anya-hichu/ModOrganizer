@@ -34,7 +34,7 @@ public static class ElementExtensions
             value = element.GetBoolean();
             return true;
         }
-        maybePluginLog?.Warning($"Expected boolean value kind but found [{element.ValueKind}]: {element}");
+        maybePluginLog?.Warning($"Expected [{typeof(bool).Name}] value kind but found [{element.ValueKind}]: {element}");
         return false;
     }
 
@@ -42,49 +42,63 @@ public static class ElementExtensions
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetByte(out value);
+        if (element.TryGetByte(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(byte).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetUInt16(out value);
+        if (element.TryGetUInt16(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(ushort).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetUInt32(out value);
+        if (element.TryGetUInt32(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(uint).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetUInt64(out value);
+        if (element.TryGetUInt64(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(ulong).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetInt32(out value);
+        if (element.TryGetInt32(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(int).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetInt64(out value);
+        if (element.TryGetInt64(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(long).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null)
     {
         value = default;
         if (!element.Is(JsonValueKind.Number, maybePluginLog)) return false;
-        return element.TryGetSingle(out value);
+        if (element.TryGetSingle(out value)) return true;
+        maybePluginLog?.Warning($"Expected value to be parsable as [{typeof(float).Name}]: {element}");
+        return false;
     }
 
     public static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null)

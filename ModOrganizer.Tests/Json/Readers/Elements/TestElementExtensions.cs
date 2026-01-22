@@ -201,6 +201,8 @@ public class TestElementExtensions
         var observer = new StubObserver();
 
         var builder = new ElementBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
             .WithValue(value);
 
         var element = builder.Build();
@@ -209,5 +211,11 @@ public class TestElementExtensions
 
         Assert.IsFalse(success);
         Assert.AreEqual(default, actualValue);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected value to be parsable as [Byte]: {element}", actualMessage));
     }
 }
