@@ -10,8 +10,8 @@ namespace ModOrganizer.Json.Readers.Elements;
 public static class ElementExtensions
 {
     private delegate bool TryGetValueFunc<T>(out T value);
-    private delegate bool TryGetValueClassFunc<T>(JsonElement element, [NotNullWhen(true)] out T? value, IPluginLog? maybePluginLog) where T : class;
-    private delegate bool TryGetValueStructFunc<T>(JsonElement element, out T value, IPluginLog? maybePluginLog) where T : struct;
+    private delegate bool TryGetNullableValueFunc<T>(JsonElement element, [NotNullWhen(true)] out T? value, IPluginLog? maybePluginLog) where T : class?;
+    private delegate bool TryGetNotNullableValueFunc<T>(JsonElement element, out T value, IPluginLog? maybePluginLog) where T : notnull;
 
     public static bool Is(this JsonElement element, JsonValueKind kind, IPluginLog? maybePluginLog = null)
     {
@@ -158,14 +158,14 @@ public static class ElementExtensions
         return true;
     }
 
-    private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetValueClassFunc<T> func, IPluginLog? maybePluginLog = null) where T : class
+    private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetNullableValueFunc<T> func, IPluginLog? maybePluginLog = null) where T : class
     {
         value = null;
         if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
         return func.Invoke(property, out value, maybePluginLog);
     }
 
-    private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetValueStructFunc<T> func, IPluginLog? maybePluginLog = null) where T : struct
+    private static bool TryGetOptionalPropertyValue<T>(this JsonElement element, string propertyName, out T? value, TryGetNotNullableValueFunc<T> func, IPluginLog? maybePluginLog = null) where T : struct
     {
         value = null;
         if (!element.TryGetOptionalProperty(propertyName, out var property, maybePluginLog)) return true;
@@ -229,14 +229,14 @@ public static class ElementExtensions
         return false;
     }
 
-    private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, [NotNullWhen(true)] out T? value, TryGetValueClassFunc<T> func, IPluginLog? maybePluginLog = null) where T : class
+    private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, [NotNullWhen(true)] out T? value, TryGetNullableValueFunc<T> func, IPluginLog? maybePluginLog = null) where T : class
     {
         value = null;
         if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
         return func.Invoke(property, out value, maybePluginLog);
     }
 
-    private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, out T value, TryGetValueStructFunc<T> func, IPluginLog? maybePluginLog = null) where T : struct
+    private static bool TryGetRequiredPropertyValue<T>(this JsonElement element, string propertyName, out T value, TryGetNotNullableValueFunc<T> func, IPluginLog? maybePluginLog = null) where T : struct
     {
         value = default;
         if (!element.TryGetRequiredProperty(propertyName, out var property, maybePluginLog)) return false;
