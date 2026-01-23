@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Text.Json;
 
 namespace ModOrganizer.Json.Readers.Clipboards;
 

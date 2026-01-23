@@ -29,7 +29,7 @@ public static class ElementExtensions
     #region Values
 
     private static void LogNotParsableAs(this JsonElement element, object value, IPluginLog? maybePluginLog = null)
-        => maybePluginLog?.Warning($"Expected value kind [{element.ValueKind}] to be parsable as [{value.GetType().Name}]: {element}");
+        => maybePluginLog?.Warning($"Expected [{element.ValueKind}] value kind to be parsable as [{value.GetType().Name}]: {element}");
 
     private static bool TryGetStringValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
     {
