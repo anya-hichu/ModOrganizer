@@ -3,6 +3,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using ModOrganizer.Configs;
+using ModOrganizer.Providers;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows.Togglers;
 using Penumbra.Api.IpcSubscribers;
@@ -16,6 +17,7 @@ public class ConfigWindow : Window
 {
     private IConfig Config { get; init; }
     private IDalamudPluginInterface PluginInterface { get; init; }
+    private IPluginProvider PluginProvider { get; init; }
     private IWindowToggler WindowToggler { get; init; }
     
 
@@ -24,10 +26,11 @@ public class ConfigWindow : Window
     private RegisterSettingsSection RegisterSettingsSection { get; init; }
     private UnregisterSettingsSection UnregisterSettingsSection { get; init; }
 
-    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, IWindowToggler windowToggler) : base("ModOrganizer - Config##configWindow")
+    public ConfigWindow(IConfig config, IDalamudPluginInterface pluginInterface, IPluginProvider pluginProvider, IWindowToggler windowToggler) : base("ModOrganizer - Config##configWindow")
     {
         Config = config;
         PluginInterface = pluginInterface;
+        PluginProvider = pluginProvider;
         WindowToggler = windowToggler;
 
         SizeConstraints = new()
@@ -44,12 +47,12 @@ public class ConfigWindow : Window
             }
         ];
 
-        SaveConfigLaterAction = Debouncer.Debounce(SaveConfig, TimeSpan.FromSeconds(1));
-
         RegisterSettingsSection = new(pluginInterface);
         UnregisterSettingsSection = new(pluginInterface);
 
         RegisterSettingsSection.Invoke(DrawAutoProcessSettings);
+
+        SaveConfigLaterAction = Debouncer.Debounce(SaveConfig, TimeSpan.FromSeconds(1));
     }
 
     public void Dispose() 
@@ -60,6 +63,10 @@ public class ConfigWindow : Window
 
     public override void Draw()
     {
+        if (ImGui.Button("Import##import")) PluginProvider.Init<ConfigImportWindow>();
+
+        if (ImGui.Button("Export##export")) PluginProvider.Init<ConfigExportWindow>();
+
         DrawAutoProcessSettings();
 
         var autoBackupEnabled = Config.AutoBackupEnabled;

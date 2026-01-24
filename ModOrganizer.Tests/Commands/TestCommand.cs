@@ -85,8 +85,6 @@ public class TestCommand
     [DataRow("about", typeof(AboutWindow))]
     [DataRow("backup", typeof(BackupWindow))]
     [DataRow("config", typeof(ConfigWindow))]
-    [DataRow("config export", typeof(ConfigExportWindow))]
-    [DataRow("config import", typeof(ConfigImportWindow))]
     [DataRow("main", typeof(MainWindow))]
     [DataRow("preview", typeof(PreviewWindow))]
     public void TestHandleToggleWindow(string arguments, Type expectedType)

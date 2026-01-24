@@ -292,14 +292,14 @@ public class TestElementExtensions
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
 
-        var success = element.TryGetOptionalPropertyValue(propertyName, out byte? actualValue, pluginLogStub);
+        var success = element.TryGetOptionalPropertyValue(propertyName, out ushort? actualValue, pluginLogStub);
 
         Assert.IsTrue(success);
         Assert.AreEqual(propertyValue, actualValue);
     }
 
     [TestMethod]
-    public void TestTryGetOptionalBytePropertyValueWithNull()
+    public void TestTryGetOptionalUshortPropertyValueWithNull()
     {
         var pluginLogStub = new StubIPluginLog() { InstanceBehavior = StubBehaviors.NotImplemented };
 
@@ -307,16 +307,16 @@ public class TestElementExtensions
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, null } });
 
-        var success = element.TryGetOptionalPropertyValue(propertyName, out byte? value, pluginLogStub);
+        var success = element.TryGetOptionalPropertyValue(propertyName, out ushort? value, pluginLogStub);
 
         Assert.IsTrue(success);
         Assert.IsNull(value);
     }
 
     [TestMethod]
-    [DataRow(byte.MinValue - 1)]
-    [DataRow(byte.MaxValue + 1)]
-    public void TestTryGetOptionalBytePropertyValueWithInvalidValue(int propertyValue)
+    [DataRow(ushort.MinValue - 1)]
+    [DataRow(ushort.MaxValue + 1)]
+    public void TestTryGetOptionalUshortPropertyValueWithInvalidValue(int propertyValue)
     {
         var observer = new StubObserver();
 
@@ -330,7 +330,7 @@ public class TestElementExtensions
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
 
-        var success = element.TryGetOptionalPropertyValue(propertyName, out byte? value, pluginLogStub);
+        var success = element.TryGetOptionalPropertyValue(propertyName, out ushort? value, pluginLogStub);
 
         Assert.IsFalse(success);
         Assert.IsNull(value);
@@ -339,11 +339,11 @@ public class TestElementExtensions
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected [Number] value kind to be parsable as [Byte]: {propertyValue}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected [Number] value kind to be parsable as [UInt16]: {propertyValue}", actualMessage));
     }
 
     [TestMethod]
-    public void TestTryGetOptionalBytePropertyValueWithInvalidKind()
+    public void TestTryGetOptionalUshortPropertyValueWithInvalidKind()
     {
         var observer = new StubObserver();
 
@@ -358,7 +358,7 @@ public class TestElementExtensions
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
 
-        var success = element.TryGetOptionalPropertyValue(propertyName, out byte? value, pluginLogStub);
+        var success = element.TryGetOptionalPropertyValue(propertyName, out ushort? value, pluginLogStub);
 
         Assert.IsFalse(success);
         Assert.IsNull(value);

@@ -1,15 +1,19 @@
-using Dalamud.Interface.Windowing;
+using Dalamud.Bindings.ImGui;
+using ModOrganizer.Configs;
+using ModOrganizer.Configs.Mergers;
+using ModOrganizer.Windows.Managers;
 
 namespace ModOrganizer.Windows.Configs;
 
-public class ConfigImportWindow : Window
+public class ConfigImportWindow : ConfigDataWindow
 {
-    // Temporary Config like windows when can edit before deciding what to import (three state booleans and merge), edit paths, etc.
-    // provide tree of rules with select boxes and possibility to rename folder/paths
-    // Store in state the SelectedRules for merge (check conflicts)
+    private IConfigMerger ConfigMerger { get; init; }
+    private IConfig? MaybeImportConfig { get; set; }
 
-    public ConfigImportWindow() : base("ModOrganizer - Config Import##configImportWindow")
+    public ConfigImportWindow(IConfigMerger configMerger, IWindowManager windowManager) : base("ModOrganizer - Config Import###configImportWindow", windowManager)
     {
+        ConfigMerger = configMerger;
+
         SizeConstraints = new()
         {
             MinimumSize = new(375, 330),
@@ -19,6 +23,8 @@ public class ConfigImportWindow : Window
 
     public override void Draw()
     {
-        throw new System.NotImplementedException();
+        if (ImGui.Button("Import File##importFile")) MaybeImportConfig = null;
+        ImGui.SameLine();
+        if (ImGui.Button("Import Clipboard##importClipboard")) MaybeImportConfig = null;
     }
 }

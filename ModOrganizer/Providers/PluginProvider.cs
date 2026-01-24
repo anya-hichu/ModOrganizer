@@ -5,7 +5,9 @@ using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 using ModOrganizer.Backups;
 using ModOrganizer.Commands;
-using ModOrganizer.Configs;
+using ModOrganizer.Configs.Defaults;
+using ModOrganizer.Configs.Loaders;
+using ModOrganizer.Configs.Mergers;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Groups;
@@ -32,6 +34,7 @@ using ModOrganizer.Mods;
 using ModOrganizer.Rules;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
+using ModOrganizer.Windows.Managers;
 using ModOrganizer.Windows.Results.Backups;
 using ModOrganizer.Windows.Results.Evaluations;
 using ModOrganizer.Windows.Results.Rules;
@@ -39,7 +42,7 @@ using ModOrganizer.Windows.Togglers;
 
 namespace ModOrganizer.Providers;
 
-public class PluginProvider : CachedProvider
+public class PluginProvider : CachedProvider, IPluginProvider
 {
     private IDalamudPluginInterface PluginInterface { get; init; }
 
@@ -65,6 +68,8 @@ public class PluginProvider : CachedProvider
         if (MaybePluginLog != null) collection.AddSingleton(MaybePluginLog);
 
         collection
+            .AddSingleton<IPluginProvider>(this)
+
             .AddSingleton(PluginInterface)
             .AddSingleton<IRuleDefaults, RuleDefaults>()
             .AddSingleton<IConfigDefault, ConfigDefault>()
@@ -163,6 +168,7 @@ public class PluginProvider : CachedProvider
 
             // Windows
             .AddSingleton<IWindowToggler, WindowToggler>()
+            .AddSingleton<IWindowManager, WindowManager>()
 
             .AddSingleton<AboutWindow>()
 
@@ -170,8 +176,11 @@ public class PluginProvider : CachedProvider
             .AddSingleton<BackupWindow>()
 
             .AddSingleton<ConfigWindow>()
-            .AddSingleton<ConfigExportWindow>()
-            .AddSingleton<ConfigImportWindow>()
+
+            .AddTransient<ConfigExportWindow>()
+
+            .AddSingleton<IConfigMerger, ConfigMerger>()
+            .AddTransient<ConfigImportWindow>()
 
             .AddSingleton<IRuleResultState, RuleResultState>()
             .AddSingleton<IEvaluationResultState, EvaluationResultState>()
@@ -187,13 +196,12 @@ public class PluginProvider : CachedProvider
                 windowSystem.AddWindow(p.GetRequiredService<AboutWindow>());
                 windowSystem.AddWindow(p.GetRequiredService<BackupWindow>());
                 windowSystem.AddWindow(p.GetRequiredService<ConfigWindow>());
-                windowSystem.AddWindow(p.GetRequiredService<ConfigExportWindow>());
-                windowSystem.AddWindow(p.GetRequiredService<ConfigImportWindow>());
                 windowSystem.AddWindow(p.GetRequiredService<MainWindow>());
                 windowSystem.AddWindow(p.GetRequiredService<PreviewWindow>());
 
+                var windowManager = p.GetRequiredService<IWindowManager>();
                 var windowToggler = p.GetRequiredService<IWindowToggler>();
-                windowToggler.MaybeWindowSystem = windowSystem;
+                windowToggler.MaybeWindowSystem = windowManager.MaybeWindowSystem = windowSystem;
 
                 return windowSystem;
             });

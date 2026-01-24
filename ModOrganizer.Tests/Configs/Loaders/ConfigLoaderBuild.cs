@@ -1,7 +1,7 @@
 using Dalamud.Plugin.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Configs;
-using ModOrganizer.Configs.Fakes;
+using ModOrganizer.Configs.Defaults.Fakes;
+using ModOrganizer.Configs.Loaders;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Configs.Defaults;
 using ModOrganizer.Tests.Dalamuds.PluginInterfaces;

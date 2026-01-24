@@ -1,4 +1,4 @@
-namespace ModOrganizer.Configs;
+namespace ModOrganizer.Configs.Loaders;
 
 public interface IConfigLoader
 {

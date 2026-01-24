@@ -85,6 +85,18 @@
         <member name="F:ModOrganizer.Commands.Fakes.StubICommandPrinter.PrintErrorString">
             <summary>Sets the stub of ICommandPrinter.PrintError(ICommandPrinter this, String message)</summary>
         </member>
+        <member name="T:ModOrganizer.Configs.Defaults.Fakes.StubIConfigDefault">
+            <summary>Stub type of ModOrganizer.Configs.Defaults.IConfigDefault</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Defaults.Fakes.StubIConfigDefault.#ctor">
+            <summary>Initializes a new instance of type StubIConfigDefault</summary>
+        </member>
+        <member name="F:ModOrganizer.Configs.Defaults.Fakes.StubIConfigDefault.Build">
+            <summary>Sets the stub of IBuilder`1.Build(IBuilder`1 this)</summary>
+        </member>
+        <member name="M:ModOrganizer.Configs.Defaults.Fakes.StubIConfigDefault.ModOrganizer#Shared#IBuilder{ModOrganizer#Configs#IConfig}#Build">
+            <summary>Sets the Stub of IBuilder`1.Build(IBuilder`1 this)</summary>
+        </member>
         <member name="T:ModOrganizer.Configs.Fakes.StubIConfig">
             <summary>Stub type of ModOrganizer.Configs.IConfig</summary>
         </member>
@@ -174,18 +186,6 @@
         </member>
         <member name="F:ModOrganizer.Configs.Fakes.StubIConfig.VersionSetInt32">
             <summary>Sets the stub of IPluginConfiguration.set_Version(IPluginConfiguration this, Int32 value)</summary>
-        </member>
-        <member name="T:ModOrganizer.Configs.Fakes.StubIConfigDefault">
-            <summary>Stub type of ModOrganizer.Configs.IConfigDefault</summary>
-        </member>
-        <member name="M:ModOrganizer.Configs.Fakes.StubIConfigDefault.#ctor">
-            <summary>Initializes a new instance of type StubIConfigDefault</summary>
-        </member>
-        <member name="F:ModOrganizer.Configs.Fakes.StubIConfigDefault.Build">
-            <summary>Sets the stub of IBuilder`1.Build(IBuilder`1 this)</summary>
-        </member>
-        <member name="M:ModOrganizer.Configs.Fakes.StubIConfigDefault.ModOrganizer#Shared#IBuilder{ModOrganizer#Configs#IConfig}#Build">
-            <summary>Sets the Stub of IBuilder`1.Build(IBuilder`1 this)</summary>
         </member>
         <member name="T:ModOrganizer.Json.Penumbra.DefaultMods.Fakes.StubIDefaultModReader">
             <summary>Stub type of ModOrganizer.Json.Penumbra.DefaultMods.IDefaultModReader</summary>

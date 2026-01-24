@@ -1,11 +1,18 @@
-using Dalamud.Interface.Windowing;
+using ModOrganizer.Configs;
+using ModOrganizer.Configs.Loaders;
+using ModOrganizer.Windows.Managers;
+using System;
 
 namespace ModOrganizer.Windows.Configs;
 
-public class ConfigExportWindow : Window
+public class ConfigExportWindow : ConfigDataWindow
 {
-    public ConfigExportWindow() : base("ModOrganizer - Config Export##configExportWindow")
+    private IConfig ExportConfig { get; init; }
+
+    public ConfigExportWindow(IConfigLoader configLoader, IWindowManager windowManager) : base("ModOrganizer - Config Export###configExportWindow", windowManager)
     {
+        ExportConfig = configLoader.GetOrDefault();
+
         SizeConstraints = new()
         {
             MinimumSize = new(375, 330),

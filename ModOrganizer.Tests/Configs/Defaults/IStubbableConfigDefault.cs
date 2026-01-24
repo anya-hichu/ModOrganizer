@@ -1,4 +1,4 @@
-using ModOrganizer.Configs.Fakes;
+using ModOrganizer.Configs.Defaults.Fakes;
 
 namespace ModOrganizer.Tests.Configs.Defaults;
 

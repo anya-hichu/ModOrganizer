@@ -1,6 +1,6 @@
 using ModOrganizer.Rules;
 
-namespace ModOrganizer.Configs;
+namespace ModOrganizer.Configs.Defaults;
 
 public class ConfigDefault(IRuleDefaults ruleDefaults) : IConfigDefault
 {
