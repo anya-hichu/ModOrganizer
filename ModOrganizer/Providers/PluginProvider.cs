@@ -3,6 +3,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
+
 using ModOrganizer.Backups;
 using ModOrganizer.Commands;
 using ModOrganizer.Configs.Defaults;
@@ -28,7 +29,6 @@ using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers;
-
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;

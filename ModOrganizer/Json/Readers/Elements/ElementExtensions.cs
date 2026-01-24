@@ -146,7 +146,7 @@ public static class ElementExtensions
 
     #endregion
 
-    #region Optional Property
+    #region Optional Properties
 
     public static bool TryGetOptionalProperty(this JsonElement element, string name, out JsonElement property, IPluginLog? maybePluginLog = null)
     {
