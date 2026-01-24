@@ -285,7 +285,7 @@ public class TestElementExtensions
     [TestMethod]
     [DataRow(byte.MinValue)]
     [DataRow(byte.MaxValue)]
-    public void TestTryGetOptionalBytePropertyValue(byte propertyValue)
+    public void TestTryGetOptionalUShortPropertyValue(byte propertyValue)
     {
         var pluginLogStub = new StubIPluginLog() { InstanceBehavior = StubBehaviors.NotImplemented };
 
@@ -754,10 +754,8 @@ public class TestElementExtensions
             InstanceObserver = observer
         };
 
-        var arrayValue = 0;
-
         var propertyName = "Property Name";
-        var propertyValue = new object?[] { arrayValue };
+        var propertyValue = 0;
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
 
@@ -770,6 +768,223 @@ public class TestElementExtensions
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected [String] value kind but found [Number]: {arrayValue}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected [Array] value kind but found [Number]: {propertyValue}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalStringArrayPropertyValueWithInvalidItemKind()
+    {
+        var observer = new StubObserver();
+
+        var pluginLogStub = new StubIPluginLog()
+        {
+            InstanceBehavior = StubBehaviors.DefaultValue,
+            InstanceObserver = observer
+        };
+
+        var itemValue = 0;
+
+        var propertyName = "Property Name";
+        var propertyValue = new object?[] { itemValue };
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalPropertyValue(propertyName, out string[]? value, pluginLogStub);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(value);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [String] value kind but found [Number]: {itemValue}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalIntArrayPropertyValue()
+    {
+        var pluginLogStub = new StubIPluginLog() { InstanceBehavior = StubBehaviors.NotImplemented };
+
+        var arrayValue = 0;
+
+        var propertyName = "Property Name";
+        var propertyValue = new object?[] { arrayValue };
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalPropertyValue(propertyName, out int[]? actualValue, pluginLogStub);
+
+        Assert.IsTrue(success);
+        Assert.IsNotNull(actualValue);
+
+        Assert.HasCount(1, actualValue);
+        Assert.AreEqual(arrayValue, actualValue[0]);
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalIntArrayPropertyValueWithNull()
+    {
+        var pluginLogStub = new StubIPluginLog() { InstanceBehavior = StubBehaviors.NotImplemented };
+
+        var propertyName = "Property Name";
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, null } });
+
+        var success = element.TryGetOptionalPropertyValue(propertyName, out int[]? value, pluginLogStub);
+
+        Assert.IsTrue(success);
+        Assert.IsNull(value);
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalIntArrayPropertyValueWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var pluginLogStub = new StubIPluginLog()
+        {
+            InstanceBehavior = StubBehaviors.DefaultValue,
+            InstanceObserver = observer
+        };
+
+        var propertyName = "Property Name";
+        var propertyValue = 0;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalPropertyValue(propertyName, out int[]? value, pluginLogStub);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(value);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Array] value kind but found [Number]: {propertyValue}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalIntArrayPropertyValueWithInvalidItemKind()
+    {
+        var observer = new StubObserver();
+
+        var pluginLogStub = new StubIPluginLog()
+        {
+            InstanceBehavior = StubBehaviors.DefaultValue,
+            InstanceObserver = observer
+        };
+
+        var itemValue = "Item Value";
+
+        var propertyName = "Property Name";
+        var propertyValue = new object?[] { itemValue };
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalPropertyValue(propertyName, out int[]? value, pluginLogStub);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(value);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Number] value kind but found [String]: {itemValue}", actualMessage));
+    }
+
+    [TestMethod]
+    [DataRow(0, ushort.MinValue)]
+    [DataRow("0", ushort.MinValue)]
+    [DataRow(65535, ushort.MaxValue)]
+    [DataRow("65535", ushort.MaxValue)]
+    public void TestTryGetOptionalU16PropertyValue(object? propertyValue, ushort expectedValue)
+    {
+        var pluginLogStub = new StubIPluginLog() { InstanceBehavior = StubBehaviors.NotImplemented };
+
+        var propertyName = "Property Name";
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalU16PropertyValue(propertyName, out var actualValue, pluginLogStub);
+
+        Assert.IsTrue(success);
+        Assert.AreEqual(expectedValue, actualValue);
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalU16PropertyValueWithNull()
+    {
+        var pluginLogStub = new StubIPluginLog() { InstanceBehavior = StubBehaviors.NotImplemented };
+
+        var propertyName = "Property Name";
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, null } });
+
+        var success = element.TryGetOptionalU16PropertyValue(propertyName, out var value, pluginLogStub);
+
+        Assert.IsTrue(success);
+        Assert.IsNull(value);
+    }
+
+    [TestMethod]
+    [DataRow(ushort.MinValue - 1, JsonValueKind.Number)]
+    [DataRow("-1", JsonValueKind.String)]
+    [DataRow(ushort.MaxValue + 1, JsonValueKind.Number)]
+    [DataRow("65536", JsonValueKind.String)]
+    public void TestTryGetOptionalU16PropertyValueWithInvalidValue(object? propertyValue, JsonValueKind propertyValueKind)
+    {
+        var observer = new StubObserver();
+
+        var pluginLogStub = new StubIPluginLog()
+        {
+            InstanceBehavior = StubBehaviors.DefaultValue,
+            InstanceObserver = observer
+        };
+
+        var propertyName = "Property Name";
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalU16PropertyValue(propertyName, out var value, pluginLogStub);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(value);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [{propertyValueKind}] value kind to be parsable as [UInt16]: {propertyValue}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryGetOptionalU16PropertyValueWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var pluginLogStub = new StubIPluginLog()
+        {
+            InstanceBehavior = StubBehaviors.DefaultValue,
+            InstanceObserver = observer
+        };
+
+        var propertyName = "Property Name";
+        var propertyValue = false;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { propertyName, propertyValue } });
+
+        var success = element.TryGetOptionalU16PropertyValue(propertyName, out var value, pluginLogStub);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(value);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [False] value kind to be parsable as [UInt16]: {propertyValue}", actualMessage));
     }
 }
