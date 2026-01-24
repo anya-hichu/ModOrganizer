@@ -1,9 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace ModOrganizer.Providers;
 
-public abstract class CachedProvider : IDisposable
+public abstract class CachedProvider : ICachedProvider
 {
     private ServiceProvider? MaybeServiceProviderCache { get; set; }
 
