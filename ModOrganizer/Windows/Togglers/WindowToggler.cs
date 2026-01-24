@@ -12,7 +12,7 @@ public class WindowToggler(IPluginLog pluginLog) : IWindowToggler
     {
         if (MaybeWindowSystem == null)
         {
-            pluginLog.Error($"Failed to toggle [{typeof(T).Name}] because window system is not defined");
+            pluginLog.Error($"Failed to toggle [{typeof(T).Name}]");
             return;
         }
 

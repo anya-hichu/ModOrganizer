@@ -45,6 +45,6 @@ public class TestWindowToggle
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
-            actualMessage => Assert.AreEqual("Failed to toggle [AboutWindow] because window system is not defined", actualMessage));
+            actualMessage => Assert.AreEqual("Failed to toggle [AboutWindow]", actualMessage));
     }
 }
