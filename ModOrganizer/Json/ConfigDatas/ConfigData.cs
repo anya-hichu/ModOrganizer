@@ -5,7 +5,6 @@ namespace ModOrganizer.Json.ConfigDatas;
 // No schema
 public class ConfigData : Data
 {
-    // unused currently
-    public int? Version { get; init; }
-    public RuleData[]? Rules { get; init; }
+    public required int Version { get; init; }
+    public required RuleData[] Rules { get; init; }
 }
