@@ -14,8 +14,8 @@ public class ConfigDataWriter(IPluginLog pluginLog) : Writer<ConfigData>(pluginL
     {
         using var _ = jsonWriter.WriteObject();
 
-        if (instance.Version.HasValue) jsonWriter.WriteNumber(nameof(ConfigData.Version), instance.Version.Value);
-        if (instance.Rules != null && !RuleDataWriter.TryWriteMany(jsonWriter, instance.Rules)) return false;
+        jsonWriter.WriteNumber(nameof(ConfigData.Version), instance.Version);
+        if (!RuleDataWriter.TryWriteMany(jsonWriter, instance.Rules)) return false;
 
         return true;
     }

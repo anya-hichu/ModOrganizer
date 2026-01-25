@@ -21,14 +21,17 @@ public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ru
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (element.TryGetOptionalPropertyValue(nameof(ConfigData.Version), out int? version, PluginLog) && version != SUPPORTED_VERSION)
+        if (!element.TryGetRequiredPropertyValue(nameof(ConfigData.Version), out int version, PluginLog)) return false;
+
+        if (version != SUPPORTED_VERSION)
         {
             PluginLog.Warning($"Failed to read [{nameof(ConfigData)}], unsupported [{nameof(ConfigData.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {element}");
             return false;
         }
 
-        RuleData[]? rules = null;
-        if (element.TryGetRequiredProperty(nameof(ConfigData.Rules), out var rulesProperty, PluginLog) && !ruleDataReader.TryReadMany(rulesProperty, out rules))
+        if (!element.TryGetRequiredProperty(nameof(ConfigData.Rules), out var rulesProperty, PluginLog)) return false;
+
+        if (!ruleDataReader.TryReadMany(rulesProperty, out var rules))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(RuleData)}] for [{nameof(ConfigData)}]: {element}");
             return false;
