@@ -6,9 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 using ModOrganizer.Backups;
 using ModOrganizer.Commands;
+using ModOrganizer.Configs;
 using ModOrganizer.Configs.Defaults;
 using ModOrganizer.Configs.Loaders;
 using ModOrganizer.Configs.Mergers;
+using ModOrganizer.Json.ConfigDatas;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Groups;
@@ -30,8 +32,11 @@ using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Elements;
+using ModOrganizer.Json.RuleDatas;
+using ModOrganizer.Json.RuleExports;
 using ModOrganizer.Mods;
 using ModOrganizer.Rules;
+using ModOrganizer.Shared;
 using ModOrganizer.Windows;
 using ModOrganizer.Windows.Configs;
 using ModOrganizer.Windows.Managers;
@@ -92,6 +97,11 @@ public class PluginProvider : CachedProvider, IPluginProvider
             .AddSingleton<ILocalModDataReader, LocalModDataReader>()
             .AddSingleton<IModMetaReader, ModMetaReader>()
             .AddSingleton<ISortOrderReader, SortOrderReader>()
+            .AddSingleton<IConfigDataReader, ConfigDataReader>()
+
+            .AddSingleton<IConverter<ConfigData, Config>, ConfigDataConverter>()
+            .AddSingleton<IConverter<RuleData, Rule>, RuleDataConverter>()
+            .AddSingleton<IReader<RuleData>, RuleDataReader>()
 
             .AddSingleton<IReader<Container>, ContainerReader>()
             .AddSingleton<IReader<NamedContainer>, NamedContainerReader>()
@@ -176,7 +186,6 @@ public class PluginProvider : CachedProvider, IPluginProvider
             .AddSingleton<BackupWindow>()
 
             .AddSingleton<ConfigWindow>()
-
             .AddTransient<ConfigExportWindow>()
 
             .AddSingleton<IConfigMerger, ConfigMerger>()

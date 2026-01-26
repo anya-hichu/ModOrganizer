@@ -1,8 +1,11 @@
+using ModOrganizer.Rules;
+using System.Collections.Generic;
+
 namespace ModOrganizer.Configs.Mergers;
 
 public interface IConfigMerger
 {
-    int CountConflicts(IConfig newConfig);
+    IEnumerable<Rule> GetConflicts(IConfig otherConfig);
 
-    void Merge(IConfig newConfig, bool overwrite);
+    void Merge(IConfig otherConfig, bool overwrite);
 }

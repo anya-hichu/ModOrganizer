@@ -25,7 +25,7 @@ public static class IClipboardReaderExtensions
 
             if (clipboardReader.TryRead(element, out instance)) return true;
 
-            clipboardReader.PluginLog.Error($"Failed to read [{typeof(T).Name}] from clipboard data: {decompressedData}");
+            clipboardReader.PluginLog.Warning($"Failed to read [{typeof(T).Name}] from clipboard data: {decompressedData}");
         }
         catch (Exception e)
         {

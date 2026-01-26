@@ -131,18 +131,30 @@ public static class ElementExtensions
         return false;
     }
 
-    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null) => element.TryGetStringValue(out value, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null) => element.TryGetBoolValue(out value, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetByte, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt16, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt32, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetUInt64, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt32, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetInt64, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null) => element.TryGetNumberValue(out value, element.TryGetSingle, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null) => element.TryGetDictValue(out value, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
-    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null) => element.TryGetArrayValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetStringValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out bool value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetBoolValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out byte value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetByte, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out ushort value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetUInt16, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out uint value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetUInt32, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out ulong value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetUInt64, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out int value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetInt32, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out long value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetInt64, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, out float value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetNumberValue(out value, element.TryGetSingle, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out Dictionary<string, string>? value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetDictValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out int[]? value, IPluginLog? maybePluginLog = null)
+        => element.TryGetArrayValue(out value, maybePluginLog);
+    private static bool TryGetValue(this JsonElement element, [NotNullWhen(true)] out string[]? value, IPluginLog? maybePluginLog = null) 
+        => element.TryGetArrayValue(out value, maybePluginLog);
 
     #endregion
 

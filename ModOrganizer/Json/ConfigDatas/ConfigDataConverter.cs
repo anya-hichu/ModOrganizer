@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ModOrganizer.Json.ConfigDatas;
 
-public class ConfigDataConverter(IPluginLog pluginLog, IConverter<RuleData, Rule> ruleDataConverter) : Converter<ConfigData, Config>(pluginLog), IConverter<ConfigData, Config>
+public class ConfigDataConverter(IPluginLog pluginLog, IConverter<RuleData, Rule> ruleDataConverter) : Converter<ConfigData, Config>(pluginLog)
 {
     public override bool TryConvert(ConfigData configData, [NotNullWhen(true)] out Config? config)
     {
