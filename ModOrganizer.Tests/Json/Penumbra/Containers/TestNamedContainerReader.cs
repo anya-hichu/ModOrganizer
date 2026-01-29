@@ -1,3 +1,4 @@
+using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
@@ -51,7 +52,8 @@ public class TestNamedContainerReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), false } });
+        var name = false;
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
 
         var namedContainerReader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()
@@ -63,5 +65,11 @@ public class TestNamedContainerReader
 
         Assert.IsFalse(success);
         Assert.IsNull(namedContainer);
+
+        var calls = observer.GetCalls();
+
+        Assert.HasCount(1, calls);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [String] value kind but found [False]: {name}", actualMessage));
     }
 }
