@@ -104,12 +104,14 @@ public static class ElementExtensions
 
     private static bool TryGetNotEmptyValue(this JsonElement element, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
     {
-        if (!element.TryGetValue(out value, maybePluginLog)) return false;
-        if (value.IsNullOrEmpty())
+        value = null;
+        if (!element.TryGetValue(out string? stringValue, maybePluginLog)) return false;
+        if (stringValue.IsNullOrEmpty())
         {
             maybePluginLog?.Warning("Expected value to not be empty");
             return false;
         }
+        value = stringValue;
         return true;
     }
 

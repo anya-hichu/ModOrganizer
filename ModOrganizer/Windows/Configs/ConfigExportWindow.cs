@@ -9,7 +9,7 @@ public class ConfigExportWindow : MultiWindow
 {
     private IConfig ExportConfig { get; init; }
 
-    public ConfigExportWindow(IConfigLoader configLoader, IWindowManager windowManager) : base("ModOrganizer - Config Export###configExportWindow", GenerateMonotonicId(), windowManager)
+    public ConfigExportWindow(IConfigLoader configLoader, IWindowManager windowManager) : base("ModOrganizer - Config Export", windowManager)
     {
         ExportConfig = configLoader.GetOrDefault();
 

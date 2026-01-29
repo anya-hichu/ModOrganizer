@@ -28,8 +28,7 @@ public class ConfigImportWindow : MultiWindow
 
     private bool Overwrite { get; set; } = false;
 
-    public ConfigImportWindow(IConverter<ConfigData, Config> configDataConverter, IConfigMerger configMerger, IConfigDataReader configDataReader, INotificationManager notificationManager, IWindowManager windowManager) 
-        : base("ModOrganizer - Config Import###configImportWindow", GenerateMonotonicId(), windowManager)
+    public ConfigImportWindow(IConverter<ConfigData, Config> configDataConverter, IConfigMerger configMerger, IConfigDataReader configDataReader, INotificationManager notificationManager, IWindowManager windowManager) : base("ModOrganizer - Config Import", windowManager)
     {
         ConfigDataConverter = configDataConverter;
         ConfigMerger = configMerger;
@@ -47,9 +46,9 @@ public class ConfigImportWindow : MultiWindow
     {
         ImGui.Text("Load: ");
         ImGui.SameLine();
-        if (ImGui.Button($"File###loadFile{SuffixId}")) FileDialogManager.OpenFileDialog("Import Config", "{.json}", LoadFromFileDialog);
+        if (ImGui.Button($"File##loadFile")) FileDialogManager.OpenFileDialog("Import Config", "{.json}", LoadFromFileDialog);
         ImGui.SameLine();
-        if (ImGui.Button($"Clipboard###loadClipboard{SuffixId}")) LoadFromClipboard(ImGui.GetClipboardText());
+        if (ImGui.Button($"Clipboard##loadClipboard")) LoadFromClipboard(ImGui.GetClipboardText());
 
         FileDialogManager.Draw();
 
@@ -61,9 +60,9 @@ public class ConfigImportWindow : MultiWindow
         ImGui.Text($"Conflicts: {ConfigMerger.GetConflicts(MaybeImportConfig).Count()}");
 
         var overwrite = Overwrite;
-        if (ImGui.Checkbox($"Overwrite##overwrite{SuffixId}", ref overwrite)) Overwrite = overwrite;
+        if (ImGui.Checkbox($"Overwrite##overwrite", ref overwrite)) Overwrite = overwrite;
 
-        if (ImGui.Button($"Merge##merge{SuffixId}")) ConfigMerger.Merge(MaybeImportConfig, Overwrite);
+        if (ImGui.Button($"Merge##merge")) ConfigMerger.Merge(MaybeImportConfig, Overwrite);
     }
 
     private void LoadFromFileDialog(bool valid, string path)
@@ -108,5 +107,10 @@ public class ConfigImportWindow : MultiWindow
         return false;
     }
 
-    private void NotifyError(string content) => NotificationManager.AddNotification(new() { Type = NotificationType.Error, Title = nameof(ModOrganizer), Content = content });
+    private void NotifyError(string content) => NotificationManager.AddNotification(new() 
+    {
+        Title = nameof(ModOrganizer),
+        Type = NotificationType.Error, 
+        Content = content 
+    });
 }
