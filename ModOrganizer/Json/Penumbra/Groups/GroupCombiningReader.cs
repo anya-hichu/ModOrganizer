@@ -32,14 +32,14 @@ public class GroupCombiningReader(IGroupBaseReader groupBaseReader, IReader<Name
         }
 
         var options = Array.Empty<Option>();
-        if (element.TryGetProperty(nameof(GroupCombining.Options), out var optionsProperty) && !optionReader.TryReadMany(optionsProperty, out options))
+        if (element.TryGetOptionalProperty(nameof(GroupCombining.Options), out var optionsProperty) && !optionReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]: {element}");
             return false;
         }
 
         var containers = Array.Empty<NamedContainer>();
-        if (element.TryGetProperty(nameof(GroupCombining.Containers), out var containersProperty) && !namedContainerReader.TryReadMany(containersProperty, out containers))
+        if (element.TryGetOptionalProperty(nameof(GroupCombining.Containers), out var containersProperty) && !namedContainerReader.TryReadMany(containersProperty, out containers))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]: {element}");
             return false;

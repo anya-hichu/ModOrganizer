@@ -52,7 +52,7 @@ public class TestNamedContainerReader
     {
         var observer = new StubObserver();
 
-        var name = false;
+        var name = 0;
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
 
         var namedContainerReader = new NamedContainerReaderBuilder()
@@ -70,6 +70,6 @@ public class TestNamedContainerReader
 
         Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected [String] value kind but found [False]: {name}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected [String] value kind but found [Number]: {name}", actualMessage));
     }
 }

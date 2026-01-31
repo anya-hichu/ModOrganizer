@@ -7,10 +7,11 @@ using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups.Combinings;
 
-public class GroupCombiningReaderBuilder : IBuilder<GroupCombiningReader>, IStubbablePluginLog
+public class GroupCombiningReaderBuilder : IBuilder<GroupCombiningReader>, IStubbablePluginLog, IStubbableGroupBaseReader
 {
     public StubIGroupBaseReader GroupBaseReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<NamedContainer> NamedContainerReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
