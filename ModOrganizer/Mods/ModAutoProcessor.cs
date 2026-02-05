@@ -40,7 +40,12 @@ public class ModAutoProcessor : IModAutoProcessor
 
             if (!ModProcessor.TryProcess(modDirectory, out var newModPath)) return;
 
-            NotificationManager.AddNotification(new() { Title = nameof(ModOrganizer), MinimizedText = $"Updated mod [{modDirectory}] path to [{newModPath}]" });
+            NotificationManager.AddNotification(new() 
+            { 
+                Title = nameof(ModOrganizer), 
+                MinimizedText = $"Updated mod [{modDirectory}] path to [{newModPath}]" 
+            });
+
         }).ContinueWith(RunningTasks.Remove);
 
         RunningTasks.Add(task);

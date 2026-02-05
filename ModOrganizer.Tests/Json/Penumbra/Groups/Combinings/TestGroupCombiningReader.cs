@@ -32,11 +32,8 @@ public class TestGroupCombiningReader
 
         Assert.IsTrue(success);
 
-        if (actualGroup is not GroupCombining groupCombining) 
-        {
-            Assert.Fail("Group is not GroupCombining");
-            return;
-        } 
+        var groupCombining = actualGroup as GroupCombining;
+        Assert.IsNotNull(groupCombining);
 
         Assert.AreEqual(name, groupCombining.Name);
         Assert.AreEqual(type, groupCombining.Type);

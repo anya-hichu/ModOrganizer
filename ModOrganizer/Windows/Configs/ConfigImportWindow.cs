@@ -111,6 +111,6 @@ public class ConfigImportWindow : MultiWindow
     {
         Title = nameof(ModOrganizer),
         Type = NotificationType.Error, 
-        Content = content 
+        MinimizedText = content 
     });
 }

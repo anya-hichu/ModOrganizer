@@ -6,8 +6,6 @@ namespace ModOrganizer.GameData;
 
 public static class FullEquipTypeExtensions
 {
-    public static bool IsUnknown(this FullEquipType type) => type is FullEquipType.Unknown or FullEquipType.UnknownMainhand or FullEquipType.UnknownOffhand;
-
     public static bool IsWeapon(this FullEquipType type) => type switch
     {
         FullEquipType.Fists => true,

@@ -1,8 +1,6 @@
 using Dalamud.Interface.Windowing;
-using Dalamud.Plugin.Services;
-using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Windows;
+using ModOrganizer.Windows.Togglers;
 
 namespace ModOrganizer.Tests.Windows.Togglers;
 
@@ -16,7 +14,7 @@ public class TestWindowToggle
         var aboutWindow = new AboutWindow();
         windowSystem.AddWindow(aboutWindow);
 
-        var windowToggle = new WindowToggleBuilder().Build();
+        var windowToggle = new WindowToggler();
         windowToggle.MaybeWindowSystem = windowSystem;
 
         windowToggle.Toggle<AboutWindow>();
@@ -32,19 +30,8 @@ public class TestWindowToggle
     [TestMethod]
     public void TestToggleWithoutWindowSystem()
     {
-        var observer = new StubObserver();
+        var windowToggle = new WindowToggler();
 
-        var windowToggle = new WindowToggleBuilder()
-            .WithPluginLogDefaults()
-            .WithPluginLogObserver(observer)
-            .Build();
-
-        windowToggle.Toggle<AboutWindow>();
-
-        var calls = observer.GetCalls();
-        Assert.HasCount(1, calls);
-
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
-            actualMessage => Assert.AreEqual("Failed to toggle [AboutWindow]", actualMessage));
+        Assert.Throws<NotImplementedException>(windowToggle.Toggle<AboutWindow>);
     }
 }

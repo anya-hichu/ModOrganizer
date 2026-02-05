@@ -427,7 +427,7 @@ public class MainWindow : Window
             using ImRaii.Color? _ = ImRaii.PushColor(ImGuiCol.Button, CustomColors.LightBlue), __ = ImRaii.PushColor(ImGuiCol.Text, CustomColors.Black);
             if (ImGui.Button("Evaluate##evaluateEvaluationState")) EvaluationResultState.Evaluate(SelectedModDirectories);
         }   
-        ImGuiComponents.HelpMarker("Scriban syntax, check online documentation for usage");
+        ImGuiComponents.HelpMarker("Scriban syntax, check online documentation for usage (https://github.com/scriban/scriban)");
 
         var orderedRules = Config.Rules.OrderByDescending(r => r.Priority).ToList();
         var selectedRuleItemIndex = 0;

@@ -1,21 +1,18 @@
 using Dalamud.Interface.Windowing;
-using Dalamud.Plugin.Services;
+using System;
 using System.Linq;
 
 namespace ModOrganizer.Windows.Togglers;
 
-public class WindowToggler(IPluginLog pluginLog) : IWindowToggler
+public class WindowToggler : IWindowToggler
 {
     public WindowSystem? MaybeWindowSystem { get; set; }
 
     public void Toggle<T>() where T : Window
     {
-        if (MaybeWindowSystem == null)
-        {
-            pluginLog.Error($"Failed to toggle [{typeof(T).Name}]");
-            return;
-        }
-
-        foreach (var window in MaybeWindowSystem.Windows.OfType<T>()) window.Toggle();
+        var windows = GetWindowSystem().Windows.OfType<T>();
+        foreach (var window in windows) window.Toggle();
     }
+
+    private WindowSystem GetWindowSystem() => MaybeWindowSystem ?? throw new NotImplementedException();
 }

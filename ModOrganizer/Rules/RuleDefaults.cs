@@ -82,7 +82,7 @@ public class RuleDefaults : IRuleDefaults
         Priority = 2,
         MatchExpression = $"""
         equip_types = {JsonSerializer.Serialize(equipTypes.Select(t => t.ToString()))}
-        changed_items | object.values | array.filter @(do; ret $0 | object.typeof == "object"; end) | array.each @(do; ret ($0 | object.kind == "EquipItem") && (equip_types | array.contains ($0.type | object.format null)); end) | array.uniq == [true]
+        changed_items | object.values | array.each @(do; ret ($0 | object.kind == "EquipItem") && (equip_types | array.contains ($0.type | object.format null)); end) | array.uniq == [true]
         """,
         PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}", categoryName, "/{{ meta.name | string.strip | string.replace '/' '\\\\' }}")
     };
