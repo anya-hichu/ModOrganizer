@@ -85,6 +85,30 @@ public class TestGroupBaseReader
     }
 
     [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new GroupBaseReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: {element}", actualMessage));
+    }
+
+    [TestMethod]
     public void TestTryReadWithInvalidVersion()
     {
         var observer = new StubObserver();
@@ -114,7 +138,7 @@ public class TestGroupBaseReader
     }
 
     [TestMethod]
-    public void TestTryReadWithInvalidName()
+    public void TestTryReadWithEmptyName()
     {
         var observer = new StubObserver();
 
@@ -144,5 +168,76 @@ public class TestGroupBaseReader
 
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected property [Name] value to be not empty [String]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithEmptyType()
+    {
+        var observer = new StubObserver();
+
+        var type = string.Empty;
+
+        var reader = new GroupBaseReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(Group.Version), GroupBaseReader.SUPPORTED_VERSION },
+            { nameof(Group.Name), "Name" },
+            { nameof(Group.Type), type }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(2, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug),
+            actualMessage => Assert.AreEqual("Expected value to not be empty", actualMessage));
+
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [Type] value to be not empty [String]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    [DataRow(nameof(Group.Description), JsonValueKind.String)]
+    [DataRow(nameof(Group.Image), JsonValueKind.String)]
+    [DataRow(nameof(Group.Page), JsonValueKind.Number)]
+    [DataRow(nameof(Group.Priority), JsonValueKind.Number)]
+    [DataRow(nameof(Group.DefaultSettings), JsonValueKind.Number)]
+    public void TestTryReadWithInvalidValueKind(string propertyName, JsonValueKind kind)
+    {
+        var observer = new StubObserver();
+
+        var reader = new GroupBaseReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var propertyValue = false;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(Group.Version), GroupBaseReader.SUPPORTED_VERSION },
+            { nameof(Group.Name), "Name" },
+            { nameof(Group.Type), "Type" },
+            { propertyName, propertyValue }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.StartsWith($"Expected [{kind}] value kind but found [False]: {propertyValue}", actualMessage));
     }
 }
