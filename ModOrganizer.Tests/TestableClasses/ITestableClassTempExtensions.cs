@@ -6,9 +6,9 @@ public static class ITestableClassTempExtensions
     {
         var testContext = testable.TestContext;
 
-        var testDirectoryName = HashCode.Combine(testContext.TestName, testContext.TestData).ToString();
-        var directory = Directory.CreateDirectory(Path.Combine(testContext.ResultsDirectory!, testDirectoryName));
+        var resultsDirectoryName = HashCode.Combine(testContext.TestName, testContext.TestData).ToString();
+        var resultsTempDirectory = Directory.CreateDirectory(Path.Combine(testContext.ResultsDirectory!, resultsDirectoryName));
 
-        return directory.FullName;
+        return resultsTempDirectory.FullName;
     }
 }
