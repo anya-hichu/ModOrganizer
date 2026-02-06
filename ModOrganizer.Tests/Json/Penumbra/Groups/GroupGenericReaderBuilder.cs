@@ -4,6 +4,7 @@ using ModOrganizer.Json.Penumbra.Groups;
 using ModOrganizer.Json.Penumbra.Groups.Combinings;
 using ModOrganizer.Json.Penumbra.Groups.Generics;
 using ModOrganizer.Json.Penumbra.Groups.Imcs;
+using ModOrganizer.Json.Penumbra.Groups.Multis;
 using ModOrganizer.Json.Penumbra.Groups.Singles;
 using ModOrganizer.Json.Readers.Elements.Fakes;
 using ModOrganizer.Json.Readers.Fakes;

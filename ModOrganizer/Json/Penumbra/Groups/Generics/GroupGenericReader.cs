@@ -1,6 +1,7 @@
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.Groups.Combinings;
 using ModOrganizer.Json.Penumbra.Groups.Imcs;
+using ModOrganizer.Json.Penumbra.Groups.Multis;
 using ModOrganizer.Json.Penumbra.Groups.Singles;
 using ModOrganizer.Json.Readers;
 

@@ -3,7 +3,6 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
-
 using ModOrganizer.Backups;
 using ModOrganizer.Commands;
 using ModOrganizer.Configs;
@@ -18,6 +17,7 @@ using ModOrganizer.Json.Penumbra.Groups.Bases;
 using ModOrganizer.Json.Penumbra.Groups.Combinings;
 using ModOrganizer.Json.Penumbra.Groups.Generics;
 using ModOrganizer.Json.Penumbra.Groups.Imcs;
+using ModOrganizer.Json.Penumbra.Groups.Multis;
 using ModOrganizer.Json.Penumbra.Groups.Singles;
 using ModOrganizer.Json.Penumbra.LocalModDatas;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;

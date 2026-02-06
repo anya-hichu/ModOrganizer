@@ -9,9 +9,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-
 namespace ModOrganizer.Json.Penumbra.Groups.Imcs;
-
 
 public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEntry> imcEntryReader, IReader<MetaImcIdentifier> imcIdentifierReader, IOptionImcGenericReader optionImcGenericReader,  IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {

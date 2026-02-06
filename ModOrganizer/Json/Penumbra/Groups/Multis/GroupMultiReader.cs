@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Penumbra.Groups;
+namespace ModOrganizer.Json.Penumbra.Groups.Multis;
 
 public class GroupMultiReader(IGroupBaseReader groupBaseReader, IReader<OptionContainer> optionContainerReader, IPluginLog pluginLog) : Reader<Group>(pluginLog)
 {
