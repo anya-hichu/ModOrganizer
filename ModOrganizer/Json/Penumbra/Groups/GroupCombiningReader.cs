@@ -34,7 +34,7 @@ public class GroupCombiningReader(IGroupBaseReader groupBaseReader, IReader<Name
         var options = Array.Empty<Option>();
         if (element.TryGetOptionalProperty(nameof(GroupCombining.Options), out var optionsProperty, PluginLog) && !optionReader.TryReadMany(optionsProperty, out options))
         {
-            PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]: {element}");
+            PluginLog.Warning($"Failed to read one or more [{nameof(Option)}] for [{nameof(GroupCombining)}]: {element}");
             return false;
         }
 

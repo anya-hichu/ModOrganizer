@@ -4,7 +4,7 @@ namespace ModOrganizer.Tests.Json.Penumbra.Options;
 
 public static class IStubbableOptionReaderExtensions
 {
-    public static T WithOptionReaderReadMany<T>(this T stubbable, Option[] stubValue) where T : IStubbableOptionReader
+    public static T WithOptionReaderReadMany<T>(this T stubbable, Option[]? stubValue) where T : IStubbableOptionReader
     {
         stubbable.OptionReaderStub.TryReadManyJsonElementT0ArrayOut = (element, out instances) =>
         {

@@ -8,10 +8,12 @@ using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
+using ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Imcs;
+using ModOrganizer.Tests.Json.Penumbra.Options.Imcs;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups.Imcs;
 
-public class GroupImcReaderBuilder : IBuilder<GroupImcReader>, IStubbableGroupBaseReader, IStubbablePluginLog
+public class GroupImcReaderBuilder : IBuilder<GroupImcReader>, IStubbableGroupBaseReader, IStubbableMetaImcEntryReader, IStubbableMetaImcIdentifierReader, IStubbableOptionImcGenericReader, IStubbablePluginLog
 {
     public StubIGroupBaseReader GroupBaseReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
     public StubIReader<MetaImcEntry> MetaImcEntryReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };

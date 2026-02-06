@@ -171,6 +171,76 @@ public class TestGroupCombiningReader
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.StartsWith($"Failed to read [GroupCombining], invalid type [{type}] (expected: Combining): {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [GroupCombining], invalid type [{type}] (expected: Combining): {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidOptions()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupCombiningReader.TYPE
+        };
+
+        var reader = new GroupCombiningReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithOptionReaderReadMany(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupCombining.Options), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [Option] for [GroupCombining]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidContainers()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupCombiningReader.TYPE
+        };
+
+        var reader = new GroupCombiningReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithNamedContainerReaderReadMany(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupCombining.Containers), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [NamedContainer] for [GroupCombining]: {element}", actualMessage));
     }
 }
