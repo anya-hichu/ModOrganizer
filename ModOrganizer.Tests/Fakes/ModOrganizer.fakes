@@ -12,6 +12,7 @@
         <Add FullName="ModOrganizer.Json.Penumbra.LocalModDatas.ILocalModDataReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.Manipulations.IManipulationWrapperGenericReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.ModMetas.IModMetaReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.Options.Imcs.IOptionImcGenericReader"/>
         <Add FullName="ModOrganizer.Json.Penumbra.SortOrders.ISortOrderReader!"/>
         <Add FullName="ModOrganizer.Json.Readers.Elements.IElementReader!"/>
         <Add FullName="ModOrganizer.Json.Readers.IReader`1!"/>

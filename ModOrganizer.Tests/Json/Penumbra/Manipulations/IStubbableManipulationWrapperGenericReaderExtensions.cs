@@ -4,12 +4,12 @@ namespace ModOrganizer.Tests.Json.Penumbra.Manipulations;
 
 public static class IStubbableManipulationWrapperGenericReaderExtensions
 {
-    public static T WithManipulationWrapperGenericReaderTryReadMany<T>(this T stubbable, ManipulationWrapper[]? values) where T : IStubbableManipulationWrapperGenericReader
+    public static T WithManipulationWrapperGenericReaderTryReadMany<T>(this T stubbable, ManipulationWrapper[]? stubValue) where T : IStubbableManipulationWrapperGenericReader
     {
         stubbable.ManipulationWrapperGenericReaderStub.TryReadManyJsonElementManipulationWrapperArrayOut = (element, out instances) => 
         {
-            instances = values;
-            return values != null;
+            instances = stubValue;
+            return stubValue != null;
         };
 
         return stubbable;

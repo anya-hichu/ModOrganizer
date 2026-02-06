@@ -18,12 +18,12 @@ public class TestNamedContainerReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
 
-        var namedContainerReader = new NamedContainerReaderBuilder()
+        var reader = new NamedContainerReaderBuilder()
             .WithContainerReaderTryRead(new())
             .WithContainerReaderObserver(observer)
             .Build();
 
-        var success = namedContainerReader.TryRead(element, out var namedContainer);
+        var success = reader.TryRead(element, out var namedContainer);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(namedContainer);
@@ -55,13 +55,13 @@ public class TestNamedContainerReader
         var name = 0;
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
 
-        var namedContainerReader = new NamedContainerReaderBuilder()
+        var reader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithContainerReaderTryRead(new())
             .Build();
 
-        var success = namedContainerReader.TryRead(element, out var namedContainer);
+        var success = reader.TryRead(element, out var namedContainer);
 
         Assert.IsFalse(success);
         Assert.IsNull(namedContainer);

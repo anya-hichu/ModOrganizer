@@ -33,11 +33,11 @@ public class TestDefaultModReader
             Manipulations = manipulations
         };
 
-        var defaultModReader = new DefaultModReaderBuilder()
+        var reader = new DefaultModReaderBuilder()
             .WithContainerReaderTryRead(container)
             .Build();
 
-        var success = defaultModReader.TryRead(element, out var defaultMod);
+        var success = reader.TryRead(element, out var defaultMod);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(defaultMod);
@@ -54,12 +54,12 @@ public class TestDefaultModReader
 
         var element = JsonSerializer.SerializeToElement(null as object);
 
-        var defaultModReader = new DefaultModReaderBuilder()
+        var reader = new DefaultModReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = defaultModReader.TryRead(element, out var defaultMod);
+        var success = reader.TryRead(element, out var defaultMod);
 
         Assert.IsFalse(success);
         Assert.IsNull(defaultMod);
@@ -79,12 +79,12 @@ public class TestDefaultModReader
         var version = 1;
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(DefaultMod.Version), version } });
 
-        var defaultModReader = new DefaultModReaderBuilder()
+        var reader = new DefaultModReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = defaultModReader.TryRead(element, out var defaultMod);
+        var success = reader.TryRead(element, out var defaultMod);
 
         Assert.IsFalse(success);
         Assert.IsNull(defaultMod);
@@ -103,13 +103,13 @@ public class TestDefaultModReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
-        var defaultModReader = new DefaultModReaderBuilder()
+        var reader = new DefaultModReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithContainerReaderTryRead(null)
             .Build();
 
-        var success = defaultModReader.TryRead(element, out var defaultMod);
+        var success = reader.TryRead(element, out var defaultMod);
 
         Assert.IsFalse(success);
         Assert.IsNull(defaultMod);

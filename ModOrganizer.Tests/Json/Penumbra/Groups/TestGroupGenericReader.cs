@@ -17,14 +17,14 @@ public class TestGroupGenericReader
 
         var type = "Unknown";
 
-        var groupGenericReader = new GroupGenericReaderBuilder()
+        var reader = new GroupGenericReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Group.Type), type } });
 
-        var success = groupGenericReader.TryRead(element, out var group);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsFalse(success);
         Assert.IsNull(group);
@@ -50,13 +50,13 @@ public class TestGroupGenericReader
             Type = type
         };
 
-        var groupGenericReader = new GroupGenericReaderBuilder()
+        var reader = new GroupGenericReaderBuilder()
             .WithReaderTryRead(type, group)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Group.Type), type } });
 
-        var success = groupGenericReader.TryRead(element, out var actualGroup);
+        var success = reader.TryRead(element, out var actualGroup);
 
         Assert.IsTrue(success);
         Assert.AreSame(group, actualGroup);
@@ -71,7 +71,7 @@ public class TestGroupGenericReader
     {
         var observer = new StubObserver();
 
-        var groupGenericReader = new GroupGenericReaderBuilder()
+        var reader = new GroupGenericReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithReaderTryRead(type, null as Group)
@@ -79,7 +79,7 @@ public class TestGroupGenericReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Group.Type), type } });
 
-        var success = groupGenericReader.TryRead(element, out var group);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsFalse(success);
         Assert.IsNull(group);

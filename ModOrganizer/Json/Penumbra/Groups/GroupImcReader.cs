@@ -21,37 +21,37 @@ public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEnt
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        var allVariants = element.TryGetProperty(nameof(GroupImc.AllVariants), out var allVariantsProperty) && allVariantsProperty.GetBoolean();
-        var allAttributes = element.TryGetProperty(nameof(GroupImc.AllAttributes), out var allAttributesProperty) && allAttributesProperty.GetBoolean();
+        if (!groupBaseReader.TryRead(element, out var baseGroup))
+        {
+            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupImc)}]: {element}");
+            return false;
+        }
+
+        if (baseGroup.Type != TYPE)
+        {
+            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{baseGroup.Type}] (expected: {TYPE}): {element}");
+            return false;
+        }
+
+        if (!element.TryGetOptionalPropertyValue(nameof(GroupImc.AllVariants), out bool? allVariants, PluginLog)) return false;
+        if (!element.TryGetOptionalPropertyValue(nameof(GroupImc.AllAttributes), out bool? allAttributes, PluginLog)) return false;
 
         MetaImcEntry? defaultEntry = null;
-        if (element.TryGetOptionalProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
+        if (element.TryGetOptionalProperty(nameof(GroupImc.DefaultEntry), out var defaultEntryProperty, PluginLog) && !imcEntryReader.TryRead(defaultEntryProperty, out defaultEntry))
         {
             PluginLog.Warning($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 
         MetaImcIdentifier? identifier = null;
-        if (element.TryGetOptionalProperty(nameof(GroupImc.Identifier), out var identifierProperty) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
+        if (element.TryGetOptionalProperty(nameof(GroupImc.Identifier), out var identifierProperty, PluginLog) && !imcIdentifierReader.TryRead(identifierProperty, out identifier))
         {
             PluginLog.Warning($"Failed to read [{nameof(MetaImcIdentifier)}] for [{nameof(GroupImc)}]: {element}");
             return false;
         }
 
-        if (!groupBaseReader.TryRead(element, out var group))
-        {
-            PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupImc)}]: {element}");
-            return false;
-        }
-
-        if (group.Type != TYPE)
-        {
-            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{group.Type}] (expected: {TYPE}): {element}");
-            return false;
-        }
-
         var options = Array.Empty<OptionImc>();
-        if (element.TryGetProperty(nameof(GroupImc.Options), out var optionsProperty) && !optionImcGenericReader.TryReadMany(optionsProperty, out options))
+        if (element.TryGetOptionalProperty(nameof(GroupImc.Options), out var optionsProperty, PluginLog) && !optionImcGenericReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {element}");
             return false;
@@ -59,12 +59,12 @@ public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEnt
 
         instance = new GroupImc()
         {
-            Name = group.Name,
-            Type = group.Type,
-            Description = group.Description,
-            Image = group.Image,
-            Priority = group.Priority,
-            DefaultSettings = group.DefaultSettings,
+            Name = baseGroup.Name,
+            Type = baseGroup.Type,
+            Description = baseGroup.Description,
+            Image = baseGroup.Image,
+            Priority = baseGroup.Priority,
+            DefaultSettings = baseGroup.DefaultSettings,
 
             AllVariants = allVariants,
             AllAttributes = allAttributes,

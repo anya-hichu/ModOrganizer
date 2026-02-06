@@ -31,11 +31,11 @@ public class TestContainerReader
 
         var element = JsonSerializer.SerializeToElement(value);
 
-        var containerReader = new ContainerReaderBuilder()
+        var reader = new ContainerReaderBuilder()
             .WithManipulationWrapperGenericReaderTryReadMany(manipulations)
             .Build();
 
-        var success = containerReader.TryRead(element, out var container);
+        var success = reader.TryRead(element, out var container);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(container);
@@ -102,12 +102,12 @@ public class TestContainerReader
             { nameof(Container.Files), files }
         });
 
-        var containerReader = new ContainerReaderBuilder()
+        var reader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = containerReader.TryRead(element, out var container);
+        var success = reader.TryRead(element, out var container);
 
         Assert.IsFalse(success);
         Assert.IsNull(container);
@@ -131,12 +131,12 @@ public class TestContainerReader
             { nameof(Container.FileSwaps), fileSwaps }
         });
 
-        var containerReader = new ContainerReaderBuilder()
+        var reader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = containerReader.TryRead(element, out var container);
+        var success = reader.TryRead(element, out var container);
 
         Assert.IsFalse(success);
         Assert.IsNull(container);
@@ -155,13 +155,13 @@ public class TestContainerReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(Container.Manipulations), "Invalid Manipulations" } });
 
-        var containerReader = new ContainerReaderBuilder()
+        var reader = new ContainerReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithManipulationWrapperGenericReaderTryReadMany(null)
             .Build();
 
-        var success = containerReader.TryRead(element, out var container);
+        var success = reader.TryRead(element, out var container);
 
         Assert.IsFalse(success);
         Assert.IsNull(container);

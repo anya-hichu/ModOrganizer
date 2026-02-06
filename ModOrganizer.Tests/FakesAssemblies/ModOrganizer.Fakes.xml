@@ -343,6 +343,24 @@
         <member name="F:ModOrganizer.Json.Penumbra.ModMetas.Fakes.StubIModMetaReader.TryReadManyJsonElementModMetaV3ArrayOut">
             <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, ModMetaV3[]* instances)</summary>
         </member>
+        <member name="T:ModOrganizer.Json.Penumbra.Options.Imcs.Fakes.StubIOptionImcGenericReader">
+            <summary>Stub type of ModOrganizer.Json.Penumbra.Options.Imcs.IOptionImcGenericReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Penumbra.Options.Imcs.Fakes.StubIOptionImcGenericReader.#ctor">
+            <summary>Initializes a new instance of type StubIOptionImcGenericReader</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Penumbra.Options.Imcs.Fakes.StubIOptionImcGenericReader.ModOrganizer#Json#Readers#IReader{ModOrganizer#Json#Penumbra#Options#Imcs#OptionImc}#TryRead(System.Text.Json.JsonElement,ModOrganizer.Json.Penumbra.Options.Imcs.OptionImc@)">
+            <summary>Sets the Stub of IReader`1.TryRead(IReader`1 this, JsonElement element, OptionImc* instance)</summary>
+        </member>
+        <member name="M:ModOrganizer.Json.Penumbra.Options.Imcs.Fakes.StubIOptionImcGenericReader.ModOrganizer#Json#Readers#IReader{ModOrganizer#Json#Penumbra#Options#Imcs#OptionImc}#TryReadMany(System.Text.Json.JsonElement,ModOrganizer.Json.Penumbra.Options.Imcs.OptionImc[]@)">
+            <summary>Sets the Stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, OptionImc[]* instances)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Penumbra.Options.Imcs.Fakes.StubIOptionImcGenericReader.TryReadJsonElementOptionImcOut">
+            <summary>Sets the stub of IReader`1.TryRead(IReader`1 this, JsonElement element, OptionImc* instance)</summary>
+        </member>
+        <member name="F:ModOrganizer.Json.Penumbra.Options.Imcs.Fakes.StubIOptionImcGenericReader.TryReadManyJsonElementOptionImcArrayOut">
+            <summary>Sets the stub of IReader`1.TryReadMany(IReader`1 this, JsonElement element, OptionImc[]* instances)</summary>
+        </member>
         <member name="T:ModOrganizer.Json.Penumbra.SortOrders.Fakes.StubISortOrderReader">
             <summary>Stub type of ModOrganizer.Json.Penumbra.SortOrders.ISortOrderReader</summary>
         </member>

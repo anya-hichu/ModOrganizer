@@ -1,0 +1,23 @@
+using Dalamud.Plugin.Services.Fakes;
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.Groups.Fakes;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
+using ModOrganizer.Json.Penumbra.Options.Imcs.Fakes;
+using ModOrganizer.Json.Readers.Fakes;
+using ModOrganizer.Shared;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
+
+namespace ModOrganizer.Tests.Json.Penumbra.Groups.Imcs;
+
+public class GroupImcReaderBuilder : IBuilder<GroupImcReader>, IStubbableGroupBaseReader, IStubbablePluginLog
+{
+    public StubIGroupBaseReader GroupBaseReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<MetaImcEntry> MetaImcEntryReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIReader<MetaImcIdentifier> MetaImcIdentifierReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIOptionImcGenericReader OptionImcGenericReaderStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+    public StubIPluginLog PluginLogStub { get; init; } = new() { InstanceBehavior = StubBehaviors.NotImplemented };
+
+    public GroupImcReader Build() => new(GroupBaseReaderStub, MetaImcEntryReaderStub, MetaImcIdentifierReaderStub, OptionImcGenericReaderStub, PluginLogStub);
+}

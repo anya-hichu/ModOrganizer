@@ -18,15 +18,15 @@ public class GroupMultiReader(IGroupBaseReader groupBaseReader, IReader<OptionCo
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!groupBaseReader.TryRead(element, out var group))
+        if (!groupBaseReader.TryRead(element, out var baseGroup))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupMulti)}]: {element}");
             return false;
         }
 
-        if (group.Type != TYPE)
+        if (baseGroup.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupMulti)}], invalid type [{group.Type}] (expected: {TYPE}): {element}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupMulti)}], invalid type [{baseGroup.Type}] (expected: {TYPE}): {element}");
             return false;
         }
 
@@ -39,12 +39,12 @@ public class GroupMultiReader(IGroupBaseReader groupBaseReader, IReader<OptionCo
 
         instance = new GroupMulti()
         {
-            Name = group.Name,
-            Type = group.Type,
-            Description = group.Description,
-            Image = group.Image,
-            Priority = group.Priority,
-            DefaultSettings = group.DefaultSettings,
+            Name = baseGroup.Name,
+            Type = baseGroup.Type,
+            Description = baseGroup.Description,
+            Image = baseGroup.Image,
+            Priority = baseGroup.Priority,
+            DefaultSettings = baseGroup.DefaultSettings,
 
             Options = options
         };

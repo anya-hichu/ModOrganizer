@@ -38,12 +38,12 @@ public class TestElementReader : ITestableClassTemp
     {
         var observer = new StubObserver();
 
-        var elementReader = new ElementReaderBuilder()
+        var reader = new ElementReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = elementReader.TryReadFromData(data, out var element);
+        var success = reader.TryReadFromData(data, out var element);
 
         Assert.IsFalse(success);
         Assert.AreEqual(default, element);
@@ -91,12 +91,12 @@ public class TestElementReader : ITestableClassTemp
         var filePath = Path.Combine(tempDirectory, "File Path");
         File.WriteAllText(filePath, data);
 
-        var elementReader = new ElementReaderBuilder()
+        var reader = new ElementReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = elementReader.TryReadFromFile(filePath, out var element);
+        var success = reader.TryReadFromFile(filePath, out var element);
 
         Assert.IsFalse(success);
         Assert.AreEqual(default, element);
@@ -119,12 +119,12 @@ public class TestElementReader : ITestableClassTemp
 
         var filePath = Path.Combine(tempDirectory, "File Path");
 
-        var elementReader = new ElementReaderBuilder()
+        var reader = new ElementReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = elementReader.TryReadFromFile(filePath, out var element);
+        var success = reader.TryReadFromFile(filePath, out var element);
 
         Assert.IsFalse(success);
         Assert.AreEqual(default, element);

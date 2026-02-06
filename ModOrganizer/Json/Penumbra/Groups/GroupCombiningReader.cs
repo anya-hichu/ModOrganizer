@@ -19,27 +19,27 @@ public class GroupCombiningReader(IGroupBaseReader groupBaseReader, IReader<Name
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!groupBaseReader.TryRead(element, out var group))
+        if (!groupBaseReader.TryRead(element, out var baseGroup))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Group)}] for [{nameof(GroupCombining)}]: {element}");
             return false;
         }
 
-        if (group.Type != TYPE)
+        if (baseGroup.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupCombining)}], invalid type [{group.Type}] (expected: {TYPE}): {element}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupCombining)}], invalid type [{baseGroup.Type}] (expected: {TYPE}): {element}");
             return false;
         }
 
         var options = Array.Empty<Option>();
-        if (element.TryGetOptionalProperty(nameof(GroupCombining.Options), out var optionsProperty) && !optionReader.TryReadMany(optionsProperty, out options))
+        if (element.TryGetOptionalProperty(nameof(GroupCombining.Options), out var optionsProperty, PluginLog) && !optionReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupCombining)}]: {element}");
             return false;
         }
 
         var containers = Array.Empty<NamedContainer>();
-        if (element.TryGetOptionalProperty(nameof(GroupCombining.Containers), out var containersProperty) && !namedContainerReader.TryReadMany(containersProperty, out containers))
+        if (element.TryGetOptionalProperty(nameof(GroupCombining.Containers), out var containersProperty, PluginLog) && !namedContainerReader.TryReadMany(containersProperty, out containers))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(NamedContainer)}] for [{nameof(GroupCombining)}]: {element}");
             return false;
@@ -47,12 +47,12 @@ public class GroupCombiningReader(IGroupBaseReader groupBaseReader, IReader<Name
 
         instance = new GroupCombining()
         {
-            Name = group.Name,
-            Type = group.Type,
-            Description = group.Description,
-            Image = group.Image,
-            Priority = group.Priority,
-            DefaultSettings = group.DefaultSettings,
+            Name = baseGroup.Name,
+            Type = baseGroup.Type,
+            Description = baseGroup.Description,
+            Image = baseGroup.Image,
+            Priority = baseGroup.Priority,
+            DefaultSettings = baseGroup.DefaultSettings,
 
             Options = options,
             Containers = containers

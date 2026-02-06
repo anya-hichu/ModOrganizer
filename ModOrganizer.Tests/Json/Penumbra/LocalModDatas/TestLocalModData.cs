@@ -14,7 +14,7 @@ public class TestLocalModData
         var localTag = "Local Tag";
         var preferredChangedItem = 1;
 
-        var localModDatReader = new LocalModDataReaderBuilder().Build();
+        var reader = new LocalModDataReaderBuilder().Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
@@ -25,7 +25,7 @@ public class TestLocalModData
             { nameof(LocalModDataV3.PreferredChangedItems), new int[] { preferredChangedItem } }
         });
 
-        var success = localModDatReader.TryRead(element, out var localModData);
+        var success = reader.TryRead(element, out var localModData);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(localModData);

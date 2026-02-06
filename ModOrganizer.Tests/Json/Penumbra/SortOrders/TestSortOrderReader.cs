@@ -26,9 +26,9 @@ public class TestSortOrderReader
             { nameof(SortOrder.EmptyFolders), new string[] { emptyFolder } }
         });
 
-        var sortOrderReader = new SortOrderReaderBuilder().Build();
+        var reader = new SortOrderReaderBuilder().Build();
 
-        var success = sortOrderReader.TryRead(element, out var sortOrder);
+        var success = reader.TryRead(element, out var sortOrder);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(sortOrder);
@@ -47,12 +47,12 @@ public class TestSortOrderReader
 
         var element = JsonSerializer.SerializeToElement(null as object);
 
-        var sortOrderReader = new SortOrderReaderBuilder()
+        var reader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = sortOrderReader.TryRead(element, out var sortOrder);
+        var success = reader.TryRead(element, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);
@@ -74,12 +74,12 @@ public class TestSortOrderReader
             { nameof(SortOrder.Data), null } 
         });
 
-        var sortOrderReader = new SortOrderReaderBuilder()
+        var reader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = sortOrderReader.TryRead(element, out var sortOrder);
+        var success = reader.TryRead(element, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);
@@ -102,12 +102,12 @@ public class TestSortOrderReader
             { nameof(SortOrder.EmptyFolders), null } 
         });
 
-        var sortOrderReader = new SortOrderReaderBuilder()
+        var reader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
 
-        var success = sortOrderReader.TryRead(element, out var sortOrder);
+        var success = reader.TryRead(element, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);
@@ -135,13 +135,13 @@ public class TestSortOrderReader
             { nameof(SortOrder.EmptyFolders), new string[] { emptyFolder } }
         });
 
-        var sortOrderReader = new SortOrderReaderBuilder()
+        var reader = new SortOrderReaderBuilder()
             .WithElementReaderObserver(observer)
             .WithElementReaderTryReadFromFile(element)
             .Build();
 
         var filePath = "File Path";
-        var success = sortOrderReader.TryReadFromFile(filePath, out var sortOrder);
+        var success = reader.TryReadFromFile(filePath, out var sortOrder);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(sortOrder);
@@ -167,14 +167,14 @@ public class TestSortOrderReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(SortOrder.Data), null } });
 
-        var sortOrderReader = new SortOrderReaderBuilder()
+        var reader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithElementReaderTryReadFromFile(element)
             .Build();
 
         var filePath = "File Path";
-        var success = sortOrderReader.TryReadFromFile(filePath, out var sortOrder);
+        var success = reader.TryReadFromFile(filePath, out var sortOrder);
 
         Assert.IsFalse(success);
         Assert.IsNull(sortOrder);

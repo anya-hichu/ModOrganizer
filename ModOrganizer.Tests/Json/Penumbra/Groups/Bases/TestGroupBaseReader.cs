@@ -21,33 +21,67 @@ public class TestGroupBaseReader
         var type = "Type";
         var defaultSettings = 3;
 
-        var groupBaseReader = new GroupBaseReaderBuilder().Build();
+        var reader = new GroupBaseReaderBuilder().Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
             { nameof(Group.Version), version },
             { nameof(Group.Name), name },
+            { nameof(Group.Type), type },
+
             { nameof(Group.Description), description },
             { nameof(Group.Image), image },
             { nameof(Group.Page), page },
             { nameof(Group.Priority), priority },
-            { nameof(Group.Type), type },
             { nameof(Group.DefaultSettings), defaultSettings }
         });
 
-        var success = groupBaseReader.TryRead(element, out var group);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsTrue(success);
         Assert.IsNotNull(group);
 
         Assert.AreEqual(version, group.Version);
         Assert.AreEqual(name, group.Name);
+        Assert.AreEqual(type, group.Type);
+
         Assert.AreEqual(description, group.Description);
         Assert.AreEqual(image, group.Image);
         Assert.AreEqual(page, group.Page);
         Assert.AreEqual(priority, group.Priority);
-        Assert.AreEqual(type, group.Type);
         Assert.AreEqual(defaultSettings, group.DefaultSettings);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithDefaults()
+    {
+        var version = 0u;
+        var name = "Name";
+        var type = "Type";
+
+        var reader = new GroupBaseReaderBuilder().Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(Group.Version), version },
+            { nameof(Group.Name), name },
+            { nameof(Group.Type), type }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsTrue(success);
+        Assert.IsNotNull(group);
+
+        Assert.AreEqual(version, group.Version);
+        Assert.AreEqual(name, group.Name);
+        Assert.AreEqual(type, group.Type);
+
+        Assert.IsNull(group.Description);
+        Assert.IsNull(group.Image);
+        Assert.IsNull(group.Page);
+        Assert.IsNull(group.Priority);
+        Assert.IsNull(group.DefaultSettings);
     }
 
     [TestMethod]
@@ -57,7 +91,7 @@ public class TestGroupBaseReader
 
         var version = 1u;
 
-        var groupBaseReader = new GroupBaseReaderBuilder()
+        var reader = new GroupBaseReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .Build();
@@ -67,7 +101,7 @@ public class TestGroupBaseReader
             { nameof(Group.Version), version }
         });
 
-        var success = groupBaseReader.TryRead(element, out var group);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsFalse(success);
         Assert.IsNull(group);

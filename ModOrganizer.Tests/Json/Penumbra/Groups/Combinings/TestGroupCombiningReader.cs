@@ -1,8 +1,12 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
+using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
+using ModOrganizer.Tests.Json.Penumbra.Containers;
 using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
+using ModOrganizer.Tests.Json.Penumbra.Options;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups.Combinings;
@@ -16,35 +20,100 @@ public class TestGroupCombiningReader
         var name = "Group Name";
         var type = GroupCombiningReader.TYPE;
 
-        var group = new Group()
+        var baseGroup = new Group()
         {
             Name = name,
             Type = type
         };
 
-        var groupCombiningReader = new GroupCombiningReaderBuilder()
-            .WithGroupBaseReaderTryRead(group)
+        var options = Array.Empty<Option>();
+        var containers = Array.Empty<NamedContainer>();
+
+        var reader = new GroupCombiningReaderBuilder()
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithNamedContainerReaderReadMany(containers)
+            .WithOptionReaderReadMany(options)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupCombining.Options), options },
+            { nameof(GroupCombining.Containers), containers }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsTrue(success);
+        Assert.IsNotNull(group);
+
+        Assert.AreEqual(name, group.Name);
+        Assert.AreEqual(type, group.Type);
+
+        var groupCombining = group as GroupCombining;
+        Assert.IsNotNull(groupCombining);
+
+        Assert.AreSame(containers, groupCombining.Containers);
+        Assert.AreSame(options, groupCombining.Options);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithDefaults()
+    {
+        var name = "Group Name";
+        var type = GroupCombiningReader.TYPE;
+
+        var baseGroup = new Group()
+        {
+            Name = name,
+            Type = type
+        };
+
+        var reader = new GroupCombiningReaderBuilder()
+            .WithGroupBaseReaderTryRead(baseGroup)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
-        var success = groupCombiningReader.TryRead(element, out var actualGroup);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsTrue(success);
+        Assert.IsNotNull(group);
 
-        var groupCombining = actualGroup as GroupCombining;
+        Assert.AreEqual(name, group.Name);
+        Assert.AreEqual(type, group.Type);
+
+        var groupCombining = group as GroupCombining;
         Assert.IsNotNull(groupCombining);
-
-        Assert.AreEqual(name, groupCombining.Name);
-        Assert.AreEqual(type, groupCombining.Type);
-        Assert.IsNull(groupCombining.DefaultSettings);
-
-        Assert.IsNotNull(groupCombining.Options);
-        Assert.IsEmpty(groupCombining.Options);
 
         Assert.IsNotNull(groupCombining.Containers);
         Assert.IsEmpty(groupCombining.Containers);
 
+        Assert.IsNotNull(groupCombining.Options);
+        Assert.IsEmpty(groupCombining.Options);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new GroupCombiningReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -52,7 +121,7 @@ public class TestGroupCombiningReader
     {
         var observer = new StubObserver();
 
-        var groupCombiningReader = new GroupCombiningReaderBuilder()
+        var reader = new GroupCombiningReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithGroupBaseReaderTryRead(null)
@@ -60,10 +129,10 @@ public class TestGroupCombiningReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
-        var success = groupCombiningReader.TryRead(element, out var actualGroup);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsFalse(success);
-        Assert.IsNull(actualGroup);
+        Assert.IsNull(group);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
@@ -77,27 +146,26 @@ public class TestGroupCombiningReader
     {
         var observer = new StubObserver();
 
-        var name = "Group Name";
         var type = "Invalid Type";
 
-        var group = new Group()
+        var baseGroup = new Group()
         {
-            Name = name,
+            Name = "Group Name",
             Type = type
         };
 
-        var groupCombiningReader = new GroupCombiningReaderBuilder()
+        var reader = new GroupCombiningReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
-            .WithGroupBaseReaderTryRead(group)
+            .WithGroupBaseReaderTryRead(baseGroup)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
 
-        var success = groupCombiningReader.TryRead(element, out var actualGroup);
+        var success = reader.TryRead(element, out var group);
 
         Assert.IsFalse(success);
-        Assert.IsNull(actualGroup);
+        Assert.IsNull(group);
 
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);

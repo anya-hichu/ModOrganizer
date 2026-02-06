@@ -136,3 +136,7 @@ indent_style = space
 indent_size = 4
 tab_width = 4
 dotnet_style_parentheses_in_other_operators=always_for_clarity:silent
+
+# Diagnostic severities
+[*.cs]
+dotnet_diagnostic.CA1816.severity = none
