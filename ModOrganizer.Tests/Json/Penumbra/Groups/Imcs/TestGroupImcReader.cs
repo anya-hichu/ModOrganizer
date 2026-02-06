@@ -199,6 +199,44 @@ public class TestGroupImcReader
             actualMessage => Assert.AreEqual($"Failed to read [GroupImc], invalid type [{type}] (expected: Imc): {element}", actualMessage));
     }
 
+    [TestMethod]
+    [DataRow(nameof(GroupImc.AllAttributes))]
+    [DataRow(nameof(GroupImc.AllVariants))]
+    public void TestTryReadWithInvalidValueKind(string propertyName)
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupImcReader.TYPE
+        };
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .Build();
+
+        var propertyValue = 0;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { propertyName, propertyValue }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Number] value kind to be parsable as [Boolean]: {propertyValue}", actualMessage));
+    }
+
 
     [TestMethod]
     public void TestTryReadWithInvalidDefaultEntry()

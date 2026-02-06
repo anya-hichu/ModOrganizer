@@ -23,9 +23,9 @@ public class TestBackupManager : ITestableClassTemp
     {
         var backup = new Backup() { CreatedAt = new(2025, 1, 1, 0, 0, 0, TimeSpan.Zero) };
 
-        var fileName = new BackupManagerBuilder()
-            .Build()
-            .GetFileName(backup);
+        var backupManager = new BackupManagerBuilder().Build();
+
+        var fileName = backupManager.GetFileName(backup);
 
         Assert.AreEqual("sort_order.1735689600000.json", fileName);
     }
@@ -185,7 +185,8 @@ public class TestBackupManager : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), value => Assert.StartsWith($"Caught exception while trying to copy [{missingSortOrderPath}]", value));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error), 
+            actualMessage => Assert.StartsWith($"Caught exception while trying to copy [{missingSortOrderPath}]", actualMessage));
     }
 
     [TestMethod]
@@ -214,7 +215,8 @@ public class TestBackupManager : ITestableClassTemp
         var calls = observer.GetCalls();
         Assert.HasCount(1, calls);
 
-        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), value => Assert.StartsWith($"Failed to delete {Backup.GetPrettyType(auto)} backup", value));
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning), 
+            actualMessage => Assert.StartsWith($"Failed to delete {Backup.GetPrettyType(auto)} backup", actualMessage));
     }
 
     [TestMethod]
