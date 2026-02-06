@@ -29,7 +29,7 @@ public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEnt
 
         if (baseGroup.Type != TYPE)
         {
-            PluginLog.Warning($"Failed to read [{nameof(GroupSingle)}], invalid type [{baseGroup.Type}] (expected: {TYPE}): {element}");
+            PluginLog.Warning($"Failed to read [{nameof(GroupImc)}], invalid type [{baseGroup.Type}] (expected: {TYPE}): {element}");
             return false;
         }
 

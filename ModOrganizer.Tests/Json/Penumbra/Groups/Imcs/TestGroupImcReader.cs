@@ -1,6 +1,9 @@
+using Dalamud.Plugin.Services;
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Groups;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
 using ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Tests.Json.Penumbra.Options.Imcs;
@@ -111,5 +114,194 @@ public class TestGroupImcReader
 
         Assert.IsNotNull(groupImc.Options);
         Assert.IsEmpty(groupImc.Options);
+    }
+
+
+    [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidBaseGroup()
+    {
+        var observer = new StubObserver();
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug),
+            actualMessage => Assert.AreEqual($"Failed to read base [Group] for [GroupImc]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidType()
+    {
+        var observer = new StubObserver();
+
+        var type = "Invalid Type";
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = type
+        };
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read [GroupImc], invalid type [{type}] (expected: Imc): {element}", actualMessage));
+    }
+
+
+    [TestMethod]
+    public void TestTryReadWithInvalidDefaultEntry()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupImcReader.TYPE
+        };
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithMetaImcEntryReaderTryRead(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupImc.DefaultEntry), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read [MetaImcEntry] for [GroupImc]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidIdentifier()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupImcReader.TYPE
+        };
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithMetaImcIdentifierReaderTryRead(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupImc.Identifier), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read [MetaImcIdentifier] for [GroupImc]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidOptions()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupImcReader.TYPE
+        };
+
+        var reader = new GroupImcReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithOptionImcGenericReaderReadMany(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupImc.Options), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [OptionImc] for [GroupImc]: {element}", actualMessage));
     }
 }
