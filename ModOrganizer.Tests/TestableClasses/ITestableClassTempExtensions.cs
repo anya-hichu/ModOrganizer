@@ -4,8 +4,11 @@ public static class ITestableClassTempExtensions
 {
     public static string CreateResultsTempDirectory(this ITestableClassTemp testable)
     {
-        var textContext = testable.TestContext;
+        var testContext = testable.TestContext;
 
-        return Directory.CreateDirectory(Path.Combine(textContext.ResultsDirectory!, HashCode.Combine(textContext.TestName, textContext.TestData).ToString())).FullName;
+        var testDirectoryName = HashCode.Combine(testContext.TestName, testContext.TestData).ToString();
+        var directory = Directory.CreateDirectory(Path.Combine(testContext.ResultsDirectory!, testDirectoryName));
+
+        return directory.FullName;
     }
 }
