@@ -2,6 +2,7 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.Groups.Generics;
 using ModOrganizer.Json.Penumbra.LocalModDatas;
 using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Json.Penumbra.SortOrders;

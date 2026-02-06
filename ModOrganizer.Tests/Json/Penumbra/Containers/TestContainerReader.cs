@@ -1,9 +1,9 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
-using ModOrganizer.Json.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations.Wrappers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
-using ModOrganizer.Tests.Json.Penumbra.Manipulations;
+using ModOrganizer.Tests.Json.Penumbra.Manipulations.Wrappers.Generics;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Containers;

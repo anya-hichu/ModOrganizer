@@ -1,4 +1,4 @@
-using ModOrganizer.Json.Penumbra.Groups.Fakes;
+using ModOrganizer.Json.Penumbra.Groups.Bases.Fakes;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
 

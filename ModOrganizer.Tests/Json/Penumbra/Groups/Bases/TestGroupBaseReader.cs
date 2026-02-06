@@ -1,6 +1,7 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Groups;
+using ModOrganizer.Json.Penumbra.Groups.Bases;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using System.Text.Json;
 

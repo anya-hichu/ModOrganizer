@@ -2,7 +2,7 @@ using Dalamud.Plugin.Fakes;
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.DefaultMods.Fakes;
-using ModOrganizer.Json.Penumbra.Groups.Fakes;
+using ModOrganizer.Json.Penumbra.Groups.Generics.Fakes;
 using ModOrganizer.Json.Penumbra.LocalModDatas.Fakes;
 using ModOrganizer.Json.Penumbra.ModMetas.Fakes;
 using ModOrganizer.Json.Penumbra.SortOrders.Fakes;

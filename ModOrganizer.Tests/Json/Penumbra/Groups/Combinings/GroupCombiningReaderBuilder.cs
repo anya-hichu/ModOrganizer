@@ -1,8 +1,8 @@
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Containers;
-using ModOrganizer.Json.Penumbra.Groups;
-using ModOrganizer.Json.Penumbra.Groups.Fakes;
+using ModOrganizer.Json.Penumbra.Groups.Bases.Fakes;
+using ModOrganizer.Json.Penumbra.Groups.Combinings;
 using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;

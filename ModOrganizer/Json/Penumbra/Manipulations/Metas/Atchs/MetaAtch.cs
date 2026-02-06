@@ -1,4 +1,5 @@
 using ModOrganizer.Json.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs.Entries;
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Metas.Atchs;
 

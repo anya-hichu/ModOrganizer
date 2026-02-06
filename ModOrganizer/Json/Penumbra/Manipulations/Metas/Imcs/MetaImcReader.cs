@@ -1,4 +1,6 @@
 using Dalamud.Plugin.Services;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Entries;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Identifiers;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Elements;
 using System.Diagnostics.CodeAnalysis;

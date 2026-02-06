@@ -1,4 +1,4 @@
-using ModOrganizer.Json.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations.Wrappers;
 using System.Collections.Generic;
 
 namespace ModOrganizer.Json.Penumbra.Containers;

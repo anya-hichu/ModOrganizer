@@ -1,7 +1,9 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.Groups;
-using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
+using ModOrganizer.Json.Penumbra.Groups.Imcs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Entries;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Identifiers;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;

@@ -1,4 +1,4 @@
-using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
+using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Identifiers;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Imcs;
 

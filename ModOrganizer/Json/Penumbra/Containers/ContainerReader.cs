@@ -1,5 +1,6 @@
 using Dalamud.Plugin.Services;
-using ModOrganizer.Json.Penumbra.Manipulations;
+using ModOrganizer.Json.Penumbra.Manipulations.Wrappers;
+using ModOrganizer.Json.Penumbra.Manipulations.Wrappers.Generics;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Elements;
 using System.Collections.Generic;

@@ -7,10 +7,10 @@
         <Add FullName="ModOrganizer.Configs.IConfig!"/>
         <Add FullName="ModOrganizer.Configs.Defaults.IConfigDefault!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.DefaultMods.IDefaultModReader!"/>
-        <Add FullName="ModOrganizer.Json.Penumbra.Groups.IGroupBaseReader!"/>
-        <Add FullName="ModOrganizer.Json.Penumbra.Groups.IGroupGenericReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.Groups.Bases.IGroupBaseReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.Groups.Generics.IGroupGenericReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.LocalModDatas.ILocalModDataReader!"/>
-        <Add FullName="ModOrganizer.Json.Penumbra.Manipulations.IManipulationWrapperGenericReader!"/>
+        <Add FullName="ModOrganizer.Json.Penumbra.Manipulations.Wrappers.Generics.IManipulationWrapperGenericReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.ModMetas.IModMetaReader!"/>
         <Add FullName="ModOrganizer.Json.Penumbra.Options.Imcs.IOptionImcGenericReader"/>
         <Add FullName="ModOrganizer.Json.Penumbra.SortOrders.ISortOrderReader!"/>
