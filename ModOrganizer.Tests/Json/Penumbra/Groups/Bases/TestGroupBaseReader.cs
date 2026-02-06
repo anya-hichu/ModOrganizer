@@ -110,6 +110,39 @@ public class TestGroupBaseReader
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.StartsWith($"Failed to read [Group], unsupported [Version] found [{version}] (supported version: 0): {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Failed to read [Group], unsupported [Version] found [{version}] (supported version: 0): {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidName()
+    {
+        var observer = new StubObserver();
+
+        var name = string.Empty;
+
+        var reader = new GroupBaseReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(Group.Version), GroupBaseReader.SUPPORTED_VERSION },
+            { nameof(Group.Name), name }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(2, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug),
+            actualMessage => Assert.AreEqual("Expected value to not be empty", actualMessage));
+
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [Name] value to be not empty [String]: {element}", actualMessage));
     }
 }

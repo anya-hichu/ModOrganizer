@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace ModOrganizer.Json.Readers.Elements;
 
@@ -108,7 +109,7 @@ public static class ElementExtensions
         if (!element.TryGetValue(out string? stringValue, maybePluginLog)) return false;
         if (stringValue.IsNullOrEmpty())
         {
-            maybePluginLog?.Warning("Expected value to not be empty");
+            maybePluginLog?.Debug("Expected value to not be empty");
             return false;
         }
         value = stringValue;
@@ -276,7 +277,12 @@ public static class ElementExtensions
         => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetValue, maybePluginLog);
 
     public static bool TryGetRequiredNotEmptyPropertyValue(this JsonElement element, string propertyName, [NotNullWhen(true)] out string? value, IPluginLog? maybePluginLog = null)
-        => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetNotEmptyValue, maybePluginLog);
+    {
+        if (element.TryGetRequiredPropertyValue(propertyName, out value, TryGetNotEmptyValue, maybePluginLog)) return true;
+
+        maybePluginLog?.Warning($"Expected property [{propertyName}] value to be not empty [{JsonValueKind.String}]: {element}");
+        return false;
+    } 
 
     public static bool TryGetRequiredU8PropertyValue(this JsonElement element, string propertyName, out byte value, IPluginLog? maybePluginLog = null)
         => element.TryGetRequiredPropertyValue(propertyName, out value, TryGetU8Value, maybePluginLog);

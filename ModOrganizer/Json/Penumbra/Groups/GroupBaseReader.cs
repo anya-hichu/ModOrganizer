@@ -8,7 +8,7 @@ namespace ModOrganizer.Json.Penumbra.Groups;
 
 public class GroupBaseReader(IPluginLog pluginLog) : Reader<Group>(pluginLog), IGroupBaseReader
 {
-    private static readonly uint SUPPORTED_VERSION = 0;
+    public static readonly uint SUPPORTED_VERSION = 0;
 
     public override bool TryRead(JsonElement element, [NotNullWhen(true)] out Group? instance)
     {

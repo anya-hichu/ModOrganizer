@@ -45,6 +45,7 @@ public class GroupSingleReader(IGroupBaseReader groupBaseReader, IReader<OptionC
             Image = baseGroup.Image,
             Priority = baseGroup.Priority,
             DefaultSettings = baseGroup.DefaultSettings,
+
             Options = options
         };
 
