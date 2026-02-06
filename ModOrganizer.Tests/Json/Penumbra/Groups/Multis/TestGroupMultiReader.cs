@@ -168,9 +168,43 @@ public class TestGroupMultiReader
             actualMessage => Assert.AreEqual($"Failed to read [GroupMulti], invalid type [{type}] (expected: Multi): {element}", actualMessage));
     }
 
-
     [TestMethod]
     public void TestTryReadWithInvalidOptions()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupMultiReader.TYPE
+        };
+
+        var reader = new GroupMultiReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithOptionContainerReaderTryReadMany(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupMulti.Options), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [OptionContainer] for [GroupMulti]: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidOptionsWithoutPriority()
     {
         var observer = new StubObserver();
 

@@ -22,7 +22,10 @@ public class TestManipulationWrapperGenericReader
             .WithPluginLogObserver(observer)
             .Build();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(ManipulationWrapper.Type), type } });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(ManipulationWrapper.Type), type } 
+        });
 
         var success = reader.TryRead(element, out var manipulationWrapper);
 
@@ -59,7 +62,10 @@ public class TestManipulationWrapperGenericReader
             .WithReaderTryRead(type, manipulationWrapper)
             .Build();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(ManipulationWrapper.Type), type } });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(ManipulationWrapper.Type), type } 
+        });
 
         var success = reader.TryRead(element, out var actualManipulationWrapper);
 
@@ -87,7 +93,10 @@ public class TestManipulationWrapperGenericReader
             .WithReaderTryRead(type, null as ManipulationWrapper)
             .Build();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(ManipulationWrapper.Type), type } });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        { 
+            { nameof(ManipulationWrapper.Type), type } 
+        });
 
         var success = reader.TryRead(element, out var manipulationWrapper);
 

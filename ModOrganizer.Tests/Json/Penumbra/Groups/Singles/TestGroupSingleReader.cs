@@ -166,4 +166,39 @@ public class TestGroupSingleReader
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Failed to read [GroupSingle], invalid type [{type}] (expected: Single): {element}", actualMessage));
     }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidOptions()
+    {
+        var observer = new StubObserver();
+
+        var baseGroup = new Group()
+        {
+            Name = "Group Name",
+            Type = GroupSingleReader.TYPE
+        };
+
+        var reader = new GroupSingleReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithGroupBaseReaderTryRead(baseGroup)
+            .WithOptionContainerReaderTryReadMany(null)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(GroupSingle.Options), false }
+        });
+
+        var success = reader.TryRead(element, out var group);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(group);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [OptionContainer] for [GroupSingle]: {element}", actualMessage));
+    }
 }
