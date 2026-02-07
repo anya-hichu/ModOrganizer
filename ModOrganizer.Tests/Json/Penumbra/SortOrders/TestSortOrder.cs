@@ -9,7 +9,16 @@ public class TestSortOrder
     public void TestDefaults()
     {
         var sortOrder = new SortOrder();
+
         Assert.IsEmpty(sortOrder.Data);
         Assert.IsEmpty(sortOrder.EmptyFolders);
+    }
+
+    [TestMethod]
+    public void TestToString()
+    {
+        var sortOrder = new SortOrder();
+
+        Assert.AreEqual("SortOrder", sortOrder.ToString());
     }
 }
