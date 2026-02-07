@@ -1,4 +1,7 @@
+using Dalamud.Plugin.Services;
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.LocalModDatas;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.LocalModDatas;
@@ -64,9 +67,105 @@ public class TestLocalModData
 
         Assert.AreEqual(fileVersion, localModData.FileVersion);
 
-
         Assert.IsNull(localModData.ImportDate);
-
         Assert.IsNull(localModData.LocalTags);
+        Assert.IsNull(localModData.Favorite);
+        Assert.IsNull(localModData.PreferredChangedItems);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidVersion()
+    {
+        var observer = new StubObserver();
+
+        var fileVersion = 0u;
+
+        var reader = new LocalModDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(LocalModDataV3.FileVersion), fileVersion }
+        });
+
+        var success = reader.TryRead(element, out var localModData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(localModData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read [LocalModDataV3], unsupported [FileVersion] found [{fileVersion}] (supported version: 3): {element}", actualMessage));
+    }
+
+    [TestMethod]
+    [DataRow(nameof(LocalModDataV3.ImportDate), JsonValueKind.Number)]
+    [DataRow(nameof(LocalModDataV3.LocalTags), JsonValueKind.Array)]
+    [DataRow(nameof(LocalModDataV3.PreferredChangedItems), JsonValueKind.Array)]
+    public void TestTryReadWithInvalidValueKind(string propertyName, JsonValueKind kind)
+    {
+        var observer = new StubObserver();
+
+        var fileVersion = LocalModDataReader.SUPPORTED_FILE_VERSION;
+
+        var reader = new LocalModDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var propertyValue = false;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(LocalModDataV3.FileVersion), fileVersion },
+            { propertyName, propertyValue }
+        });
+
+        var success = reader.TryRead(element, out var localModData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(localModData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+           actualMessage => Assert.AreEqual($"Expected [{kind}] value kind but found [False]: {propertyValue}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidFavoriteKind()
+    {
+        var observer = new StubObserver();
+
+        var fileVersion = LocalModDataReader.SUPPORTED_FILE_VERSION;
+
+        var reader = new LocalModDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var propertyValue = 0;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(LocalModDataV3.FileVersion), fileVersion },
+            { nameof(LocalModDataV3.Favorite), propertyValue }
+        });
+
+        var success = reader.TryRead(element, out var localModData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(localModData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+           actualMessage => Assert.AreEqual($"Expected [Number] value kind to be parsable as [Boolean]: {propertyValue}", actualMessage));
     }
 }
