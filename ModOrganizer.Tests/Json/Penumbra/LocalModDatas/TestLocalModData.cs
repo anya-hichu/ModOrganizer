@@ -74,6 +74,54 @@ public class TestLocalModData
     }
 
     [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new LocalModDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var localModData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(localModData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: ", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithoutVersion()
+    {
+        var observer = new StubObserver();
+
+        var reader = new LocalModDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var success = reader.TryRead(element, out var localModData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(localModData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [FileVersion] to be present: {element}", actualMessage));
+    }
+
+    [TestMethod]
     public void TestTryReadWithInvalidVersion()
     {
         var observer = new StubObserver();
