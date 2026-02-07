@@ -8,7 +8,7 @@ namespace ModOrganizer.Json.Penumbra.LocalModDatas;
 
 public class LocalModDataReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<LocalModDataV3>(pluginLog), ILocalModDataReader
 {
-    public static readonly int SUPPORTED_FILE_VERSION = 3;
+    public static readonly uint SUPPORTED_FILE_VERSION = 3;
 
     public IElementReader ElementReader { get; init; } = elementReader;
 

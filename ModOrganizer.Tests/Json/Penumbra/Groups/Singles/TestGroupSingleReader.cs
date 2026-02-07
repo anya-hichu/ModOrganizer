@@ -80,8 +80,7 @@ public class TestGroupSingleReader
         var groupMulti = group as GroupSingle;
         Assert.IsNotNull(groupMulti);
 
-        Assert.IsNotNull(groupMulti.Options);
-        Assert.IsEmpty(groupMulti.Options);
+        Assert.IsNull(groupMulti.Options);
     }
 
     [TestMethod]

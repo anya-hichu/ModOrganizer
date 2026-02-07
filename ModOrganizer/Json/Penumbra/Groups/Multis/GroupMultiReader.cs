@@ -34,14 +34,14 @@ public class GroupMultiReader(IGroupBaseReader groupBaseReader, IReader<OptionCo
             return false;
         }
 
-        var options = Array.Empty<OptionContainer>();
+        OptionContainer[]? options = null;
         if (element.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !optionContainerReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}]: {element}");
             return false;
         }
 
-        if (!options.All(o => o.Priority.HasValue))
+        if (options != null && !options.All(o => o.Priority.HasValue))
         {
             PluginLog.Warning($"Expected all [{nameof(OptionContainer)}] for [{nameof(GroupMulti)}] to have [{nameof(Option.Priority)}] value: {element}");
             return false;

@@ -31,7 +31,7 @@ public class GroupSingleReader(IGroupBaseReader groupBaseReader, IReader<OptionC
             return false;
         }
 
-        var options = Array.Empty<OptionContainer>();
+        OptionContainer[]? options = null;
         if (element.TryGetProperty(nameof(GroupSingle.Options), out var optionsProperty) && !optionContainerReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionContainer)}] for [{nameof(GroupSingle)}]: {element}");

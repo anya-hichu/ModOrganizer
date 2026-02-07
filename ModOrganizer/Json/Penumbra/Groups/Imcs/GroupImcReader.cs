@@ -5,7 +5,6 @@ using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Identifiers;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Elements;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -50,7 +49,7 @@ public class GroupImcReader(IGroupBaseReader groupBaseReader, IReader<MetaImcEnt
             return false;
         }
 
-        var options = Array.Empty<OptionImc>();
+        OptionImc[]? options = null;
         if (element.TryGetOptionalProperty(nameof(GroupImc.Options), out var optionsProperty, PluginLog) && !optionImcGenericReader.TryReadMany(optionsProperty, out options))
         {
             PluginLog.Warning($"Failed to read one or more [{nameof(OptionImc)}] for [{nameof(GroupImc)}]: {element}");

@@ -86,11 +86,8 @@ public class TestGroupCombiningReader
         var groupCombining = group as GroupCombining;
         Assert.IsNotNull(groupCombining);
 
-        Assert.IsNotNull(groupCombining.Containers);
-        Assert.IsEmpty(groupCombining.Containers);
-
-        Assert.IsNotNull(groupCombining.Options);
-        Assert.IsEmpty(groupCombining.Options);
+        Assert.IsNull(groupCombining.Containers);
+        Assert.IsNull(groupCombining.Options);
     }
 
     [TestMethod]

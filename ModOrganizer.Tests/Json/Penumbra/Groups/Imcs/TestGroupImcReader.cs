@@ -60,7 +60,8 @@ public class TestGroupImcReader
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
             { nameof(GroupImc.DefaultEntry), defaultEntry },
-            { nameof(GroupImc.Identifier), identifier }
+            { nameof(GroupImc.Identifier), identifier },
+            { nameof(GroupImc.Options), options },
         });
 
         var success = reader.TryRead(element, out var group);
@@ -113,9 +114,7 @@ public class TestGroupImcReader
 
         Assert.IsNull(groupImc.DefaultEntry);
         Assert.IsNull(groupImc.Identifier);
-
-        Assert.IsNotNull(groupImc.Options);
-        Assert.IsEmpty(groupImc.Options);
+        Assert.IsNull(groupImc.Options);
     }
 
 

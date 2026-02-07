@@ -9,7 +9,8 @@ public class TestLocalModData
     [TestMethod]
     public void TestTryRead()
     {
-        var fileVersion = 3u;
+        var fileVersion = LocalModDataReader.SUPPORTED_FILE_VERSION;
+
         var importDate = 2;
         var localTag = "Local Tag";
         var preferredChangedItem = 1;
@@ -42,5 +43,30 @@ public class TestLocalModData
         Assert.IsNotNull(localModData.PreferredChangedItems);
         Assert.HasCount(1, localModData.PreferredChangedItems);
         Assert.AreEqual(preferredChangedItem, localModData.PreferredChangedItems[0]);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithDefaults()
+    {
+        var fileVersion = LocalModDataReader.SUPPORTED_FILE_VERSION;
+
+        var reader = new LocalModDataReaderBuilder().Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(LocalModDataV3.FileVersion), fileVersion }
+        });
+
+        var success = reader.TryRead(element, out var localModData);
+
+        Assert.IsTrue(success);
+        Assert.IsNotNull(localModData);
+
+        Assert.AreEqual(fileVersion, localModData.FileVersion);
+
+
+        Assert.IsNull(localModData.ImportDate);
+
+        Assert.IsNull(localModData.LocalTags);
     }
 }
