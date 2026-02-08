@@ -12,7 +12,7 @@ using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers;
 
-namespace ModOrganizer.Tests.Json.Penumbra.Groups;
+namespace ModOrganizer.Tests.Json.Penumbra.Groups.Generics;
 
 public class GroupGenericReaderBuilder : IBuilder<GroupGenericReader>, IStubbablePluginLog, IStubbableReaderProvider<Group>
 {

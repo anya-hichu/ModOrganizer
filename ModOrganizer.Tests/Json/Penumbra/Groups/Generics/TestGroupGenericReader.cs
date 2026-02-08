@@ -5,7 +5,7 @@ using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers;
 using System.Text.Json;
 
-namespace ModOrganizer.Tests.Json.Penumbra.Groups;
+namespace ModOrganizer.Tests.Json.Penumbra.Groups.Generics;
 
 [TestClass]
 public class TestGroupGenericReader

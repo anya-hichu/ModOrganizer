@@ -13,6 +13,7 @@ public class TestModMetaReader
     public void TestTryRead()
     {
         var fileVersion = ModMetaReader.SUPPORTED_FILE_VERSION;
+
         var name = "Name";
 
         var author = "Author";
@@ -74,6 +75,7 @@ public class TestModMetaReader
     public void TestTryReadWithDefaults()
     {
         var fileVersion = ModMetaReader.SUPPORTED_FILE_VERSION;
+
         var name = "Name";
 
         var reader = new ModMetaReaderBuilder().Build();
