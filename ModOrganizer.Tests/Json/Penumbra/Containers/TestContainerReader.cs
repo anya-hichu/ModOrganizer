@@ -91,6 +91,30 @@ public class TestContainerReader
     }
 
     [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ContainerReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: ", actualMessage));
+    }
+
+    [TestMethod]
     public void TestTryReadWithInvalidFiles()
     {
         var observer = new StubObserver();

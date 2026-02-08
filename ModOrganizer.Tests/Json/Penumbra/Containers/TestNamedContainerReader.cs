@@ -16,7 +16,10 @@ public class TestNamedContainerReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(NamedContainer.Name), name } 
+        });
 
         var reader = new NamedContainerReaderBuilder()
             .WithContainerReaderTryRead(new())
@@ -48,12 +51,39 @@ public class TestNamedContainerReader
     }
 
     [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new NamedContainerReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: ", actualMessage));
+    }
+
+    [TestMethod]
     public void TestTryReadWithInvalidName()
     {
         var observer = new StubObserver();
 
         var name = 0;
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(NamedContainer.Name), name } });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(NamedContainer.Name), name } 
+        });
 
         var reader = new NamedContainerReaderBuilder()
             .WithPluginLogDefaults()
@@ -71,5 +101,33 @@ public class TestNamedContainerReader
         Assert.HasCount(1, calls);
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual($"Expected [String] value kind but found [Number]: {name}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidContainer()
+    {
+        var observer = new StubObserver();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(NamedContainer.Name), "Name" }
+        });
+
+        var reader = new NamedContainerReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithContainerReaderTryRead(null)
+            .Build();
+
+        var success = reader.TryRead(element, out var namedContainer);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(namedContainer);
+
+        var calls = observer.GetCalls();
+
+        Assert.HasCount(1, calls);
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug),
+            actualMessage => Assert.AreEqual($"Failed to read base [Container] for [NamedContainer]: {element}", actualMessage));
     }
 }

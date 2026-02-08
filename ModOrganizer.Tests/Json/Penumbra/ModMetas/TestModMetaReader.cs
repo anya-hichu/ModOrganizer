@@ -3,7 +3,6 @@ using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.ModMetas;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using System.Text.Json;
-using System.Xml.Linq;
 
 namespace ModOrganizer.Tests.Json.Penumbra.ModMetas;
 

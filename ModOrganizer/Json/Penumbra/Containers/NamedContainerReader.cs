@@ -14,13 +14,13 @@ public class NamedContainerReader(IReader<Container> containerReader, IPluginLog
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
+        if (!element.TryGetOptionalPropertyValue(nameof(NamedContainer.Name), out string? name, PluginLog)) return false;
+
         if (!containerReader.TryRead(element, out var container))
         {
             PluginLog.Debug($"Failed to read base [{nameof(Container)}] for [{nameof(NamedContainer)}]: {element}");
             return false;
         }
-
-        if (!element.TryGetOptionalPropertyValue(nameof(NamedContainer.Name), out string? name, PluginLog)) return false;
 
         instance = new()
         {
