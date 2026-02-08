@@ -1,5 +1,9 @@
+using Dalamud.Plugin.Services;
+using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.Penumbra.ModMetas;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace ModOrganizer.Tests.Json.Penumbra.ModMetas;
 
@@ -98,5 +102,148 @@ public class TestModMetaReader
         Assert.IsNull(modMeta.ModTags);
         Assert.IsNull(modMeta.DefaultPreferredItems);
         Assert.IsNull(modMeta.RequiredFeatures);
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ModMetaReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected [Object] value kind but found [Null]: ", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithoutVersion()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ModMetaReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [FileVersion] to be present: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidVersion()
+    {
+        var observer = new StubObserver();
+
+        var fileVersion = 0u;
+
+        var reader = new ModMetaReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(ModMetaV3.FileVersion), fileVersion }
+        });
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read [ModMetaV3], unsupported [FileVersion] found [{fileVersion}] (supported version: 3): {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithoutName()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ModMetaReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(ModMetaV3.FileVersion), ModMetaReader.SUPPORTED_FILE_VERSION }
+        });
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [Name] to be present: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    [DataRow(nameof(ModMetaV3.Author), JsonValueKind.String)]
+    [DataRow(nameof(ModMetaV3.Description), JsonValueKind.String)]
+    [DataRow(nameof(ModMetaV3.Image), JsonValueKind.String)]
+    [DataRow(nameof(ModMetaV3.Version), JsonValueKind.String)]
+    [DataRow(nameof(ModMetaV3.Website), JsonValueKind.String)]
+    [DataRow(nameof(ModMetaV3.ModTags), JsonValueKind.Array)]
+    [DataRow(nameof(ModMetaV3.DefaultPreferredItems), JsonValueKind.Array)]
+    [DataRow(nameof(ModMetaV3.RequiredFeatures), JsonValueKind.Array)]
+    public void TestTryReadWithInvalidValueKind(string propertyName, JsonValueKind kind)
+    {
+        var observer = new StubObserver();
+
+        var reader = new ModMetaReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var propertyValue = false;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(ModMetaV3.FileVersion), ModMetaReader.SUPPORTED_FILE_VERSION },
+            { nameof(ModMetaV3.Name), string.Empty },
+            { propertyName, propertyValue }
+        });
+
+        var success = reader.TryRead(element, out var modMeta);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(modMeta);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+           actualMessage => Assert.AreEqual($"Expected [{kind}] value kind but found [False]: {propertyValue}", actualMessage));
     }
 }

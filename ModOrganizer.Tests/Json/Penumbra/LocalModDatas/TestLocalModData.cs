@@ -190,8 +190,6 @@ public class TestLocalModData
     {
         var observer = new StubObserver();
 
-        var fileVersion = LocalModDataReader.SUPPORTED_FILE_VERSION;
-
         var reader = new LocalModDataReaderBuilder()
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
@@ -201,7 +199,7 @@ public class TestLocalModData
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { nameof(LocalModDataV3.FileVersion), fileVersion },
+            { nameof(LocalModDataV3.FileVersion), LocalModDataReader.SUPPORTED_FILE_VERSION },
             { nameof(LocalModDataV3.Favorite), propertyValue }
         });
 
