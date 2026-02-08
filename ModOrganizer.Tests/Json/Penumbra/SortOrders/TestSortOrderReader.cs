@@ -165,7 +165,10 @@ public class TestSortOrderReader
     {
         var observer = new StubObserver();
 
-        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() { { nameof(SortOrder.Data), null } });
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>() 
+        { 
+            { nameof(SortOrder.Data), null } 
+        });
 
         var reader = new SortOrderReaderBuilder()
             .WithPluginLogDefaults()

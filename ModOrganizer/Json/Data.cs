@@ -1,6 +1,6 @@
 namespace ModOrganizer.Json;
 
-public abstract partial class Data
+public abstract class Data
 {
-    // Empty
+    public override string ToString() => GetType().Name;
 }

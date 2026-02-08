@@ -9,7 +9,7 @@ namespace ModOrganizer.Json.Penumbra.ModMetas;
 
 public class ModMetaReader(IElementReader elementReader, IPluginLog pluginLog) : Reader<ModMetaV3>(pluginLog), IModMetaReader
 {
-    private static readonly uint SUPPORTED_FILE_VERSION = 3;
+    public static readonly uint SUPPORTED_FILE_VERSION = 3;
 
     public IElementReader ElementReader { get; init; } = elementReader;
 
