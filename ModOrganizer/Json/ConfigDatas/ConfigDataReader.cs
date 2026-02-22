@@ -9,7 +9,7 @@ namespace ModOrganizer.Json.ConfigDatas;
 
 public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IConfigDataReader
 {
-    private static readonly uint SUPPORTED_VERSION = 0;
+    public static readonly uint SUPPORTED_VERSION = 0;
 
     public IElementReader ElementReader { get; init; } = elementReader;
 
@@ -19,7 +19,7 @@ public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ru
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (!element.TryGetRequiredPropertyValue(nameof(ConfigData.Version), out int version, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(ConfigData.Version), out uint version, PluginLog)) return false;
 
         if (version != SUPPORTED_VERSION)
         {

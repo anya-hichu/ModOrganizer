@@ -4,13 +4,13 @@ using ModOrganizer.Json.Penumbra.Groups.Bases.Fakes;
 using ModOrganizer.Json.Penumbra.Groups.Imcs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Entries;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs.Identifiers;
-using ModOrganizer.Json.Penumbra.Options.Imcs.Fakes;
+using ModOrganizer.Json.Penumbra.Options.Imcs.Generics.Fakes;
 using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
 using ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Imcs;
-using ModOrganizer.Tests.Json.Penumbra.Options.Imcs;
+using ModOrganizer.Tests.Json.Penumbra.Options.Imcs.Generics;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups.Imcs;
 

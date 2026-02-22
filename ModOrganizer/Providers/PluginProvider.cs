@@ -41,6 +41,7 @@ using ModOrganizer.Json.Penumbra.Options;
 using ModOrganizer.Json.Penumbra.Options.Containers;
 using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Json.Penumbra.Options.Imcs.AttributeMasks;
+using ModOrganizer.Json.Penumbra.Options.Imcs.Generics;
 using ModOrganizer.Json.Penumbra.Options.Imcs.IsDisableSubMods;
 using ModOrganizer.Json.Penumbra.SortOrders;
 using ModOrganizer.Json.Readers;

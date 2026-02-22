@@ -2,7 +2,7 @@ namespace ModOrganizer.Tests.Json.Readers;
 
 public static class IStubbableReaderProviderExtensions
 {
-    public static S WithReaderTryRead<S, D>(this S stubbable, string type, D? stubValue) where D : class where S : IStubbableReaderProvider<D>
+    public static S WithReaderTryRead<S, V>(this S stubbable, string type, V? stubValue) where V : class where S : IStubbableReaderProvider<V>
     {
         stubbable.GetReaderStub(type).TryReadJsonElementT0Out = (element, out instance) =>
         {

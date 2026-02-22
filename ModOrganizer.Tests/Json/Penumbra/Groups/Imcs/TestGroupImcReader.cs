@@ -8,7 +8,7 @@ using ModOrganizer.Json.Penumbra.Options.Imcs;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Groups.Bases;
 using ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Imcs;
-using ModOrganizer.Tests.Json.Penumbra.Options.Imcs;
+using ModOrganizer.Tests.Json.Penumbra.Options.Imcs.Generics;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.Groups.Imcs;
@@ -54,7 +54,7 @@ public class TestGroupImcReader
             .WithGroupBaseReaderTryRead(baseGroup)
             .WithMetaImcEntryReaderTryRead(defaultEntry)
             .WithMetaImcIdentifierReaderTryRead(identifier)
-            .WithOptionImcGenericReaderReadMany(options)
+            .WithOptionImcGenericReaderTryReadMany(options)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
@@ -324,7 +324,7 @@ public class TestGroupImcReader
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithGroupBaseReaderTryRead(baseGroup)
-            .WithOptionImcGenericReaderReadMany(null)
+            .WithOptionImcGenericReaderTryReadMany(null)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()

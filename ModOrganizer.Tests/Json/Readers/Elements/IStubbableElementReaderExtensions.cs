@@ -23,4 +23,16 @@ public static class IStubbableElementReaderExtensions
 
         return stubbable;
     }
+
+    public static T WithElementReaderTryReadFromData<T>(this T stubbable, JsonElement? stubValue) where T : IStubbableElementReader
+    {
+        stubbable.ElementReaderStub.TryReadFromDataStringJsonElementOut = (path, out instance) =>
+        {
+            instance = stubValue.GetValueOrDefault();
+
+            return stubValue.HasValue;
+        };
+
+        return stubbable;
+    }
 }

@@ -1,6 +1,8 @@
+using Dalamud.Plugin.Services;
+
 namespace ModOrganizer.Json.Writers.Files;
 
-public interface IFileWriter<T>
+public interface IFileWriter<T> : IWriter<T>
 {
-    // TODO
+    IPluginLog PluginLog { get; }
 }

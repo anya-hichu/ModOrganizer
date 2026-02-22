@@ -40,7 +40,8 @@ public class ConfigWindow : Window
         };
 
         TitleBarButtons = [
-            new() {
+            new() 
+            {
                 Icon = FontAwesomeIcon.Database,
                 ShowTooltip = () => ImGui.SetTooltip("Toggle backup window"),
                 Click = _ => WindowToggler.Toggle<BackupWindow>()
@@ -50,7 +51,7 @@ public class ConfigWindow : Window
         RegisterSettingsSection = new(pluginInterface);
         UnregisterSettingsSection = new(pluginInterface);
 
-        RegisterSettingsSection.Invoke(DrawAutoProcessSettings);
+        RegisterSettingsSection.Invoke(DrawPenumbraSettings);
 
         SaveConfigLaterAction = Debouncer.Debounce(SaveConfig, TimeSpan.FromSeconds(1));
     }
@@ -58,7 +59,7 @@ public class ConfigWindow : Window
     public void Dispose() 
     {
         SaveConfigLaterAction.Dispose();
-        UnregisterSettingsSection.Invoke(DrawAutoProcessSettings);
+        UnregisterSettingsSection.Invoke(DrawPenumbraSettings);
     } 
 
     public override void Draw()
@@ -67,7 +68,7 @@ public class ConfigWindow : Window
 
         if (ImGui.Button("Export##export")) PluginProvider.Init<ConfigExportWindow>();
 
-        DrawAutoProcessSettings();
+        DrawPenumbraSettings();
 
         var autoBackupEnabled = Config.AutoBackupEnabled;
         if (ImGui.Checkbox("Auto-Backup (recommended)##autoBackupEnabled", ref autoBackupEnabled))
@@ -139,7 +140,7 @@ public class ConfigWindow : Window
         }
     }
 
-    private void DrawAutoProcessSettings()
+    private void DrawPenumbraSettings()
     {
         var autoProcessEnabled = Config.AutoProcessEnabled;
         if (ImGui.Checkbox("Auto-Process##autoProcessEnabled", ref autoProcessEnabled))

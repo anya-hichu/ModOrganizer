@@ -5,7 +5,6 @@ using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Manipulations.Wrappers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Penumbra.Containers;
-using System;
 using System.Text.Json;
 
 namespace ModOrganizer.Tests.Json.Penumbra.DefaultMods;

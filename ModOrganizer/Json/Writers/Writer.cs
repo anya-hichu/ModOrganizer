@@ -6,7 +6,7 @@ namespace ModOrganizer.Json.Writers;
 
 public abstract class Writer<T>(IPluginLog pluginLog) : IWriter<T>
 {
-    protected IPluginLog PluginLog { get; init; } = pluginLog;
+    public IPluginLog PluginLog { get; init; } = pluginLog;
 
     public abstract bool TryWrite(Utf8JsonWriter jsonWriter, T instance);
 

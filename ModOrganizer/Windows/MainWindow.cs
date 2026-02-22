@@ -568,7 +568,7 @@ public class MainWindow : Window
         var isLeaf = valueType.IsPrimitive || isEmptyList || isEmptyDict;
         var isPrintable = isLeaf || valueType.IsEnum || value is string || value is ReadOnlySeString;
 
-        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : string.Empty)} ({valueType.ScriptPrettyName()})###inspect{value.GetHashCode()}{name}", 
+        using var treeNode = ImRaii.TreeNode($"{name}: {(isPrintable ? ViewTemplateContext.ObjectToString(value) : string.Empty)} ({valueType.ScriptPrettyName()})###memberValue{name}{value.GetHashCode()}", 
             isLeaf ? ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet : ImGuiTreeNodeFlags.None);
 
         if (!treeNode) return;

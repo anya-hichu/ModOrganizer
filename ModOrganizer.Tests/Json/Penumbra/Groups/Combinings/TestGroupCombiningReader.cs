@@ -33,7 +33,7 @@ public class TestGroupCombiningReader
         var reader = new GroupCombiningReaderBuilder()
             .WithGroupBaseReaderTryRead(baseGroup)
             .WithNamedContainerReaderReadMany(containers)
-            .WithOptionReaderReadMany(options)
+            .WithOptionReaderTryReadMany(options)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
@@ -187,7 +187,7 @@ public class TestGroupCombiningReader
             .WithPluginLogDefaults()
             .WithPluginLogObserver(observer)
             .WithGroupBaseReaderTryRead(baseGroup)
-            .WithOptionReaderReadMany(null)
+            .WithOptionReaderTryReadMany(null)
             .Build();
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
