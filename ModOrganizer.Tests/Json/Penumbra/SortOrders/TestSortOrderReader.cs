@@ -161,7 +161,7 @@ public class TestSortOrderReader
     }
 
     [TestMethod]
-    public void TestTryReadFromFileWithInvalid()
+    public void TestTryReadFromFileWithInvalidElement()
     {
         var observer = new StubObserver();
 
@@ -189,5 +189,44 @@ public class TestSortOrderReader
             actualMessage => Assert.AreEqual($"Expected property [Data] to be present: {element}", actualMessage));
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning), 
             actualMessage => Assert.AreEqual($"Failed to read instance [SortOrder] from json file [{filePath}]", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadFromFileWithInvalidData()
+    {
+        var reader = new SortOrderReaderBuilder()
+            .WithElementReaderTryReadFromFile(null)
+            .Build();
+
+        var success = reader.TryReadFromFile("File Path", out var sortOrder);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(sortOrder);
+    }
+
+    [TestMethod]
+    public void TestTryReadFromFileWithException()
+    {
+        var observer = new StubObserver();
+
+        var exceptionMessage = "Exception Message";
+
+        var reader = new SortOrderReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithElementReaderTryReadFromFileFunc((_, out __) => throw new Exception(exceptionMessage))
+            .Build();
+
+        var filePath = "File Path";
+        var success = reader.TryReadFromFile(filePath, out var sortOrder);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(sortOrder);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error),
+            actualMessage => Assert.AreEqual($"Caught exception while reading [SortOrder] from json file [{filePath}] ({exceptionMessage})", actualMessage));
     }
 }

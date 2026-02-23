@@ -1,3 +1,4 @@
+using Microsoft.QualityTools.Testing.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using System.Text.Json;
 
@@ -20,6 +21,13 @@ public static class IStubbableElementReaderExtensions
 
             return stubValue.HasValue;
         };
+
+        return stubbable;
+    }
+
+    public static T WithElementReaderTryReadFromFileFunc<T>(this T stubbable, FakesDelegates.OutFunc<string, JsonElement, bool> func) where T : IStubbableElementReader
+    {
+        stubbable.ElementReaderStub.TryReadFromFileStringJsonElementOut = func;
 
         return stubbable;
     }
