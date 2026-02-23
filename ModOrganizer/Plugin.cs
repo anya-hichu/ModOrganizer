@@ -16,12 +16,14 @@ public sealed class Plugin : IDalamudPlugin
     {
         PluginProvider = new(pluginInterface);
 
-        pluginInterface.UiBuilder.Draw += PluginProvider.Get<WindowSystem>().Draw;
-        pluginInterface.UiBuilder.OpenConfigUi += PluginProvider.Get<ConfigWindow>().Toggle;
-        pluginInterface.UiBuilder.OpenMainUi += PluginProvider.Get<MainWindow>().Toggle;
-
         PluginProvider.Init<ICommand>();
         PluginProvider.Init<IModAutoProcessor>();
+
+        var uiBuilder = pluginInterface.UiBuilder;
+
+        uiBuilder.Draw += PluginProvider.Get<WindowSystem>().Draw;
+        uiBuilder.OpenConfigUi += PluginProvider.Get<ConfigWindow>().Toggle;
+        uiBuilder.OpenMainUi += PluginProvider.Get<MainWindow>().Toggle;
     }
 
     public void Dispose() => PluginProvider.Dispose();
