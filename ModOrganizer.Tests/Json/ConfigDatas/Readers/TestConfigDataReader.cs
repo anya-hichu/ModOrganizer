@@ -1,3 +1,4 @@
+using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.ConfigDatas;
 using ModOrganizer.Json.ConfigDatas.Readers;
@@ -5,6 +6,7 @@ using ModOrganizer.Json.Readers.Clipboards;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Json.RuleDatas;
+using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers.Elements;
 using ModOrganizer.Tests.Json.RuleDatas;
 using ModOrganizer.Tests.TestableClasses;
@@ -78,6 +80,66 @@ public class TestConfigDataReader : ITestableClassTemp
         var call = calls[0];
         Assert.AreEqual(nameof(IElementReader.TryReadFromData), call.StubbedMethod.Name);
         Assert.AreEqual("""{"Version":0,"Rules":[]}""", call.GetArguments()[0] as string);
+    }
+
+    [TestMethod]
+    public void TestTryReadFromClipboardWithInvalidRuleDatas()
+    {
+        var observer = new StubObserver();
+
+        var version = ConfigDataReader.SUPPORTED_VERSION;
+        var ruleDatas = Array.Empty<RuleData>();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(ConfigData.Version), version },
+            { nameof(ConfigData.Rules), ruleDatas }
+        });
+
+        var reader = new ConfigDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithElementReaderTryReadFromData(element)
+            .WithRuleDataReaderTryReadMany(null)
+            .Build();
+
+        var data = "q1YKSy0qzszPU7Iy0FEKKs1JLVayio6tBQA=";
+        var success = reader.TryReadFromClipboard(data, out var configData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(configData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(2, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read one or more [RuleData] for [ConfigData]: {element}", actualMessage));
+        AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual("""Failed to read [ConfigData] from clipboard data: {"Version":0,"Rules":[]}""", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadFromClipboardWithException()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ConfigDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var data = "Invalid Data";
+        var success = reader.TryReadFromClipboard(data, out var configData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(configData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Error),
+            actualMessage => Assert.AreEqual("Caught exception while reading [ConfigData] from clipboard data (The input is not a valid Base-64 string as it contains a non-base 64 character, " +
+            $"more than two padding characters, or an illegal character among the padding characters.): {data}", actualMessage));
     }
 
     [TestMethod]
