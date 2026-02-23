@@ -14,19 +14,19 @@ public static class IClipboardWriterExtensions
 
         try
         {
-            using MemoryStream compressedStream = new(), decompressedStream = new();
+            using MemoryStream compressedStream = new(), stream = new();
 
-            using (var jsonWriter = new Utf8JsonWriter(decompressedStream))
+            using (var jsonWriter = new Utf8JsonWriter(stream))
             {
                 if (!clipboardWriter.TryWrite(jsonWriter, instance)) return false;
             }
             
-            decompressedStream.Position = 0;
-            using (var compressor = new DeflateStream(compressedStream, CompressionMode.Compress)) decompressedStream.CopyTo(compressor);
+            stream.Position = 0;
+            using (var compressor = new DeflateStream(compressedStream, CompressionMode.Compress)) stream.CopyTo(compressor);
 
-            var compressedData = compressedStream.ToArray();
+            var bytes = compressedStream.ToArray();
+            data = Convert.ToBase64String(bytes);
 
-            data = Convert.ToBase64String(compressedData);
             return true;
         }
         catch (Exception e)

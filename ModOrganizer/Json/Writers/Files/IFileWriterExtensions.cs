@@ -11,13 +11,15 @@ public static class IFileWriterExtensions
         try
         {
             using var stream = new MemoryStream();
-            using var jsonWriter = new Utf8JsonWriter(stream);
 
-            if (!fileWriter.TryWrite(jsonWriter, instance)) return false;
+            using (var jsonWriter = new Utf8JsonWriter(stream))
+            {
+                if (!fileWriter.TryWrite(jsonWriter, instance)) return false;
+            }
 
-            var data = stream.ToArray();
+            var bytes = stream.ToArray();
+            File.WriteAllBytes(path, bytes);
 
-            File.WriteAllBytes(path, data);
             return true;
         }
         catch (Exception e)

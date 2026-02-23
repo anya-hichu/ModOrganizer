@@ -8,7 +8,11 @@ public static class IStubbableRuleDataWriterExtensions
     {
         stubbable.RuleDataWriterStub.TryWriteManyUtf8JsonWriterIEnumerableOfT0 = (jsonWriter, instances) =>
         {
-            if (stubValue == null) return false;
+            if (stubValue == null)
+            {
+                jsonWriter.WriteNullValue();
+                return false;
+            }
 
             jsonWriter.WriteRawValue(stubValue);
             return true;

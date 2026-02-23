@@ -14,7 +14,7 @@ public class ConfigDataConverter(IPluginLog pluginLog, IConverter<RuleData, Rule
     {
         config = null;
 
-        var version = (int)configData.Version;
+        var version = System.Convert.ToInt32(configData.Version);
 
         if (!ruleDataConverter.TryConvertMany(configData.Rules, out var rules))
         {
