@@ -1,13 +1,13 @@
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Json.ConfigDatas;
+using ModOrganizer.Json.ConfigDatas.Writers;
 using ModOrganizer.Json.RuleDatas;
 using ModOrganizer.Json.Writers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.RuleDatas;
 
-namespace ModOrganizer.Tests.Json.ConfigDatas;
+namespace ModOrganizer.Tests.Json.ConfigDatas.Writers;
 
 public class ConfigDataWriterBuilder : IBuilder<ConfigDataWriter>, IStubbableRuleDataWriter, IStubbablePluginLog
 {

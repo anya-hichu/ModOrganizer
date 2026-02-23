@@ -14,6 +14,7 @@ public class ModProcessor(IBackupManager backupManager, IConfig config, IModInte
         newModPath = null;
 
         if (!modInterop.TryGetModInfo(modDirectory, out var modInfo)) return false;
+
         if (ruleEvaluator.TryEvaluateMany(config.Rules, modInfo, out newModPath))
         {
             if (dryRun) return true;
@@ -22,6 +23,7 @@ public class ModProcessor(IBackupManager backupManager, IConfig config, IModInte
 
             return modInterop.SetModPath(modInfo.Directory, newModPath) != PenumbraApiEc.PathRenameFailed;
         }
+
         pluginLog.Warning($"No rule matched mod [{modInfo.Directory}]");
         return false;
     }

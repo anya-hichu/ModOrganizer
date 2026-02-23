@@ -1,5 +1,6 @@
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.ConfigDatas;
+using ModOrganizer.Json.ConfigDatas.Readers;
 using ModOrganizer.Json.Readers.Clipboards;
 using ModOrganizer.Json.Readers.Elements;
 using ModOrganizer.Json.Readers.Files;
@@ -9,7 +10,7 @@ using ModOrganizer.Tests.Json.RuleDatas;
 using ModOrganizer.Tests.TestableClasses;
 using System.Text.Json;
 
-namespace ModOrganizer.Tests.Json.ConfigDatas;
+namespace ModOrganizer.Tests.Json.ConfigDatas.Readers;
 
 [TestClass]
 public class TestConfigDataReader : ITestableClassTemp

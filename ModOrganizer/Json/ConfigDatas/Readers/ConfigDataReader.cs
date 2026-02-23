@@ -5,7 +5,7 @@ using ModOrganizer.Json.RuleDatas;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.ConfigDatas;
+namespace ModOrganizer.Json.ConfigDatas.Readers;
 
 public class ConfigDataReader(IElementReader elementReader, IReader<RuleData> ruleDataReader, IPluginLog pluginLog) : Reader<ConfigData>(pluginLog), IConfigDataReader
 {

@@ -1,6 +1,6 @@
 using Dalamud.Plugin.Services.Fakes;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
-using ModOrganizer.Json.ConfigDatas;
+using ModOrganizer.Json.ConfigDatas.Readers;
 using ModOrganizer.Json.Readers.Elements.Fakes;
 using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Json.RuleDatas;
@@ -9,7 +9,7 @@ using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using ModOrganizer.Tests.Json.Readers.Elements;
 using ModOrganizer.Tests.Json.RuleDatas;
 
-namespace ModOrganizer.Tests.Json.ConfigDatas;
+namespace ModOrganizer.Tests.Json.ConfigDatas.Readers;
 
 public class ConfigDataReaderBuilder : IBuilder<ConfigDataReader>, IStubbableElementReader, IStubbableRuleDataReader, IStubbablePluginLog
 {

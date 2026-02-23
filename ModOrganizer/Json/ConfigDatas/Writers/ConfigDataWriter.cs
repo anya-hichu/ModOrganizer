@@ -3,7 +3,7 @@ using ModOrganizer.Json.RuleDatas;
 using ModOrganizer.Json.Writers;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.ConfigDatas;
+namespace ModOrganizer.Json.ConfigDatas.Writers;
 
 public class ConfigDataWriter(IWriter<RuleData> ruleDataWriter, IPluginLog pluginLog) : Writer<ConfigData>(pluginLog), IConfigDataWriter
 {

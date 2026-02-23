@@ -1,6 +1,7 @@
 using Dalamud.Plugin.Services;
 using Microsoft.QualityTools.Testing.Fakes.Stubs;
 using ModOrganizer.Json.ConfigDatas;
+using ModOrganizer.Json.ConfigDatas.Readers;
 using ModOrganizer.Json.Writers.Clipboards;
 using ModOrganizer.Json.Writers.Files;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
@@ -9,7 +10,7 @@ using ModOrganizer.Tests.TestableClasses;
 using System.Text;
 using System.Text.Json;
 
-namespace ModOrganizer.Tests.Json.ConfigDatas;
+namespace ModOrganizer.Tests.Json.ConfigDatas.Writers;
 
 [TestClass]
 public class TestConfigDataWriter : ITestableClassTemp

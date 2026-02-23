@@ -10,6 +10,7 @@ using ModOrganizer.Configs.Defaults;
 using ModOrganizer.Configs.Loaders;
 using ModOrganizer.Configs.Mergers;
 using ModOrganizer.Json.ConfigDatas;
+using ModOrganizer.Json.ConfigDatas.Readers;
 using ModOrganizer.Json.Penumbra.Containers;
 using ModOrganizer.Json.Penumbra.DefaultMods;
 using ModOrganizer.Json.Penumbra.Groups;

@@ -6,6 +6,7 @@ using Dalamud.Utility;
 using ModOrganizer.Configs;
 using ModOrganizer.Configs.Mergers;
 using ModOrganizer.Json.ConfigDatas;
+using ModOrganizer.Json.ConfigDatas.Readers;
 using ModOrganizer.Json.Readers.Clipboards;
 using ModOrganizer.Json.Readers.Files;
 using ModOrganizer.Shared;

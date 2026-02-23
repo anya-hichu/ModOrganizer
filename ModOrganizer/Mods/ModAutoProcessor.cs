@@ -33,7 +33,7 @@ public class ModAutoProcessor : IModAutoProcessor
     {
         if (!Config.AutoProcessEnabled) return;
 
-        var task = Task.Run(() =>
+        RunningTasks.Add(Task.Run(() =>
         {
             PluginLog.Debug($"Waiting [{Config.AutoProcessDelayMs}] ms before processing mod [{modDirectory}] inside task [{Task.CurrentId}]");
             Thread.Sleep(Convert.ToInt32(Config.AutoProcessDelayMs));
@@ -46,9 +46,7 @@ public class ModAutoProcessor : IModAutoProcessor
                 MinimizedText = $"Updated mod [{modDirectory}] path to [{newModPath}]" 
             });
 
-        }).ContinueWith(RunningTasks.Remove);
-
-        RunningTasks.Add(task);
+        }).ContinueWith(RunningTasks.Remove));
     }
 
     public IEnumerable<Task> GetRunningTasks() => RunningTasks;
