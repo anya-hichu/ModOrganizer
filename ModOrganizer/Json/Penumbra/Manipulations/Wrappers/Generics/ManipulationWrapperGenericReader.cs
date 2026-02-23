@@ -10,11 +10,12 @@ using ModOrganizer.Json.Penumbra.Manipulations.Metas.Imcs;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Rsps;
 using ModOrganizer.Json.Penumbra.Manipulations.Metas.Shps;
 using ModOrganizer.Json.Readers;
+using ModOrganizer.Json.Readers.Generics;
 
 
 namespace ModOrganizer.Json.Penumbra.Manipulations.Wrappers.Generics;
 
-public class ManipulationWrapperGenericReader : TypeGenericReader<ManipulationWrapper>, IManipulationWrapperGenericReader
+public class ManipulationWrapperGenericReader : GenericTypeReader<ManipulationWrapper>, IManipulationWrapperGenericReader
 {
     public ManipulationWrapperGenericReader(IReader<ManipulationWrapper> metaAtchWrapperReader, IReader<ManipulationWrapper> metaAtrWrapperReader, 
         IReader<ManipulationWrapper> metaEqdpWrapperReader, IReader<ManipulationWrapper> metaEqpWrapperReader, IReader<ManipulationWrapper> metaEstWrapperReader, 

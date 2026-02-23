@@ -1,9 +1,8 @@
 using Dalamud.Plugin.Services;
-
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers;
+namespace ModOrganizer.Json.Readers.Generics;
 
 public abstract class GenericReader<T>(IPluginLog pluginLog) : Reader<T>(pluginLog) where T : class
 {

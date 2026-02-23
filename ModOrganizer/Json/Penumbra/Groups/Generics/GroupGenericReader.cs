@@ -6,10 +6,11 @@ using ModOrganizer.Json.Penumbra.Groups.Singles;
 using ModOrganizer.Json.Readers;
 
 using ModOrganizer.Json.Readers.Elements;
+using ModOrganizer.Json.Readers.Generics;
 
 namespace ModOrganizer.Json.Penumbra.Groups.Generics;
 
-public class GroupGenericReader : TypeGenericReader<Group>, IGroupGenericReader
+public class GroupGenericReader : GenericTypeReader<Group>, IGroupGenericReader
 {
     public IElementReader ElementReader { get; init; }
 

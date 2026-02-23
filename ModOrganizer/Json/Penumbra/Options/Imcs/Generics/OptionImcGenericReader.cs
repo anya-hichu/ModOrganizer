@@ -3,6 +3,7 @@ using ModOrganizer.Json.Penumbra.Options.Imcs.AttributeMasks;
 using ModOrganizer.Json.Penumbra.Options.Imcs.IsDisableSubMods;
 using ModOrganizer.Json.Readers;
 using ModOrganizer.Json.Readers.Elements;
+using ModOrganizer.Json.Readers.Generics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 

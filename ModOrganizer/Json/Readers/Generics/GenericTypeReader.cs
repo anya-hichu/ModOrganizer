@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace ModOrganizer.Json.Readers;
+namespace ModOrganizer.Json.Readers.Generics;
 
-public abstract class TypeGenericReader<T>(IPluginLog pluginLog) : GenericReader<T>(pluginLog) where T : class
+public abstract class GenericTypeReader<T>(IPluginLog pluginLog) : GenericReader<T>(pluginLog) where T : class
 {
     private static readonly string TYPE_PROPERTY_NAME = "Type";
 
@@ -28,6 +28,4 @@ public abstract class TypeGenericReader<T>(IPluginLog pluginLog) : GenericReader
 
         return true;
     }
-
-
 }
