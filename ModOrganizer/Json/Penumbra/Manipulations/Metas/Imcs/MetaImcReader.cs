@@ -20,7 +20,7 @@ public class MetaImcReader(IReader<MetaImcEntry> imcEntryReader, IReader<MetaImc
 
         if (!imcEntryReader.TryRead(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(MetaImc)}]: {entryProperty}");
+            PluginLog.Debug($"Failed to read [{nameof(MetaImcEntry)}] for [{nameof(MetaImc)}]: {element}");
             return false;
         }
 

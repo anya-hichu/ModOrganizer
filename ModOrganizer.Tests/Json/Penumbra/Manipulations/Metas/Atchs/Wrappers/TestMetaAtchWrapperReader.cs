@@ -5,7 +5,7 @@ using ModOrganizer.Json.Penumbra.Manipulations.Wrappers;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 using System.Text.Json;
 
-namespace ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Atchs;
+namespace ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Atchs.Wrappers;
 
 [TestClass]
 public class TestMetaAtchWrapperReader

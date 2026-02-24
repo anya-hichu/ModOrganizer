@@ -5,7 +5,7 @@ using ModOrganizer.Json.Readers.Fakes;
 using ModOrganizer.Shared;
 using ModOrganizer.Tests.Dalamuds.PluginLogs;
 
-namespace ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Atchs;
+namespace ModOrganizer.Tests.Json.Penumbra.Manipulations.Metas.Atchs.Wrappers;
 
 public class MetaAtchWrapperReaderBuilder : IBuilder<MetaAtchWrapperReader>, IStubbableMetaAtchReader, IStubbablePluginLog
 {

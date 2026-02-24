@@ -16,16 +16,17 @@ public class MetaAtchReader(IReader<MetaAtchEntry> metaAtchEntryReader, IPluginL
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
         if (!element.TryGetRequiredProperty(nameof(MetaAtch.Entry), out var entryProperty, PluginLog)) return false;
-        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Gender), out string? gender, PluginLog)) return false;
-        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Race), out string? race, PluginLog)) return false;
-        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Type), out string? type, PluginLog)) return false;
-        if (!element.TryGetRequiredU16PropertyValue(nameof(MetaAtch.Index), out var index, PluginLog)) return false;
 
         if (!metaAtchEntryReader.TryRead(entryProperty, out var entry))
         {
-            PluginLog.Debug($"Failed to read [{nameof(MetaAtchEntry)}] for [{nameof(MetaAtch)}]: {entryProperty}");
+            PluginLog.Debug($"Failed to read [{nameof(MetaAtchEntry)}] for [{nameof(MetaAtch)}]: {element}");
             return false;
         }
+
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Gender), out string? gender, PluginLog)) return false;
+        if (!element.TryGetRequiredPropertyValue(nameof(MetaAtch.Race), out string? race, PluginLog)) return false;
+        if (!element.TryGetRequiredNotEmptyPropertyValue(nameof(MetaAtch.Type), out var type, PluginLog)) return false;
+        if (!element.TryGetRequiredU16PropertyValue(nameof(MetaAtch.Index), out var index, PluginLog)) return false;
 
         instance = new()
         {
