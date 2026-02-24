@@ -7,7 +7,7 @@ namespace ModOrganizer.Rules;
 
 public class RuleDefaults : IRuleDefaults
 {
-    public static readonly int DEFAULT_VERSION = 0;
+    public static readonly int VERSION = 0;
 
     public HashSet<Rule> Build() => [
         // Equipments
@@ -32,7 +32,7 @@ public class RuleDefaults : IRuleDefaults
 
         // ModelType like summon / minion
         new() {
-            Path = $"Defaults/V{DEFAULT_VERSION}/Sets",
+            Path = $"Defaults/V{VERSION}/Sets",
             Priority = 0,
             MatchExpression = """
             func categorize(kv)
@@ -70,7 +70,7 @@ public class RuleDefaults : IRuleDefaults
 
     private static Rule Build(FullEquipType type) => new()
     {
-        Path = $"Defaults/V{DEFAULT_VERSION}/{type}",
+        Path = $"Defaults/V{VERSION}/{type}",
         Priority = 3,
         MatchExpression = $"""changed_items | object.values | array.each @(do; ret ($0 | object.kind == "EquipItem") && (object.format($0.type, null) == "{type}"); end) | array.uniq == [true]""",
         PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}", type, "/{{ meta.name | string.strip | string.replace '/' '\\\\' }}")
@@ -78,7 +78,7 @@ public class RuleDefaults : IRuleDefaults
 
     private static Rule Build(string categoryName, IReadOnlyList<FullEquipType> equipTypes) => new()
     {
-        Path = $"Defaults/V{DEFAULT_VERSION}/{categoryName}",
+        Path = $"Defaults/V{VERSION}/{categoryName}",
         Priority = 2,
         MatchExpression = $"""
         equip_types = {JsonSerializer.Serialize(equipTypes.Select(t => t.ToString()))}
@@ -89,7 +89,7 @@ public class RuleDefaults : IRuleDefaults
 
     private static Rule Build(EmoteCategory emoteCategory) => new()
     {
-        Path = $"Defaults/V{DEFAULT_VERSION}/{emoteCategory}", 
+        Path = $"Defaults/V{VERSION}/{emoteCategory}", 
         Priority = 1,
         MatchExpression = $"""changed_items | object.values | array.each @(do; ret ($0 | object.kind == "Emote") && ($0.emote_category?.row_id == {(byte)emoteCategory}); end) | array.uniq == [true]""",
         PathTemplate = string.Concat("{{ if data.local_tags | array.concat meta.mod_tags | array.contains 'nsfw' }}Nsfw/{{ end }}Emotes/", emoteCategory, "/{{ meta.name | string.strip | string.replace '/' '\\\\' }}")

@@ -79,4 +79,32 @@ public class TestMetaAtchReader
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
             actualMessage => Assert.AreEqual("Expected [Object] value kind but found [Null]: ", actualMessage));
     }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidEntry()
+    {
+        var observer = new StubObserver();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(MetaAtch.Entry), new Dictionary<string, object?>() }
+        });
+
+        var reader = new MetaAtchReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .WithMetaAtchEntryReaderTryRead(null)
+            .Build();
+
+        var success = reader.TryRead(element, out var metaAtch);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(metaAtch);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Debug),
+            actualMessage => Assert.AreEqual($"Failed to read [MetaAtchEntry] for [MetaAtch]: {element}", actualMessage));
+    }
 }

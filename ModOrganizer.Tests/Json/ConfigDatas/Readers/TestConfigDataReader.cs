@@ -46,6 +46,110 @@ public class TestConfigDataReader : ITestableClassTemp
     }
 
     [TestMethod]
+    public void TestTryReadWithInvalidKind()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ConfigDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(null as object);
+
+        var success = reader.TryRead(element, out var configData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(configData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual("Expected [Object] value kind but found [Null]: ", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithoutVersion()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ConfigDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>());
+
+        var success = reader.TryRead(element, out var configData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(configData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [Version] to be present: {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithInvalidVersion()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ConfigDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var version = 10;
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(ConfigData.Version), version }
+        });
+
+        var success = reader.TryRead(element, out var configData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(configData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Failed to read [ConfigData], unsupported [Version] found [{version}] (supported version: 0): {element}", actualMessage));
+    }
+
+    [TestMethod]
+    public void TestTryReadWithoutRules()
+    {
+        var observer = new StubObserver();
+
+        var reader = new ConfigDataReaderBuilder()
+            .WithPluginLogDefaults()
+            .WithPluginLogObserver(observer)
+            .Build();
+
+        var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
+        {
+            { nameof(ConfigData.Version), ConfigDataReader.SUPPORTED_VERSION }
+        });
+
+        var success = reader.TryRead(element, out var configData);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(configData);
+
+        var calls = observer.GetCalls();
+        Assert.HasCount(1, calls);
+
+        AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
+            actualMessage => Assert.AreEqual($"Expected property [Rules] to be present: {element}", actualMessage));
+    }
+
+    [TestMethod]
     public void TestTryReadFromClipboard()
     {
         var observer = new StubObserver();
