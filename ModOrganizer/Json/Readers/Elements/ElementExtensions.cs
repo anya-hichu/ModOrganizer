@@ -279,7 +279,7 @@ public static class ElementExtensions
     {
         if (element.TryGetRequiredPropertyValue(propertyName, out value, TryGetNotEmptyValue, maybePluginLog)) return true;
 
-        maybePluginLog?.Warning($"Expected property [{propertyName}] value to be not empty [{JsonValueKind.String}]: {element}");
+        maybePluginLog?.Warning($"Expected property [{propertyName}] value to not be empty [{JsonValueKind.String}]: {element}");
         return false;
     } 
 

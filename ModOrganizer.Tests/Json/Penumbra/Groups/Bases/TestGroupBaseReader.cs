@@ -168,7 +168,7 @@ public class TestGroupBaseReader
             actualMessage => Assert.AreEqual("Expected value to not be empty", actualMessage));
 
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected property [Name] value to be not empty [String]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [Name] value to not be empty [String]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -202,7 +202,7 @@ public class TestGroupBaseReader
             actualMessage => Assert.AreEqual("Expected value to not be empty", actualMessage));
 
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected property [Type] value to be not empty [String]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [Type] value to not be empty [String]: {element}", actualMessage));
     }
 
     [TestMethod]

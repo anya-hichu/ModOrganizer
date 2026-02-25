@@ -2001,7 +2001,7 @@ public class TestElementExtensions
             actualMessage => Assert.AreEqual("Expected value to not be empty", actualMessage));
 
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] value to be not empty [String]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] value to not be empty [String]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -2031,7 +2031,7 @@ public class TestElementExtensions
             actualMessage => Assert.AreEqual($"Expected property [{propertyName}] to be present: {element}", actualMessage));
 
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] value to be not empty [String]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] value to not be empty [String]: {element}", actualMessage));
     }
 
     [TestMethod]
@@ -2062,7 +2062,7 @@ public class TestElementExtensions
             actualMessage => Assert.AreEqual($"Expected [String] value kind but found [Number]: {propertyValue}", actualMessage));
 
         AssertPluginLog.MatchObservedCall(calls[1], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] value to be not empty [String]: {element}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] value to not be empty [String]: {element}", actualMessage));
     }
 
     [TestMethod]
