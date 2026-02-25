@@ -104,14 +104,14 @@ public class TestMetaAtchEntryReader
     }
 
     [TestMethod]
-    [DataRow(nameof(MetaAtchEntry.Scale), JsonValueKind.Number)]
-    [DataRow(nameof(MetaAtchEntry.OffsetX), JsonValueKind.Number)]
-    [DataRow(nameof(MetaAtchEntry.OffsetY), JsonValueKind.Number)]
-    [DataRow(nameof(MetaAtchEntry.OffsetZ), JsonValueKind.Number)]
-    [DataRow(nameof(MetaAtchEntry.RotationX), JsonValueKind.Number)]
-    [DataRow(nameof(MetaAtchEntry.RotationY), JsonValueKind.Number)]
-    [DataRow(nameof(MetaAtchEntry.RotationZ), JsonValueKind.Number)]
-    public void TestTryReadWithInvalidValueKind(string propertyName, JsonValueKind kind)
+    [DataRow(nameof(MetaAtchEntry.Scale))]
+    [DataRow(nameof(MetaAtchEntry.OffsetX))]
+    [DataRow(nameof(MetaAtchEntry.OffsetY))]
+    [DataRow(nameof(MetaAtchEntry.OffsetZ))]
+    [DataRow(nameof(MetaAtchEntry.RotationX))]
+    [DataRow(nameof(MetaAtchEntry.RotationY))]
+    [DataRow(nameof(MetaAtchEntry.RotationZ))]
+    public void TestTryReadWithMissingProperty(string propertyName)
     {
         var observer = new StubObserver();
 
@@ -127,9 +127,7 @@ public class TestMetaAtchEntryReader
             { nameof(MetaAtchEntry.RotationZ), 7 },
         };
 
-        var propertyValue = false;
-
-        value[propertyName] = propertyValue;
+        value.Remove(propertyName);
 
         var element = JsonSerializer.SerializeToElement(value);
 
@@ -147,6 +145,6 @@ public class TestMetaAtchEntryReader
         Assert.HasCount(1, calls);
 
         AssertPluginLog.MatchObservedCall(calls[0], nameof(IPluginLog.Warning),
-            actualMessage => Assert.AreEqual($"Expected [Number] value kind but found [False]: {propertyValue}", actualMessage));
+            actualMessage => Assert.AreEqual($"Expected property [{propertyName}] to be present: {element}", actualMessage));
     }
 }
