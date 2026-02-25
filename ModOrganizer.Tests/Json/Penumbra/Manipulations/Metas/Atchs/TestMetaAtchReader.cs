@@ -143,6 +143,7 @@ public class TestMetaAtchReader
     }
 
     [TestMethod]
+    [DataRow(nameof(MetaAtch.Entry))]
     [DataRow(nameof(MetaAtch.Gender))]
     [DataRow(nameof(MetaAtch.Race))]
     [DataRow(nameof(MetaAtch.Index))]
