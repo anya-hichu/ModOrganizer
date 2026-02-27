@@ -16,7 +16,9 @@ public class GroupBaseReader(IPluginLog pluginLog) : Reader<Group>(pluginLog), I
 
         if (!element.Is(JsonValueKind.Object, PluginLog)) return false;
 
-        if (element.TryGetOptionalPropertyValue(nameof(Group.Version), out uint? version, PluginLog) && version != SUPPORTED_VERSION)
+        if (!element.TryGetOptionalPropertyValue(nameof(Group.Version), out uint? version, PluginLog)) return false;
+
+        if (version.HasValue && version != SUPPORTED_VERSION)
         {
             PluginLog.Warning($"Failed to read [{typeof(Group).Name}], unsupported [{nameof(Group.Version)}] found [{version}] (supported version: {SUPPORTED_VERSION}): {element}");
             return false;

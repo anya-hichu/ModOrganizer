@@ -158,6 +158,8 @@ public class MainWindow : Window
         var leftPanelWidth = ImGui.CalcTextSize("NNNNNNNNNNNNNNNNNNNNNN").X;
         using (var leftPanel = ImRaii.Child("leftPanel", new(leftPanelWidth, fullRegion.Y), false, ImGuiWindowFlags.NoScrollbar))
         {
+            using var _ = ImRaii.PushColor(ImGuiCol.ChildBg, CustomColors.LightBlack);
+
             var leftRegion = ImGui.GetContentRegionAvail();
             var topLeftPanelHeight = ImGui.GetFrameHeightWithSpacing();
             

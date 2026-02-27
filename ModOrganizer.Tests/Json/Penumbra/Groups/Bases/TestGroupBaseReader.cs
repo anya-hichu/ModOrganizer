@@ -56,7 +56,6 @@ public class TestGroupBaseReader
     [TestMethod]
     public void TestTryReadWithDefaults()
     {
-        var version = 0u;
         var name = "Name";
         var type = "Type";
 
@@ -64,7 +63,6 @@ public class TestGroupBaseReader
 
         var element = JsonSerializer.SerializeToElement(new Dictionary<string, object?>()
         {
-            { nameof(Group.Version), version },
             { nameof(Group.Name), name },
             { nameof(Group.Type), type }
         });
@@ -74,7 +72,7 @@ public class TestGroupBaseReader
         Assert.IsTrue(success);
         Assert.IsNotNull(group);
 
-        Assert.AreEqual(version, group.Version);
+        Assert.IsNull(group.Version);
         Assert.AreEqual(name, group.Name);
         Assert.AreEqual(type, group.Type);
 
