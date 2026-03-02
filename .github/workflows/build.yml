@@ -36,7 +36,7 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ModOrganizer
           path: |
@@ -47,7 +47,7 @@ jobs:
         run: .\ModOrganizer.Tests\bin\Release\ModOrganizer.Tests.exe --coverage --coverage-output ${{ github.sha }}.cobertura.xml --coverage-output-format cobertura 
 
       - name: Upload Tests Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ModOrganizer.Tests
           path: ModOrganizer.Tests\bin\Release\TestResults\${{ github.sha }}.cobertura.xml
