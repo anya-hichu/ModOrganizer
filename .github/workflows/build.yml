@@ -54,7 +54,7 @@ jobs:
 
       - name: Upload Tests Coverage
         if: env.CODECOV_TOKEN
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           files: ModOrganizer.Tests\bin\Release\TestResults\${{ github.sha }}.cobertura.xml
         env:
